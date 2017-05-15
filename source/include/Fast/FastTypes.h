@@ -282,17 +282,13 @@ public:
 	}
 	~AstsLogonInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -322,17 +318,13 @@ public:
 	}
 	~AstsLogoutInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -409,17 +401,13 @@ public:
 	}
 	~AstsGenericItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -461,10 +449,8 @@ public:
 	}
 	~AstsGenericInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -472,8 +458,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
@@ -516,17 +500,13 @@ public:
 	}
 	~AstsOLSFONDItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -567,10 +547,8 @@ public:
 	}
 	~AstsOLSFONDInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -578,8 +556,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
@@ -618,17 +594,13 @@ public:
 	}
 	~AstsOLSCURRItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -668,10 +640,8 @@ public:
 	}
 	~AstsOLSCURRInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -679,8 +649,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
@@ -732,17 +700,13 @@ public:
 	}
 	~AstsTLSFONDItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -783,10 +747,8 @@ public:
 	}
 	~AstsTLSFONDInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -794,8 +756,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
@@ -845,17 +805,13 @@ public:
 	}
 	~AstsTLSCURRItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -895,10 +851,8 @@ public:
 	}
 	~AstsTLSCURRInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -906,8 +860,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
@@ -930,17 +882,13 @@ public:
 	}
 	~AstsSecurityDefinitionGroupInstrAttribItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -964,17 +912,13 @@ public:
 	}
 	~AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -995,10 +939,8 @@ public:
 	}
 	~AstsSecurityDefinitionMarketSegmentGrpItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->TradingSessionRulesGrpCount; i++)
 			this->TradingSessionRulesGrp[i]->Clear();
 	}
@@ -1006,8 +948,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->TradingSessionRulesGrpCount; i++)
 			this->TradingSessionRulesGrp[i]->ReleaseUnused();
@@ -1095,10 +1035,8 @@ public:
 	}
 	~AstsSecurityDefinitionInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->GroupInstrAttribCount; i++)
 			this->GroupInstrAttrib[i]->Clear();
 		for(int i = 0; i < this->MarketSegmentGrpCount; i++)
@@ -1108,8 +1046,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupInstrAttribCount; i++)
 			this->GroupInstrAttrib[i]->ReleaseUnused();
@@ -1149,18 +1085,11 @@ public:
 	}
 	~AstsSecurityStatusInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -1192,18 +1121,11 @@ public:
 	}
 	~AstsTradingSessionStatusInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -1228,18 +1150,11 @@ public:
 	}
 	~AstsHeartbeatInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
 
@@ -1268,10 +1183,8 @@ public:
 	}
 	~AstsIncrementalGenericInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1279,8 +1192,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
@@ -1313,10 +1224,8 @@ public:
 	}
 	~AstsIncrementalMSRFONDInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1324,8 +1233,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
@@ -1358,10 +1265,8 @@ public:
 	}
 	~AstsIncrementalMSRCURRInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1369,8 +1274,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
@@ -1402,10 +1305,6 @@ public:
 	}
 	~AstsIncrementalOLRFONDInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1413,9 +1312,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1446,10 +1342,6 @@ public:
 	}
 	~AstsIncrementalOLRCURRInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1457,9 +1349,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1490,10 +1379,6 @@ public:
 	}
 	~AstsIncrementalTLRFONDInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1501,9 +1386,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1534,10 +1416,6 @@ public:
 	}
 	~AstsIncrementalTLRCURRInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
@@ -1545,9 +1423,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -2571,17 +2446,13 @@ public:
 	}
 	~FortsDefaultSnapshotMessageMDEntriesItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -2619,10 +2490,8 @@ public:
 	}
 	~FortsDefaultSnapshotMessageInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->Clear();
 	}
@@ -2630,8 +2499,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->ReleaseUnused();
@@ -2655,17 +2522,13 @@ public:
 	}
 	~FortsSecurityDefinitionMDFeedTypesItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -2686,17 +2549,13 @@ public:
 	}
 	~FortsSecurityDefinitionUnderlyingsItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -2718,17 +2577,13 @@ public:
 	}
 	~FortsSecurityDefinitionInstrumentLegsItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -2749,17 +2604,13 @@ public:
 	}
 	~FortsSecurityDefinitionInstrumentAttributesItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -2780,17 +2631,13 @@ public:
 	}
 	~FortsSecurityDefinitionEvntGrpItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -2869,10 +2716,8 @@ public:
 	}
 	~FortsSecurityDefinitionInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->MDFeedTypesCount; i++)
 			this->MDFeedTypes[i]->Clear();
 		for(int i = 0; i < this->UnderlyingsCount; i++)
@@ -2888,8 +2733,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDFeedTypesCount; i++)
 			this->MDFeedTypes[i]->ReleaseUnused();
@@ -2930,17 +2773,13 @@ public:
 	}
 	~FortsSecurityDefinitionUpdateReportInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -2976,17 +2815,13 @@ public:
 	}
 	~FortsSecurityStatusInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -3012,17 +2847,13 @@ public:
 	}
 	~FortsHeartbeatInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -3049,17 +2880,13 @@ public:
 	}
 	~FortsSequenceResetInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -3097,17 +2924,13 @@ public:
 	}
 	~FortsTradingSessionStatusInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -3127,17 +2950,13 @@ public:
 	}
 	~FortsNewsNewsTextItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -3178,10 +2997,8 @@ public:
 	}
 	~FortsNewsInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->NewsTextCount; i++)
 			this->NewsText[i]->Clear();
 	}
@@ -3189,8 +3006,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->NewsTextCount; i++)
 			this->NewsText[i]->ReleaseUnused();
@@ -3227,17 +3042,13 @@ public:
 	}
 	~FortsOrdersLogMDEntriesItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -3266,10 +3077,8 @@ public:
 	}
 	~FortsOrdersLogInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->Clear();
 	}
@@ -3277,8 +3086,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->ReleaseUnused();
@@ -3307,17 +3114,13 @@ public:
 	}
 	~FortsOrdersBookMDEntriesItemInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -3352,10 +3155,8 @@ public:
 	}
 	~FortsOrdersBookInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->Clear();
 	}
@@ -3363,8 +3164,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->ReleaseUnused();
@@ -3392,17 +3191,13 @@ public:
 	}
 	~FortsLogonInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -3430,17 +3225,13 @@ public:
 	}
 	~FortsLogoutInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 	}
 	inline void ReleaseUnused() {
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
 };
@@ -3469,10 +3260,8 @@ public:
 	}
 	~FortsDefaultIncrementalRefreshMessageInfo() { }
 	inline void Clear() {
-		this->PresenceMap = 0;
-		this->NullMap = 0;
-		this->Used = false;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		this->Used = false;
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->Clear();
 	}
@@ -3480,8 +3269,6 @@ public:
 		if(this->Used)
 			return;
 
-		this->PresenceMap = 0;
-		this->NullMap = 0;
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->ReleaseUnused();

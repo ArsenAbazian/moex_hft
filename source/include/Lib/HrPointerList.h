@@ -408,7 +408,7 @@ public:
         return start;
     }
 
-    inline HrLinkedPointer<T>* Append(int capacity) {
+    HrLinkedPointer<T>* Append(int capacity) {
         printf("!!!unexpected append %s count = %d, additional capacity = %d!!!\n", this->m_name, this->m_count, capacity); //TODO remove debug info
         this->m_capacity += capacity;
         HrLinkedPointer<T> *start = new HrLinkedPointer<T>();

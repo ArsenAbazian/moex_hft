@@ -2823,6 +2823,8 @@ protected:
         ProgramStatistics::Current->Inc(Counters::cCurrOlr);
         ProgramStatistics::Total->Inc(Counters::cCurrOlr);
 #endif
+        if(info->GroupMDEntriesCount == 0)
+            printf("error: GroupMDEntrieCount == 0\n");
         for(int i = 0; i < info->GroupMDEntriesCount; i++)
             this->OnIncrementalRefresh_OLR_CURR(info->GroupMDEntries[i]);
         info->ReleaseUnused();
@@ -2931,8 +2933,7 @@ protected:
     }
 
     inline void ApplyIncrementalCoreAsts() {
-        this->m_fastProtocolManager->ParsePresenceMap();
-        UINT32 templateId = this->m_fastProtocolManager->ReadPacketTemplateId();
+        UINT32 templateId = this->m_fastProtocolManager->ParseHeaderFast();
         if(this->m_id == FeedConnectionId::fcidOlrCurr) {
             if(templateId == AstsPackedTemplateId::AstsIncrementalOLRCURRInfo) {
                 this->OnIncrementalRefresh_OLR_CURR(this->m_fastProtocolManager->DecodeAstsIncrementalOLRCURR());

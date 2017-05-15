@@ -140,6 +140,10 @@ typedef enum _Counters {
 	cIncPacketCount = 125, // inc refresh packet count
 	cSecStatusHbeatCount = 126, // sec status hbeat count
 	cSecStatusPacketCount = 127, // sec status packet count
+	cMaxDecodeAsts = 128, // asts decode time mcs
+	cOlrAddTime = 129, // olr max add time mcs
+	cOlrRemoveTime = 130, // olr max remove time mcs
+	cOlrChangeTime = 131, // olr max change time
 #pragma endregion
 }Counters;
 
@@ -159,10 +163,10 @@ public:
 
     void InitializeNames() {
 #pragma region ProgramStatistics_GeneratedCode
-		this->m_itemsCount = 128;
+		this->m_itemsCount = 132;
 		this->m_counts = new int[ this->m_itemsCount ];
 		this->m_changed = new bool[ this->m_itemsCount ];
-		this->m_names = new const char*[128];
+		this->m_names = new const char*[132];
 		memset(this->m_cOlrMDEntryCount, 0, sizeof(int) * 128);
 		this->m_names[0] = "fond olr";
 		this->m_names[1] = "fond ols";
@@ -292,6 +296,10 @@ public:
 		this->m_names[125] = "inc refresh packet count";
 		this->m_names[126] = "sec status hbeat count";
 		this->m_names[127] = "sec status packet count";
+		this->m_names[128] = "asts decode time mcs";
+		this->m_names[129] = "olr max add time mcs";
+		this->m_names[130] = "olr max remove time mcs";
+		this->m_names[131] = "olr max change time";
 #pragma endregion
     }
 

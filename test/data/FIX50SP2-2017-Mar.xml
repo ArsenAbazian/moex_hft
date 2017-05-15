@@ -387,7 +387,7 @@
 
 
 	<!-- Market Data - Incremental Refresh OLR FOND-->
-	<template name="X-OLR-FOND" id="2520" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
+	<template name="X-OLR-FOND" id="2520" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
 		<string name="MessageType" id="35"><constant value="X" /></string>
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
@@ -416,7 +416,7 @@
 	</template>
 
 	<!-- Market Data - Incremental Refresh OLR CURR-->
-	<template name="X-OLR-CURR" id="3610" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
+	<template name="X-OLR-CURR" id="3610" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
 		<string name="MessageType" id="35"><constant value="X" /></string>
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
@@ -443,7 +443,7 @@
 
 
     	<!-- Market Data - Incremental Refresh TLR FOND-->
-	<template name="X-TLR-FOND" id="2521" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
+	<template name="X-TLR-FOND" id="2521" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
 		<string name="MessageType" id="35"><constant value="X" /></string>
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
@@ -481,7 +481,7 @@
 
 
     	<!-- Market Data - Incremental Refresh TLR CURR-->
-	<template name="X-TLR-CURR" id="3611" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
+	<template name="X-TLR-CURR" id="3611" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
 		<string name="MessageType" id="35"><constant value="X" /></string>
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
@@ -581,7 +581,7 @@
 		<int32 name="NumOfDaysToMaturity" id="10508" presence="optional"></int32>
 	</template>
 	<!-- Security Status -->
-	<template name="f" id="2106" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
+	<template name="f" id="2106" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
 		<string name="MessageType" id="35"><constant value="f" /></string>
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
@@ -595,7 +595,7 @@
 		<uInt32 name="AuctionIndicator" id="5509" presence="optional"></uInt32>
 	</template>
 	<!-- Trading Session Status -->
-	<template name="h" id="2107" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
+	<template name="h" id="2107" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
 		<string name="MessageType" id="35"><constant value="h" /></string>
 		<string name="ApplVerID" id="1128"><constant value="9"/></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
@@ -607,7 +607,7 @@
 		<string name="TradingSessionID" id="336"></string>
 	</template>
 	<!-- Heartbeat -->
-	<template name="0" id="2108" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
+	<template name="0" id="2108" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
 		<string name="MessageType" id="35"><constant value="0" /></string>
 		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>

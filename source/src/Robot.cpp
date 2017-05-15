@@ -663,11 +663,14 @@ bool Robot::MainLoop_CurrOnly() {
     this->m_currMarket->FeedChannel()->Olr()->EnableHistoricalReplay(false); // TODO remove!!!!!
 
     AstsFeedChannel *channel = this->m_currMarket->FeedChannel();
+
+    time_t max = 0;
     while(true) {
         Stopwatch::Default->GetElapsedMicrosecondsGlobal();
         if(!WinSockManager::UpdateManagersPollStatus())
             break;
 
+        w->StartPrecise(1);
         bool res = channel->Olr()->DoWorkAtomIncremental();
         if(channel->Ols()->State() != FeedConnectionState::fcsSuspend)
             res &= channel->Ols()->DoWorkAtomSnapshot();
@@ -675,6 +678,8 @@ bool Robot::MainLoop_CurrOnly() {
         if(channel->Idf()->State() != FeedConnectionState::fcsSuspend)
             res &= channel->Idf()->DoWorkAtomSecurityDefinition();
         res &= channel->Hr()->DoWorkAtomHistoricalReplay();
+        time_t elapsed = w->ElapsedNanosecondsSlowPrecise(1);
+        if(max < elapsed) max = elapsed;
 
         if(!res) {
             delete w;
@@ -689,9 +694,11 @@ bool Robot::MainLoop_CurrOnly() {
             break;
 
         if(w->ElapsedMicrosecondsFast() > 5000000) { // 5 sec
-            double nanosecPerCycle = w->ElapsedMicrosecondsFast() * 1000.0/ cycleCount;
+            //double nanosecPerCycle = w->ElapsedMicrosecondsFast() * 1000.0/ cycleCount;
             printf("--------------------------\n");
-            printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+            //printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
+            printf("elapsed per cycle = %" PRIu64 " ns\n", max);
+            max = 0;
             this->PrintStatistics();
             printf("-------- current ---------\n");
             ProgramStatistics::Current->Print();

@@ -178,7 +178,6 @@ public:
 
     inline void ChangeBuyQuote(T *info) {
         //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
-
         LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, this->m_buyQuoteList);
         HrLinkedPointer<T> *ptr;
         if(hashItem != 0) {
@@ -195,7 +194,6 @@ public:
             h->m_object = ptr;
             h->m_stringId = info->MDEntryID;
             h->m_length = info->MDEntryIDLength;
-
             return;
         }
         //TODO remove debug
@@ -268,10 +266,11 @@ public:
     }
 
     inline void Remove(T *info) {
+        /*
 #ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->Inc(Counters::cRemoveOlr);
         ProgramStatistics::Total->Inc(Counters::cRemoveOlr);
-#endif
+#endif*/
         if(info->MDEntryType[0] == mdetBuyQuote)
             this->RemoveBuyQuote(info);
         else
@@ -279,10 +278,10 @@ public:
     }
 
     inline void Change(T *info) {
-#ifdef COLLECT_STATISTICS
+/*#ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->Inc(Counters::cChangeOlr);
         ProgramStatistics::Total->Inc(Counters::cChangeOlr);
-#endif
+#endif*/
         if(info->MDEntryType[0] == mdetBuyQuote)
             this->ChangeBuyQuote(info);
         else if(info->MDEntryType[0] == mdetSellQuote)
@@ -290,10 +289,10 @@ public:
     }
 
     inline HrLinkedPointer<T>* Add(T *info) {
-#ifdef COLLECT_STATISTICS
+/*#ifdef COLLECT_STATISTICS
         ProgramStatistics::Current->Inc(Counters::cAddOlr);
         ProgramStatistics::Total->Inc(Counters::cAddOlr);
-#endif
+#endif*/
         if(info->MDEntryType[0] == MDEntryType::mdetBuyQuote)
             return this->AddBuyQuote(info);
         else if(info->MDEntryType[0] == MDEntryType::mdetSellQuote)

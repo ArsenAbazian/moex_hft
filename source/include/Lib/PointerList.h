@@ -287,7 +287,7 @@ public:
         return start;
     }
 
-    inline LinkedPointer<T>* Append(int capacity) {
+    LinkedPointer<T>* Append(int capacity) {
         printf("!!!unexpected append %s count = %d, additional capacity = %d!!!\n", this->m_name, this->m_count, capacity); //TODO remove debug info
         this->m_capacity += capacity;
         LinkedPointer<T> *start = new LinkedPointer<T>();

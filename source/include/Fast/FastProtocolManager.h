@@ -96,6 +96,13 @@ private:
 	AutoAllocatePointerList<AstsIncrementalOLRCURRInfo>	*m_astsIncrementalOLRCURR;
 	AutoAllocatePointerList<AstsIncrementalTLRFONDInfo>	*m_astsIncrementalTLRFOND;
 	AutoAllocatePointerList<AstsIncrementalTLRCURRInfo>	*m_astsIncrementalTLRCURR;
+	AstsSecurityStatusInfo	*m_cachedastsSecurityStatusInfo;
+	AstsTradingSessionStatusInfo	*m_cachedastsTradingSessionStatusInfo;
+	AstsHeartbeatInfo	*m_cachedastsHeartbeatInfo;
+	AstsIncrementalOLRFONDInfo	*m_cachedastsIncrementalOLRFONDInfo;
+	AstsIncrementalOLRCURRInfo	*m_cachedastsIncrementalOLRCURRInfo;
+	AstsIncrementalTLRFONDInfo	*m_cachedastsIncrementalTLRFONDInfo;
+	AstsIncrementalTLRCURRInfo	*m_cachedastsIncrementalTLRCURRInfo;
 	AstsLogonInfo	*m_prevastsLogonInfo;
 	AstsLogoutInfo	*m_prevastsLogoutInfo;
 	AstsGenericItemInfo	*m_prevastsGenericItemInfo;
@@ -150,6 +157,13 @@ private:
 		this->m_astsIncrementalOLRCURR = this->m_astsAllocationInfo->GetAstsIncrementalOLRCURRInfoPool();
 		this->m_astsIncrementalTLRFOND = this->m_astsAllocationInfo->GetAstsIncrementalTLRFONDInfoPool();
 		this->m_astsIncrementalTLRCURR = this->m_astsAllocationInfo->GetAstsIncrementalTLRCURRInfoPool();
+		this->m_cachedastsSecurityStatusInfo = this->m_astsSecurityStatus->NewItemUnsafe();
+		this->m_cachedastsTradingSessionStatusInfo = this->m_astsTradingSessionStatus->NewItemUnsafe();
+		this->m_cachedastsHeartbeatInfo = this->m_astsHeartbeat->NewItemUnsafe();
+		this->m_cachedastsIncrementalOLRFONDInfo = this->m_astsIncrementalOLRFOND->NewItemUnsafe();
+		this->m_cachedastsIncrementalOLRCURRInfo = this->m_astsIncrementalOLRCURR->NewItemUnsafe();
+		this->m_cachedastsIncrementalTLRFONDInfo = this->m_astsIncrementalTLRFOND->NewItemUnsafe();
+		this->m_cachedastsIncrementalTLRCURRInfo = this->m_astsIncrementalTLRCURR->NewItemUnsafe();
 		this->m_prevastsLogonInfo = this->GetFreeAstsLogonInfo();
 		this->m_prevastsLogonInfo->Used = true;
 		this->m_prevastsLogoutInfo = this->GetFreeAstsLogoutInfo();
@@ -832,7 +846,7 @@ public:
 	}
 
 	inline AstsSecurityStatusInfo* GetFreeAstsSecurityStatusInfo() {
-		return this->m_astsSecurityStatus->NewItemUnsafe();
+		return this->m_cachedastsSecurityStatusInfo;
 	}
 
 	inline AutoAllocatePointerList<AstsSecurityStatusInfo>* GetAstsSecurityStatusInfoPool() {
@@ -840,7 +854,7 @@ public:
 	}
 
 	inline AstsTradingSessionStatusInfo* GetFreeAstsTradingSessionStatusInfo() {
-		return this->m_astsTradingSessionStatus->NewItemUnsafe();
+		return this->m_cachedastsTradingSessionStatusInfo;
 	}
 
 	inline AutoAllocatePointerList<AstsTradingSessionStatusInfo>* GetAstsTradingSessionStatusInfoPool() {
@@ -848,7 +862,7 @@ public:
 	}
 
 	inline AstsHeartbeatInfo* GetFreeAstsHeartbeatInfo() {
-		return this->m_astsHeartbeat->NewItemUnsafe();
+		return this->m_cachedastsHeartbeatInfo;
 	}
 
 	inline AutoAllocatePointerList<AstsHeartbeatInfo>* GetAstsHeartbeatInfoPool() {
@@ -880,7 +894,7 @@ public:
 	}
 
 	inline AstsIncrementalOLRFONDInfo* GetFreeAstsIncrementalOLRFONDInfo() {
-		return this->m_astsIncrementalOLRFOND->NewItemUnsafe();
+		return this->m_cachedastsIncrementalOLRFONDInfo;
 	}
 
 	inline AutoAllocatePointerList<AstsIncrementalOLRFONDInfo>* GetAstsIncrementalOLRFONDInfoPool() {
@@ -888,7 +902,7 @@ public:
 	}
 
 	inline AstsIncrementalOLRCURRInfo* GetFreeAstsIncrementalOLRCURRInfo() {
-		return this->m_astsIncrementalOLRCURR->NewItemUnsafe();
+		return this->m_cachedastsIncrementalOLRCURRInfo;
 	}
 
 	inline AutoAllocatePointerList<AstsIncrementalOLRCURRInfo>* GetAstsIncrementalOLRCURRInfoPool() {
@@ -896,7 +910,7 @@ public:
 	}
 
 	inline AstsIncrementalTLRFONDInfo* GetFreeAstsIncrementalTLRFONDInfo() {
-		return this->m_astsIncrementalTLRFOND->NewItemUnsafe();
+		return this->m_cachedastsIncrementalTLRFONDInfo;
 	}
 
 	inline AutoAllocatePointerList<AstsIncrementalTLRFONDInfo>* GetAstsIncrementalTLRFONDInfoPool() {
@@ -904,7 +918,7 @@ public:
 	}
 
 	inline AstsIncrementalTLRCURRInfo* GetFreeAstsIncrementalTLRCURRInfo() {
-		return this->m_astsIncrementalTLRCURR->NewItemUnsafe();
+		return this->m_cachedastsIncrementalTLRCURRInfo;
 	}
 
 	inline AutoAllocatePointerList<AstsIncrementalTLRCURRInfo>* GetAstsIncrementalTLRCURRInfoPool() {
@@ -1304,6 +1318,25 @@ public:
 			return result & 0xffff;
 		}
 		this->currentPos ++;
+		return result & 0xff;
+	}
+
+	inline UINT32 ParseHeaderFast() {
+		UINT64 result = *(UINT64*)this->currentPos;
+		int count = 0;
+		if((result & 0x80) != 0) {
+			count = 1; this->m_presenceMap = result & 0x7f;
+			result >>= 8;
+		}
+		else if((result & 0x8000) != 0) {
+			count = 2; this->m_presenceMap = result & 0x7f7f;
+			result >>= 16;
+		}
+		if((result & 0x8080) == 0x8000) {  // 2byte value
+			this->currentPos += count + 2;
+			return result & 0xffff;
+		}
+		this->currentPos += count + 1;
 		return result & 0xff;
 	}
 

@@ -956,7 +956,10 @@ namespace prebuild {
 
 			foreach(StructureInfo str in Structures) {
 				WriteLine("\tinline " + str.Name + "* " + str.GetFreeMethodName + "() {");
-				WriteLine("\t\treturn this->" + str.ValueName + "->NewItemUnsafe();");
+				if (!str.AllowCache)
+					WriteLine ("\t\treturn this->" + str.ValueName + "->NewItemUnsafe();");
+				else
+					WriteLine ("\t\treturn this->" + str.CachedValueName + ";");
 				WriteLine("\t}");
 				WriteLine("");
 				WriteLine("\tinline AutoAllocatePointerList<" + str.Name + ">* " + str.GetListMethodName + "() {");
@@ -1017,6 +1020,7 @@ namespace prebuild {
 			public string NameCore { get; set; }
 
 			public bool IsSequence { get; set; }
+			public bool AllowCache { get; set; }
 
 			public string ValueName { 
 				get { 
@@ -1027,6 +1031,12 @@ namespace prebuild {
 			public string PrevValueName {
 				get {
 					return "m_prev" + Prefix.ToLower() + NameCore + (IsSequence ? "Item" : "") + "Info"; 
+				}
+			}
+
+			public string CachedValueName {
+				get {
+					return "m_cached" + Prefix.ToLower() + NameCore + (IsSequence ? "Item" : "") + "Info"; 
 				}
 			}
 
@@ -1127,6 +1137,7 @@ namespace prebuild {
 					GetSequenceStructureNames(nameCore, node, child);
 					StructureInfo info = new StructureInfo() { NameCore = nameCore, Node = node };
 					info.Prefix = Prefix;
+					info.AllowCache = HasAttribute (node, "cache") && node.Attributes["cache"].Value == "true";
 					foreach(StructureInfo c in child) {
 						res.Add(c);
 						c.Parent = info;
@@ -1168,6 +1179,11 @@ namespace prebuild {
 			foreach(StructureInfo str in Structures) {
 				WriteLine("\tAutoAllocatePointerList<" + str.Name + ">\t*" + str.ValueName + ";");
 			}
+			foreach (StructureInfo str in structures) {
+				if (!str.AllowCache)
+					continue;
+				WriteLine ("\t" + str.Name + "\t*" + str.CachedValueName + ";");
+			}
 			foreach(StructureInfo str in Structures) {
 				WriteLine("\t" + str.Name + "\t*" + str.PrevValueName + ";");
 			}
@@ -1176,6 +1192,11 @@ namespace prebuild {
 			WriteLine("\tvoid Initialize" + Prefix + "MessageInfo() {");
 			foreach(StructureInfo str in structures) {
 				WriteLine("\t\tthis->" + str.ValueName + " = this->m_" + Prefix.ToLower() + "AllocationInfo->" + str.GetListMethodName + "();");
+			}
+			foreach (StructureInfo str in structures) {
+				if (!str.AllowCache)
+					continue;
+				WriteLine("\t\tthis->" + str.CachedValueName + " = this->" + str.ValueName + "->NewItemUnsafe();");
 			}
 			foreach(StructureInfo str in structures) {
 				WriteLine("\t\tthis->" + str.PrevValueName + " = this->" + str.GetFreeMethodName + "();");
@@ -1921,12 +1942,10 @@ namespace prebuild {
 		private void WriteClearCode(StructureInfo info) {
 			WriteLine("\tinline void Clear() {");
 
-			//WriteClearFieldsCode(info);
-			WriteLine("\t\tthis->PresenceMap = 0;");
-			WriteLine("\t\tthis->NullMap = 0;");
-
-			WriteLine("\t\tthis->Used = false;");
-			WriteLine("\t\tthis->Allocator->FreeItemUnsafe(this->Pointer);");
+			if (!info.AllowCache) {
+				WriteLine ("\t\tthis->Allocator->FreeItemUnsafe(this->Pointer);");
+				WriteLine("\t\tthis->Used = false;");
+			}
 			foreach(XmlNode field in info.Fields) {
 				if(field.Name != "sequence")
 					continue;
@@ -1939,9 +1958,8 @@ namespace prebuild {
 			WriteLine("\t\tif(this->Used)");
 			WriteLine("\t\t\treturn;");
 			WriteLine("");
-			WriteLine("\t\tthis->PresenceMap = 0;");
-			WriteLine("\t\tthis->NullMap = 0;");
-			WriteLine("\t\tthis->Allocator->FreeItemUnsafe(this->Pointer);");
+			if(!info.AllowCache)
+				WriteLine("\t\tthis->Allocator->FreeItemUnsafe(this->Pointer);");
 			foreach(XmlNode field in info.Fields) {
 				if(field.Name != "sequence")
 					continue;

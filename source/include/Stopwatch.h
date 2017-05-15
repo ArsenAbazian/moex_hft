@@ -64,6 +64,11 @@ public:
         UpdateElapsedMicrosecondsGlobal(this->m_specStart[index]);
         this->m_enabled[index] = true;
     }
+    inline void StartPrecise(int index) {
+        clock_gettime(CLOCK_REALTIME, this->m_specStart[index]);
+        UpdateElapsedMicrosecondsGlobal(this->m_specStart[index]);
+        this->m_enabled[index] = true;
+    }
     inline void StartFast(__syscall_slong_t startMicroseconds) {
         (*(this->m_startMicroseconds)) = startMicroseconds;
         this->m_enabled[0] = true;
@@ -118,6 +123,16 @@ public:
     inline time_t ElapsedNanosecondsSlow(int index) {
         if(this->m_enabled[index])
             clock_gettime(CLOCK_REALTIME_COARSE, this->m_specEnd);
+        return  (this->m_specEnd->tv_sec - this->m_specStart[index]->tv_sec) * 1000000000 + (this->m_specEnd->tv_nsec - this->m_specStart[index]->tv_nsec);
+    }
+    inline time_t ElapsedNanosecondsSlowPrecise() {
+        if(this->m_enabled[0])
+            clock_gettime(CLOCK_REALTIME, this->m_specEnd);
+        return  (this->m_specEnd->tv_sec - (*(this->m_specStart))->tv_sec) * 1000000000 + (this->m_specEnd->tv_nsec - (*(this->m_specStart))->tv_nsec);
+    }
+    inline time_t ElapsedNanosecondsSlowPrecise(int index) {
+        if(this->m_enabled[index])
+            clock_gettime(CLOCK_REALTIME, this->m_specEnd);
         return  (this->m_specEnd->tv_sec - this->m_specStart[index]->tv_sec) * 1000000000 + (this->m_specEnd->tv_nsec - this->m_specStart[index]->tv_nsec);
     }
     inline bool IsElapsedMillisecondsSlow(time_t ms) {

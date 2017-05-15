@@ -72,17 +72,19 @@ public:
     void AddCount(int addCount) {
         this->m_addCapacity = addCount;
     }
+    void AppendAdditionalItemsToList() {
+        printf("!!!usafe unexpected append %s count = %d, additional capacity = %d!!!\n", this->m_name, this->m_count, this->m_addCapacity); //TODO remove debug info
+        this->m_head = CreatePointer();
+        this->m_tail = this->CreatePointers(this->m_head, this->m_addCapacity);
+        this->m_capacity += this->m_addCapacity;
+    }
     inline LinkedPointer<T>* NewPointerUnsafe() {
         this->m_count++;
         LinkedPointer<T> *node = this->m_head;
         this->m_head = this->m_head->Next();
         node->Released(false);
-        if(this->m_head == 0) {
-            printf("!!!usafe unexpected append %s count = %d, additional capacity = %d!!!\n", this->m_name, this->m_count, this->m_addCapacity); //TODO remove debug info
-            this->m_head = CreatePointer();
-            this->m_tail = this->CreatePointers(this->m_head, this->m_addCapacity);
-            this->m_capacity += this->m_addCapacity;
-        }
+        if(this->m_head == 0)
+            this->AppendAdditionalItemsToList();
         return node;
     }
     inline LinkedPointer<T>* NewPointer() {
@@ -91,13 +93,8 @@ public:
         this->m_head = this->m_head->Next();
         node->Released(false);
         this->AddUsed(node);
-
-        if(this->m_head == 0) {
-            printf("!!!unexpected append %s count = %d, additional capacity = %d!!!\n", this->m_name, this->m_count, this->m_addCapacity); //TODO remove debug info
-            this->m_head = CreatePointer();
-            this->m_tail = this->CreatePointers(this->m_head, this->m_addCapacity);
-            this->m_capacity += this->m_addCapacity;
-        }
+        if(this->m_head == 0)
+            this->AppendAdditionalItemsToList();
         return node;
     }
     inline T* NewItem() {

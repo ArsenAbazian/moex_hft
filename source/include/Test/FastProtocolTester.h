@@ -45,6 +45,8 @@ public:
     void TestSkipToNextField();
 
     void Test() {
+        TestPerformance();
+
         TestReadUInt32_Mandatory();
         TestReadUInt32_Optional();
 
@@ -57,12 +59,10 @@ public:
         TestReadInt64_Mandatory();
         TestReadInt64_Optional();
 
-        TestPerformance();
         TestStringCopy();
         TestReadString_Mandatory();
         TestReadString_Optional();
         TestSkipToNextField();
-
 
         TestMessages();
         TestReadByteVector_Optional();
