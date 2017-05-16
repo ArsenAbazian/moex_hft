@@ -26,6 +26,7 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::fctIncremental);
         this->m_tradeTableCurr = new MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo>();
+        this->m_tradeTableCurr->SetOwnerParams(&(this->m_queueItemsCount), &(this->m_symbolsToRecvSnapshot), &(this->m_tableInSnapshotMode));
         this->SetId(FeedConnectionId::fcidTlrCurr);
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();

@@ -13,6 +13,7 @@ public:
             FeedConnection(id, name, value, protocol, aSourceIp, aIp, aPort, bSourceIp, bIp, bPort) {
         this->SetType(FeedConnectionType::fctIncremental);
         this->m_orderTableCurr = new MarketDataTable<OrderInfo, AstsOLSCURRInfo, AstsOLSCURRItemInfo>();
+        this->m_orderTableCurr->SetOwnerParams(&(this->m_queueItemsCount), &(this->m_symbolsToRecvSnapshot), &(this->m_tableInSnapshotMode));
         this->SetId(FeedConnectionId::fcidOlrCurr);
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();

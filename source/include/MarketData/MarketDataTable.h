@@ -23,6 +23,9 @@ template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename I
     int                                         m_symbolsToRecvSnapshot;
     bool                                        m_allSessionsRecvSnapshot;
     bool                                        m_snapshotMode;
+    int                                         *m_ownerQueueItemsCount;
+    int                                         *m_ownerSymbolsToRecvSnapshot;
+    bool                                        *m_ownerTableInSnapshotMode;
 
 public:
     inline void InitSymbols(int count) {
@@ -48,10 +51,24 @@ public:
             m_queueItemsCount(0),
             m_symbolsToRecvSnapshot(0),
             m_allSessionsRecvSnapshot(false),
-            m_snapshotMode(false) {
+            m_snapshotMode(false),
+            m_ownerQueueItemsCount(0),
+            m_ownerSymbolsToRecvSnapshot(0),
+            m_ownerTableInSnapshotMode(0) {
+        this->m_ownerSymbolsToRecvSnapshot = new int;
+        this->m_ownerQueueItemsCount = new int;
+        this->m_ownerTableInSnapshotMode = new bool;
+        *(this->m_ownerQueueItemsCount) = 0;
+        *(this->m_ownerSymbolsToRecvSnapshot) = 0;
+        *(this->m_ownerTableInSnapshotMode) = false;
     }
     ~MarketDataTable() {
         this->Release();
+    }
+    void SetOwnerParams(int *ownerQueueItemsCount, int *ownerSymbolsToRecvSnapshot, bool *ownerTableInSnapshotMode) {
+        this->m_ownerQueueItemsCount = ownerQueueItemsCount;
+        this->m_ownerSymbolsToRecvSnapshot = ownerSymbolsToRecvSnapshot;
+        this->m_ownerTableInSnapshotMode = ownerTableInSnapshotMode;
     }
     inline TABLEITEM<ITEMINFO>* GetCachedItem(UINT64 securityId, int sessionIndex) {
         if(this->m_cachedItem == 0)
@@ -121,9 +138,11 @@ public:
     }
     inline void DecSymbolsToRecvSnapshotCount() {
         this->m_symbolsToRecvSnapshot--;
+        *(this->m_ownerSymbolsToRecvSnapshot) = this->m_symbolsToRecvSnapshot;
     }
     inline void IncSymbolsToRecvSnapshotCount() {
         this->m_symbolsToRecvSnapshot++;
+        *(this->m_ownerSymbolsToRecvSnapshot) = this->m_symbolsToRecvSnapshot;
     }
     TABLEITEM<ITEMINFO> *GetItemWithEntryInfo(MDEntryQueue *entry) {
         for(int i = 0; i < this->m_symbolsCount; i++) {
@@ -154,12 +173,16 @@ public:
         bool res = tableItem->ProcessIncrementalMessage(info);
         bool hasEntries = tableItem->HasEntries();
         if(hasEntries) {
-            if(!prevHasEntries)
+            if(!prevHasEntries) {
                 this->m_queueItemsCount++;
+                *(this->m_ownerQueueItemsCount) = this->m_queueItemsCount;
+            }
         }
         else {
-            if(prevHasEntries)
+            if(prevHasEntries) {
                 this->m_queueItemsCount--;
+                *(this->m_ownerQueueItemsCount) = this->m_queueItemsCount;
+            }
             if(tableItem->ShouldProcessSnapshot()) {
                 MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = tableItem->SymbolInfo();
                 bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
@@ -210,8 +233,10 @@ public:
             bool prevHasEntries = this->m_snapshotItem->HasEntries();
             this->m_snapshotItem->ClearEntries();
             this->m_snapshotItem->DecSessionsToRecvSnapshotCount();
-            if(prevHasEntries && !this->m_snapshotItem->HasEntries())
+            if(prevHasEntries && !this->m_snapshotItem->HasEntries()) {
                 this->m_queueItemsCount--;
+                *(this->m_ownerQueueItemsCount) = this->m_queueItemsCount;
+            }
             if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
                 this->DecSymbolsToRecvSnapshotCount();
             this->m_snapshotItem->ProcessNullSnapshot();
@@ -306,8 +331,10 @@ public:
             bool prevHasEntries = this->m_snapshotItem->HasEntries();
             this->m_snapshotItem->ClearEntries();
             this->m_snapshotItem->DecSessionsToRecvSnapshotCount();
-            if(prevHasEntries && !this->m_snapshotItem->HasEntries())
+            if(prevHasEntries && !this->m_snapshotItem->HasEntries()) {
                 this->m_queueItemsCount--;
+                *(this->m_ownerQueueItemsCount) = this->m_queueItemsCount;
+            }
             if(!allItemsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot())
                 this->DecSymbolsToRecvSnapshotCount();
             this->m_snapshotItem->ProcessNullSnapshot();
@@ -325,8 +352,10 @@ public:
         this->m_snapshotItem->RptSeq(this->m_snapshotItemRptSeq);
         bool prevHasEntries = this->m_snapshotItem->HasEntries();
         bool res = this->m_snapshotItem->EndProcessSnapshotMessages();
-        if(prevHasEntries && !this->m_snapshotItem->HasEntries())
+        if(prevHasEntries && !this->m_snapshotItem->HasEntries()) {
             this->m_queueItemsCount--;
+            *(this->m_ownerQueueItemsCount) = this->m_queueItemsCount;
+        }
         if(!this->m_allSessionsRecvSnapshot && this->m_snapshotSymbol->AllSessionsRecvSnapshot()) {
             this->DecSymbolsToRecvSnapshotCount();
         }
@@ -418,7 +447,9 @@ public:
             (*s)->Clear();
         this->m_symbolsCount = 0;
         this->m_queueItemsCount = 0;
+        *(this->m_ownerQueueItemsCount) = this->m_queueItemsCount;
         this->m_symbolsToRecvSnapshot = 0;
+        *(this->m_ownerSymbolsToRecvSnapshot) = this->m_symbolsToRecvSnapshot;
     }
     inline void Release() {
         if(this->m_symbols == 0)
@@ -538,13 +569,16 @@ public:
             if((*s)->EnterSnapshotMode())
                 this->m_symbolsToRecvSnapshot++;
         }
+        *(this->m_ownerSymbolsToRecvSnapshot) = this->m_symbolsToRecvSnapshot;
         this->m_snapshotMode = true;
+        *(this->m_ownerTableInSnapshotMode) = this->m_snapshotMode;
     }
     inline void ExitSnapshotMode() {
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> **s = this->m_symbols;
         for(int i = 0; i < this->m_symbolsCount; i++, s++)
             (*s)->ExitSnapshotMode();
         this->m_snapshotMode = false;
+        *(this->m_ownerTableInSnapshotMode) = this->m_snapshotMode;
     }
     inline bool SnapshotMode() { return this->m_snapshotMode; }
     inline int SymbolsToRecvSnapshotCount() { return this->m_symbolsToRecvSnapshot; }

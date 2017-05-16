@@ -71,6 +71,9 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_hrUnsuccessfulConnectCount = 0;
     this->m_idfStartMsgSeqNo = 0;
     this->m_idfMaxMsgSeqNo = 0;
+    this->m_queueItemsCount = 0;
+    this->m_symbolsToRecvSnapshot = 0;
+    this->m_tableInSnapshotMode = false;
 
     this->m_fortsIncrementalRouteFirst = 1;
     this->m_fortsRouteFirtsSecurityId = 0;

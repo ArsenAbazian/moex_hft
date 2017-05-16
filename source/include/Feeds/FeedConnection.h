@@ -173,6 +173,9 @@ protected:
     Stopwatch                                   *m_stopwatch;
     Stopwatch                                   *m_waitTimer;
     bool                                        m_shouldReceiveAnswer;
+    int                                         m_queueItemsCount;
+    int                                         m_symbolsToRecvSnapshot;
+    bool                                        m_tableInSnapshotMode;
 
     MarketDataTable<OrderInfo, AstsOLSFONDInfo, AstsOLSFONDItemInfo>            *m_orderTableFond;
     MarketDataTable<OrderInfo, AstsOLSCURRInfo, AstsOLSCURRItemInfo>            *m_orderTableCurr;
@@ -377,7 +380,7 @@ protected:
         this->NextRecv(size);
         return true;
     }
-
+    __attribute__((noinline))
     void OnMsgSeqNumOutOfBounds(int msgSeqNum) {
         this->ClearLocalPackets(0, this->GetLocalIndex(this->m_endMsgSeqNum));
         this->m_startMsgSeqNum = msgSeqNum;
@@ -385,8 +388,8 @@ protected:
         this->m_endMsgSeqNum = msgSeqNum;
         this->StartListenSnapshot();
     }
-
-    inline bool ProcessServerCoreIncremental(int size, int msgSeqNum) {
+    __attribute__((noinline))
+    bool OnProcessServerCoreIncrementalNonNextItem(int size, int msgSeqNum) {
         int localMsgSeqNum = msgSeqNum - this->m_windowMsgSeqNum;
         if(localMsgSeqNum < 0) // out of window
             return true;
@@ -401,22 +404,36 @@ protected:
 
         if(this->m_endMsgSeqNum < msgSeqNum)
             this->m_endMsgSeqNum = msgSeqNum;
-
         info->m_address = this->m_recvBufferCurrentPos + 4;
         this->NextRecv(size);
         return true;
     }
-
-    inline bool ProcessServerCoreSecurityStatus(int size, int msgSeqNum) {
+    inline bool ProcessServerCoreIncremental(int size, int msgSeqNum) {
+        if(this->m_windowMsgSeqNum != 0 && msgSeqNum == this->m_endMsgSeqNum + 1) { // next packet received...
+            this->m_endMsgSeqNum = msgSeqNum;
+            int localMsgSeqNum = msgSeqNum - this->m_windowMsgSeqNum;
+            FeedConnectionMessageInfo *info = this->m_packets[localMsgSeqNum];
+            info->m_address = this->m_recvBufferCurrentPos + 4;
+            this->NextRecv(size);
+            return true;
+        }
+        return OnProcessServerCoreIncrementalNonNextItem(size, msgSeqNum);
+    }
+    __attribute__((noinline))
+    void OnMsgSeqNumOutOfBoundsSecurityStatus(int msgSeqNum) {
+        this->ClearLocalPackets(0, this->GetLocalIndex(this->m_endMsgSeqNum));
+        this->m_startMsgSeqNum = msgSeqNum;
+        this->m_windowMsgSeqNum = msgSeqNum;
+        this->m_endMsgSeqNum = msgSeqNum;
+        // we should start snapshot
+        this->StartSecurityStatusSnapshot();
+    }
+    __attribute__((noinline))
+    bool OnProcessServerCoreSecurityStatusNonNextItem(int size, int msgSeqNum) {
         if(msgSeqNum < this->m_windowMsgSeqNum) // out of window
             return true;
         if(msgSeqNum - this->m_windowMsgSeqNum >= this->m_packetsCount) {
-            this->ClearLocalPackets(0, this->GetLocalIndex(this->m_endMsgSeqNum));
-            this->m_startMsgSeqNum = msgSeqNum;
-            this->m_windowMsgSeqNum = msgSeqNum;
-            this->m_endMsgSeqNum = msgSeqNum;
-            // we should start snapshot
-            this->StartSecurityStatusSnapshot();
+            OnMsgSeqNumOutOfBoundsSecurityStatus(msgSeqNum);
             return false;
         }
         FeedConnectionMessageInfo *info = this->Packet(msgSeqNum);
@@ -431,6 +448,18 @@ protected:
         info->m_address = this->m_recvBufferCurrentPos + 4;
         this->NextRecv(size);
         return true;
+    }
+    inline bool ProcessServerCoreSecurityStatus(int size, int msgSeqNum) {
+        if(this->m_windowMsgSeqNum != 0 && msgSeqNum == this->m_endMsgSeqNum + 1) { // next item
+            this->m_endMsgSeqNum = msgSeqNum;
+            int localMsgSeqNum = msgSeqNum - this->m_windowMsgSeqNum;
+            FeedConnectionMessageInfo *info = this->m_packets[localMsgSeqNum];
+            info->m_address = this->m_recvBufferCurrentPos + 4;
+            this->NextRecv(size);
+            return true;
+        }
+        return OnProcessServerCoreSecurityStatusNonNextItem(size, msgSeqNum);
+
     }
 #pragma region ProcessSever
     inline bool ProcessServerCore(int size) {
@@ -496,10 +525,14 @@ protected:
     inline bool ProcessServerBIncremental() { return this->ProcessServerIncremental(this->socketBManager); }
 
     inline bool ProcessServerSecurityStatus(WinSockManager *socketManager) {
-        int size = this->ProcessSocketManager(socketManager);
-        if(size == 0)
-            return false;
-        return ProcessServerCoreSecurityStatus(size, *((UINT*)socketManager->RecvBytes()));
+        if(!socketManager->ShouldRecv())
+            return true;
+        unsigned char *current = this->m_recvBufferCurrentPos;
+        if(!socketManager->RecvUDP(current)) {
+            OnFailProcessSocketManager(socketManager);
+            return true;
+        }
+        return ProcessServerCoreSecurityStatus(socketManager->RecvSize(), *((UINT*)current));
     }
     inline bool ProcessServerASecurityStatus() { return this->ProcessServerSecurityStatus(this->socketAManager); }
     inline bool ProcessServerBSecurityStatus() { return this->ProcessServerSecurityStatus(this->socketBManager); }
@@ -523,25 +556,7 @@ protected:
     inline bool ProcessServerBSecurityDefinition() { return this->ProcessServerSecurityDefinition(this->socketBManager); }
 
 #pragma endregion
-    inline bool HasQueueEntries() {
-        if(this->m_orderTableFond != 0)
-            return this->m_orderTableFond->HasQueueEntries();
-        else if(this->m_orderTableCurr != 0)
-            return this->m_orderTableCurr->HasQueueEntries();
-        else if(this->m_statTableCurr != 0)
-            return this->m_statTableCurr->HasQueueEntries();
-        else if(this->m_statTableFond != 0)
-            return this->m_statTableFond->HasQueueEntries();
-        else if(this->m_tradeTableFond != 0)
-            return this->m_tradeTableFond->HasQueueEntries();
-        else if(this->m_tradeTableCurr != 0)
-            return this->m_tradeTableCurr->HasQueueEntries();
-        else if(this->m_fortsOrderBookTable != 0)
-            return this->m_fortsOrderBookTable->HasQueueEntries();
-        else if(this->m_fortsTradeBookTable != 0)
-            return this->m_fortsTradeBookTable->HasQueueEntries();
-        return false;
-    }
+    inline bool HasQueueEntries() { return this->m_queueItemsCount > 0; }
 
     inline bool ShouldRestoreIncrementalMessages() {
         return this->HasPotentiallyLostPackets() || this->HasQueueEntries();
@@ -1265,7 +1280,7 @@ protected:
         return;
     }
 
-    inline void MarketTableEnterSnapshotMode() {
+    void MarketTableEnterSnapshotMode() {
         if(this->m_orderTableFond != 0) {
             this->m_orderTableFond->EnterSnapshotMode();
             return;
@@ -1300,65 +1315,11 @@ protected:
         }
     }
 public:
-    inline int SymbolsToRecvSnapshotCount() {
-        if(this->m_orderTableFond != 0)
-            return this->m_orderTableFond->SymbolsToRecvSnapshotCount();
-        if(this->m_orderTableCurr != 0)
-            return this->m_orderTableCurr->SymbolsToRecvSnapshotCount();
-        if(this->m_tradeTableFond != 0)
-            return this->m_tradeTableFond->SymbolsToRecvSnapshotCount();
-        if(this->m_tradeTableCurr != 0)
-            return this->m_tradeTableCurr->SymbolsToRecvSnapshotCount();
-        if(this->m_statTableFond != 0)
-            return this->m_statTableFond->SymbolsToRecvSnapshotCount();
-        if(this->m_statTableCurr != 0)
-            return this->m_statTableCurr->SymbolsToRecvSnapshotCount();
-        if(this->m_fortsOrderBookTable != 0)
-            return this->m_fortsOrderBookTable->SymbolsToRecvSnapshotCount();
-        if(this->m_fortsTradeBookTable != 0)
-            return this->m_fortsTradeBookTable->SymbolsToRecvSnapshotCount();
-        return 0;
-    }
-    inline bool IsMarketTableInSnapshotMode() {
-        if(this->m_orderTableFond != 0)
-            return this->m_orderTableFond->SnapshotMode();
-        if(this->m_orderTableCurr != 0)
-            return this->m_orderTableCurr->SnapshotMode();
-        if(this->m_tradeTableFond != 0)
-            return this->m_tradeTableFond->SnapshotMode();
-        if(this->m_tradeTableCurr != 0)
-            return this->m_tradeTableCurr->SnapshotMode();
-        if(this->m_statTableFond != 0)
-            return this->m_statTableFond->SnapshotMode();
-        if(this->m_statTableCurr != 0)
-            return this->m_statTableCurr->SnapshotMode();
-        if(this->m_fortsOrderBookTable != 0)
-            return this->m_fortsOrderBookTable->SnapshotMode();
-        if(this->m_fortsTradeBookTable != 0)
-            return this->m_fortsTradeBookTable->SnapshotMode();
-        return false;
-    }
-    inline int QueueEntriesCount() {
-        if(this->m_orderTableFond != 0)
-            return this->m_orderTableFond->QueueEntriesCount();
-        else if(this->m_orderTableCurr != 0)
-            return this->m_orderTableCurr->QueueEntriesCount();
-        else if(this->m_statTableCurr != 0)
-            return this->m_statTableCurr->QueueEntriesCount();
-        else if(this->m_statTableFond != 0)
-            return this->m_statTableFond->QueueEntriesCount();
-        else if(this->m_tradeTableFond != 0)
-            return this->m_tradeTableFond->QueueEntriesCount();
-        else if(this->m_tradeTableCurr != 0)
-            return this->m_tradeTableCurr->QueueEntriesCount();
-        if(this->m_fortsOrderBookTable != 0)
-            return this->m_fortsOrderBookTable->QueueEntriesCount();
-        if(this->m_fortsTradeBookTable != 0)
-            return this->m_fortsTradeBookTable->QueueEntriesCount();
-        return 0;
-    }
+    inline int SymbolsToRecvSnapshotCount() const { return this->m_symbolsToRecvSnapshot; }
+    inline bool IsMarketTableInSnapshotMode() const { return this->m_tableInSnapshotMode; }
+    inline int QueueEntriesCount() const { return this->m_queueItemsCount; }
 protected:
-    inline void MarketTableExitSnapshotMode() {
+    void MarketTableExitSnapshotMode() {
         if(this->m_orderTableFond != 0) {
             this->m_orderTableFond->ExitSnapshotMode();
             return;
@@ -1404,7 +1365,8 @@ protected:
         DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_StartListenSnapshot, true);
         return true;
     }
-    inline bool StartListenSnapshot() {
+    __attribute__((noinline))
+    bool StartListenSnapshot() {
         if(this->m_type == FeedConnectionType::fctInstrumentStatus || this->m_type == FeedConnectionType::fctInstrumentStatusForts)
             return this->StartSecurityStatusSnapshot();
         return this->StartIncrementalSnapshot();
@@ -2574,12 +2536,8 @@ protected:
         if(!recv) {
             this->m_waitTimer->ActivateFast(1);
             if(this->m_waitTimer->IsTimeOutFast(1, this->m_waitIncrementalMessageMaxTimeMcs)) {
-                if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
-                    //TODO remove debug
-                    printf("%s listen atom incremental timeout %lu ms... start snapshot\n", this->m_idName,
-                           this->m_waitTimer->ElapsedMillisecondsFast(1));
+                if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend)
                     this->StartListenSnapshot();
-                }
                 return true;
             }
         }
@@ -2613,6 +2571,13 @@ protected:
         return this->ListenIncremental_Forts_Core();
     }
 
+    __attribute__((noinline))
+    void OnListenSecurityStatusTimeout() {
+        printf("%s %s Timeout 10 sec... Reconnect...\n", this->m_channelName, this->m_idName);
+        DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ListenSecurityStatus, false);
+        this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityStatus);
+    }
+
     inline bool ListenSecurityStatus() {
 #ifdef TEST
         Stopwatch::Default->GetElapsedMicrosecondsGlobal();
@@ -2625,11 +2590,8 @@ protected:
                 this->m_waitTimer->StartFast(1);
             }
             else {
-                if(this->m_waitTimer->IsTimeOutFast(1, this->WaitAnyPacketMaxTimeMcs)) {
-                    printf("%s %s Timeout 10 sec... Reconnect...\n", this->m_channelName, this->m_idName);
-                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ListenSecurityStatus, false);
-                    this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityStatus);
-                }
+                if(this->m_waitTimer->IsTimeOutFast(1, this->WaitAnyPacketMaxTimeMcs))
+                    OnListenSecurityStatusTimeout();
             }
             return true;
         }
@@ -2823,8 +2785,6 @@ protected:
         ProgramStatistics::Current->Inc(Counters::cCurrOlr);
         ProgramStatistics::Total->Inc(Counters::cCurrOlr);
 #endif
-        if(info->GroupMDEntriesCount == 0)
-            printf("error: GroupMDEntrieCount == 0\n");
         for(int i = 0; i < info->GroupMDEntriesCount; i++)
             this->OnIncrementalRefresh_OLR_CURR(info->GroupMDEntries[i]);
         info->Used = false;
@@ -2935,29 +2895,19 @@ protected:
             case AstsPackedTemplateId::AstsHeartbeatInfo:
                 return;
             default:
-                throw;
+                return;
         }
     }
 
     inline void ApplyIncrementalCoreAsts() {
         UINT32 templateId = this->m_fastProtocolManager->ParseHeaderFast();
-        if(this->m_id == FeedConnectionId::fcidOlrCurr) {
-            if(templateId == AstsPackedTemplateId::AstsIncrementalOLRCURRInfo) {
-                this->OnIncrementalRefresh_OLR_CURR(this->m_fastProtocolManager->DecodeAstsIncrementalOLRCURR());
-                return;
-            }
-            if(templateId == AstsPackedTemplateId::AstsHeartbeatInfo)
-                return;
-            throw;
+        if(templateId == AstsPackedTemplateId::AstsIncrementalOLRCURRInfo) {
+            this->OnIncrementalRefresh_OLR_CURR(this->m_fastProtocolManager->DecodeAstsIncrementalOLRCURR());
+            return;
         }
-        if(this->m_id == FeedConnectionId::fcidOlrFond) {
-            if(templateId == AstsPackedTemplateId::AstsIncrementalOLRFONDInfo) {
-                this->OnIncrementalRefresh_OLR_FOND(this->m_fastProtocolManager->DecodeAstsIncrementalOLRFOND());
-                return;
-            }
-            if(templateId == AstsPackedTemplateId::AstsHeartbeatInfo)
-                return;
-            throw;
+        if(templateId == AstsPackedTemplateId::AstsIncrementalOLRFONDInfo) {
+            this->OnIncrementalRefresh_OLR_FOND(this->m_fastProtocolManager->DecodeAstsIncrementalOLRFOND());
+            return;
         }
         this->ApplyIncrementalCoreAsts2(templateId);
     }
@@ -2985,8 +2935,6 @@ protected:
             ((FortsHeartbeatInfo*)this->m_fastProtocolManager->LastDecodeInfo())->Clear();
             return;
         }
-        else
-            throw;
     }
 
     inline bool ProcessSecurityStatus(AstsSecurityStatusInfo *info) {
@@ -3030,9 +2978,6 @@ protected:
         }
         else if(this->m_fastProtocolManager->TemplateId() == FeedTemplateId::fortsSecurityDefinitionUpdateReport) {
             res = this->ProcessSecurityDefinitionUpdateReport(this->m_fastProtocolManager->DecodeFortsSecurityDefinitionUpdateReport());
-        }
-        else {
-            throw;
         }
         return res;
     }
@@ -3104,9 +3049,6 @@ protected:
                     ri->Clear();
                     return;
                 }
-            }
-            else {
-                throw;
             }
         }
         this->ApplyIncrementalCoreForts();

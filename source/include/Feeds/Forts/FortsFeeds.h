@@ -133,6 +133,7 @@ public:
         this->m_id = FeedConnectionId::fcidObrForts;
         this->m_marketType = FeedMarketType::fmtForts;
         this->m_fortsOrderBookTable = new MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>();
+        this->m_fortsOrderBookTable->SetOwnerParams(&(this->m_queueItemsCount), &(this->m_symbolsToRecvSnapshot), &(this->m_tableInSnapshotMode));
         this->m_fastProtocolManager = new FastProtocolManager();
         this->WaitIncrementalMessageMaxTimeMcs(this->WaitAnyPacketFortsMaxTimeMcs);
         this->AllocateFastObjects();
@@ -173,6 +174,7 @@ public:
         this->m_id = FeedConnectionId::fcidTlrForts;
         this->m_marketType = FeedMarketType::fmtForts;
         this->m_fortsTradeBookTable = new MarketDataTable<TradeInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>();
+        this->m_fortsTradeBookTable->SetOwnerParams(&(this->m_queueItemsCount), &(this->m_symbolsToRecvSnapshot), &(this->m_tableInSnapshotMode));
         this->m_fastProtocolManager = new FastProtocolManager();
         this->WaitIncrementalMessageMaxTimeMcs(this->WaitAnyPacketFortsMaxTimeMcs);
         this->AllocateFastObjects();
