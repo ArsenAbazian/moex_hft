@@ -217,10 +217,9 @@ public:
     bool Run();
 
     inline void PrintSnapFeedStatistics(const char *name, FeedConnection *fc) {
-        printf("%-22s   bu = %4.4g%%  bi = %4.4g%%  lost = %6d  msgSeqNo = %7d\n",
+        printf("%-22s   bu = %4.4g%%  lost = %6d  msgSeqNo = %7d\n",
                name,
-               fc->RecvBuffer()->CalcMemoryUsagePercentage(),
-               fc->RecvBuffer()->CalcItemsUsagePercentage(),
+               fc->CalcRecvMemoryUsagePercentage(),
                fc->LostPacketCount(),
                fc->MsgSeqNo()
         );
@@ -228,28 +227,26 @@ public:
 
     inline void PrintIncFeedStatistics(const char *name, FeedConnection *fc, int usedItemsCount, int totalItemsCount) {
         bool inSnapshot = fc->Snapshot()->State() == FeedConnectionState::fcsListenSnapshot;
-        printf("%-22s   state = %-4s  it = %7d of %7d %4.4g%%  que = %3d  ss = %4d  bu = %4.4g%%  bi = %4.4g%%  msgSeqNo = %7d\n",
+        printf("%-22s   state = %-4s  it = %7d of %7d %4.4g%%  que = %3d  ss = %4d  bu = %4.4g%%  msgSeqNo = %7d\n",
                name,
                inSnapshot? "snap" : "inc",
                usedItemsCount, totalItemsCount, 100.0 * usedItemsCount / totalItemsCount,
                fc->QueueEntriesCount(),
                fc->SymbolsToRecvSnapshotCount(),
-               fc->RecvBuffer()->CalcMemoryUsagePercentage(),
-               fc->RecvBuffer()->CalcItemsUsagePercentage(),
+               fc->CalcRecvMemoryUsagePercentage(),
                fc->MsgSeqNo()
         );
     }
 
     inline void PrintStatusFeedStatistics(const char *name, FeedConnection *fc, int usedItemsCount, int totalItemsCount) {
         bool inSnapshot = fc->SecurityDefinition()->State() == FeedConnectionState::fcsListenSecurityDefinition;
-        printf("%-22s   state = %-4s  it = %7d of %7d %4.4g%%  que = %3d  ss = %4d  bu = %4.4g%%  bi = %4.4g%%  msgSeqNo = %7d\n",
+        printf("%-22s   state = %-4s  it = %7d of %7d %4.4g%%  que = %3d  ss = %4d  bu = %4.4g%%  msgSeqNo = %7d\n",
                name,
                inSnapshot? "snap" : "inc",
                usedItemsCount, totalItemsCount, 100.0 * usedItemsCount / totalItemsCount,
                fc->QueueEntriesCount(),
                fc->SymbolsToRecvSnapshotCount(),
-               fc->RecvBuffer()->CalcMemoryUsagePercentage(),
-               fc->RecvBuffer()->CalcItemsUsagePercentage(),
+               fc->CalcRecvMemoryUsagePercentage(),
                fc->MsgSeqNo()
         );
     }

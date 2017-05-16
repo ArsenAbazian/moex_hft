@@ -155,8 +155,12 @@ protected:
     int                                          m_hsMsgSeqNo;
 
     ISocketBufferProvider                       *m_socketABufferProvider;
-    SocketBuffer                                *m_sendABuffer;
-    SocketBuffer                                *m_recvABuffer;
+    unsigned char                               *m_recvBuffer;
+    unsigned char                               *m_sendBuffer;
+    unsigned char                               *m_sendBufferCurrentPos;
+    unsigned char                               *m_recvBufferCurrentPos;
+    unsigned int                                m_recvBufferSize;
+    unsigned int                                m_sendBufferSize;
 
     FeedConnectionState                         m_state;
     FeedConnectionState                         m_nextState;
@@ -276,7 +280,7 @@ protected:
                 this->m_type == FeedConnectionType::fctInstrumentStatusForts;
     }
 
-    inline bool ProcessServerCoreIncremental_HistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
+    inline bool ProcessServerCoreIncremental_HistoricalReplay(unsigned char *buffer, int size, int msgSeqNum) {
         if(msgSeqNum < this->m_windowMsgSeqNum) // out of window
             return true;
         if(msgSeqNum - this->m_windowMsgSeqNum >= this->m_packetsCount) {
@@ -291,11 +295,11 @@ protected:
         if(this->m_endMsgSeqNum < msgSeqNum)
             this->m_endMsgSeqNum = msgSeqNum;
 
-        info->m_address = buffer->CurrentPos();
+        info->m_address = buffer;
         info->m_requested = true;
         return true;
     }
-    inline bool ProcessServerCoreSecurityStatus_HistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
+    inline bool ProcessServerCoreSecurityStatus_HistoricalReplay(unsigned char *buffer, int size, int msgSeqNum) {
         int localMsgSeqNum = msgSeqNum - this->m_windowMsgSeqNum;
         if(localMsgSeqNum < 0) // out of window
             return true;
@@ -313,11 +317,11 @@ protected:
         if(this->m_startMsgSeqNum == -1) // should we do this? well security status starts immediately after security definition so...
             this->m_startMsgSeqNum = msgSeqNum;
 
-        info->m_address = buffer->CurrentPos();
+        info->m_address = buffer;
         info->m_requested = true;
         return true;
     }
-    inline bool ProcessServerCore_FromHistoricalReplay(SocketBuffer *buffer, int size, int msgSeqNum) {
+    inline bool ProcessServerCore_FromHistoricalReplay(unsigned char *buffer, int size, int msgSeqNum) {
         // we should only process incremental messages
         if(this->m_type == FeedConnectionType::fctIncremental || this->m_type == FeedConnectionType::fctIncrementalForts)
             return ProcessServerCoreIncremental_HistoricalReplay(buffer, size, msgSeqNum);
@@ -336,11 +340,11 @@ protected:
         if(this->m_idfStartMsgSeqNo == 0)
             this->m_idfStartMsgSeqNo = msgSeqNum;
         if(this->m_idfMaxMsgSeqNo == 0)
-            this->m_idfMaxMsgSeqNo = TryGetSecurityDefinitionTotNumReports(this->m_recvABuffer->CurrentPos());
+            this->m_idfMaxMsgSeqNo = TryGetSecurityDefinitionTotNumReports(this->m_recvBufferCurrentPos);
 
-        info->m_address = this->m_recvABuffer->CurrentPos() + 4;
+        info->m_address = this->m_recvBufferCurrentPos + 4;
         info->m_size = size - 4;
-        this->m_recvABuffer->Next(size);
+        this->NextRecv(size);
         return true;
     }
     inline bool ProcessServerCoreSnapshot(int size, int msgSeqNum) {
@@ -369,8 +373,8 @@ protected:
                 return false;
         }
 
-        info->m_address = this->m_recvABuffer->CurrentPos() + 4;
-        this->m_recvABuffer->Next(size);
+        info->m_address = this->m_recvBufferCurrentPos + 4;
+        this->NextRecv(size);
         return true;
     }
 
@@ -398,8 +402,8 @@ protected:
         if(this->m_endMsgSeqNum < msgSeqNum)
             this->m_endMsgSeqNum = msgSeqNum;
 
-        info->m_address = this->m_recvABuffer->CurrentPos() + 4;
-        this->m_recvABuffer->Next(size);
+        info->m_address = this->m_recvBufferCurrentPos + 4;
+        this->NextRecv(size);
         return true;
     }
 
@@ -424,13 +428,13 @@ protected:
         if(this->m_startMsgSeqNum == -1) // should we do this? well security status starts immediately after security definition so...
             this->m_startMsgSeqNum = msgSeqNum;
 
-        info->m_address = this->m_recvABuffer->CurrentPos() + 4;
-        this->m_recvABuffer->Next(size);
+        info->m_address = this->m_recvBufferCurrentPos + 4;
+        this->NextRecv(size);
         return true;
     }
 #pragma region ProcessSever
     inline bool ProcessServerCore(int size) {
-        int msgSeqNum = *((UINT*)this->m_recvABuffer->CurrentPos());
+        int msgSeqNum = *((UINT*)this->m_recvBufferCurrentPos);
 
         if(this->m_type == FeedConnectionType::fctIncremental || this->m_type == FeedConnectionType::fctIncrementalForts)
             return ProcessServerCoreIncremental(size, msgSeqNum);
@@ -445,7 +449,7 @@ protected:
     inline bool ProcessServer(WinSockManager *socketManager, LogMessageCode socketName) {
         if(!socketManager->ShouldRecv())
             return false;
-        if(!socketManager->Recv(this->m_recvABuffer->CurrentPos())) {
+        if(!socketManager->Recv(this->m_recvBufferCurrentPos)) {
             DefaultLogManager::Default->WriteSuccess(socketName,
                                                      LogMessageCode::lmcFeedConnection_Listen_Atom,
                                                      false)->m_errno = errno;
@@ -471,7 +475,7 @@ protected:
     }
 
     inline int ProcessSocketManager(WinSockManager *socketManager) {
-        if(!socketManager->RecvUDP(this->m_recvABuffer->CurrentPos())) {
+        if(!socketManager->RecvUDP(this->m_recvBufferCurrentPos)) {
             OnFailProcessSocketManager(socketManager);
             return 0;
         }
@@ -481,7 +485,7 @@ protected:
     inline bool ProcessServerIncremental(WinSockManager *socketManager) {
         if(!socketManager->ShouldRecv())
             return true;
-        unsigned char *current = this->m_recvABuffer->CurrentPos();
+        unsigned char *current = this->m_recvBufferCurrentPos;
         if(!socketManager->RecvUDP(current)) {
             OnFailProcessSocketManager(socketManager);
             return true;
@@ -1727,7 +1731,7 @@ protected:
             }
             this->m_startMsgSeqNum++;
             if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
-                this->m_recvABuffer->Reset();
+                this->ResetRecvBuffer();
             return true;
         }
         if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
@@ -1747,12 +1751,12 @@ protected:
                 //do not. please do not reset buffer. because there can be another items after this snapshot
                 this->m_startMsgSeqNum++;
                 if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
-                    this->m_recvABuffer->Reset();
+                    this->ResetRecvBuffer();
                 return true;
             }
             this->m_startMsgSeqNum++;
             if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
-                this->m_recvABuffer->Reset();
+                this->ResetRecvBuffer();
         }
         return true;
     }
@@ -1775,7 +1779,7 @@ protected:
             }
             this->m_startMsgSeqNum++;
             if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
-                this->m_recvABuffer->Reset();
+                this->ResetRecvBuffer();
             return true;
         }
         if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
@@ -1794,12 +1798,12 @@ protected:
                 //do not. please do not reset buffer. because there can be another items after this snapshot
                 this->m_startMsgSeqNum++;
                 if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
-                    this->m_recvABuffer->Reset();
+                    this->ResetRecvBuffer();
                 return true;
             }
             this->m_startMsgSeqNum++;
             if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
-                this->m_recvABuffer->Reset();
+                this->ResetRecvBuffer();
         }
         return true;
     }
@@ -2283,9 +2287,9 @@ protected:
     inline bool IsHrReceiveFailedProcessed() {
         bool res;
         if(this->m_hrMessageSize != 0)
-            res = this->socketAManager->Recv(this->m_recvABuffer->CurrentPos() + 4);
+            res = this->socketAManager->Recv(this->m_recvBufferCurrentPos + 4);
         else
-            res = this->socketAManager->Recv(this->m_recvABuffer->CurrentPos());
+            res = this->socketAManager->Recv(this->m_recvBufferCurrentPos);
         if(!res) {
             this->Disconnect();
             this->m_hsState = FeedConnectionHistoricalReplayState::hsSuspend;
@@ -2337,7 +2341,7 @@ protected:
             return true;
         }
         unsigned char *buffer = this->socketAManager->RecvBytes();
-        this->m_recvABuffer->Next(size);
+        this->NextRecv(size);
         if(this->m_hrMessageSize == 0) {
             buffer += 4; size -= 4;
         }
@@ -2380,7 +2384,7 @@ protected:
         this->m_hrUnsuccessfulConnectCount = 0;
         this->m_waitTimer->Stop(2);
 
-        unsigned char *buffer = this->m_recvABuffer->CurrentPos();
+        unsigned char *buffer = this->m_recvBufferCurrentPos;
         this->socketAManager->Recv(buffer + this->m_hrSizeRemain);
         this->m_hrSizeRemain += this->socketAManager->RecvSize();
 
@@ -2393,7 +2397,7 @@ protected:
                     break;
                 this->m_hrMessageSize = *(int*)buffer;
                 buffer += 4; this->m_hrSizeRemain -= 4;
-                this->m_recvABuffer->NextExact(4);
+                this->NextExactRecv(4);
             }
             if(this->m_hrSizeRemain < this->m_hrMessageSize) {
                 break;
@@ -2415,9 +2419,9 @@ protected:
             }
 
             msg->IncMsgSeqNo();
-            msg->m_conn->ProcessServerCore_FromHistoricalReplay(this->m_recvABuffer, this->m_hrMessageSize, msg->LastRecvMsgSeqNo());
+            msg->m_conn->ProcessServerCore_FromHistoricalReplay(this->m_recvBufferCurrentPos, this->m_hrMessageSize, msg->LastRecvMsgSeqNo());
 
-            this->m_recvABuffer->NextExact(this->m_hrMessageSize);
+            this->NextExactRecv(this->m_hrMessageSize);
             this->m_hrSizeRemain -= this->m_hrMessageSize;
             buffer += this->m_hrMessageSize;
             this->m_hrMessageSize = 0;
@@ -2461,8 +2465,17 @@ protected:
         return true;
     }
 public:
-    inline SocketBuffer* SendBuffer() { return this->m_sendABuffer; }
-    inline SocketBuffer* RecvBuffer() { return this->m_recvABuffer; }
+    inline unsigned char* SendBuffer() { return this->m_sendBuffer; }
+    inline unsigned char* RecvBuffer() { return this->m_recvBuffer; }
+    inline void ResetSendBuffer() { this->m_sendBufferCurrentPos = this->m_sendBuffer; }
+    inline void ResetRecvBuffer() { this->m_recvBufferCurrentPos = this->m_recvBuffer; }
+    inline void NextRecv(int size) {  this->m_recvBufferCurrentPos += (size & 0xfffffffc) + 8; }
+    inline void NextSend(int size) { this->m_sendBufferCurrentPos += (size & 0xfffffffc) + 8; }
+    inline void NextExactRecv(int size) { this->m_recvBufferCurrentPos += size; }
+    inline void NextExactSend(int size) { this->m_sendBufferCurrentPos += size; }
+    inline double CalcRecvMemoryUsagePercentage() {
+        return ((double)(this->m_recvBufferCurrentPos - this->m_recvBuffer)) / this->m_recvBufferSize;
+    }
 
     inline void HrRequestMessage(FeedConnection *conn, int start, int end) {
         if(this->m_hsRequestList->IsFull()) {
@@ -2506,9 +2519,9 @@ public:
         fread(&(this->m_idfMaxMsgSeqNo), sizeof(int), 1, fp);
         for(int i = 1; i <= this->m_idfMaxMsgSeqNo; i++) {
             fread(&(this->m_packets[i]->m_size), sizeof(int), 1, fp);
-            fread(this->m_recvABuffer->CurrentPos(), 1, this->m_packets[i]->m_size, fp);
-            this->m_packets[i]->m_address = this->m_recvABuffer->CurrentPos();
-            this->m_recvABuffer->Next(this->m_packets[i]->m_size);
+            fread(this->m_recvBufferCurrentPos, 1, this->m_packets[i]->m_size, fp);
+            this->m_packets[i]->m_address = this->m_recvBufferCurrentPos;
+            this->NextRecv(this->m_packets[i]->m_size);
         }
         this->AllowSaveSecurityDefinitions(false); // suppress to save again the same data
 
@@ -3003,7 +3016,7 @@ protected:
     inline bool ProcessSecurityStatus(unsigned char *buffer) {
         this->m_fastProtocolManager->SetNewBuffer(buffer);
         UINT32 templateId = this->m_fastProtocolManager->ParseHeaderFast();
-        if(this->m_fastProtocolManager->TemplateId() == AstsPackedTemplateId::AstsSecurityStatusInfo)
+        if(templateId == AstsPackedTemplateId::AstsSecurityStatusInfo)
             return this->ProcessSecurityStatus(this->m_fastProtocolManager->DecodeAstsSecurityStatus());
         return true;
     }
@@ -4106,7 +4119,7 @@ public:
         if(!this->Disconnect())
             return false;
         if(this->m_type == FeedConnectionType::fctSnapshot)
-            this->m_recvABuffer->Reset();
+            this->ResetRecvBuffer();
         return true;
     }
     inline FeedConnectionState State() { return this->m_state; }

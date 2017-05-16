@@ -1338,10 +1338,14 @@ public:
 		}
 		if((result & 0x8080) == 0x8000) {  // 2byte value
 			this->currentPos += count + 2;
-			return result & 0xffff;
+			result &= 0xffff;
+			this->m_templateId = result;
+			return result;
 		}
 		this->currentPos += count + 1;
-		return result & 0xff;
+		result &= 0xff;
+		this->m_templateId = result;
+		return result;
 	}
 
     inline void SkipMsgSeqNumber() {

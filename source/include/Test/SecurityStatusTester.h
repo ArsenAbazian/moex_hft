@@ -38,6 +38,7 @@ public:
                                                "1.1.7.200", 20000);
         this->hr->SetSenderCompId("MyComp");
 
+        this->idf->ChannelName("TESTCHANNEL");
         this->isf->SetHistoricalReplay(this->hr);
         this->isf->SetSecurityDefinition(this->idf);
         this->isf->SetMaxLostPacketCountForStartSnapshot(0);

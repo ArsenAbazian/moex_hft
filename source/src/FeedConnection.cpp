@@ -23,9 +23,14 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->feedBPort = bPort;
 
     this->m_fastLogonInfo = new AstsLogonInfo();
+
     this->m_socketABufferProvider = CreateSocketBufferProvider();
-    this->m_sendABuffer = this->m_socketABufferProvider->SendBuffer();
-    this->m_recvABuffer = this->m_socketABufferProvider->RecvBuffer();
+    this->m_sendBuffer = this->m_socketABufferProvider->SendBuffer()->CurrentPos();
+    this->m_recvBuffer = this->m_socketABufferProvider->RecvBuffer()->CurrentPos();
+    this->m_sendBufferSize = this->m_socketABufferProvider->SendBuffer()->Size();
+    this->m_recvBufferSize = this->m_socketABufferProvider->RecvBuffer()->Size();
+    this->ResetSendBuffer();
+    this->ResetRecvBuffer();
 
     this->m_waitLostIncrementalMessageMaxTimeMcs = 100000;
     this->m_waitIncrementalMessageMaxTimeMcs = this->WaitAnyPacketMaxTimeMcs;
@@ -64,6 +69,8 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_packetsCount = 0;
     this->m_packets = 0;
     this->m_hrUnsuccessfulConnectCount = 0;
+    this->m_idfStartMsgSeqNo = 0;
+    this->m_idfMaxMsgSeqNo = 0;
 
     this->m_fortsIncrementalRouteFirst = 1;
     this->m_fortsRouteFirtsSecurityId = 0;

@@ -475,7 +475,7 @@ public:
     }
 
     void SendProcessFortsSnapshot(FortsHeartbeatInfo *info) {
-        this->snapForts->FastManager()->SetNewBuffer(this->snapForts->m_recvABuffer->CurrentPos(), 1000);
+        this->snapForts->FastManager()->SetNewBuffer(this->snapForts->m_recvBufferCurrentPos, 1000);
         this->snapForts->FastManager()->WriteMsgSeqNumber(info->MsgSeqNum);
         this->snapForts->FastManager()->EncodeFortsHeartbeatInfo(info);
         this->snapForts->ProcessServerCore(this->snapForts->m_fastProtocolManager->MessageLength());
@@ -484,7 +484,7 @@ public:
     }
     
     void SendProcessFortsIncremental(FortsDefaultIncrementalRefreshMessageInfo *info) {
-        this->incForts->FastManager()->SetNewBuffer(this->incForts->m_recvABuffer->CurrentPos(), 1000);
+        this->incForts->FastManager()->SetNewBuffer(this->incForts->m_recvBufferCurrentPos, 1000);
         this->incForts->FastManager()->WriteMsgSeqNumber(info->MsgSeqNum);
         this->incForts->FastManager()->EncodeFortsDefaultIncrementalRefreshMessageInfo(info);
         this->incForts->ProcessServerCore(this->incForts->m_fastProtocolManager->MessageLength());
@@ -493,7 +493,7 @@ public:
     }
 
     void SendProcessFortsIncremental(FortsHeartbeatInfo *info) {
-        this->incForts->FastManager()->SetNewBuffer(this->incForts->m_recvABuffer->CurrentPos(), 1000);
+        this->incForts->FastManager()->SetNewBuffer(this->incForts->m_recvBufferCurrentPos, 1000);
         this->incForts->FastManager()->WriteMsgSeqNumber(info->MsgSeqNum);
         this->incForts->FastManager()->EncodeFortsHeartbeatInfo(info);
         this->incForts->ProcessServerCore(this->incForts->m_fastProtocolManager->MessageLength());
@@ -917,6 +917,18 @@ public:
         ht->Test();
         delete ht;
 
+        SecurityStatusTester *ist = new SecurityStatusTester();
+        ist->Test();
+        delete ist;
+
+        HistoricalReplayTester *hrt = new HistoricalReplayTester();
+        hrt->Test();
+        delete hrt;
+
+        SecurityDefinitionTester *ids = new SecurityDefinitionTester();
+        ids->Test();
+        delete ids;
+
         OrderBookTesterForts *fob = new OrderBookTesterForts();
         fob->Test();
         delete fob;
@@ -934,18 +946,6 @@ public:
         TradeTesterFond *ttFond = new TradeTesterFond();
         ttFond->Test();
         delete ttFond;
-
-        SecurityDefinitionTester *ids = new SecurityDefinitionTester();
-        ids->Test();
-        delete ids;
-
-        SecurityStatusTester *ist = new SecurityStatusTester();
-        ist->Test();
-        delete ist;
-
-        HistoricalReplayTester *hrt = new HistoricalReplayTester();
-        hrt->Test();
-        delete hrt;
 
         TestFeedConnectionBase();
 
