@@ -25,13 +25,6 @@
   <component name="ChangeListManager">
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" afterPath="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/Feeds/FeedConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Robot.h" afterPath="$PROJECT_DIR$/source/include/Robot.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h" afterPath="$PROJECT_DIR$/source/include/Test/FeedConnectionTester.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/SecurityStatusTester.h" afterPath="$PROJECT_DIR$/source/include/Test/SecurityStatusTester.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h" afterPath="$PROJECT_DIR$/source/include/Test/TestMessagesHelper.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/src/FeedConnection.cpp" afterPath="$PROJECT_DIR$/source/src/FeedConnection.cpp" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -2093,13 +2086,6 @@
       <workItem from="1493799168929" duration="3000" />
       <workItem from="1494839626830" duration="102000" />
     </task>
-    <task id="LOCAL-00225" summary="1. working on forts security definitioins">
-      <created>1489557708607</created>
-      <option name="number" value="00225" />
-      <option name="presentableId" value="LOCAL-00225" />
-      <option name="project" value="LOCAL" />
-      <updated>1489557708608</updated>
-    </task>
     <task id="LOCAL-00226" summary="1. almost done forts security definitioins">
       <created>1489559250375</created>
       <option name="number" value="00226" />
@@ -2436,11 +2422,18 @@
       <option name="project" value="LOCAL" />
       <updated>1494856863233</updated>
     </task>
-    <option name="localTasksCounter" value="274" />
+    <task id="LOCAL-00274" summary="1. continue non stop even more optimizations....">
+      <created>1494911442420</created>
+      <option name="number" value="00274" />
+      <option name="presentableId" value="LOCAL-00274" />
+      <option name="project" value="LOCAL" />
+      <updated>1494911442426</updated>
+    </task>
+    <option name="localTasksCounter" value="275" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2754505000" />
+    <option name="totallyTimeSpent" value="2754532000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
