@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define COLLECT_STATISTICS
+//#define COLLECT_STATISTICS
 
 typedef enum _Counters {
 #pragma region ProgramStatistics_Enum

@@ -955,7 +955,7 @@ protected:
     }
 
     inline void AfterMoveWindow() {
-        this->m_socketABufferProvider->RecvBuffer()->Reset();
+        this->ResetRecvBuffer();
     }
 
     inline void FinishSecurityStatusSnapshot() {
