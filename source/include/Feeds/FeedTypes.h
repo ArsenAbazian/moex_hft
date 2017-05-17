@@ -132,10 +132,10 @@ typedef enum _FeedConnectionType {
 
 class FeedConnectionMessageInfo {
 public:
-    bool                 m_processed;
-    bool                 m_requested;
     unsigned char       *m_address;
     int                  m_size;
+    bool                 m_processed;
+    bool                 m_requested;
 
     FeedConnectionMessageInfo() :
             m_processed(false),

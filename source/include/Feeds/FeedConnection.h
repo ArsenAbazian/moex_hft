@@ -958,7 +958,8 @@ protected:
         this->ResetRecvBuffer();
     }
 
-    inline void FinishSecurityStatusSnapshot() {
+    __attribute__((noinline))
+    void FinishSecurityStatusSnapshot() {
         DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_FinishSecurityStatusSnapshot);
         this->m_securityDefinition->Stop();
         this->m_securityStatusSnapshotActive = false;
@@ -1041,25 +1042,9 @@ protected:
         }
     }
 
-    inline bool ProcessSecurityStatusMessages() {
-        if(this->m_securityStatusSnapshotActive) {
-            if(this->m_securityDefinition->IsIdfDataCollected()) {
-                this->FinishSecurityStatusSnapshot();
-            }
-        }
-        if(this->m_startMsgSeqNum - this->m_endMsgSeqNum == 1)
-            return true;
+    __attribute__((noinline))
+    void ProcessSecurityStatusMessages_MultipleMessages(){
         int i = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
-        if(this->m_startMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
-            FeedConnectionMessageInfo *info = this->m_packets[i];
-            this->ProcessSecurityStatus(info);
-            info->Clear();
-            this->m_startMsgSeqNum ++;
-            this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
-            this->AfterMoveWindow();
-            return true;
-        }
-
         int end = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
         while(i <= end) {
             if(this->m_packets[i]->m_processed) {
@@ -1073,13 +1058,17 @@ protected:
                     this->m_requestMessageStartIndex = i + this->m_windowMsgSeqNum;
                 break;
             }
-            if(!this->ProcessSecurityStatus(this->m_packets[i]))
-                return false;
+            if(this->m_id != FeedConnectionId::fcidIdfIncForts) {
+                if(!this->ProcessSecurityStatus(this->m_packets[i]))
+                    return;
+            }
+            else {
+                if(!this->ProcessSecurityStatusForts(this->m_packets[i]))
+                    return;
+            }
             i++;
         }
-
         this->CheckRequestLostSecurityStatusMessages();
-
         if(i > end) {
             this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
             this->ClearLocalPackets(0, end);
@@ -1088,47 +1077,39 @@ protected:
         }
         else
             this->m_startMsgSeqNum = i + this->m_windowMsgSeqNum;
-        return true;
     }
 
-    inline bool ProcessSecurityStatusMessagesForts() {
-        if(this->m_securityStatusSnapshotActive) {
-            if(this->m_securityDefinition->IsIdfDataCollected()) {
-                this->FinishSecurityStatusSnapshot();
-            }
-        }
-
-        int end = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
-        int i = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
-
-        while(i <= end) {
-            if(this->m_packets[i]->m_processed) {
-                i++; continue;
-            }
-            if(this->m_packets[i]->m_address == 0) {
-                if(this->m_securityStatusSnapshotActive) {
-                    i++; continue;
-                }
-                if(this->m_requestMessageStartIndex < i + this->m_windowMsgSeqNum)
-                    this->m_requestMessageStartIndex = i + this->m_windowMsgSeqNum;
-                break;
-            }
-            if(!this->ProcessSecurityStatusForts(this->m_packets[i]))
-                return false;
-            i++;
-        }
-
-        this->CheckRequestLostSecurityStatusMessages();
-
-        if(i > end) {
-            this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
-            this->ClearLocalPackets(0, end);
+    inline void ProcessSecurityStatusMessages() {
+        if(this->m_securityStatusSnapshotActive && this->m_securityDefinition->IsIdfDataCollected())
+            this->FinishSecurityStatusSnapshot();
+        if(this->m_startMsgSeqNum - this->m_endMsgSeqNum == 1)
+            return;
+        if(this->m_startMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
+            FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
+            this->m_startMsgSeqNum ++;
             this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+            this->ProcessSecurityStatus(info);
+            info->Clear();
             this->AfterMoveWindow();
         }
-        else
-            this->m_startMsgSeqNum = i + this->m_windowMsgSeqNum;
-        return true;
+        ProcessSecurityStatusMessages_MultipleMessages();
+
+    }
+
+    inline void ProcessSecurityStatusMessagesForts() {
+        if(this->m_securityStatusSnapshotActive && this->m_securityDefinition->IsIdfDataCollected())
+            this->FinishSecurityStatusSnapshot();
+        if(this->m_startMsgSeqNum - this->m_endMsgSeqNum == 1)
+            return;
+        if(this->m_startMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
+            FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
+            this->m_startMsgSeqNum ++;
+            this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+            this->ProcessSecurityStatusForts(info);
+            info->Clear();
+            this->AfterMoveWindow();
+        }
+        ProcessSecurityStatusMessages_MultipleMessages();
     }
 
     //This code is for debug only and should not be used in release
@@ -1201,81 +1182,85 @@ protected:
     inline void ProcessIncrementalMessages() {
         if(this->m_startMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
             FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
-            this->ProcessIncrementalAsts(info);
-            info->Clear();
             this->m_startMsgSeqNum++;
             this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+            this->ProcessIncrementalAsts(info);
+            info->Clear();
             this->AfterMoveWindow();
         } else { // more than one packet
             ProcessIncrementalMessages_MultipleMessages();
         }
     }
 
-    inline void ProcessIncrementalMessagesForts() {
+    inline void ProcessIncrementalMessages_MultipleMessagesForts() {
         int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
         int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
 
-        if(localStart == localEnd) { // special case - one packet
-            FeedConnectionMessageInfo *info = this->m_packets[localStart];
-            this->ProcessIncrementalForts(info, this->m_startMsgSeqNum);
-            info->Clear();
-            this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
-            this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
-            this->AfterMoveWindow();
-        }
-        else { // more than one packet
-            int newStartMsgSeqNum = -1;
-            int lastNullMsgSeq = 0;
-            int i = localStart;
+        int newStartMsgSeqNum = -1;
+        int lastNullMsgSeq = 0;
+        int i = localStart;
 
-            FeedConnectionMessageInfo **pinfo = this->m_packets + i;
-            FeedConnectionMessageInfo *info;
-            int msgSeqNum = this->m_startMsgSeqNum;
+        FeedConnectionMessageInfo **pinfo = this->m_packets + i;
+        FeedConnectionMessageInfo *info;
+        int msgSeqNum = this->m_startMsgSeqNum;
+        while (i <= localEnd) {
+            info = *pinfo;
+            if (info->m_processed) {
+                i++; msgSeqNum++; pinfo++;
+                continue;
+            }
+            if (info->m_address == 0) {
+                if (this->m_requestMessageStartIndex < msgSeqNum)
+                    this->m_requestMessageStartIndex = msgSeqNum;
+                newStartMsgSeqNum = msgSeqNum;
+                break;
+            }
+            this->ProcessIncrementalForts(info, msgSeqNum);
+            i++; msgSeqNum++; pinfo++;
+        }
+
+        // we cannot process messages after lost message
+        // because messages are fragmented
+        // but we can do this only when snapshot is started
+        if(i <= localEnd && this->m_snapshot->State() != FeedConnectionState::fcsSuspend) {
+            lastNullMsgSeq = newStartMsgSeqNum;
             while (i <= localEnd) {
                 info = *pinfo;
                 if (info->m_processed) {
                     i++; msgSeqNum++; pinfo++;
                     continue;
                 }
-                if (info->m_address == 0) {
-                    if (this->m_requestMessageStartIndex < msgSeqNum)
-                        this->m_requestMessageStartIndex = msgSeqNum;
-                    newStartMsgSeqNum = msgSeqNum;
-                    break;
+                if(info->m_address == 0) {
+                    lastNullMsgSeq = msgSeqNum;
+                    i++; msgSeqNum++; pinfo++;
+                    continue;
                 }
-                this->ProcessIncrementalForts(info, msgSeqNum);
+                this->ProcessIncrementalForts(info, msgSeqNum, lastNullMsgSeq);
                 i++; msgSeqNum++; pinfo++;
             }
+        }
+        if (newStartMsgSeqNum != -1) {
+            this->m_startMsgSeqNum = newStartMsgSeqNum;
+        }
+        else {
+            this->ClearLocalPackets(0, localEnd);
+            this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
+            this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+            this->AfterMoveWindow();
+        }
+    }
 
-            // we cannot process messages after lost message
-            // because messages are fragmented
-            // but we can do this only when snapshot is started
-            if(i <= localEnd && this->m_snapshot->State() != FeedConnectionState::fcsSuspend) {
-                lastNullMsgSeq = newStartMsgSeqNum;
-                while (i <= localEnd) {
-                    info = *pinfo;
-                    if (info->m_processed) {
-                        i++; msgSeqNum++; pinfo++;
-                        continue;
-                    }
-                    if(info->m_address == 0) {
-                        lastNullMsgSeq = msgSeqNum;
-                        i++; msgSeqNum++; pinfo++;
-                        continue;
-                    }
-                    this->ProcessIncrementalForts(info, msgSeqNum, lastNullMsgSeq);
-                    i++; msgSeqNum++; pinfo++;
-                }
-            }
-            if (newStartMsgSeqNum != -1) {
-                this->m_startMsgSeqNum = newStartMsgSeqNum;
-            }
-            else {
-                this->ClearLocalPackets(0, localEnd);
-                this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
-                this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
-                this->AfterMoveWindow();
-            }
+    inline void ProcessIncrementalMessagesForts() {
+        if(this->m_startMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
+            FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
+            this->ProcessIncrementalForts(info, this->m_startMsgSeqNum);
+            this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
+            this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
+            info->Clear();
+            this->AfterMoveWindow();
+        }
+        else { // more than one packet
+            ProcessIncrementalMessages_MultipleMessagesForts();
         }
         return;
     }
@@ -2129,13 +2114,15 @@ protected:
 #ifdef TEST
         Stopwatch::Default->GetElapsedMicrosecondsGlobal();
 #endif
-        return this->ProcessSecurityStatusMessages();
+        this->ProcessSecurityStatusMessages();
+        return true;
     }
     inline bool ListenSecurityStatusForts_Core() {
 #ifdef TEST
         Stopwatch::Default->GetElapsedMicrosecondsGlobal();
 #endif
-        return this->ProcessSecurityStatusMessagesForts();
+        this->ProcessSecurityStatusMessagesForts();
+        return true;
     }
 
     inline bool InitializeSockets() {
@@ -2613,9 +2600,7 @@ protected:
             }
             else {
                 if(this->m_waitTimer->ElapsedMicrosecondsFast(1) > this->WaitSecurityStatusFortsMaxTimeMcs) {
-                    printf("%s %s Timeout %d sec... Reconnect...\n", this->m_channelName, this->m_idName, this->WaitSecurityStatusFortsMaxTimeMcs);
-                    DefaultLogManager::Default->WriteSuccess(this->m_idLogIndex, LogMessageCode::lmcFeedConnection_ListenSecurityStatusForts, false);
-                    this->ReconnectSetNextState(FeedConnectionState::fcsListenSecurityStatus);
+                    OnListenSecurityStatusTimeout();
                 }
             }
             return true;
@@ -2938,35 +2923,21 @@ protected:
     }
 
     inline bool ProcessSecurityStatus(AstsSecurityStatusInfo *info) {
-        if(!this->m_securityDefinition->IsIdfDataCollected()) {
-            info->Clear();
-            return true; // TODO just skip? Should we do something else?
-        }
+        if(!this->m_securityDefinition->IsIdfDataCollected())
+            return true;
         return this->m_securityDefinition->UpdateSecurityDefinition(info);
     }
 
     inline bool ProcessSecurityDefinitionUpdateReport(FortsSecurityDefinitionUpdateReportInfo *info) {
-        if(!this->m_securityDefinition->IsIdfDataCollected()) {
-            info->Clear();
-            return true; // TODO just skip? Should we do something else?
-        }
+        if(!this->m_securityDefinition->IsIdfDataCollected())
+            return true;
         return this->m_securityDefinition->UpdateSecurityDefinition(info);
     }
 
     inline bool ProcessSecurityStatus(FortsSecurityStatusInfo *info) {
-        if(!this->m_securityDefinition->IsIdfDataCollected()) {
-            info->Clear();
-            return true; // TODO just skip? Should we do something else?
-        }
+        if(!this->m_securityDefinition->IsIdfDataCollected())
+            return true;
         return this->m_securityDefinition->UpdateSecurityDefinition(info);
-    }
-
-    inline bool ProcessSecurityStatus(unsigned char *buffer) {
-        this->m_fastProtocolManager->SetNewBuffer(buffer);
-        UINT32 templateId = this->m_fastProtocolManager->ParseHeaderFast();
-        if(templateId == AstsPackedTemplateId::AstsSecurityStatusInfo)
-            return this->ProcessSecurityStatus(this->m_fastProtocolManager->DecodeAstsSecurityStatus());
-        return true;
     }
 
     inline bool ProcessSecurityStatusForts(unsigned char *buffer) {
@@ -3056,31 +3027,15 @@ protected:
     }
 
     inline bool ProcessSecurityStatus(FeedConnectionMessageInfo *info) {
-#ifdef COLLECT_STATISTICS
-        if(this->m_id == FeedConnectionId::fcidIsfFond) {
-            ProgramStatistics::Current->Inc(Counters::cFondIss);
-            ProgramStatistics::Total->Inc(Counters::cFondIss);
-        }
-        else {
-            ProgramStatistics::Current->Inc(Counters::cCurrIss);
-            ProgramStatistics::Total->Inc(Counters::cCurrIss);
-        }
-#endif
         unsigned char *buffer = info->m_address;
         info->m_processed = true;
-        if(this->ShouldSkipMessageAsts(buffer)) {
-#ifdef COLLECT_STATISTICS
-            ProgramStatistics::Current->Inc(Counters::cSecStatusHbeatCount);
-            ProgramStatistics::Total->Inc(Counters::cSecStatusHbeatCount);
-#endif
-            return true;  // TODO - take this message into account, becasue it determines feed alive
-        }
-
-#ifdef COLLECT_STATISTICS
-        ProgramStatistics::Current->Inc(Counters::cSecStatusPacketCount);
-        ProgramStatistics::Total->Inc(Counters::cSecStatusPacketCount);
-#endif
-        return this->ProcessSecurityStatus(buffer);
+        if(this->ShouldSkipMessageAsts(buffer))
+            return true;
+        this->m_fastProtocolManager->SetNewBuffer(buffer);
+        UINT32 templateId = this->m_fastProtocolManager->ParseHeaderFast();
+        if(templateId == AstsPackedTemplateId::AstsSecurityStatusInfo)
+            return this->ProcessSecurityStatus(this->m_fastProtocolManager->DecodeAstsSecurityStatus());
+        return true;
     }
 
     inline bool ProcessSecurityStatusForts(FeedConnectionMessageInfo *info) {
