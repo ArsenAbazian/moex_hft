@@ -1,5 +1,6 @@
 #pragma once
 #include <memory.h>
+#include "../Settings.h"
 
 #define ITOA_LIST_COUNT 100000
 #define D0 '0'
@@ -303,52 +304,36 @@ public:
     }
     inline int FromStringFastUnsignedPredict67(const char *buffer, int count) {
         if(count == 6) {
-            int result = ItoaConverter::charDigit3MulBy1000[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
-            buffer += 3;
-            return result + ItoaConverter::charDigit3[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
-        }
+            UINT64 data = *((UINT64*)buffer) & 0xffffffffffff;
+            data -= 0x303030303030;
+            int result = 0;
+
+            for(int i = 0; i < 6; i++) {
+                result = (result << 3) + (result << 1) + ((unsigned char) data);
+                data >>= 8;
+            }
+            return result;
+        }/*
         else if(count == 7) {
-            int result = 10000 * ItoaConverter::charDigit3[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
-            buffer += 3;
-            result += 10 * ItoaConverter::charDigit3[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
-            buffer += 3;
-            return result + (*buffer) - D0;
-        }
+            UINT64 data = *((UINT64*)buffer) & 0xffffffffffffff;
+            data -= 0x30303030303030;
+            int result = 0;
+
+            for(int i = 0; i < 7; i++) {
+                result = (result << 3) + (result << 1) + ((unsigned char) data);
+                data >>= 8;
+            }
+            return result;
+        }*/
         return FromStringFastUnsigned(buffer, count);
     }
     inline int FromStringFastUnsigned(const char *buffer, int count) {
-        const char *digitStart = buffer;
+        UINT64 data = *((UINT64*)buffer);
         int result = 0;
 
-        if (count >= 3) {
-            result = ItoaConverter::charDigit3[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
-            count -= 3;
-            buffer += 3;
-        }
-        else if(count >= 2) {
-            result = ItoaConverter::charDigit2[((*(int*)buffer) & 0x0000ffff) - 0x00003030];
-            count -= 2;
-            buffer += 2;
-        }
-        else {
-            return *buffer - D0;
-        }
-
-        while(count > 0) {
-            if (count >= 3) {
-                result = result * 1000 + ItoaConverter::charDigit3[((*(int *) buffer) & 0x00ffffff) - 0x00303030];
-                count -= 3;
-                buffer += 3;
-            }
-            else if(count >= 2) {
-                result = result * 100 + ItoaConverter::charDigit2[((*(int*)buffer) & 0x0000ffff) - 0x00003030];
-                count -= 2;
-                buffer += 2;
-            }
-            else {
-                result = result * 10 + *buffer - D0;
-                break;
-            }
+        for(int i = 0; i < count; i++) {
+            result = (result << 3) + (result << 1) + (((unsigned char) data) - 0x30);
+            data >>= 8;
         }
         return result;
     }

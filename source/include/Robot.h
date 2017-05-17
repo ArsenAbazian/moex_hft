@@ -7,7 +7,7 @@
 #include "ConnectionParameters.h"
 #include "Managers/CommandManager.h"
 
-#define MARKET_INFO_CAPACITY 10
+#define MARKET_INFO_CAPACITY 16
 
 class Robot {
     AstsFeedChannel *channels[MARKET_INFO_CAPACITY];

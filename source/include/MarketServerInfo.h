@@ -45,14 +45,14 @@ class MarketServerInfo {
     MarketServerState                       m_sendState;
 
     MarketServerState                       m_nextState;
-    bool                                    m_shouldRecvMessage;
 
-    bool                                    m_shouldResendMessages;
     unsigned int                            m_resendBeginSeqNo;
     unsigned int                            m_resendEndSeqNo;
     unsigned int                            m_resendCurrentSeqNo;
 
     bool                                    m_inSendResendRequest;
+    bool                                    m_shouldRecvMessage;
+    bool                                    m_shouldResendMessages;
 
     WinSockManager                          *m_socketManager;
     FixProtocolManager                      *m_fixManager;
