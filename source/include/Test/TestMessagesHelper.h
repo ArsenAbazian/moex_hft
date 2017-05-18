@@ -491,7 +491,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeFortsDefaultIncrementalRefreshMessageInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     FortsDefaultSnapshotMessageInfo* CreateFortsDefaultSnapshotMessageInfo(TestTemplateInfo *tmp) {
@@ -517,7 +517,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeFortsDefaultSnapshotMessageInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     AstsOLSFONDItemInfo* CreateOLRFondItemInfo(const char *symbol, const char *trading, INT64 priceMantissa,
@@ -1281,7 +1281,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsHeartbeatInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     void SendHearthBeatMessageForts(FeedConnection *conn, TestTemplateInfo *tmp) {
@@ -1290,7 +1290,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeFortsHeartbeatInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     void EncodeLogoutMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
@@ -1314,7 +1314,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsLogoutInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     void EncodeLogonMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
@@ -1338,7 +1338,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsLogonInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     AstsIncrementalGenericInfo* CreateIncrementalGenericMessageCore(TestTemplateInfo *tmp) {
@@ -1372,7 +1372,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsIncrementalGenericInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     AstsGenericInfo* CreateSnapshotGenericMessageCore(TestTemplateInfo *tmp) {
@@ -1420,7 +1420,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsGenericInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     AstsIncrementalOLRFONDInfo* CreateOLRFondMessageCore(TestTemplateInfo *tmp) {
@@ -1453,7 +1453,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsIncrementalOLRFONDInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     void EncodeAstsSecurityDefinitionMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
@@ -1474,7 +1474,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsSecurityDefinitionInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     void EncodeAstsSecurityStatusMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
@@ -1495,7 +1495,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsSecurityStatusInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     AstsOLSFONDInfo* CreateOLSFondMessage(TestTemplateInfo *tmp) {
@@ -1542,7 +1542,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsOLSFONDInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     AstsIncrementalTLRFONDInfo* CreateTLRFondMessageCore(TestTemplateInfo *tmp) {
@@ -1575,7 +1575,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsIncrementalTLRFONDInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     AstsTLSFONDInfo* CreateTLSFondMessageCore(TestTemplateInfo *tmp) {
@@ -1622,7 +1622,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsTLSFONDInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     AstsIncrementalOLRCURRInfo* CreateOLRCurrMessageCore(TestTemplateInfo *tmp) {
@@ -1655,7 +1655,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsIncrementalOLRCURRInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     AstsOLSCURRInfo* CreateOLSCurrMessageCore(TestTemplateInfo *tmp) {
@@ -1702,7 +1702,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsOLSCURRInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     AstsIncrementalTLRCURRInfo* CreateTLRCurrMessageCore(TestTemplateInfo *tmp) {
@@ -1735,7 +1735,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsIncrementalTLRCURRInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     AstsTLSCURRInfo* CreateTLSCurrMessageCore(TestTemplateInfo *tmp) {
@@ -1782,7 +1782,7 @@ public:
         conn->m_fastProtocolManager->SetNewBuffer(conn->m_recvBufferCurrentPos, 2000);
         conn->m_fastProtocolManager->WriteMsgSeqNumber(info->MsgSeqNum);
         conn->m_fastProtocolManager->EncodeAstsTLSCURRInfo(info);
-        conn->ProcessServerCore(conn->m_fastProtocolManager->MessageLength());
+        conn->DebugProcessServerCore(conn->m_fastProtocolManager->MessageLength());
     }
 
     void SendMessage(FeedConnection *conn, TestTemplateInfo *tmp) {
@@ -1892,7 +1892,7 @@ public:
             if(!idf_msg[idf_index]->m_lost) {
                 SendMessage(fif, idf_msg[idf_index]);
 
-                if (!fif->ListenSecurityStatus_Core())
+                if (!fif->ListenSecurityStatusCore())
                     throw;
             }
             idf_index++;
@@ -2063,7 +2063,7 @@ public:
                     if (!tisf[isfIndex]->m_lost) {
                         SendMessage(isf, tisf[isfIndex]);
 
-                        if (!isf->ListenSecurityStatus_Core())
+                        if (!isf->ListenSecurityStatusCore())
                             throw;
                     }
                     isfIndex++;
@@ -2121,14 +2121,14 @@ public:
                 if (!idf_msg[idf_index]->m_lost) {
                     SendMessage(fif, idf_msg[idf_index]);
 
-                    if (!fif->ListenSecurityStatus_Core())
+                    if (!fif->ListenSecurityStatusCore())
                         throw;
                 }
                 idf_index++;
             }
             else {
 
-                if (!fif->ListenSecurityStatus_Core())
+                if (!fif->ListenSecurityStatusCore())
                     throw;
             }
             w.Start();
@@ -2142,7 +2142,7 @@ public:
                 throw;
         }
 
-        if(!fif->ListenSecurityStatus_Core())
+        if(!fif->ListenSecurityStatusCore())
             throw;
     }
 

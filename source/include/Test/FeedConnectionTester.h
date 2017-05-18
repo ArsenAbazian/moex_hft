@@ -478,7 +478,7 @@ public:
         this->snapForts->FastManager()->SetNewBuffer(this->snapForts->m_recvBufferCurrentPos, 1000);
         this->snapForts->FastManager()->WriteMsgSeqNumber(info->MsgSeqNum);
         this->snapForts->FastManager()->EncodeFortsHeartbeatInfo(info);
-        this->snapForts->ProcessServerCore(this->snapForts->m_fastProtocolManager->MessageLength());
+        this->snapForts->DebugProcessServerCore(this->snapForts->m_fastProtocolManager->MessageLength());
 
         this->snapForts->ListenSnapshot_Core();
     }
@@ -487,7 +487,7 @@ public:
         this->incForts->FastManager()->SetNewBuffer(this->incForts->m_recvBufferCurrentPos, 1000);
         this->incForts->FastManager()->WriteMsgSeqNumber(info->MsgSeqNum);
         this->incForts->FastManager()->EncodeFortsDefaultIncrementalRefreshMessageInfo(info);
-        this->incForts->ProcessServerCore(this->incForts->m_fastProtocolManager->MessageLength());
+        this->incForts->DebugProcessServerCore(this->incForts->m_fastProtocolManager->MessageLength());
 
         this->incForts->ListenIncremental_Forts_Core();
     }
@@ -496,7 +496,7 @@ public:
         this->incForts->FastManager()->SetNewBuffer(this->incForts->m_recvBufferCurrentPos, 1000);
         this->incForts->FastManager()->WriteMsgSeqNumber(info->MsgSeqNum);
         this->incForts->FastManager()->EncodeFortsHeartbeatInfo(info);
-        this->incForts->ProcessServerCore(this->incForts->m_fastProtocolManager->MessageLength());
+        this->incForts->DebugProcessServerCore(this->incForts->m_fastProtocolManager->MessageLength());
 
         this->incForts->ListenIncremental_Forts_Core();
     }

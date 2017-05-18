@@ -449,9 +449,33 @@ protected:
         this->NextRecv(size);
         return true;
     }
-    inline bool ProcessServerCoreSecurityStatus(int size, int msgSeqNum) {
-        if(this->m_windowMsgSeqNum != 0 && msgSeqNum == this->m_endMsgSeqNum + 1) { // next item
+    inline bool ProcessServerCoreSecurityStatusAsts(int size, UINT64 data) {
+        int msgSeqNum = ((int)data);
+        if(this->m_windowMsgSeqNum == msgSeqNum && msgSeqNum == this->m_endMsgSeqNum + 1) { // next item
             this->m_endMsgSeqNum = msgSeqNum;
+            if(ShouldSkipMessageAsts(data)) {
+                msgSeqNum++;
+                this->m_startMsgSeqNum = msgSeqNum;
+                this->m_windowMsgSeqNum = msgSeqNum;
+                return true;
+            }
+            FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum - this->m_windowMsgSeqNum];
+            info->m_address = this->m_recvBufferCurrentPos + 4;
+            this->NextRecv(size);
+            return true;
+        }
+        return OnProcessServerCoreSecurityStatusNonNextItem(size, msgSeqNum);
+    }
+    inline bool ProcessServerCoreSecurityStatusForts(int size, UINT64 data) {
+        int msgSeqNum = ((int)data);
+        if(this->m_windowMsgSeqNum == msgSeqNum && msgSeqNum == this->m_endMsgSeqNum + 1) { // next item
+            this->m_endMsgSeqNum = msgSeqNum;
+            if(ShouldSkipMessageForts(data)) {
+                msgSeqNum++;
+                this->m_startMsgSeqNum = msgSeqNum;
+                this->m_windowMsgSeqNum = msgSeqNum;
+                return true;
+            }
             int localMsgSeqNum = msgSeqNum - this->m_windowMsgSeqNum;
             FeedConnectionMessageInfo *info = this->m_packets[localMsgSeqNum];
             info->m_address = this->m_recvBufferCurrentPos + 4;
@@ -459,43 +483,31 @@ protected:
             return true;
         }
         return OnProcessServerCoreSecurityStatusNonNextItem(size, msgSeqNum);
-
     }
 #pragma region ProcessSever
-    inline bool ProcessServerCore(int size) {
+#ifdef TEST
+    inline bool DebugProcessServerCore(int size) {
         int msgSeqNum = *((UINT*)this->m_recvBufferCurrentPos);
 
         if(this->m_type == FeedConnectionType::fctIncremental || this->m_type == FeedConnectionType::fctIncrementalForts)
             return ProcessServerCoreIncremental(size, msgSeqNum);
-        if(this->m_type == FeedConnectionType::fctInstrumentStatus || this->m_type == FeedConnectionType::fctInstrumentStatusForts)
-            return ProcessServerCoreSecurityStatus(size, msgSeqNum);
+        if(this->m_type == FeedConnectionType::fctInstrumentStatus)
+            return ProcessServerCoreSecurityStatusAsts(size, *((UINT64*)this->m_recvBufferCurrentPos));
+        if(this->m_type == FeedConnectionType::fctInstrumentStatusForts)
+            return ProcessServerCoreSecurityStatusForts(size, *((UINT64*)this->m_recvBufferCurrentPos));
         if(this->m_type == FeedConnectionType::fctSnapshot)
             return ProcessServerCoreSnapshot(size, msgSeqNum);
         if(this->m_type == FeedConnectionType::fctInstrumentDefinition)
             return ProcessServerCoreSecurityDefinition(size, msgSeqNum);
         return false;
     }
-    inline bool ProcessServer(WinSockManager *socketManager, LogMessageCode socketName) {
-        if(!socketManager->ShouldRecv())
-            return false;
-        if(!socketManager->Recv(this->m_recvBufferCurrentPos)) {
-            DefaultLogManager::Default->WriteSuccess(socketName,
-                                                     LogMessageCode::lmcFeedConnection_Listen_Atom,
-                                                     false)->m_errno = errno;
-            socketManager->Reconnect();
-            return false;
-        }
-        int size = socketManager->RecvSize();
-        if(size == 0)
-            return false;
-        return this->ProcessServerCore(size);
-    }
-
+#endif
     // in a case we have received NEXT msg in socket A
     inline void FlushSocketBManager() {
         this->socketBManager->FlushUDP();
     }
 
+    __attribute__((noinline))
     void OnFailProcessSocketManager(WinSockManager *socketManager) {
         DefaultLogManager::Default->WriteSuccess(socketManager->SocketLogName(),
                                                  LogMessageCode::lmcFeedConnection_Listen_Atom,
@@ -524,7 +536,7 @@ protected:
     inline bool ProcessServerAIncremental() { return this->ProcessServerIncremental(this->socketAManager); }
     inline bool ProcessServerBIncremental() { return this->ProcessServerIncremental(this->socketBManager); }
 
-    inline bool ProcessServerSecurityStatus(WinSockManager *socketManager) {
+    inline bool ProcessServerSecurityStatusAsts(WinSockManager *socketManager) {
         if(!socketManager->ShouldRecv())
             return true;
         unsigned char *current = this->m_recvBufferCurrentPos;
@@ -532,10 +544,25 @@ protected:
             OnFailProcessSocketManager(socketManager);
             return true;
         }
-        return ProcessServerCoreSecurityStatus(socketManager->RecvSize(), *((UINT*)current));
+        return ProcessServerCoreSecurityStatusAsts(socketManager->RecvSize(), *((UINT64*)current));
     }
-    inline bool ProcessServerASecurityStatus() { return this->ProcessServerSecurityStatus(this->socketAManager); }
-    inline bool ProcessServerBSecurityStatus() { return this->ProcessServerSecurityStatus(this->socketBManager); }
+
+    inline bool ProcessServerSecurityStatusForts(WinSockManager *socketManager) {
+        if(!socketManager->ShouldRecv())
+            return true;
+        unsigned char *current = this->m_recvBufferCurrentPos;
+        if(!socketManager->RecvUDP(current)) {
+            OnFailProcessSocketManager(socketManager);
+            return true;
+        }
+        return ProcessServerCoreSecurityStatusForts(socketManager->RecvSize(), *((UINT64*)current));
+    }
+
+    inline bool ProcessServerASecurityStatusAsts() { return this->ProcessServerSecurityStatusAsts(this->socketAManager); }
+    inline bool ProcessServerBSecurityStatusAsts() { return this->ProcessServerSecurityStatusAsts(this->socketBManager); }
+
+    inline bool ProcessServerASecurityStatusForts() { return this->ProcessServerSecurityStatusForts(this->socketAManager); }
+    inline bool ProcessServerBSecurityStatusForts() { return this->ProcessServerSecurityStatusForts(this->socketBManager); }
 
     inline bool ProcessServerSnapshot(WinSockManager *socketManager) {
         int size = this->ProcessSocketManager(socketManager);
@@ -2110,14 +2137,14 @@ protected:
         return true;
     }
 
-    inline bool ListenSecurityStatus_Core() {
+    inline bool ListenSecurityStatusCore() {
 #ifdef TEST
         Stopwatch::Default->GetElapsedMicrosecondsGlobal();
 #endif
         this->ProcessSecurityStatusMessages();
         return true;
     }
-    inline bool ListenSecurityStatusForts_Core() {
+    inline bool ListenSecurityStatusFortsCore() {
 #ifdef TEST
         Stopwatch::Default->GetElapsedMicrosecondsGlobal();
 #endif
@@ -2569,8 +2596,9 @@ protected:
 #ifdef TEST
         Stopwatch::Default->GetElapsedMicrosecondsGlobal();
 #endif
-        bool recv = this->ProcessServerASecurityStatus();
-        recv |= this->ProcessServerBSecurityStatus();
+        bool recv = this->ProcessServerASecurityStatusAsts();
+        if(!recv)
+            recv = this->ProcessServerBSecurityStatusAsts();
 
         if(!recv) {
             if(!this->m_waitTimer->Active(1)) {
@@ -2585,14 +2613,15 @@ protected:
         else {
             this->m_waitTimer->Stop(1);
         }
-        return this->ListenSecurityStatus_Core();
+        return this->ListenSecurityStatusCore();
     }
     inline bool ListenSecurityStatusForts() {
 #ifdef TEST
         Stopwatch::Default->GetElapsedMicrosecondsGlobal();
 #endif
-        bool recv = this->ProcessServerASecurityStatus();
-        recv |= this->ProcessServerBSecurityStatus();
+        bool recv = this->ProcessServerASecurityStatusForts();
+        if(!recv)
+            recv = this->ProcessServerBSecurityStatusForts();
 
         if(!recv) {
             if(!this->m_waitTimer->Active(1)) {
@@ -2608,7 +2637,7 @@ protected:
         else {
             this->m_waitTimer->Stop(1);
         }
-        return this->ListenSecurityStatusForts_Core();
+        return this->ListenSecurityStatusFortsCore();
     }
 
     inline bool ListenSecurityDefinition() {
@@ -2959,6 +2988,13 @@ protected:
 
     inline bool ShouldSkipMessageAsts(unsigned char *buffer) {
         return *((unsigned short*)(buffer + 1)) == 0xbc10;
+    }
+
+    inline bool ShouldSkipMessageAsts(UINT64 header) {
+        return AstsPackedTemplateId::AstsHeartbeatInfo == ((header >> 40) & 0xffff);
+    }
+    inline bool ShouldSkipMessageForts(UINT64 header) {
+        return FortsPackedTemplateId::FortsHeartbeatInfo == ((header >> 40) & 0xff);
     }
     inline void ProcessIncrementalAsts(FeedConnectionMessageInfo *info) {
         info->m_processed = true;
