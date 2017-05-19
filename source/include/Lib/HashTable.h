@@ -33,7 +33,7 @@ class HashTableTester;
 class HashTable {
     friend class HashTableTester;
 
-    static const int m_itemsCount = 1000000;
+    static const int m_itemsCount = 1024 * 1024 + 1;
     LinkedPointer<HashTableItemInfo>                        **m_bucket;
     PointerList<HashTableItemInfo>                          *m_pool;
     int                                                     m_count;
@@ -43,22 +43,16 @@ class HashTable {
         LinkedPointer<HashTableItemInfo> *prev = node->Prev();
         LinkedPointer<HashTableItemInfo> *next = node->Next();
         prev->Connect(next);
-        node->Data()->Clear();
+        //node->Data()->Clear(); there is no need clear because next initializartion rewrite data
     }
     inline LinkedPointer<HashTableItemInfo> * AddPointer(UINT64 hash) {
         this->m_count++;
 
         LinkedPointer<HashTableItemInfo> *start = this->m_bucket[hash];
-        if(start == 0) {
-            start = this->m_pool->Pop();
-            start->Next(0);
-            this->m_bucket[hash] = start;
-            return start;
-        }
-
         LinkedPointer<HashTableItemInfo> *newNode = this->m_pool->Pop();
+
         newNode->Next(start);
-        start->Prev(newNode);
+        if(start != 0) start->Prev(newNode);
         this->m_bucket[hash] = newNode;
         return newNode;
 
@@ -107,8 +101,9 @@ public:
     }
 
     inline UINT64 ConstrainHash(UINT64 m_id) {
-        if(m_id >= HashTable::m_itemsCount)
-            m_id = m_id % HashTable::m_itemsCount;
+        return m_id & 0x1fffff;
+        //if(m_id >= HashTable::m_itemsCount)
+        //    m_id = m_id % HashTable::m_itemsCount;
         return m_id;
     }
 
@@ -123,16 +118,14 @@ public:
     }
      inline LinkedPointer<HashTableItemInfo>* GetPointer(void *owner, const char *stringId, int length) {
         UINT64 hash = this->CalcHashNoConstrain(stringId, length);
-        UINT64 hash2 = this->ConstrainHash(hash);
-        LinkedPointer<HashTableItemInfo> *start = this->m_bucket[hash2];
+        LinkedPointer<HashTableItemInfo> *start = this->m_bucket[this->ConstrainHash(hash)];
         if(start == 0)
             return 0;
         return this->FindPointer(start, owner, hash);
     }
 
     inline LinkedPointer<HashTableItemInfo>* GetPointer(void *owner, UINT64 id) {
-        UINT64 hash = this->ConstrainHash(id);
-        LinkedPointer<HashTableItemInfo> *start = this->m_bucket[hash];
+        LinkedPointer<HashTableItemInfo> *start = this->m_bucket[this->ConstrainHash(id)];
         if(start == 0)
             return 0;
         return this->FindPointer(start, owner, id);
@@ -140,20 +133,11 @@ public:
 
     inline void RemovePointer(UINT64 hash, LinkedPointer<HashTableItemInfo> *ptr) {
         LinkedPointer<HashTableItemInfo> **start = this->m_bucket + hash;
-        if((*start) == ptr) { // first item
-            if(ptr->Next() != 0) {
-                (*start) = ptr->Next();
-                (*start)->Prev(0);
-            }
-            else {
-                (*start) = 0;
-            }
-            this->m_pool->Push(ptr);
-            this->m_count--;
-            return;
-        }
-        this->Remove(ptr);
-        this->m_pool->Push(ptr);
+        if((*start) == ptr) // first item
+            (*start) = ptr->Next();
+        else
+            this->Remove(ptr);
+        this->m_pool->PushUnsafe(ptr);
         this->m_count--;
     }
 
@@ -175,8 +159,7 @@ public:
     }
 
     inline LinkedPointer<HashTableItemInfo>* Add(void *owner, void *object, UINT64 hash, const char *stringId, int length) {
-        UINT64 hash2 = this->ConstrainHash(hash);
-        LinkedPointer<HashTableItemInfo> *ptr = this->AddPointer(hash2);
+        LinkedPointer<HashTableItemInfo> *ptr = this->AddPointer(this->ConstrainHash(hash));
         HashTableItemInfo *info = ptr->Data();
         info->m_owner = owner;
         info->m_intId = hash;

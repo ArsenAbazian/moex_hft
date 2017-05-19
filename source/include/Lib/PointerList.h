@@ -43,6 +43,10 @@ public:
         if(next != 0)
             next->m_prev = this;
     }
+    inline void ConnectUnsafe(LinkedPointer<T> *next) {
+        this->m_next = next;
+        next->m_prev = this;
+    }
 };
 
 template <typename T> class PointerListLite;
@@ -125,6 +129,12 @@ public:
         if(node->Released())
             return;
         node->Released(true);
+        this->m_poolTail->Next(node);
+        this->m_poolTail = node;
+        this->m_count--;
+    }
+
+    inline void PushUnsafe(LinkedPointer<T> *node) {
         this->m_poolTail->Next(node);
         this->m_poolTail = node;
         this->m_count--;
@@ -287,6 +297,7 @@ public:
         return start;
     }
 
+    __attribute__((noinline))
     LinkedPointer<T>* Append(int capacity) {
         printf("!!!unexpected append %s count = %d, additional capacity = %d!!!\n", this->m_name, this->m_count, capacity); //TODO remove debug info
         this->m_capacity += capacity;

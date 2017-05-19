@@ -23,12 +23,18 @@ public:
 
     void TestCalcHashString() {
         char buf[10];
+        int *owner = new int;
+        int *object = new int;
         for(int i = 0; i < 10000000; i++) {
             sprintf(buf, "%d", i);
-            UINT64 hash = this->m_table->CalcHash(buf, strlen(buf));
-            if(hash != (i % 1000000))
+            int length = strlen(buf);
+            UINT64 hash = this->m_table->CalcHashNoConstrain(buf, length);
+            this->m_table->Add(owner, object, buf, length);
+            LinkedPointer<HashTableItemInfo> *ptr = this->m_table->GetPointer(owner, buf, length);
+            if(ptr->Data()->m_intId != hash)
                 throw;
         }
+        this->m_table->Clear();
     }
 
     void TestAdd() {
@@ -134,8 +140,6 @@ public:
         this->m_table->Remove(owner3, id, idLength);
         if(this->m_table->m_bucket[123456] != ptr5)
             throw;
-        if(ptr5->Prev() != 0)
-            throw;
         if(ptr5->Next() != ptr4)
             throw;
         if(ptr4->Prev() != ptr5)
@@ -152,8 +156,6 @@ public:
         this->m_table->Remove(owner, id, idLength);
         if(this->m_table->m_bucket[123456] != ptr5)
             throw;
-        if(ptr5->Prev() != 0)
-            throw;
         if(ptr5->Next() != ptr4)
             throw;
         if(ptr4->Prev() != ptr5)
@@ -168,8 +170,6 @@ public:
         this->m_table->Remove(owner5, id, idLength);
         if(this->m_table->m_bucket[123456] != ptr4)
             throw;
-        if(ptr4->Prev() != 0)
-            throw;
         if(ptr4->Next() != ptr2)
             throw;
         if(ptr2->Prev() != ptr4)
@@ -178,8 +178,6 @@ public:
             throw;
         this->m_table->Remove(owner4, id, idLength);
         if(this->m_table->m_bucket[123456] != ptr2)
-            throw;
-        if(ptr2->Prev() != 0)
             throw;
         if(ptr2->Next() != 0)
             throw;
