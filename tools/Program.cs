@@ -1396,7 +1396,7 @@ namespace prebuild {
 			InitializeSnapshotInfoFields(templatesNode);
 			foreach(SnapshotFieldInfo info in SnapshotInfoFields) {
 				if(info.FieldType.ToLower() == "string" ) {
-					WriteLine("\t" + "char" + "\t\t\t\t" + info.FieldName + "[32];");
+					WriteLine("\t" + "char" + "\t\t\t\t" + info.FieldName + "[16] __attribute__((aligned(16)));");
 					WriteLine("\t" + "int" + "\t\t\t\t\t" + info.FieldName + "Length;");
 				} else {
 					WriteLine("\t" + info.FieldType + "\t\t\t\t" + info.FieldName + ";");
@@ -1597,7 +1597,10 @@ namespace prebuild {
 
 		void WriteStringDefinitionCore(XmlNode field, string tabs) {
 			int maxStringLength = GetMaxStringSize(field);
-			WriteLine("\tchar" + tabs + Name(field) + "[" + maxStringLength + "];" + GetCommentLine(field));
+			if(HasAttribute(field, "aligned"))
+				WriteLine("\tchar" + tabs + Name(field) + "[" + maxStringLength + "] __attribute__((aligned(" + field.Attributes["aligned"].Value + ")));" + GetCommentLine(field));
+			else 
+				WriteLine("\tchar" + tabs + Name(field) + "[" + maxStringLength + "];" + GetCommentLine(field));
 		}
 
 		int GetMaxByteVectorSize(XmlNode field) {
@@ -2045,7 +2048,8 @@ namespace prebuild {
 				attribute.Name == "charset" || 
 				attribute.Name == "fixed_size" || 
 				attribute.Name == "predict" || 
-				attribute.Name == "skip";
+				attribute.Name == "skip" || 
+				attribute.Name == "aligned";
 		}
 		StructureInfo GetOriginalStruct(XmlNode field) {
 			if(field.ParentNode == null || field.ParentNode.Attributes["name"] == null)

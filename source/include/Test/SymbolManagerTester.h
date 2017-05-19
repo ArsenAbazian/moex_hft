@@ -13,8 +13,8 @@
 #include "../MarketData/SymbolManager.h"
 
 typedef struct _hashTextInfo {
-    char        text[17];
     int         lenght;
+    char        text[17] __attribute__((aligned(16)));
 }hashTextInfo;
 
 class SymbolManagerTester {
@@ -167,29 +167,35 @@ public:
         this->m_manager->Clear();
     }
 
+    const char *AlignedString(const char *string) {
+        _hashTextInfo *info = new _hashTextInfo;
+        strcpy(info->text, string);
+        return info->text;
+    }
+
     void TestAddSymbols() {
         this->m_manager->Clear();
 
         bool wasNewlyAdded = false;
-        if(this->m_manager->GetSymbolIndex("SYMBOL000001", 12, &wasNewlyAdded) != 0)
+        if(this->m_manager->GetSymbolIndex(AlignedString("SYMBOL000001"), 12, &wasNewlyAdded) != 0)
             throw;
         if(!wasNewlyAdded)
             throw;
-        if(this->m_manager->GetSymbolIndex("SYMBOL000001", 12, &wasNewlyAdded) != 0)
+        if(this->m_manager->GetSymbolIndex(AlignedString("SYMBOL000001"), 12, &wasNewlyAdded) != 0)
             throw;
         if(wasNewlyAdded)
             throw;
         if(this->m_manager->SymbolCount() != 1)
             throw;
-        if(this->m_manager->GetSymbolIndex("SYMBOL000002", 12, &wasNewlyAdded) != 1)
+        if(this->m_manager->GetSymbolIndex(AlignedString("SYMBOL000002"), 12, &wasNewlyAdded) != 1)
             throw;
         if(!wasNewlyAdded)
             throw;
-        if(this->m_manager->GetSymbolIndex("SYMBOL001002", 12, &wasNewlyAdded) != 2)
+        if(this->m_manager->GetSymbolIndex(AlignedString("SYMBOL001002"), 12, &wasNewlyAdded) != 2)
             throw;
         if(!wasNewlyAdded)
             throw;
-        if(this->m_manager->GetSymbolIndex("SYMB", 4, &wasNewlyAdded) != 3)
+        if(this->m_manager->GetSymbolIndex(AlignedString("SYMB"), 4, &wasNewlyAdded) != 3)
             throw;
         if(!wasNewlyAdded)
             throw;
@@ -224,8 +230,8 @@ public:
             throw;
         }
 
-        m->GetSymbol("symbol1", &isNewlyAdded);
-        m->GetSymbol("symbol2", &isNewlyAdded);
+        m->GetSymbol(AlignedString("symbol1"), &isNewlyAdded);
+        m->GetSymbol(AlignedString("symbol2"), &isNewlyAdded);
 
         if(m->m_pool->CalcPoolCount() != m->m_pool->Capacity() - 2)
             throw;
@@ -240,16 +246,16 @@ public:
     void TestAddSymbols2() {
         this->m_manager->Clear();
         bool isNewlyAdded;
-        SymbolInfo *s1 = this->m_manager->GetSymbol("smb1", &isNewlyAdded);
+        SymbolInfo *s1 = this->m_manager->GetSymbol(AlignedString("smb1"), &isNewlyAdded);
         if(s1->m_index != 0)
             throw;
-        SymbolInfo *s2 = this->m_manager->GetSymbol("smb2", &isNewlyAdded);
+        SymbolInfo *s2 = this->m_manager->GetSymbol(AlignedString("smb2"), &isNewlyAdded);
         if(s2->m_index != 1)
             throw;
-        s1 = this->m_manager->GetSymbol("smb1", &isNewlyAdded);
+        s1 = this->m_manager->GetSymbol(AlignedString("smb1"), &isNewlyAdded);
         if(s1->m_index != 0)
             throw;
-        s2 = this->m_manager->GetSymbol("smb2", &isNewlyAdded);
+        s2 = this->m_manager->GetSymbol(AlignedString("smb2"), &isNewlyAdded);
         if(s2->m_index != 1)
             throw;
     }

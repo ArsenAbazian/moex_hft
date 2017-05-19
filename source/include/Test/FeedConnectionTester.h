@@ -909,13 +909,20 @@ public:
         pt->Test();
         delete pt;
 
-        HashTableTester *htt = new HashTableTester();
-        htt->Test();
-        delete htt;
+        OrderTesterCurr *otCurr = new OrderTesterCurr();
+        otCurr->Test();
+        delete otCurr;
+        OrderTesterFond *otFond = new OrderTesterFond();
+        otFond->Test();
+        delete otFond;
 
         SymbolManagerTester *ht = new SymbolManagerTester();
         ht->Test();
         delete ht;
+
+        HashTableTester *htt = new HashTableTester();
+        htt->Test();
+        delete htt;
 
         SecurityStatusTester *ist = new SecurityStatusTester();
         ist->Test();
@@ -932,13 +939,6 @@ public:
         OrderBookTesterForts *fob = new OrderBookTesterForts();
         fob->Test();
         delete fob;
-
-        OrderTesterCurr *otCurr = new OrderTesterCurr();
-        otCurr->Test();
-        delete otCurr;
-        OrderTesterFond *otFond = new OrderTesterFond();
-        otFond->Test();
-        delete otFond;
 
         TradeTesterCurr *ttCurr = new TradeTesterCurr();
         ttCurr->Test();

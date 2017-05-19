@@ -16,7 +16,7 @@ public:
     LinkedPointer<SymbolInfo>   *m_pointer;
     int                         m_index;
     int                         m_length;
-    char                        m_text[SymbolInfo::m_textSize];
+    char                        m_text[SymbolInfo::m_textSize] __attribute__((aligned(16)));
 
     SymbolInfo() :
             m_pointer(0),
@@ -97,7 +97,7 @@ class SymbolManager {
     inline bool FindSymbol(LinkedPointer<SymbolInfo> *start, const char *symbol, int length, LinkedPointer<SymbolInfo> **found) {
         while(true) {
             SymbolInfo *s = start->Data();
-            if(StringIdComparer::Equal(s->m_text, s->m_length, symbol, length)) {
+            if(StringIdComparer::EqualFast(s->m_text, s->m_length, symbol, length)) {
                 *found = start;
                 return true;
             }
@@ -111,7 +111,7 @@ class SymbolManager {
     inline SymbolInfo* FindSymbol(LinkedPointer<SymbolInfo> *start, const char *symbol, int length) {
         while(true) {
             SymbolInfo *s = start->Data();
-            if(StringIdComparer::Equal(s->m_text, s->m_length, symbol, length))
+            if(StringIdComparer::EqualFast(s->m_text, s->m_length, symbol, length))
                 return s;
             if(!start->HasNext())
                 return 0;
@@ -188,12 +188,17 @@ public:
         SymbolInfo *info = GetSymbol(symbol, length, wasNewlyAdded);
         return info->m_index;
     }
+    static const char *AlignedString(const char *string) {
+        SymbolInfo *info = new SymbolInfo();
+        strcpy(info->m_text, string);
+        return info->m_text;
+    }
     inline SymbolInfo* GetSymbol(const char *symbol, bool *wasNewlyAdded) {
-        return this->GetSymbol(symbol, strlen(symbol), wasNewlyAdded);
+        return this->GetSymbol(AlignedString(symbol), strlen(symbol), wasNewlyAdded);
     }
     inline SymbolInfo* AddSymbol(const char *symbol) {
         bool wasNewlyAdded = false;
-        SymbolInfo *res = this->GetSymbol(symbol, strlen(symbol), &wasNewlyAdded);
+        SymbolInfo *res = this->GetSymbol(AlignedString(symbol), strlen(symbol), &wasNewlyAdded);
 #ifdef TEST
         if(!wasNewlyAdded)
             throw;

@@ -1950,7 +1950,7 @@ public:
 
     TestFeedMessageInfo *GetFeedInfo(const char *feedId, int feedIdLength) {
         for(int i = 0; i < this->m_feedInfoCount; i++) {
-            if(StringIdComparer::Equal(this->m_feedInfo[i].m_feed->IdName(), strlen(this->m_feedInfo[i].m_feed->IdName()), feedId, feedIdLength))
+            if(StringIdComparer::Equal(SymbolManager::AlignedString(this->m_feedInfo[i].m_feed->IdName()), strlen(this->m_feedInfo[i].m_feed->IdName()), feedId, feedIdLength))
                 return &(this->m_feedInfo[i]);
         }
         return 0;
@@ -1977,7 +1977,7 @@ public:
     void OnRecvMarketDataRequest(FixProtocolMessage *msg, WinSockManager *wsManager) {
         if(!msg->CheckProcessMarketDataRequest())
             throw;
-        TestFeedMessageInfo *feed = GetFeedInfo(msg->MarketDataRequestInfo()->FeedId, msg->MarketDataRequestInfo()->FeedIdLength);
+        TestFeedMessageInfo *feed = GetFeedInfo(SymbolManager::AlignedString(msg->MarketDataRequestInfo()->FeedId), msg->MarketDataRequestInfo()->FeedIdLength);
         if(feed == 0) {
             SendLogout(wsManager, "unknown feed id.");
             return;

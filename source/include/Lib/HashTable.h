@@ -101,7 +101,7 @@ public:
     }
 
     inline UINT64 ConstrainHash(UINT64 m_id) {
-        return m_id & 0x1fffff;
+        return m_id & 0x0fffff;
         //if(m_id >= HashTable::m_itemsCount)
         //    m_id = m_id % HashTable::m_itemsCount;
         return m_id;

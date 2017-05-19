@@ -7,6 +7,7 @@
 
 #include "PointerList.h"
 #include "../Settings.h"
+#include <nmmintrin.h>
 #include <string.h>
 
 class StringIdComparer {
@@ -45,6 +46,11 @@ public:
 
     static inline bool Equal(const char *s1, const char *s2) {
         return Equal(s1, strlen(s1), s2, strlen(s2));
+    }
+
+    static inline bool EqualFast(const char *s1, int l1, const char *s2, int l2) {
+        const int mode = _SIDD_UBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_BIT_MASK | _SIDD_NEGATIVE_POLARITY;
+        return _mm_cmpestrc(*((__m128i*)s1), l1, *((__m128i*)s2), l2, mode) == 0;
     }
 
     static inline bool Equal(const char *s1, int l1, const char *s2, int l2) {
@@ -145,11 +151,12 @@ public:
 
     inline void Set(const char *text, int length) { this->m_text = text; this->m_length = length; }
 
-    inline bool Equal(const char *text) {
+    __attribute__((noinline))
+    bool Equal(const char *text) {
         return StringIdComparer::Equal(this->m_text, this->m_length, text, strlen(text));
     }
     inline bool Equal(const char *text, int length) {
-        return StringIdComparer::Equal(this->m_text, this->m_length, text, length);
+        return StringIdComparer::EqualFast(this->m_text, this->m_length, text, length);
     }
 };
 

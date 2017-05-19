@@ -10,6 +10,7 @@
 #include "../Fast/FastTypes.h"
 #include "MDEntryQueue.h"
 #include "MarketSymbolInfo.h"
+#include "SymbolManager.h"
 
 template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename ITEMINFO> class MarketDataTable {
     MarketSymbolInfo<TABLEITEM<ITEMINFO>>       **m_symbols;
@@ -526,10 +527,10 @@ public:
     }
 
     inline TABLEITEM<ITEMINFO>* GetItem(const char *symbol, const char *tradingSession) {
-        return this->GetItem(symbol, strlen(symbol), tradingSession, strlen(tradingSession));
+        return this->GetItem(SymbolManager::AlignedString(symbol), strlen(symbol), SymbolManager::AlignedString(tradingSession), strlen(tradingSession));
     }
     inline TABLEITEM<ITEMINFO>* AddItem(const char *symbol, const char *tradingSession) {
-        return this->GetItem(symbol, strlen(symbol), tradingSession, strlen(tradingSession));
+        return this->GetItem(SymbolManager::AlignedString(symbol), strlen(symbol), SymbolManager::AlignedString(tradingSession), strlen(tradingSession));
     }
     inline int UsedItemCount() {
         int res = 0;
@@ -544,8 +545,8 @@ public:
     }
     inline int QueueEntriesCount() { return this->m_queueItemsCount; }
     inline TABLEITEM<ITEMINFO>* Add(const char *symbol, const char *session) {
-        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *symbolInfo = GetSymbol(symbol, strlen(symbol));
-        return symbolInfo->GetSession(session, strlen(session));
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *symbolInfo = GetSymbol(SymbolManager::AlignedString(symbol), strlen(symbol));
+        return symbolInfo->GetSession(SymbolManager::AlignedString(session), strlen(session));
     }
     inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* AddSymbol(const char *symbol, int symbolLength, int index) {
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *newItem = this->m_symbols[index];
@@ -560,7 +561,7 @@ public:
         return newItem;
     }
     inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* AddSymbol(const char *symbol) {
-        return AddSymbol(symbol, strlen(symbol));
+        return AddSymbol(SymbolManager::AlignedString(symbol), strlen(symbol));
     }
     inline void EnterSnapshotMode() {
         this->m_symbolsToRecvSnapshot = 0; //this->m_symbolsCount;

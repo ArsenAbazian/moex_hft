@@ -3580,7 +3580,7 @@ public:
             AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = info->MarketSegmentGrp[i];
             for(int j = 0; j < m->TradingSessionRulesGrpCount; j++) {
                 AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t = m->TradingSessionRulesGrp[j];
-                if(StringIdComparer::Equal(t->TradingSessionID, t->TradingSessionIDLength, tradingSession, tradingSessionLength))
+                if(StringIdComparer::EqualFast(t->TradingSessionID, t->TradingSessionIDLength, tradingSession, tradingSessionLength))
                     return t;
                 /*char smb = *(t->TradingSessionSubID);
                 if(smb == *tradingSession) {
@@ -3686,7 +3686,7 @@ public:
             AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **s = m->TradingSessionRulesGrp;
             found = true;
             for(int i = 0; i < sCount; i++, is++, s++) {
-                if(!StringIdComparer::Equal((*is)->TradingSessionID, (*is)->TradingSessionIDLength, (*s)->TradingSessionID, (*s)->TradingSessionIDLength)) {
+                if(!StringIdComparer::EqualFast((*is)->TradingSessionID, (*is)->TradingSessionIDLength, (*s)->TradingSessionID, (*s)->TradingSessionIDLength)) {
                     found = false;
                     break;
                 }
