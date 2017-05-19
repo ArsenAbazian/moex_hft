@@ -69,6 +69,8 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_packetsCount = 0;
     this->m_packets = 0;
     this->m_hrUnsuccessfulConnectCount = 0;
+    this->m_idfDataCollected = false;
+    this->m_idfAllowUpdateData = false;
     this->m_idfStartMsgSeqNo = 0;
     this->m_idfMaxMsgSeqNo = 0;
     this->m_queueItemsCount = 0;

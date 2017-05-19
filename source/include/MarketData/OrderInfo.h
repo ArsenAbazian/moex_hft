@@ -179,9 +179,8 @@ public:
     inline void ChangeBuyQuote(T *info) {
         //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
         LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, this->m_buyQuoteList);
-        HrLinkedPointer<T> *ptr;
         if(hashItem != 0) {
-            ptr = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
+            HrLinkedPointer<T> *ptr = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
             T *data = ptr->Data();
             this->m_buyQuoteList->Remove(ptr);
             data->Clear();
@@ -192,8 +191,6 @@ public:
 
             HashTableItemInfo *h = hashItem->Data();
             h->m_object = ptr;
-            h->m_stringId = info->MDEntryID;
-            h->m_length = info->MDEntryIDLength;
             return;
         }
         //TODO remove debug
@@ -205,9 +202,8 @@ public:
     inline void ChangeSellQuote(T *info) {
         //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change SellQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
         LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, this->m_sellQuoteList);
-        HrLinkedPointer<T> *ptr;
         if(hashItem != 0) {
-            ptr = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
+            HrLinkedPointer<T> *ptr = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
             T *data = ptr->Data();
             this->m_sellQuoteList->Remove(ptr);
             data->Clear();
@@ -218,8 +214,6 @@ public:
 
             HashTableItemInfo *h = hashItem->Data();
             h->m_object = ptr;
-            h->m_stringId = info->MDEntryID;
-            h->m_length = info->MDEntryIDLength;
             return;
         }
         //TODO remove debug

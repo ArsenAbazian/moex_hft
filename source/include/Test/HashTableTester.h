@@ -40,9 +40,7 @@ public:
         LinkedPointer<HashTableItemInfo> *ptr = this->m_table->Add(owner, object, id, idLength);
         if(ptr->Data()->m_owner != owner)
             throw;
-        if(ptr->Data()->m_length != idLength)
-            throw;
-        if(ptr->Data()->m_stringId != id)
+        if(ptr->Data()->m_intId != atoi(id))
             throw;
         if(ptr->Data()->m_object != object)
             throw;
@@ -70,9 +68,7 @@ public:
 
         if(ptr2->Data()->m_owner != owner2)
             throw;
-        if(ptr2->Data()->m_length != idLength)
-            throw;
-        if(ptr2->Data()->m_stringId != id)
+        if(ptr2->Data()->m_intId != atoi(id))
             throw;
         if(ptr2->Data()->m_object != object2)
             throw;
@@ -97,9 +93,7 @@ public:
 
         if(ptr3->Data()->m_owner != owner3)
             throw;
-        if(ptr3->Data()->m_length != idLength)
-            throw;
-        if(ptr3->Data()->m_stringId != id)
+        if(ptr3->Data()->m_intId != atoi(id))
             throw;
         if(ptr3->Data()->m_object != object3)
             throw;
