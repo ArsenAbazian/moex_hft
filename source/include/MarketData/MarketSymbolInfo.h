@@ -10,6 +10,7 @@
 
 template <typename T> class MarketSymbolInfo {
     T                                  **m_items;
+    UINT32                              m_sessionId[128];
     SizedArray                         *m_symbol;
     int                                 m_count;
     int                                 m_maxCount;
@@ -27,6 +28,7 @@ public:
             m_securityDefinitionFortsPtr(0),
             m_securityId(0) {
         this->m_symbol = new SizedArray();
+        memset(this->m_sessionId, 0, sizeof(UINT32) * 128);
     }
     inline void InitSessions(int count) {
         Release();
@@ -36,6 +38,7 @@ public:
         for(int i = 0; i < this->m_maxCount; i++) {
             this->m_items[i] = new T();
             this->m_items[i]->SymbolInfo(this);
+            this->m_sessionId[i] = 0;
         }
     }
     inline void Release() {
@@ -56,16 +59,32 @@ public:
     inline UINT64 SecurityID() { return this->m_securityId; }
     inline int MaxSessionCount() { return this->m_maxCount; }
     inline T* Session(int index) { return this->m_items[index]; }
-    inline T* GetSession(const char *session, int sessionLength) {
-        T **item = this->m_items;
-        for(int i = 0; i < this->m_count; i++, item++) {
-            if((*item)->TradingSession()->Equal(session, sessionLength))
-                return *item;
-        }
+    __attribute_noinline__
+    T* GetNewSession(const char *session, int sessionLength) {
         T* res = this->m_items[this->m_count];
+        this->m_sessionId[this->m_count] = *((UINT32*)session);
         res->TradingSession()->Set(session, sessionLength);
+        res->TradingSessionInt(*((UINT32*)session));
         this->m_count++;
         return res;
+    }
+    inline T* GetSession(const char *session, int sessionLength) {
+#ifdef TEST
+        T **pitem = this->m_items;
+        for(int i = 0; i < this->m_count; i++, pitem++) {
+            T *item = *pitem;
+            if(item->TradingSession()->Equal(session, sessionLength))
+                return item;
+        }
+#else
+        UINT32  sid = *((UINT32*)session);
+        UINT32 *sptr = this->m_sessionId;
+        for(int i = 0; i < this->m_count; i++, sptr++) {
+            if((*sptr) == sid)
+                return this->m_items[i];
+        }
+#endif
+        return this->GetNewSession(session, sessionLength);
     }
     inline T* GetSession(UINT32 session) {
         T **item = this->m_items;

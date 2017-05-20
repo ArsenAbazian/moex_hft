@@ -3230,7 +3230,7 @@ public:
         //        );
     }
 
-    inline void AddSymbol(LinkedPointer<AstsSecurityDefinitionInfo> *ptr, int index) {
+    void AddSymbol(LinkedPointer<AstsSecurityDefinitionInfo> *ptr, int index) {
         AstsSecurityDefinitionInfo *info = ptr->Data();
         if(this->m_orderTableFond != 0) {
             MarketSymbolInfo<OrderInfo<AstsOLSFONDItemInfo>> *symbol = this->m_orderTableFond->AddSymbol(info->Symbol, info->SymbolLength, index);
