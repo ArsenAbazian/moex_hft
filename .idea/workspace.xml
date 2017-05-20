@@ -25,8 +25,6 @@
   <component name="ChangeListManager">
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/Feeds/FeedConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/MarketData/MarketSymbolInfo.h" afterPath="$PROJECT_DIR$/source/include/MarketData/MarketSymbolInfo.h" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -934,14 +932,7 @@
       <workItem from="1494839626830" duration="102000" />
       <workItem from="1495139072797" duration="2764000" />
       <workItem from="1495175762077" duration="19642000" />
-      <workItem from="1495224566089" duration="11252000" />
-    </task>
-    <task id="LOCAL-00233" summary="1. Writing test for FortsOrderBook. Compilable but test not working">
-      <created>1489958352686</created>
-      <option name="number" value="00233" />
-      <option name="presentableId" value="LOCAL-00233" />
-      <option name="project" value="LOCAL" />
-      <updated>1489958352701</updated>
+      <workItem from="1495224566089" duration="11273000" />
     </task>
     <task id="LOCAL-00234" summary="Add script.sh">
       <created>1490020701614</created>
@@ -1279,11 +1270,18 @@
       <option name="project" value="LOCAL" />
       <updated>1495236290850</updated>
     </task>
-    <option name="localTasksCounter" value="282" />
+    <task id="LOCAL-00282" summary="1. continue non stop even more optimizations.... it going crazier....">
+      <created>1495268278526</created>
+      <option name="number" value="00282" />
+      <option name="presentableId" value="LOCAL-00282" />
+      <option name="project" value="LOCAL" />
+      <updated>1495268278526</updated>
+    </task>
+    <option name="localTasksCounter" value="283" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2819818000" />
+    <option name="totallyTimeSpent" value="2819839000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
