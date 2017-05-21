@@ -288,7 +288,7 @@ protected:
             return true;
         if(msgSeqNum - this->m_windowMsgSeqNum >= this->m_packetsCount) {
             // we should start snapshot
-            OnMsgSeqNumOutOfBounds(msgSeqNum);
+            OnMsgSeqNumOutOfBounds(msgSeqNum, size);
             return false;
         }
         FeedConnectionMessageInfo *info = this->Packet(msgSeqNum);
@@ -381,21 +381,27 @@ protected:
         return true;
     }
     __attribute__((noinline))
-    void OnMsgSeqNumOutOfBounds(int msgSeqNum) {
+    void OnMsgSeqNumOutOfBounds(int msgSeqNum, int size) {
         this->ClearLocalPackets(0, this->GetLocalIndex(this->m_endMsgSeqNum));
         this->m_startMsgSeqNum = msgSeqNum;
         this->m_windowMsgSeqNum = msgSeqNum;
         this->m_endMsgSeqNum = msgSeqNum;
+
+        FeedConnectionMessageInfo *info = this->Packet(msgSeqNum);
+        info->m_address = this->m_recvBufferCurrentPos + 4;
+        this->NextRecv(size);
+
         this->StartListenSnapshot();
     }
     __attribute__((noinline))
     bool OnProcessServerCoreIncrementalNonNextItem(int size, int msgSeqNum) {
+        printf("non next    item inc %d s = %d e = %d w = %d\n", msgSeqNum, this->m_startMsgSeqNum, this->m_endMsgSeqNum, this->m_windowMsgSeqNum);
         int localMsgSeqNum = msgSeqNum - this->m_windowMsgSeqNum;
         if(localMsgSeqNum < 0) // out of window
             return true;
         if(localMsgSeqNum >= this->m_packetsCount) {
             // we should start snapshot
-            OnMsgSeqNumOutOfBounds(msgSeqNum);
+            OnMsgSeqNumOutOfBounds(msgSeqNum, size);
             return false;
         }
         FeedConnectionMessageInfo *info = this->m_packets[localMsgSeqNum];
@@ -409,7 +415,8 @@ protected:
         return true;
     }
     inline bool ProcessServerCoreIncremental(int size, int msgSeqNum) {
-        if(this->m_windowMsgSeqNum != 0 && msgSeqNum == this->m_endMsgSeqNum + 1) { // next packet received...
+        if(this->m_windowMsgSeqNum == msgSeqNum && msgSeqNum == this->m_endMsgSeqNum + 1) { // next packet received...
+            printf("next item     inc %d s = %d e = %d w = %d\n", msgSeqNum, this->m_startMsgSeqNum, this->m_endMsgSeqNum, this->m_windowMsgSeqNum);
             this->m_endMsgSeqNum = msgSeqNum;
             int localMsgSeqNum = msgSeqNum - this->m_windowMsgSeqNum;
             FeedConnectionMessageInfo *info = this->m_packets[localMsgSeqNum];
@@ -417,6 +424,8 @@ protected:
             this->NextRecv(size);
             return true;
         }
+        if(msgSeqNum == this->m_endMsgSeqNum)
+            return true;
         return OnProcessServerCoreIncrementalNonNextItem(size, msgSeqNum);
     }
     __attribute__((noinline))
@@ -451,6 +460,7 @@ protected:
     }
     inline bool ProcessServerCoreSecurityStatusAsts(int size, UINT64 data) {
         int msgSeqNum = ((int)data);
+        printf("ss = %d\n", msgSeqNum);
         if(this->m_windowMsgSeqNum == msgSeqNum && msgSeqNum == this->m_endMsgSeqNum + 1) { // next item
             this->m_endMsgSeqNum = msgSeqNum;
             if(ShouldSkipMessageAsts(data)) {
@@ -1159,6 +1169,7 @@ protected:
     }
 
     inline void ProcessIncrementalMessages_MultipleMessages() {
+        //printf("multiple messages inc s = %d e = %d w = %d\n", this->m_startMsgSeqNum, this->m_endMsgSeqNum, this->m_windowMsgSeqNum);
         int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
         int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
 
@@ -1207,7 +1218,8 @@ protected:
     }
 
     inline void ProcessIncrementalMessages() {
-        if(this->m_startMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
+        if(this->m_windowMsgSeqNum > 0 && this->m_windowMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
+            printf("one message inc s = %d e = %d w = %d\n", this->m_startMsgSeqNum, this->m_endMsgSeqNum, this->m_windowMsgSeqNum);
             FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
             this->m_startMsgSeqNum++;
             this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
@@ -1278,7 +1290,7 @@ protected:
     }
 
     inline void ProcessIncrementalMessagesForts() {
-        if(this->m_startMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
+        if(this->m_windowMsgSeqNum > 0 && this->m_windowMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
             FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
             this->ProcessIncrementalForts(info, this->m_startMsgSeqNum);
             this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;

@@ -1326,17 +1326,32 @@ public:
 	}
 
 	inline UINT32 ParseHeaderFast() {
-		UINT64 result = *(UINT64*)this->currentPos;
-		int count = 0;
-		if((result & 0x80) != 0) {
+		UINT32 result = *(UINT32*)this->currentPos;
+
+        UINT32 mask = 0xffff; mask >>= (result & 0x80) >> 4;
+        this->m_presenceMap = result & mask;
+        int count = 1 + (mask >> 15);
+        result >>= 8 + ((mask & 0x8000) >> 12);
+
+        result &= 0xffff;
+        mask = 0xffff; mask >>= (result & 0x80) >> 4;
+
+        count += 1 + (mask >> 15);
+        this->currentPos += count;
+        this->m_templateId = result & mask;
+		return result;
+
+        /*
+        if((result & 0x80) != 0) {
 			count = 1; this->m_presenceMap = result & 0x7f;
 			result >>= 8;
 		}
-		else if((result & 0x8000) != 0) {
+		else { // most probably 2 bytes
 			count = 2; this->m_presenceMap = result & 0x7f7f;
 			result >>= 16;
 		}
-		if((result & 0x8080) == 0x8000) {  // 2byte value
+
+        if((result & 0x8080) == 0x8000) {  // 2byte value
 			this->currentPos += count + 2;
 			result &= 0xffff;
 			this->m_templateId = result;
@@ -1346,6 +1361,7 @@ public:
 		result &= 0xff;
 		this->m_templateId = result;
 		return result;
+        */
 	}
 
     inline void SkipMsgSeqNumber() {
