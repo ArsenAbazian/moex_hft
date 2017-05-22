@@ -65,7 +65,7 @@ public:
             throw;
         if(!this->idf->IdfAllowGenerateSecurityDefinitions())
             throw;
-        if(this->isf->m_windowMsgSeqNum != 0)
+        if(this->isf->m_windowMsgSeqNum != 1)
             throw;
     }
 
@@ -121,8 +121,8 @@ public:
         this->isf->m_securityStatusSnapshotActive = false;
         this->isf->m_isfStartSnapshotCount = 0;
         this->idf->Stop();
-        this->idf->ClearPackets(0, 100);
-        this->isf->ClearLocalPackets(0, 100);
+        this->idf->ClearPackets(1, 100);
+        this->isf->ClearLocalPackets(1, 100);
         this->isf->ClearMessages();
         this->isf->Stop();
         this->hr->m_hsRequestList->Clear();

@@ -127,7 +127,7 @@ public:
     }
 
     void TestDefaults() {
-        if(this->inc->m_windowMsgSeqNum != 0)
+        if(this->inc->m_windowMsgSeqNum != 1)
             throw;
     }
 
@@ -546,7 +546,7 @@ public:
         this->incForts->m_fortsRouteFirtsSecurityId = 0;
         this->incForts->m_startMsgSeqNum = 1;
         this->incForts->m_endMsgSeqNum = 0;
-        this->incForts->m_windowMsgSeqNum = 0;
+        this->incForts->m_windowMsgSeqNum = 1;
     }
 
     void TestForts_RecvIncrementalRouteFirst_FirstMessage_NullLastFragment() {
@@ -903,7 +903,11 @@ public:
         RobotSettings::Default->MarketDataMaxEntriesCount = 32 * 10;
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
 
-        TestStopwatchPerformance();
+        //TestStopwatchPerformance();
+
+        SecurityStatusTester *ist = new SecurityStatusTester();
+        ist->Test();
+        delete ist;
 
         PointerListTester *pt = new PointerListTester();
         pt->Test();
@@ -923,10 +927,6 @@ public:
         HashTableTester *htt = new HashTableTester();
         htt->Test();
         delete htt;
-
-        SecurityStatusTester *ist = new SecurityStatusTester();
-        ist->Test();
-        delete ist;
 
         HistoricalReplayTester *hrt = new HistoricalReplayTester();
         hrt->Test();

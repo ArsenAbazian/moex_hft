@@ -270,7 +270,7 @@ protected:
         return this->TryGetSecurityDefinitionTotNumReportsForts(buffer);
     }
 
-    inline void ThreatFirstMessageIndexAsStart() {
+    void ThreatFirstMessageIndexAsStart() {
         this->m_startMsgSeqNum = -1;
         this->m_endMsgSeqNum = 0;
     }
@@ -1083,6 +1083,7 @@ protected:
     void ProcessSecurityStatusMessages_MultipleMessages(){
         int i = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
         int end = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
+        if(i < 0) i = 0;
         while(i <= end) {
             if(this->m_packets[i]->m_processed) {
                 i++; continue;
@@ -1218,7 +1219,7 @@ protected:
     }
 
     inline void ProcessIncrementalMessages() {
-        if(this->m_windowMsgSeqNum > 0 && this->m_windowMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
+        if(this->m_windowMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
             printf("one message inc s = %d e = %d w = %d\n", this->m_startMsgSeqNum, this->m_endMsgSeqNum, this->m_windowMsgSeqNum);
             FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
             this->m_startMsgSeqNum++;
@@ -1290,7 +1291,7 @@ protected:
     }
 
     inline void ProcessIncrementalMessagesForts() {
-        if(this->m_windowMsgSeqNum > 0 && this->m_windowMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
+        if(this->m_windowMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
             FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
             this->ProcessIncrementalForts(info, this->m_startMsgSeqNum);
             this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
@@ -3132,7 +3133,7 @@ public:
     inline void ClearMessages() {
         for(int i = 0;i < this->m_packetsCount; i++)
             this->m_packets[i]->Clear();
-        this->m_windowMsgSeqNum = 0;
+        this->m_windowMsgSeqNum = 1;
         this->m_startMsgSeqNum = 1;
         this->m_endMsgSeqNum = 0;
     }
@@ -4019,6 +4020,7 @@ public:
         this->m_idfMaxMsgSeqNo = 0;
         this->m_startMsgSeqNum = 0;
         this->m_endMsgSeqNum = 0;
+        this->m_windowMsgSeqNum = 0;
         this->m_idfDataCollected = false;
         if(this->m_idfMode == FeedConnectionSecurityDefinitionMode::sdmCollectData)
             this->m_symbolManager->Clear();
