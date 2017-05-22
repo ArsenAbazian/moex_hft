@@ -53,20 +53,71 @@ public:
     const int MaxHrUnsuccessfulConnectCount             = 20;
     const int WaitSecurityDefinitionPacketMaxTimeMcs    = 20000000;
 protected:
-    char                                        m_idName[128];
-    char                                        m_channelName[128];
-    char                                        feedTypeName[128];
-
 #ifdef TEST
     TestMessagesHelper                          *m_testHelper;
 #endif
+    int                                         m_windowMsgSeqNum;
+    int                                         m_startMsgSeqNum;
+    int                                         m_lostPacketCount;
+    int                                         m_endMsgSeqNum;
+    FeedConnection                              *m_snapshot;
+    Stopwatch                                   *m_waitTimer;
+    int                                         m_queueItemsCount;
+    int                                         m_symbolsToRecvSnapshot;
+    bool                                        m_tableInSnapshotMode;
 
+#ifdef TEST
+    int                                         m_waitLostIncrementalMessageMaxTimeMcs;
+    int                                         m_waitIncrementalMessageMaxTimeMcs;
+    int                                         m_waitIncrementalMessageMaxTimeMcsForts;
+    int                                         m_snapshotMaxTimeMcs;
+#else
+    const int                                   m_waitLostIncrementalMessageMaxTimeMcs = 100000;
+    const int                                   m_waitIncrementalMessageMaxTimeMcs = 4000000;
+    const int                                   m_waitIncrementalMessageMaxTimeMcsForts = 40000000;
+    const int                                   m_snapshotMaxTimeMcs = 30000;
+#endif
+    int                                         m_maxLostPacketCountForStartSnapshot;
+
+    SymbolManager                               *m_symbolManager;
+    FeedConnectionMessageInfo                   **m_packets;
+
+    int                                         m_requestMessageStartIndex;
+    int                                         m_fortsIncrementalRouteFirst;
+    int                                         m_fortsRouteFirtsSecurityId;
+
+    FastProtocolManager                         *m_fastProtocolManager;
+
+
+    ISocketBufferProvider                       *m_socketABufferProvider;
+    WinSockManager                              *socketAManager;
+    WinSockManager                              *socketBManager;
+    unsigned char                               *m_recvBuffer;
+    unsigned char                               *m_sendBuffer;
+    unsigned char                               *m_sendBufferCurrentPos;
+    unsigned char                               *m_recvBufferCurrentPos;
+    unsigned int                                m_recvBufferSize;
+    unsigned int                                m_sendBufferSize;
+
+    FeedConnectionState                         m_state;
+
+    MarketDataTable<OrderInfo, AstsOLSFONDInfo, AstsOLSFONDItemInfo>            *m_orderTableFond;
+    MarketDataTable<OrderInfo, AstsOLSCURRInfo, AstsOLSCURRItemInfo>            *m_orderTableCurr;
+    MarketDataTable<TradeInfo, AstsTLSFONDInfo, AstsTLSFONDItemInfo>            *m_tradeTableFond;
+    MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo>            *m_tradeTableCurr;
+    MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>       *m_statTableFond;
+    MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>       *m_statTableCurr;
+    LinkedPointer<AstsSecurityDefinitionInfo>                                   **m_symbols;
+    int                                                                         m_symbolsCount;
+
+    char                                        m_idName[128];
+    char                                        m_channelName[128];
+    char                                        feedTypeName[128];
     FeedConnectionType                          m_type;
     FeedConnectionId                            m_id;
     FeedMarketType                              m_marketType;
-
     FeedConnection                              *m_incremental;
-    FeedConnection                              *m_snapshot;
+
     FeedConnection                              *m_historicalReplay;
     FeedConnection                              *m_securityDefinition;
     bool                                        m_securityStatusSnapshotActive;
@@ -89,22 +140,15 @@ protected:
     FortsSnapshotInfo                           *m_fortsSnapshotInfo;
     FortsTradingSessionStatusInfo               *m_fortsTradingSessionStatus;
 
-    int                                         m_waitLostIncrementalMessageMaxTimeMcs;
-    int                                         m_waitIncrementalMessageMaxTimeMcs;
-    int                                         m_snapshotMaxTimeMcs;
-    int                                         m_maxLostPacketCountForStartSnapshot;
-
     FeedConnectionSecurityDefinitionMode        m_idfMode;
     FeedConnectionSecurityDefinitionState       m_idfState;
     int                                         m_idfMaxMsgSeqNo;
     int                                         m_idfStartMsgSeqNo;
     bool                                        m_allowSaveSecurityDefinitions;
-
     bool                                        m_idfDataCollected;
     bool                                        m_idfAllowUpdateData;
     bool                                        m_idfStopAfterUpdateAllMessages;
     bool                                        m_allowGenerateSecurityDefinitions;
-    SymbolManager                               *m_symbolManager;
 
     FeedConnectionHistoricalReplayState             m_hsState;
     PointerList<FeedConnectionRequestMessageInfo>  *m_hsRequestList;
@@ -112,9 +156,7 @@ protected:
     int                                             m_hrSizeRemain;
     int                                             m_hrUnsuccessfulConnectCount;
 
-    FeedConnectionMessageInfo                       **m_packets;
     int                                         m_packetsCount;
-
     int                                         m_idLogIndex;
     int                                         m_feedTypeNameLogIndex;
 
@@ -130,61 +172,23 @@ protected:
     char                                        feedBIp[64];
     int                                         feedBPort;
 
-    int                                         m_windowMsgSeqNum;
-    int                                         m_startMsgSeqNum;
-    int                                         m_lostPacketCount;
-    int                                         m_endMsgSeqNum;
-    int                                         m_requestMessageStartIndex;
-
-    int                                         m_fortsIncrementalRouteFirst;
-    int                                         m_fortsRouteFirtsSecurityId;
-
     const char                                  *m_senderCompId;
     int                                         m_senderCompIdLength;
     const char                                  *m_password;
     int                                         m_passwordLength;
 
-    WinSockManager                              *socketAManager;
-    WinSockManager                              *socketBManager;
-    FastProtocolManager                         *m_fastProtocolManager;
     AstsLogonInfo                               *m_fastLogonInfo;
-
     FixProtocolManager                          *m_fixProtocolManager;
     FixLogonInfo                                *m_hsLogonInfo;
     FixRejectInfo                               *m_hsRejectInfo;
     int                                          m_hsMsgSeqNo;
 
-    ISocketBufferProvider                       *m_socketABufferProvider;
-    unsigned char                               *m_recvBuffer;
-    unsigned char                               *m_sendBuffer;
-    unsigned char                               *m_sendBufferCurrentPos;
-    unsigned char                               *m_recvBufferCurrentPos;
-    unsigned int                                m_recvBufferSize;
-    unsigned int                                m_sendBufferSize;
-
-    FeedConnectionState                         m_state;
     FeedConnectionState                         m_nextState;
 
-    bool                                        m_shouldUseNextState;
     int                                         m_reconnectCount;
     int                                         m_maxReconnectCount;
-
-    struct timeval                              *m_tval;
-    Stopwatch                                   *m_stopwatch;
-    Stopwatch                                   *m_waitTimer;
     bool                                        m_shouldReceiveAnswer;
-    int                                         m_queueItemsCount;
-    int                                         m_symbolsToRecvSnapshot;
-    bool                                        m_tableInSnapshotMode;
-
-    MarketDataTable<OrderInfo, AstsOLSFONDInfo, AstsOLSFONDItemInfo>            *m_orderTableFond;
-    MarketDataTable<OrderInfo, AstsOLSCURRInfo, AstsOLSCURRItemInfo>            *m_orderTableCurr;
-    MarketDataTable<TradeInfo, AstsTLSFONDInfo, AstsTLSFONDItemInfo>            *m_tradeTableFond;
-    MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo>            *m_tradeTableCurr;
-    MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>       *m_statTableFond;
-    MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>       *m_statTableCurr;
-    LinkedPointer<AstsSecurityDefinitionInfo>                                   **m_symbols;
-    int                                                                         m_symbolsCount;
+    bool                                        m_shouldUseNextState;
 
 #pragma region FORTS
     MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>           *m_fortsOrderBookTable;
@@ -241,11 +245,6 @@ protected:
         for(int i = 0; i < RobotSettings::Default->MaxSecurityDefinitionCount; i++)
             delete this->m_symbols[i];
         delete this->m_symbols;
-    }
-
-    inline void GetCurrentTime(UINT64 *time) {
-        gettimeofday(this->m_tval, NULL);
-        *time = this->m_tval->tv_usec / 1000;
     }
 
     inline int TryGetSecurityDefinitionTotNumReportsAsts(unsigned char *buffer) {
@@ -416,7 +415,6 @@ protected:
     }
     inline bool ProcessServerCoreIncremental(int size, int msgSeqNum) {
         if(this->m_windowMsgSeqNum == msgSeqNum && msgSeqNum == this->m_endMsgSeqNum + 1) { // next packet received...
-            printf("next item     inc %d s = %d e = %d w = %d\n", msgSeqNum, this->m_startMsgSeqNum, this->m_endMsgSeqNum, this->m_windowMsgSeqNum);
             this->m_endMsgSeqNum = msgSeqNum;
             int localMsgSeqNum = msgSeqNum - this->m_windowMsgSeqNum;
             FeedConnectionMessageInfo *info = this->m_packets[localMsgSeqNum];
@@ -460,7 +458,6 @@ protected:
     }
     inline bool ProcessServerCoreSecurityStatusAsts(int size, UINT64 data) {
         int msgSeqNum = ((int)data);
-        printf("ss = %d\n", msgSeqNum);
         if(this->m_windowMsgSeqNum == msgSeqNum && msgSeqNum == this->m_endMsgSeqNum + 1) { // next item
             this->m_endMsgSeqNum = msgSeqNum;
             if(ShouldSkipMessageAsts(data)) {
@@ -2048,7 +2045,7 @@ protected:
         }
         else
             this->m_waitTimer->Stop(1);
-        if(this->m_waitTimer->IsTimeOutFast(1, this->WaitSnapshotMaxTimeMcs()) ||
+        if(this->m_waitTimer->IsTimeOutFast(1, this->m_snapshotMaxTimeMcs) ||
                 this->m_endMsgSeqNum - this->m_startMsgSeqNum > 5) {
             if(this->m_snapshotRouteFirst != -1) {
                 this->CancelSnapshot();
@@ -2582,7 +2579,7 @@ protected:
 
         if(!recv) {
             this->m_waitTimer->ActivateFast(1);
-            if(this->m_waitTimer->IsTimeOutFast(1, this->m_waitIncrementalMessageMaxTimeMcs)) {
+            if(this->m_waitTimer->IsTimeOutFast(1, this->m_waitIncrementalMessageMaxTimeMcsForts)) {
                 //TODO remove debug
                 if(this->m_snapshot->State() == FeedConnectionState::fcsSuspend) {
                     printf("%s listen atom incremental timeout %lu ms... start snapshot\n", this->m_idName, this->m_waitTimer->ElapsedMillisecondsFast(1));
@@ -3121,6 +3118,7 @@ public:
     inline void SetSymbolManager(SymbolManager *manager) { this->m_symbolManager = manager; }
     inline SymbolManager* GetSymbolManager() { return this->m_symbolManager; }
 
+#ifdef TEST
     inline void WaitLostIncrementalMessageMaxTimeMcs(int timeMs) { this->m_waitLostIncrementalMessageMaxTimeMcs = timeMs; }
     inline int WaitLostIncrementalMessageMaxTimeMcs() { return this->m_waitLostIncrementalMessageMaxTimeMcs; }
 
@@ -3129,6 +3127,7 @@ public:
 
     inline void WaitSnapshotMaxTimeMcs(int timeMs) { this->m_snapshotMaxTimeMcs = timeMs; }
     inline int WaitSnapshotMaxTimeMcs() { return this->m_snapshotMaxTimeMcs; }
+#endif
 
     inline void ClearMessages() {
         for(int i = 0;i < this->m_packetsCount; i++)

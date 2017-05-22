@@ -32,10 +32,12 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->ResetSendBuffer();
     this->ResetRecvBuffer();
 
+#ifdef TEST
     this->m_waitLostIncrementalMessageMaxTimeMcs = 100000;
     this->m_waitIncrementalMessageMaxTimeMcs = this->WaitAnyPacketMaxTimeMcs;
     this->m_snapshotMaxTimeMcs = 30000;
     this->m_maxLostPacketCountForStartSnapshot = 2000;
+#endif
 
     this->m_astsSnapshotInfo = 0;
     this->m_fortsSnapshotInfo = 0;
@@ -52,10 +54,7 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->socketAManager = NULL;
     this->socketBManager = NULL;
 
-    this->m_stopwatch = new Stopwatch();
     this->m_waitTimer = new Stopwatch();
-
-    this->m_tval = new struct timeval;
 
     this->m_marketType = FeedMarketType::fmtAsts;
     this->m_windowMsgSeqNum = 1;
@@ -102,8 +101,6 @@ FeedConnection::~FeedConnection() {
     }
     if(this->m_fastProtocolManager != 0)
         delete this->m_fastProtocolManager;
-    if(this->m_stopwatch != 0)
-        delete this->m_stopwatch;
     if(this->m_waitTimer != 0)
         delete this->m_waitTimer;
     if(this->m_fastLogonInfo != 0)
