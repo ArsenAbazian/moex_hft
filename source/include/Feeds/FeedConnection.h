@@ -58,7 +58,6 @@ protected:
 #endif
     int                                         m_windowMsgSeqNum;
     int                                         m_startMsgSeqNum;
-    int                                         m_lostPacketCount;
     int                                         m_endMsgSeqNum;
     FeedConnection                              *m_snapshot;
     Stopwatch                                   *m_waitTimer;
@@ -66,38 +65,15 @@ protected:
     int                                         m_symbolsToRecvSnapshot;
     bool                                        m_tableInSnapshotMode;
 
-#ifdef TEST
-    int                                         m_waitLostIncrementalMessageMaxTimeMcs;
-    int                                         m_waitIncrementalMessageMaxTimeMcs;
-    int                                         m_waitIncrementalMessageMaxTimeMcsForts;
-    int                                         m_snapshotMaxTimeMcs;
-#else
-    const int                                   m_waitLostIncrementalMessageMaxTimeMcs = 100000;
-    const int                                   m_waitIncrementalMessageMaxTimeMcs = 4000000;
-    const int                                   m_waitIncrementalMessageMaxTimeMcsForts = 40000000;
-    const int                                   m_snapshotMaxTimeMcs = 30000;
-#endif
-    int                                         m_maxLostPacketCountForStartSnapshot;
-
     SymbolManager                               *m_symbolManager;
     FeedConnectionMessageInfo                   **m_packets;
 
-    int                                         m_requestMessageStartIndex;
-    int                                         m_fortsIncrementalRouteFirst;
-    int                                         m_fortsRouteFirtsSecurityId;
-
     FastProtocolManager                         *m_fastProtocolManager;
 
-
-    ISocketBufferProvider                       *m_socketABufferProvider;
     WinSockManager                              *socketAManager;
     WinSockManager                              *socketBManager;
     unsigned char                               *m_recvBuffer;
-    unsigned char                               *m_sendBuffer;
-    unsigned char                               *m_sendBufferCurrentPos;
     unsigned char                               *m_recvBufferCurrentPos;
-    unsigned int                                m_recvBufferSize;
-    unsigned int                                m_sendBufferSize;
 
     FeedConnectionState                         m_state;
 
@@ -107,6 +83,26 @@ protected:
     MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo>            *m_tradeTableCurr;
     MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>       *m_statTableFond;
     MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>       *m_statTableCurr;
+
+    int                                         m_fortsIncrementalRouteFirst;
+    int                                         m_fortsRouteFirtsSecurityId;
+
+#pragma region FORTS
+    MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>           *m_fortsOrderBookTable;
+    MarketDataTable<TradeInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>               *m_fortsTradeBookTable;
+    LinkedPointer<FortsSecurityDefinitionInfo>                                  **m_symbolsForts;
+#pragma endregion
+
+    int                                         m_lostPacketCount;
+    int                                         m_snapshotRouteFirst;
+    int                                         m_snapshotLastFragment;
+    int                                         m_nextFortsSnapshotRouteFirst;
+    int                                         m_lastMsgSeqNumProcessed;
+    int                                         m_rptSeq;
+
+    AstsSnapshotInfo                            *m_astsSnapshotInfo;
+    FortsSnapshotInfo                           *m_fortsSnapshotInfo;
+
     LinkedPointer<AstsSecurityDefinitionInfo>                                   **m_symbols;
     int                                                                         m_symbolsCount;
 
@@ -130,14 +126,7 @@ protected:
     int                                         m_connToRecvHistoricalReplayCount;
     bool                                        m_enableHistoricalReplay;
 
-    int                                         m_snapshotRouteFirst;
-    int                                         m_snapshotLastFragment;
-    int                                         m_nextFortsSnapshotRouteFirst;
-    int                                         m_lastMsgSeqNumProcessed;
-    int                                         m_rptSeq;
 
-    AstsSnapshotInfo                            *m_astsSnapshotInfo;
-    FortsSnapshotInfo                           *m_fortsSnapshotInfo;
     FortsTradingSessionStatusInfo               *m_fortsTradingSessionStatus;
 
     FeedConnectionSecurityDefinitionMode        m_idfMode;
@@ -155,6 +144,7 @@ protected:
     int                                             m_hrMessageSize;
     int                                             m_hrSizeRemain;
     int                                             m_hrUnsuccessfulConnectCount;
+    int                                         m_requestMessageStartIndex;
 
     int                                         m_packetsCount;
     int                                         m_idLogIndex;
@@ -190,12 +180,25 @@ protected:
     bool                                        m_shouldReceiveAnswer;
     bool                                        m_shouldUseNextState;
 
-#pragma region FORTS
-    MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>           *m_fortsOrderBookTable;
-    MarketDataTable<TradeInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>               *m_fortsTradeBookTable;
-    LinkedPointer<FortsSecurityDefinitionInfo>                                  **m_symbolsForts;
-#pragma endregion
+    unsigned int                                m_recvBufferSize;
+    unsigned int                                m_sendBufferSize;
+    unsigned char                               *m_sendBuffer;
+    unsigned char                               *m_sendBufferCurrentPos;
+    ISocketBufferProvider                       *m_socketABufferProvider;
 
+
+#ifdef TEST
+    int                                         m_waitLostIncrementalMessageMaxTimeMcs;
+    int                                         m_waitIncrementalMessageMaxTimeMcs;
+    int                                         m_waitIncrementalMessageMaxTimeMcsForts;
+    int                                         m_snapshotMaxTimeMcs;
+#else
+    const int                                   m_waitLostIncrementalMessageMaxTimeMcs = 100000;
+    const int                                   m_waitIncrementalMessageMaxTimeMcs = 4000000;
+    const int                                   m_waitIncrementalMessageMaxTimeMcsForts = 40000000;
+    const int                                   m_snapshotMaxTimeMcs = 30000;
+#endif
+    int                                         m_maxLostPacketCountForStartSnapshot;
 
     void InitializeHistoricalReplay() {
         this->m_hsRequestList = new PointerList<FeedConnectionRequestMessageInfo>(RobotSettings::Default->HistoricalReplayMaxMessageRequestCount);
