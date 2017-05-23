@@ -660,7 +660,7 @@ bool Robot::MainLoop_CurrOnly() {
     Stopwatch::Default->GetElapsedMicrosecondsGlobal();
     w->StartFast();
 
-    this->m_currMarket->FeedChannel()->Olr()->EnableHistoricalReplay(false); // TODO remove!!!!!
+    //this->m_currMarket->FeedChannel()->Olr()->EnableHistoricalReplay(false); // TODO remove!!!!!
 
     AstsFeedChannel *channel = this->m_currMarket->FeedChannel();
 

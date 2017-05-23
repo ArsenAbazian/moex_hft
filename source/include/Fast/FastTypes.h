@@ -381,7 +381,10 @@ public:
 	INT32							RptSeq;			// id=83  presence=optional  
 	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional  
 	Decimal							NetChgPrevDay;			// id=451  presence=optional  
-	char							TradingSessionID[16] __attribute__((aligned(16)));			// id=336  aligned=16  presence=optional  
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
+		UINT32		TradingSessionIDUint;
+	};
 	int								MDEntryTypeLength;			// id=269  presence=optional  fixed_size=1  
 	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
 	int								QuoteConditionLength;			// id=276  presence=optional  
@@ -394,7 +397,7 @@ public:
 	int								CXFlagLength;			// id=5154  presence=optional  
 	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12  
 	int								SymbolLength;			// id=55  aligned=16  presence=optional  
-	int								TradingSessionIDLength;			// id=336  aligned=16  presence=optional  
+	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
 
 	AstsGenericItemInfo() {
 		memset(this, 0, sizeof(AstsGenericItemInfo));
@@ -425,7 +428,10 @@ public:
 	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
 	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	char							TradingSessionID[16] __attribute__((aligned(16)));			// id=336  aligned=16  presence=optional  
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
+		UINT32		TradingSessionIDUint;
+	};
 	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
 	INT32							RptSeq;			// id=83  
@@ -440,7 +446,7 @@ public:
 	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								TradingSessionIDLength;			// id=336  aligned=16  presence=optional  
+	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
 	int								SymbolLength;			// id=55  aligned=16  
 	int								GroupMDEntriesCount;
 
@@ -486,14 +492,17 @@ public:
 	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1  
 	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional    copy
 	INT32							RptSeq;			// id=83  presence=optional  
-	char							TradingSessionID[16] __attribute__((aligned(16)));			// id=336  aligned=16  presence=optional    copy
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional    copy
+		UINT32		TradingSessionIDUint;
+	};
 	int								MDEntryTypeLength;			// id=269  presence=optional  fixed_size=1    copy
 	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
 	int								OrderStatusLength;			// id=10505  presence=optional  fixed_size=1    copy
 	int								OrdTypeLength;			// id=40  presence=optional    copy
 	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy
 	int								SymbolLength;			// id=55  aligned=16  presence=optional    copy
-	int								TradingSessionIDLength;			// id=336  aligned=16  presence=optional    copy
+	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional    copy
 
 	AstsOLSFONDItemInfo() {
 		memset(this, 0, sizeof(AstsOLSFONDItemInfo));
@@ -529,7 +538,10 @@ public:
 	UINT32							LastFragment;			// id=893  presence=optional  
 	UINT32							RouteFirst;			// id=7944  presence=optional  
 	INT32							TradSesStatus;			// id=340  presence=optional  
-	char							TradingSessionID[16] __attribute__((aligned(16)));			// id=336  aligned=16  presence=optional  
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
+		UINT32		TradingSessionIDUint;
+	};
 	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
@@ -538,7 +550,7 @@ public:
 	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								TradingSessionIDLength;			// id=336  aligned=16  presence=optional  
+	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
 	int								SymbolLength;			// id=55  aligned=16  
 	int								GroupMDEntriesCount;
 
@@ -581,13 +593,16 @@ public:
 	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1    copy
 	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional    copy
 	INT32							RptSeq;			// id=83  presence=optional  
-	char							TradingSessionID[16] __attribute__((aligned(16)));			// id=336  aligned=16  presence=optional    copy
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional    copy
+		UINT32		TradingSessionIDUint;
+	};
 	int								MDEntryTypeLength;			// id=269  presence=optional  fixed_size=1    copy
 	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
 	int								OrderStatusLength;			// id=10505  presence=optional  fixed_size=1    copy
 	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy
 	int								SymbolLength;			// id=55  aligned=16  presence=optional    copy
-	int								TradingSessionIDLength;			// id=336  aligned=16  presence=optional    copy
+	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional    copy
 
 	AstsOLSCURRItemInfo() {
 		memset(this, 0, sizeof(AstsOLSCURRItemInfo));
@@ -623,7 +638,10 @@ public:
 	UINT32							LastFragment;			// id=893  presence=optional  
 	UINT32							RouteFirst;			// id=7944  presence=optional  
 	INT32							TradSesStatus;			// id=340  presence=optional  
-	char							TradingSessionID[16] __attribute__((aligned(16)));			// id=336  aligned=16  presence=optional  
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
+		UINT32		TradingSessionIDUint;
+	};
 	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	AstsOLSCURRItemInfo* GroupMDEntries[256];
@@ -631,7 +649,7 @@ public:
 	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								TradingSessionIDLength;			// id=336  aligned=16  presence=optional  
+	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
 	int								SymbolLength;			// id=55  aligned=16  
 	int								GroupMDEntriesCount;
 
@@ -685,7 +703,10 @@ public:
 	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1  
 	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional  
 	INT32							RptSeq;			// id=83  presence=optional  
-	char							TradingSessionID[16] __attribute__((aligned(16)));			// id=336  aligned=16  presence=optional  
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
+		UINT32		TradingSessionIDUint;
+	};
 	int								MDEntryTypeLength;			// id=269  fixed_size=1  
 	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
 	int								OrderSideLength;			// id=10504  presence=optional    copy
@@ -693,7 +714,7 @@ public:
 	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy
 	int								RefOrderIDLength;			// id=1080  presence=optional    copy
 	int								SymbolLength;			// id=55  aligned=16  presence=optional  
-	int								TradingSessionIDLength;			// id=336  aligned=16  presence=optional  
+	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
 
 	AstsTLSFONDItemInfo() {
 		memset(this, 0, sizeof(AstsTLSFONDItemInfo));
@@ -729,7 +750,10 @@ public:
 	UINT32							LastFragment;			// id=893  presence=optional  
 	UINT32							RouteFirst;			// id=7944  presence=optional  
 	INT32							TradSesStatus;			// id=340  presence=optional  
-	char							TradingSessionID[16] __attribute__((aligned(16)));			// id=336  aligned=16  presence=optional  
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
+		UINT32		TradingSessionIDUint;
+	};
 	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
@@ -738,7 +762,7 @@ public:
 	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								TradingSessionIDLength;			// id=336  aligned=16  presence=optional  
+	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
 	int								SymbolLength;			// id=55  aligned=16  
 	int								GroupMDEntriesCount;
 
@@ -790,7 +814,10 @@ public:
 	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1  
 	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional  
 	INT32							RptSeq;			// id=83  presence=optional  
-	char							TradingSessionID[16] __attribute__((aligned(16)));			// id=336  aligned=16  presence=optional  
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
+		UINT32		TradingSessionIDUint;
+	};
 	int								MDEntryTypeLength;			// id=269  fixed_size=1  
 	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
 	int								OrderSideLength;			// id=10504  presence=optional    copy
@@ -798,7 +825,7 @@ public:
 	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy
 	int								RefOrderIDLength;			// id=1080  presence=optional    copy
 	int								SymbolLength;			// id=55  aligned=16  presence=optional  
-	int								TradingSessionIDLength;			// id=336  aligned=16  presence=optional  
+	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
 
 	AstsTLSCURRItemInfo() {
 		memset(this, 0, sizeof(AstsTLSCURRItemInfo));
@@ -834,7 +861,10 @@ public:
 	UINT32							LastFragment;			// id=893  presence=optional  
 	UINT32							RouteFirst;			// id=7944  presence=optional  
 	INT32							TradSesStatus;			// id=340  presence=optional  
-	char							TradingSessionID[16] __attribute__((aligned(16)));			// id=336  aligned=16  presence=optional  
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
+		UINT32		TradingSessionIDUint;
+	};
 	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
 	AstsTLSCURRItemInfo* GroupMDEntries[256];
@@ -842,7 +872,7 @@ public:
 	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								TradingSessionIDLength;			// id=336  aligned=16  presence=optional  
+	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
 	int								SymbolLength;			// id=55  aligned=16  
 	int								GroupMDEntriesCount;
 
@@ -900,11 +930,14 @@ public:
 	LinkedPointer<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Allocator;
 	bool							Used;
-	char							TradingSessionID[16] __attribute__((aligned(16)));			// id=336  aligned=16  
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  
+		UINT32		TradingSessionIDUint;
+	};
 	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12  
 	INT32							SecurityTradingStatus;			// id=326  presence=optional  
 	INT32							OrderNote;			// id=9680  presence=optional  
-	int								TradingSessionIDLength;			// id=336  aligned=16  
+	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  
 	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12  
 
 	AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() {
@@ -1068,7 +1101,10 @@ public:
 	UINT32							MsgSeqNum;			// id=34  skip=true  
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  
-	char							TradingSessionID[16] __attribute__((aligned(16)));			// id=336  aligned=16  presence=optional  
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
+		UINT32		TradingSessionIDUint;
+	};
 	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12  
 	INT32							SecurityTradingStatus;			// id=326  presence=optional  
 	UINT32							AuctionIndicator;			// id=5509  presence=optional  
@@ -1077,7 +1113,7 @@ public:
 	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
 	int								SymbolLength;			// id=55  aligned=16  
-	int								TradingSessionIDLength;			// id=336  aligned=16  presence=optional  
+	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
 	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12  
 
 	AstsSecurityStatusInfo() {
@@ -1108,13 +1144,16 @@ public:
 	UINT64							SendingTime;			// id=52  predict=9  skip=true  
 	INT32							TradSesStatus;			// id=340  
 	char							Text[512];			// id=58  presence=optional  
-	char							TradingSessionID[16] __attribute__((aligned(16)));			// id=336  aligned=16  
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  
+		UINT32		TradingSessionIDUint;
+	};
 	int								MessageTypeLength;			// id=35    constant has constant value = h
 	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
 	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
 	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
 	int								TextLength;			// id=58  presence=optional  
-	int								TradingSessionIDLength;			// id=336  aligned=16  
+	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  
 
 	AstsTradingSessionStatusInfo() {
 		memset(this, 0, sizeof(AstsTradingSessionStatusInfo));

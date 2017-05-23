@@ -253,7 +253,7 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
         bool isSnap = HasKey("obs") || HasKey("ols") || HasKey("tls") || HasKey("mss");
         bool isIdf = HasKey("idf");
         if(isSnap) {
-            info->m_session = "session1";
+            info->m_session = "ses1";
             if(HasKey("begin")) {
                 info->m_routeFirst = true;
             }
@@ -295,7 +295,7 @@ void AddFeedInfo(FeedConnection *feed, TestTemplateInfo **tmp, int templatesCoun
         int itemIndex = 0;
         while((entryIndex = KeyIndex("entry", entryIndex + 1)) != -1) {
             TestTemplateItemInfo *item = new TestTemplateItemInfo();
-            item->m_tradingSession = "session1";
+            item->m_tradingSession = "ses1";
             item->m_action = MDUpdateAction::mduaAdd;
             if(StringIdComparer::Equal("del", this->m_keys[entryIndex + 1])) {
                 item->m_action = MDUpdateAction::mduaDelete;
@@ -1117,7 +1117,7 @@ public:
         if(tmp->m_tradingSession != 0) {
             info->PresenceMap |= AstsIncrementalOLRFONDItemInfoPresenceIndices::TradingSessionIDPresenceIndex;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
-            strcpy(info->TradingSessionID, tmp->m_tradingSession);
+            info->TradingSessionIDUint = *((UINT32*)tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
             info->MDEntryIDLength = strlen(tmp->m_entryId);
@@ -1140,7 +1140,7 @@ public:
         }
         if(tmp->m_tradingSession != 0) {
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
-            strcpy(info->TradingSessionID, tmp->m_tradingSession);
+            info->TradingSessionIDUint = *((UINT32*)tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
             info->MDEntryIDLength = strlen(tmp->m_entryId);
@@ -1167,7 +1167,7 @@ public:
         }
         if(tmp->m_tradingSession != 0) {
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
-            strcpy(info->TradingSessionID, tmp->m_tradingSession);
+            info->TradingSessionIDUint = *((UINT32*)tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
             info->MDEntryIDLength = strlen(tmp->m_entryId);
@@ -1200,7 +1200,7 @@ public:
         if(tmp->m_tradingSession != 0) {
             info->PresenceMap |= AstsIncrementalOLRCURRItemInfoPresenceIndices::TradingSessionIDPresenceIndex;
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
-            strcpy(info->TradingSessionID, tmp->m_tradingSession);
+            info->TradingSessionIDUint = *((UINT32*)tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
             info->MDEntryIDLength = strlen(tmp->m_entryId);
@@ -1223,7 +1223,7 @@ public:
         }
         if(tmp->m_tradingSession != 0) {
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
-            strcpy(info->TradingSessionID, tmp->m_tradingSession);
+            info->TradingSessionIDUint = *((UINT32*)tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
             info->MDEntryIDLength = strlen(tmp->m_entryId);
@@ -1250,7 +1250,7 @@ public:
         }
         if(tmp->m_tradingSession != 0) {
             info->TradingSessionIDLength = strlen(tmp->m_tradingSession);
-            strcpy(info->TradingSessionID, tmp->m_tradingSession);
+            info->TradingSessionIDUint = *((UINT32*)tmp->m_tradingSession);
         }
         if(tmp->m_entryId != 0) {
             info->MDEntryIDLength = strlen(tmp->m_entryId);

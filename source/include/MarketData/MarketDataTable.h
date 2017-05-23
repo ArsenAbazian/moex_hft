@@ -80,13 +80,6 @@ public:
             return this->m_cachedItem;
         return 0;
     }
-    inline TABLEITEM<ITEMINFO>* GetCachedItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) {
-        if(this->m_cachedItem == 0)
-            return 0;
-        if(this->m_cachedItem->Symbol()->Equal(symbol, symbolLen) && this->m_cachedItem->TradingSession()->Equal(tradingSession, tradingSessionLen))
-            return this->m_cachedItem;
-        return 0;
-    }
     inline TABLEITEM<ITEMINFO>* GetCachedItem(const char *symbol, int symbolLen, UINT32 tradingSession) {
         if(this->m_cachedItem == 0)
             return 0;
@@ -95,9 +88,10 @@ public:
         return 0;
     }
     inline void ObtainSnapshotItem(INFO *info) {
-        this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        UINT32 tradingId = *((UINT32*)info->TradingSessionID);
+        this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, tradingId);
         if(this->m_snapshotItem == 0)
-            this->m_snapshotItem = this->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+            this->m_snapshotItem = this->GetItem(info->Symbol, info->SymbolLength, tradingId);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
     }
@@ -124,16 +118,18 @@ public:
     }
 
     inline void ObtainSnapshotItem(int symbolIndex, AstsSnapshotInfo *info) {
-        this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        UINT32 tradingId = *((UINT32*)info->TradingSessionID);
+        this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, tradingId);
         if(this->m_snapshotItem == 0)
-            this->m_snapshotItem = this->GetItem(symbolIndex, info->TradingSessionID, info->TradingSessionIDLength);
+            this->m_snapshotItem = this->GetItem(symbolIndex, tradingId);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
     }
     inline void ObtainSnapshotItem(AstsSnapshotInfo *info) {
-        this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+        UINT32 tradingId = *((UINT32*)info->TradingSessionID);
+        this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, tradingId);
         if(this->m_snapshotItem == 0)
-            this->m_snapshotItem = this->GetItem(info->Symbol, info->SymbolLength, info->TradingSessionID, info->TradingSessionIDLength);
+            this->m_snapshotItem = this->GetItem(info->Symbol, info->SymbolLength, tradingId);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
     }
@@ -199,12 +195,10 @@ public:
         TABLEITEM<ITEMINFO> *tableItem = GetItemByIndex(index);
         return ProcessIncremental(info, tableItem);
     }
-
-    inline bool ProcessIncremental(ITEMINFO *info, int index, const char *tradingId, int tradingLength) {
-        TABLEITEM<ITEMINFO> *tableItem = GetItem(index, tradingId, tradingLength);
+    inline bool ProcessIncremental(ITEMINFO *info, int index, UINT32 sessionId) {
+        TABLEITEM<ITEMINFO> *tableItem = GetItem(index, sessionId);
         return ProcessIncremental(info, tableItem);
     }
-
     inline bool ShouldProcessSnapshot(INFO *info) {
         if(!this->m_snapshotItem->HasEntries())
             return this->m_snapshotItem->RptSeq() < info->RptSeq;
@@ -479,15 +473,29 @@ public:
         this->m_symbolsCount++;
         return res;
     }
-    inline TABLEITEM<ITEMINFO>* GetItem(const char *symbol, int symbolLen, const char *tradingSession, int tradingSessionLen) {
+    inline TABLEITEM<ITEMINFO>* GetItem(const char *symbol, int symbolLen, UINT32 tradingSession) {
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = GetSymbol(symbol, symbolLen);
-        TABLEITEM<ITEMINFO>* res = s->GetSession(tradingSession, tradingSessionLen);
+        TABLEITEM<ITEMINFO>* res = s->GetSession(tradingSession);
         this->m_cachedItem = res;
         return res;
     }
-    inline TABLEITEM<ITEMINFO>* GetItem(int symbolIndex, const char *tradingSession, int tradingSessionLen) {
+#ifdef TEST
+    inline TABLEITEM<ITEMINFO>* GetItem(int symbolIndex, const char *tradingSession) {
+        return this->GetItem(symbolIndex, *((UINT32*)tradingSession));
+    }
+    inline TABLEITEM<ITEMINFO>* GetItem(const char *symbol, const char *tradingSession) {
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = GetSymbol(SymbolManager::AlignedString(symbol), strlen(symbol));
+        TABLEITEM<ITEMINFO>* res = s->GetSession(*((UINT32*)tradingSession));
+        return res;
+    }
+    void Add(const char *symbol, const char *session) {
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = AddSymbol(symbol);
+        s->GetSession(*((UINT32*)session));
+    }
+#endif
+    inline TABLEITEM<ITEMINFO>* GetItem(int symbolIndex, UINT32 tradingSession) {
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = this->m_symbols[symbolIndex];
-        TABLEITEM<ITEMINFO>* res = s->GetSession(tradingSession, tradingSessionLen);
+        TABLEITEM<ITEMINFO>* res = s->GetSession(tradingSession);
         this->m_cachedItem = res;
         return res;
     }
@@ -526,12 +534,6 @@ public:
         return 0;
     }
 
-    inline TABLEITEM<ITEMINFO>* GetItem(const char *symbol, const char *tradingSession) {
-        return this->GetItem(SymbolManager::AlignedString(symbol), strlen(symbol), SymbolManager::AlignedString(tradingSession), strlen(tradingSession));
-    }
-    inline TABLEITEM<ITEMINFO>* AddItem(const char *symbol, const char *tradingSession) {
-        return this->GetItem(SymbolManager::AlignedString(symbol), strlen(symbol), SymbolManager::AlignedString(tradingSession), strlen(tradingSession));
-    }
     inline int UsedItemCount() {
         int res = 0;
         for(int i = 0; i < this->m_symbolsCount; i++)
@@ -544,10 +546,6 @@ public:
         return this->m_queueItemsCount > 0;
     }
     inline int QueueEntriesCount() { return this->m_queueItemsCount; }
-    inline TABLEITEM<ITEMINFO>* Add(const char *symbol, const char *session) {
-        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *symbolInfo = GetSymbol(SymbolManager::AlignedString(symbol), strlen(symbol));
-        return symbolInfo->GetSession(SymbolManager::AlignedString(session), strlen(session));
-    }
     inline MarketSymbolInfo<TABLEITEM<ITEMINFO>>* AddSymbol(const char *symbol, int symbolLength, int index) {
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *newItem = this->m_symbols[index];
         newItem->Symbol()->Set(symbol, symbolLength);

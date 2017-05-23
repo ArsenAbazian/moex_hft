@@ -59,6 +59,7 @@ public:
     inline UINT64 SecurityID() { return this->m_securityId; }
     inline int MaxSessionCount() { return this->m_maxCount; }
     inline T* Session(int index) { return this->m_items[index]; }
+    /*
     __attribute_noinline__
     T* GetNewSession(const char *session, int sessionLength) {
         T* res = this->m_items[this->m_count];
@@ -85,7 +86,7 @@ public:
         }
 #endif
         return this->GetNewSession(session, sessionLength);
-    }
+    }*/
     inline T* GetSession(UINT32 session) {
         T **item = this->m_items;
         for(int i = 0; i < this->m_count; i++, item++) {
@@ -114,11 +115,8 @@ public:
             (*item)->Clear();
         this->m_count = 0;
     }
-    inline T* AddSession(const char *session, int sessionLength) {
-        return GetSession(session, sessionLength);
-    }
     inline T* AddSession(const char *session) {
-        return AddSession(session, strlen(session));
+        return GetSession(*((UINT32*)session));
     }
     inline T* AddSession(UINT32 session) {
         return GetSession(session);

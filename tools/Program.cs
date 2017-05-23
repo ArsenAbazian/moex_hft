@@ -1595,12 +1595,33 @@ namespace prebuild {
 			return maxStringLength;
 		}
 
+		string GetUnionType(XmlNode field) {
+			if(field.Attributes["union"].Value == "uint32")
+				return "UINT32";
+			throw new ArgumentException("union");
+		}
+		string GetTypeSuffix(XmlNode field) {
+			if(field.Attributes["union"].Value == "uint32")
+				return "Uint";
+			throw new ArgumentException("union");
+		}
+
 		void WriteStringDefinitionCore(XmlNode field, string tabs) {
 			int maxStringLength = GetMaxStringSize(field);
-			if(HasAttribute(field, "aligned"))
-				WriteLine("\tchar" + tabs + Name(field) + "[" + maxStringLength + "] __attribute__((aligned(" + field.Attributes["aligned"].Value + ")));" + GetCommentLine(field));
-			else 
-				WriteLine("\tchar" + tabs + Name(field) + "[" + maxStringLength + "];" + GetCommentLine(field));
+			if (HasAttribute (field, "union")) {
+				WriteLine ("\tunion {");
+				if (HasAttribute (field, "aligned"))
+					WriteLine ("\t\tchar\t\t" + Name (field) + "[" + maxStringLength + "] __attribute__((aligned(" + field.Attributes ["aligned"].Value + ")));" + GetCommentLine (field));
+				else
+					WriteLine ("\t\tchar\t\t" + Name (field) + "[" + maxStringLength + "];" + GetCommentLine (field));
+				WriteLine ("\t\t" + GetUnionType (field) + "\t\t" + Name (field) + GetTypeSuffix (field) + ";");
+				WriteLine ("\t};");
+			} else {
+				if (HasAttribute (field, "aligned"))
+					WriteLine ("\tchar" + tabs + Name (field) + "[" + maxStringLength + "] __attribute__((aligned(" + field.Attributes ["aligned"].Value + ")));" + GetCommentLine (field));
+				else
+					WriteLine ("\tchar" + tabs + Name (field) + "[" + maxStringLength + "];" + GetCommentLine (field));
+			}
 		}
 
 		int GetMaxByteVectorSize(XmlNode field) {
@@ -2047,7 +2068,9 @@ namespace prebuild {
 				attribute.Name == "presence" || 
 				attribute.Name == "charset" || 
 				attribute.Name == "fixed_size" || 
+				attribute.Name == "size" || 
 				attribute.Name == "predict" || 
+				attribute.Name == "union" ||
 				attribute.Name == "skip" || 
 				attribute.Name == "aligned";
 		}
@@ -2790,12 +2813,22 @@ namespace prebuild {
 
 		private  void ParseStringValue (StructureInfo str, XmlNode value, string info, string tabString) {
 			string methodName = HasOptionalPresence (value) ? GetMethodName (value, "ReadString_Optional") : GetMethodName (value, "ReadString_Mandatory");
-			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!" + methodName + "(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + "))");
-				WriteLine(tabString + "\tnmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
-				return;
+			bool hasFixedSize = HasAttribute (value, "fixed_size");
+			if (hasFixedSize) {
+				if (ShouldWriteNullCheckCode (value)) {
+					WriteLine (tabString + "if(!" + methodName + "(" + info + "->" + Name (value) + "))");
+					WriteLine (tabString + "\tnmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex (value) + ";");
+					return;
+				}
+				WriteLine (tabString + methodName + "(" + info + "->" + Name (value) + ");");
+			} else {
+				if (ShouldWriteNullCheckCode (value)) {
+					WriteLine (tabString + "if(!" + methodName + "(" + info + "->" + Name (value) + ", &(" + info + "->" + Name (value) + "Length)" + "))");
+					WriteLine (tabString + "\tnmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex (value) + ";");
+					return;
+				}
+				WriteLine (tabString + methodName + "(" + info + "->" + Name (value) + ", &(" + info + "->" + Name (value) + "Length)" + ");");
 			}
-			WriteLine(tabString + methodName + "(" + info + "->" + Name(value) + ", &(" + info + "->" + Name(value) + "Length)" + ");");
 		}
 
 		private  void WriteDecimalValueDefault (XmlNode value, string structName, string tabString) {

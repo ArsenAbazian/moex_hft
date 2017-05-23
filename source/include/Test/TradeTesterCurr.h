@@ -81,14 +81,14 @@ public:
     void Test_OnIncrementalRefresh_TLR_CURR_Add() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
 
         AstsIncrementalTLRCURRInfo *info = this->m_helper->CreateAstsIncrementalTLRCURRInfo();
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
 
         if(item4->Used)
             throw;
@@ -106,7 +106,7 @@ public:
             throw;
         if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
             throw;
-        TradeInfo<AstsTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("symbol1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("symbol1", "ses1");
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 1)
@@ -132,7 +132,7 @@ public:
             throw;
         if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->TradeCurr()->GetItem("symbol1", "session1");
+        obi = this->incCurr->TradeCurr()->GetItem("symbol1", "ses1");
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 2)
@@ -157,7 +157,7 @@ public:
             throw;
         if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->TradeCurr()->GetItem("symbol1", "session1");
+        obi = this->incCurr->TradeCurr()->GetItem("symbol1", "ses1");
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 3)
@@ -201,7 +201,7 @@ public:
             throw;
         if(this->incCurr->TradeCurr()->Symbol(0)->Count() != 1)
             throw;
-        obi = this->incCurr->TradeCurr()->GetItem("symbol1", "session1");
+        obi = this->incCurr->TradeCurr()->GetItem("symbol1", "ses1");
         if(obi == 0)
             throw;
         if(obi->Trades()->Count() != 4)
@@ -247,13 +247,13 @@ public:
     void Test_Clear() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
 
         AstsIncrementalTLRCURRInfo *info = this->m_helper->CreateAstsIncrementalTLRCURRInfo();
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -274,7 +274,7 @@ public:
         if(this->incCurr->TradeCurr()->UsedItemCount() != 0)
             throw;
 
-        TradeInfo<AstsTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("symbol1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("symbol1", "ses1");
         if(obi->Trades()->Count() != 0)
             throw;
     }
@@ -282,13 +282,13 @@ public:
     void Test_OnFullRefresh_TLS_CURR() {
         this->Clear();
         this->TestDefaults();
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
 
         AstsIncrementalTLRCURRInfo *info = this->m_helper->CreateAstsIncrementalTLRCURRInfo();
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -298,11 +298,11 @@ public:
 
         this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
 
-        TradeInfo<AstsTLSCURRItemInfo> *obi2 = this->incCurr->TradeCurr()->GetItem("symbol1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *obi2 = this->incCurr->TradeCurr()->GetItem("symbol1", "ses1");
         if(obi2->Trades()->Count() != 4)
             throw;
 
-        AstsTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("t1s2", "session1");
+        AstsTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("t1s2", "ses1");
         AstsTLSCURRItemInfo *newItem1 = this->m_helper->CreateTLSCurrItemInfo(7,-2, 1, 2, MDEntryType::mdetBuyQuote, "e7");
         AstsTLSCURRItemInfo *newItem2 = this->m_helper->CreateTLSCurrItemInfo(8,-2, 1, 2, MDEntryType::mdetBuyQuote, "e8");
         info2->RptSeq = 5;
@@ -317,11 +317,11 @@ public:
         if(this->incCurr->TradeCurr()->UsedItemCount() != 2)
             throw;
 
-        TradeInfo<AstsTLSCURRItemInfo> *obi3 = this->incCurr->TradeCurr()->GetItem("symbol1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *obi3 = this->incCurr->TradeCurr()->GetItem("symbol1", "ses1");
         if(obi3->Trades()->Count() != 4)
             throw;
 
-        TradeInfo<AstsTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("t1s2", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *obi = this->incCurr->TradeCurr()->GetItem("t1s2", "ses1");
         if(obi->Trades()->Count() != 2)
             throw;
 
@@ -452,7 +452,7 @@ public:
     }
 
     void AddSymbol(const char *symbol) {
-        AddSymbol(symbol, "session1");
+        AddSymbol(symbol, "ses1");
     }
 
     void ClearSymbols() {
@@ -465,22 +465,22 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", "e1", 1);
+        AstsTLSCURRItemInfo *item = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", "e1", 1);
         item->RptSeq = 1;
 
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", "e1", 2);
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", "e1", 2);
         item2->RptSeq = 2;
 
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", "e1", 4);
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", "e1", 4);
         item3->RptSeq = 4;
 
-        this->m_table->ProcessIncremental(item, 0, item->TradingSessionID, item->TradingSessionIDLength);
-        this->m_table->ProcessIncremental(item2, 0, item->TradingSessionID, item->TradingSessionIDLength);
-        this->m_table->ProcessIncremental(item3, 0, item->TradingSessionID, item->TradingSessionIDLength);
+        this->m_table->ProcessIncremental(item, 0, item->TradingSessionIDUint);
+        this->m_table->ProcessIncremental(item2, 0, item->TradingSessionIDUint);
+        this->m_table->ProcessIncremental(item3, 0, item->TradingSessionIDUint);
 
         if(this->m_table->UsedItemCount() != 1)
             throw;
-        TradeInfo<AstsTLSCURRItemInfo> *tableItem = this->m_table->GetItem("symbol1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *tableItem = this->m_table->GetItem("symbol1", "ses1");
         if(tableItem->EntriesQueue()->MaxIndex() != 1) // 3 is empty and 4 has value
             throw;
         this->m_table->Clear();
@@ -500,11 +500,11 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength))
+        if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint))
             throw;
     }
 
@@ -512,11 +512,11 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 2;
 
-        if(this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength))
+        if(this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint))
             throw;
     }
 
@@ -524,18 +524,18 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength))
+        if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint))
             throw;
 
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 3);
         item2->RptSeq = 3;
 
-        if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionID, item2->TradingSessionIDLength))
+        if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionIDUint))
             throw;
 
 
@@ -546,18 +546,18 @@ public:
         this->AddSymbol("symbol1");
         this->AddSymbol("symbol2");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength))
+        if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint))
             throw;
 
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol2", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol2", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item2->RptSeq = 1;
 
-        if(!this->m_table->ProcessIncremental(item2, 1, item2->TradingSessionID, item2->TradingSessionIDLength))
+        if(!this->m_table->ProcessIncremental(item2, 1, item2->TradingSessionIDUint))
             throw;
 
         if(this->m_table->UsedItemCount() != 2)
@@ -570,43 +570,43 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
+        this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint);
 
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 3);
         item2->RptSeq = 3;
 
-        if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionID, item2->TradingSessionIDLength))
+        if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionIDUint))
             throw;
 
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
-        if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionID, item3->TradingSessionIDLength))
+        if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionIDUint))
             throw;
 
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
-        if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
+        if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionIDUint))
             throw;
 
-        AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("symbol1", "session1");
+        AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("symbol1", "ses1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 3;
 
-        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "ses1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -635,39 +635,39 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
+        this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint);
 
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 4);
         item3->RptSeq = 4;
 
-        if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionID, item3->TradingSessionIDLength))
+        if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionIDUint))
             throw;
 
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 5);
         item4->RptSeq = 5;
 
-        if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
+        if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionIDUint))
             throw;
 
-        AstsTLSCURRInfo *info1 = this->m_helper->CreateTLSCurrInfo("symbol1", "session1");
+        AstsTLSCURRInfo *info1 = this->m_helper->CreateTLSCurrInfo("symbol1", "ses1");
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
         info1->GroupMDEntries[0] = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        AstsTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("symbol1", "session1");
+        AstsTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("symbol1", "ses1");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
         info2->GroupMDEntries[0] = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
 
-        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "ses1");
 
         this->m_table->ObtainSnapshotItem(info1);
         this->m_table->StartProcessSnapshot();
@@ -690,43 +690,43 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
+        this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint);
 
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
-        if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionID, item2->TradingSessionIDLength))
+        if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionIDUint))
             throw;
 
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e3", 5);
         item3->RptSeq = 5;
 
-        if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionID, item3->TradingSessionIDLength))
+        if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionIDUint))
             throw;
 
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
-        if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
+        if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionIDUint))
             throw;
 
-        AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 2);
         item5->RptSeq = 2;
 
-        AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("symbol1", "session1");
+        AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("symbol1", "ses1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 2;
 
-        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "ses1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -751,36 +751,36 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e1", 1);
         item1->RptSeq = 1;
 
-        this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionID, item1->TradingSessionIDLength);
+        this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint);
 
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e2", 4);
         item2->RptSeq = 4;
 
-        if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionID, item2->TradingSessionIDLength))
+        if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionIDUint))
             throw;
 
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e4", 6);
         item4->RptSeq = 6;
 
-        if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionID, item4->TradingSessionIDLength))
+        if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionIDUint))
             throw;
 
-        AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "session1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
+        AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
                                                                            MDEntryType::mdetBuyQuote, "e5", 3);
         item5->RptSeq = 3;
 
-        AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("symbol1", "session1");
+        AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("symbol1", "ses1");
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
         info->RptSeq = 3;
 
-        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "ses1");
 
         this->m_table->ObtainSnapshotItem(info);
         this->m_table->StartProcessSnapshot();
@@ -834,16 +834,16 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[3] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 3, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 3, 3, 1, 3, 1),
                                      }, 1),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e4", 4, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e4", 4, 3, 1, 3, 1),
                                      }, 1)
         }, 3);
 
@@ -855,7 +855,7 @@ public:
 
         if(incCurr->m_waitTimer->Active()) // everything is ok = timer should not be activated
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->Trades()->Count() != 4)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->Trades()->Count() != 4)
             throw;
     }
 
@@ -871,12 +871,12 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 4, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 4, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incCurr->ListenIncremental_Core())
@@ -884,7 +884,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
 
-        TradeInfo<AstsTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("symbol1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("symbol1", "ses1");
         if(item->Trades()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -902,7 +902,7 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e4", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e4", 3, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -926,12 +926,12 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incCurr->ListenIncremental_Core())
@@ -939,7 +939,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
 
-        TradeInfo<AstsTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("symbol1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("symbol1", "ses1");
         if(item->Trades()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -959,8 +959,8 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 2,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 3, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e4", 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e4", 4, 1, 1, 1, 1),
                                      }, 2)
         }, 1);
 
@@ -984,12 +984,12 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incCurr->ListenIncremental_Core())
@@ -997,7 +997,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
 
-        TradeInfo<AstsTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("symbol1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("symbol1", "ses1");
         if(item->Trades()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1017,7 +1017,7 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 3, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1040,7 +1040,7 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 4, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1066,12 +1066,12 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incCurr->ListenIncremental_Core())
@@ -1079,7 +1079,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
 
-        TradeInfo<AstsTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("symbol1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("symbol1", "ses1");
         if(item->Trades()->Count() != 2)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
@@ -1099,7 +1099,7 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 4, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1122,7 +1122,7 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e3", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 3, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1151,12 +1151,12 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "session1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e5", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incCurr->ListenIncremental_Core())
@@ -1164,7 +1164,7 @@ public:
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
 
-        TradeInfo<AstsTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("symbol1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *item = incCurr->TradeCurr()->GetItem("symbol1", "ses1");
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
         // wait
@@ -1255,7 +1255,7 @@ public:
         }
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1283,7 +1283,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "session1", true, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "ses1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1331,7 +1331,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 1, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 1, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1352,7 +1352,7 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1373,12 +1373,12 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 3, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 3, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 4, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 4, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1399,12 +1399,12 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 5, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 5, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 6, "symbol1", "session1", true, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 6, "symbol1", "ses1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1451,7 +1451,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 1, "symbol1", "session1", false, true,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 1, "symbol1", "ses1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1480,7 +1480,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 1, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 1, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1491,7 +1491,7 @@ public:
 
         // message seq 2 lost
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 3, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 3, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1534,7 +1534,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 1, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 1, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1545,7 +1545,7 @@ public:
 
         // message seq 2 lost
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 3, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 3, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1578,7 +1578,7 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "session1", false, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1616,7 +1616,7 @@ public:
         incCurr->StartListenSnapshot();
 
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "session1", true, true,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "ses1", true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1630,7 +1630,7 @@ public:
 
         snapCurr->ListenSnapshot_Core();
         //snapshot received and should be applied
-        TradeInfo<AstsTLSCURRItemInfo> *tableItem = incCurr->TradeCurr()->GetItem("symbol1", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *tableItem = incCurr->TradeCurr()->GetItem("symbol1", "ses1");
 
         this->TestTableItemsAllocator(incCurr->TradeCurr());
 
@@ -1659,12 +1659,12 @@ public:
             throw;
 
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "session1", true, false,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "ses1", true, false,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
                                      }, 2, 4),
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 4, "symbol1", "session1", false, true,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 4, "symbol1", "ses1", false, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e2"),
@@ -1751,7 +1751,7 @@ public:
 
         // sending snapshot for only one item and rpt seq before last incremental message
         SendMessages(snapCurr, new TestTemplateInfo*[4] {
-                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "session1", true, true,
+                new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "ses1", true, true,
                                      new TestTemplateItemInfo*[2] {
                                              new TestTemplateItemInfo("e1"),
                                              new TestTemplateItemInfo("e1"),
@@ -1764,8 +1764,8 @@ public:
 
         // snapshot for first item should be received and immediately applied then, should be applied incremental messages in que,
         // but connection should not be closed - because not all items were updated
-        TradeInfo<AstsTLSCURRItemInfo> *item1 = incCurr->TradeCurr()->GetItem("symbol1", "session1");
-        TradeInfo<AstsTLSCURRItemInfo> *item2 = incCurr->TradeCurr()->GetItem("symbol2", "session1");
+        TradeInfo<AstsTLSCURRItemInfo> *item1 = incCurr->TradeCurr()->GetItem("symbol1", "ses1");
+        TradeInfo<AstsTLSCURRItemInfo> *item2 = incCurr->TradeCurr()->GetItem("symbol2", "ses1");
         if(item1->HasEntries())
             throw;
         if(!item2->HasEntries())
@@ -1782,7 +1782,7 @@ public:
     void TestConnection_SkipHearthBeatMessages_Incremental() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         this->incCurr->StartListenSnapshot();
         if(snapCurr->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
@@ -1912,8 +1912,8 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_2_1() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol3", "session1");
+        this->AddSymbol("symbol1", "ses1");
+        this->AddSymbol("symbol3", "ses1");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -1942,8 +1942,8 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_3() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol3", "session1");
+        this->AddSymbol("symbol1", "ses1");
+        this->AddSymbol("symbol3", "ses1");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -1972,8 +1972,8 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1() {
 //        this->Clear();
 //
-//        incCurr->OrderCurr()->Add("s1", "session1");
-//        incCurr->OrderCurr()->Add("symbol3", "session1");
+//        incCurr->OrderCurr()->Add("s1", "ses1");
+//        incCurr->OrderCurr()->Add("symbol3", "ses1");
 //
 //        if(snapCurr->State() != FeedConnectionState::fcsSuspend)
 //            throw;
@@ -2002,8 +2002,8 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_4() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol3", "session1");
+        this->AddSymbol("symbol1", "ses1");
+        this->AddSymbol("symbol3", "ses1");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -2032,9 +2032,9 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol2", "session1");
-        this->AddSymbol("symbol3", "session1");
+        this->AddSymbol("symbol1", "ses1");
+        this->AddSymbol("symbol2", "ses1");
+        this->AddSymbol("symbol3", "ses1");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -2050,11 +2050,11 @@ public:
             throw;
         if(incCurr->TradeCurr()->UsedItemCount() != 3)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->Trades()->Count() != 2)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->Trades()->Count() != 2)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol2", "session1")->Trades()->Count() != 0)
+        if(incCurr->TradeCurr()->GetItem("symbol2", "ses1")->Trades()->Count() != 0)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol3", "session1")->Trades()->Count() != 1)
+        if(incCurr->TradeCurr()->GetItem("symbol3", "ses1")->Trades()->Count() != 1)
             throw;
         if(incCurr->m_startMsgSeqNum != 2)
             throw;
@@ -2068,7 +2068,7 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_1() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -2088,7 +2088,7 @@ public:
             throw;
         if(incCurr->TradeCurr()->UsedItemCount() != 1)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->Trades()->Count() != 1)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->Trades()->Count() != 1)
             throw;
         if(incCurr->m_startMsgSeqNum != 4)
             throw;
@@ -2103,9 +2103,9 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol2", "session1");
-        this->AddSymbol("symbol3", "session1");
+        this->AddSymbol("symbol1", "ses1");
+        this->AddSymbol("symbol2", "ses1");
+        this->AddSymbol("symbol3", "ses1");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -2117,11 +2117,11 @@ public:
                      30);
         if(incCurr->HasQueueEntries())
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->RptSeq() != 2)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->RptSeq() != 2)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol3", "session1")->RptSeq() != 1)
+        if(incCurr->TradeCurr()->GetItem("symbol3", "ses1")->RptSeq() != 1)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol2", "session1")->RptSeq() != 2)
+        if(incCurr->TradeCurr()->GetItem("symbol2", "ses1")->RptSeq() != 2)
             throw;
         if(!incCurr->CanStopListeningSnapshot())
             throw;
@@ -2129,11 +2129,11 @@ public:
             throw;
         if(incCurr->TradeCurr()->UsedItemCount() != 3)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->Trades()->Count() != 2) // snapshot applied virtually actually skipped
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->Trades()->Count() != 2) // snapshot applied virtually actually skipped
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol2", "session1")->Trades()->Count() != 1)
+        if(incCurr->TradeCurr()->GetItem("symbol2", "ses1")->Trades()->Count() != 1)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol3", "session1")->Trades()->Count() != 1)
+        if(incCurr->TradeCurr()->GetItem("symbol3", "ses1")->Trades()->Count() != 1)
             throw;
         if(incCurr->m_startMsgSeqNum != 7)
             throw;
@@ -2150,9 +2150,9 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_2_2() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol2", "session1");
-        this->AddSymbol("symbol3", "session1");
+        this->AddSymbol("symbol1", "ses1");
+        this->AddSymbol("symbol2", "ses1");
+        this->AddSymbol("symbol3", "ses1");
 
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -2164,11 +2164,11 @@ public:
                      30);
         if(incCurr->HasQueueEntries())
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->RptSeq() != 2)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->RptSeq() != 2)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol3", "session1")->RptSeq() != 1)
+        if(incCurr->TradeCurr()->GetItem("symbol3", "ses1")->RptSeq() != 1)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol2", "session1")->RptSeq() != 2)
+        if(incCurr->TradeCurr()->GetItem("symbol2", "ses1")->RptSeq() != 2)
             throw;
         if(!incCurr->CanStopListeningSnapshot())
             throw;
@@ -2176,11 +2176,11 @@ public:
             throw;
         if(incCurr->TradeCurr()->UsedItemCount() != 3)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->Trades()->Count() != 2) // snapshot applied virtually actually skipped
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->Trades()->Count() != 2) // snapshot applied virtually actually skipped
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol2", "session1")->Trades()->Count() != 2)
+        if(incCurr->TradeCurr()->GetItem("symbol2", "ses1")->Trades()->Count() != 2)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol3", "session1")->Trades()->Count() != 1)
+        if(incCurr->TradeCurr()->GetItem("symbol3", "ses1")->Trades()->Count() != 1)
             throw;
         if(incCurr->m_startMsgSeqNum != 7)
             throw;
@@ -2195,7 +2195,7 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_3() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
 
         if(!incCurr->m_waitTimer->Active())
             throw;
@@ -2209,9 +2209,9 @@ public:
             throw;
         if(incCurr->CanStopListeningSnapshot())
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->RptSeq() != 3)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->RptSeq() != 3)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->Trades()->Count() != 3)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->Trades()->Count() != 3)
             throw;
         if(snapCurr->m_startMsgSeqNum != 2)
             throw;
@@ -2227,7 +2227,7 @@ public:
         this->Clear();
 
         incCurr->WaitLostIncrementalMessageMaxTimeMcs(500000);
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         incCurr->Start();
 
         SendMessages(incCurr, snapCurr,
@@ -2240,11 +2240,11 @@ public:
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(!incCurr->TradeCurr()->GetItem("symbol1", "session1")->HasEntries())
+        if(!incCurr->TradeCurr()->GetItem("symbol1", "ses1")->HasEntries())
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->RptSeq() != 4)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->RptSeq() != 4)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->Trades()->Count() != 1)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->Trades()->Count() != 1)
             throw;
     }
     // almost the same as 5_4 but we received new snapshot for item but item has 2 gaps and snapshot is fully actual
@@ -2252,7 +2252,7 @@ public:
         this->Clear();
 
         incCurr->WaitLostIncrementalMessageMaxTimeMcs(500000);
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         incCurr->Start();
 
         SendMessages(incCurr, snapCurr,
@@ -2267,11 +2267,11 @@ public:
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->HasEntries())
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->HasEntries())
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->RptSeq() != 6)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->RptSeq() != 6)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->Trades()->Count() != 2)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->Trades()->Count() != 2)
             throw;
     }
     // almost the same as 5_4_1 but we received new snapshot with rptseq 6
@@ -2279,7 +2279,7 @@ public:
         this->Clear();
 
         incCurr->WaitLostIncrementalMessageMaxTimeMcs(500000);
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         incCurr->Start();
 
         SendMessages(incCurr, snapCurr,
@@ -2294,11 +2294,11 @@ public:
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->HasEntries())
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->HasEntries())
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->RptSeq() != 6)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->RptSeq() != 6)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->Trades()->Count() != 1)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->Trades()->Count() != 1)
             throw;
     }
     // we have received snapshot and almost ok but next incremental message during snapshot has greater RptSeq
@@ -2306,8 +2306,8 @@ public:
         this->Clear();
 
         incCurr->WaitLostIncrementalMessageMaxTimeMcs(500000);
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol2", "session1");
+        this->AddSymbol("symbol1", "ses1");
+        this->AddSymbol("symbol2", "ses1");
         incCurr->Start();
 
         SendMessages(incCurr, snapCurr,
@@ -2318,15 +2318,15 @@ public:
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsListenSnapshot)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->RptSeq() != 2)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->RptSeq() != 2)
             throw;
-        if(!incCurr->TradeCurr()->GetItem("symbol1", "session1")->HasEntries())
+        if(!incCurr->TradeCurr()->GetItem("symbol1", "ses1")->HasEntries())
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->EntriesQueue()->StartRptSeq() != 3)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->EntriesQueue()->StartRptSeq() != 3)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->EntriesQueue()->MaxIndex() != 1)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->EntriesQueue()->MaxIndex() != 1)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol2", "session1")->RptSeq() != 1)
+        if(incCurr->TradeCurr()->GetItem("symbol2", "ses1")->RptSeq() != 1)
             throw;
         if(incCurr->TradeCurr()->QueueEntriesCount() != 1)
             throw;
@@ -2336,8 +2336,8 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_5_1() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol2", "session1");
+        this->AddSymbol("symbol1", "ses1");
+        this->AddSymbol("symbol2", "ses1");
         if(incCurr->TradeCurr()->Symbol(0)->Session(0)->ShouldProcessSnapshot())
             throw;
         if(incCurr->TradeCurr()->Symbol(1)->Session(0)->ShouldProcessSnapshot())
@@ -2352,9 +2352,9 @@ public:
             throw;
         if(snapCurr->State() != FeedConnectionState::fcsSuspend)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->RptSeq() != 4)
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->RptSeq() != 4)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol1", "session1")->HasEntries())
+        if(incCurr->TradeCurr()->GetItem("symbol1", "ses1")->HasEntries())
             throw;
         if(incCurr->TradeCurr()->QueueEntriesCount() != 0)
             throw;
@@ -2365,8 +2365,8 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_5_6() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol2", "session1");
+        this->AddSymbol("symbol1", "ses1");
+        this->AddSymbol("symbol2", "ses1");
         incCurr->Start();
 
         SendMessages(incCurr, snapCurr,
@@ -2379,7 +2379,7 @@ public:
             throw;
         if(incCurr->TradeCurr()->SymbolsToRecvSnapshotCount() != 1)
             throw;
-        if(incCurr->TradeCurr()->GetItem("symbol2", "session1")->ShouldProcessSnapshot())
+        if(incCurr->TradeCurr()->GetItem("symbol2", "ses1")->ShouldProcessSnapshot())
             throw;
     }
     // we have received twice the same snapshot (rpt seq num = the same value) which means that item did not receive incremental message so item state is actual
@@ -2407,7 +2407,7 @@ public:
         incCurr->m_fastProtocolManager->Print();
         */
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         incCurr->Start();
 
         SendMessages(incCurr, snapCurr,
@@ -2427,16 +2427,16 @@ public:
     void TestConnection_EnterSnapshotMode() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         incCurr->TradeCurr()->EnterSnapshotMode();
-        if(!incCurr->TradeCurr()->GetItem("symbol1", "session1")->ShouldProcessSnapshot())
+        if(!incCurr->TradeCurr()->GetItem("symbol1", "ses1")->ShouldProcessSnapshot())
             throw;
     }
     // clear after apply snapshot
     void TestConnection_ClearSnapshotMessages_1() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         SendMessages(incCurr, snapCurr,
                      "tlr entry symbol1 e1, lost tlr entry symbol1 e2, wait_snap, hbeat",
                      "                                                  tls symbol1 begin rpt 2 entry symbol1 e2 end",
@@ -2450,7 +2450,7 @@ public:
     void TestConnection_ClearSnapshotMessages_2() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         SendMessages(incCurr, snapCurr,
                      "tlr entry symbol1 e1, lost tlr entry symbol1 e2, wait_snap, hbeat",
                      "                                                  hbeat, hbeat, tls symbol1 begin rpt 2 entry symbol1 e2 end",
@@ -2468,7 +2468,7 @@ public:
     void TestConnection_ClearSnapshotMessages_3() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         snapCurr->WaitSnapshotMaxTimeMcs(50000);
         SendMessages(incCurr, snapCurr,
                      "tlr entry symbol1 e1, lost tlr entry symbol1 e2, wait_snap, hbeat",
@@ -2483,7 +2483,7 @@ public:
     void TestConnection_ClearSnapshotMessages_4() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         snapCurr->WaitSnapshotMaxTimeMcs(50000);
         SendMessages(incCurr, snapCurr,
                      "tlr entry symbol1 e1, lost tlr entry symbol1 e2, wait_snap, hbeat                           hbeat,                         hbeat, hbeat, hbeat, hbeat, hbeat,                           hbeat",
@@ -2686,7 +2686,7 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_1() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         int prevCount = this->incCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry symbol1 e1",
@@ -2701,7 +2701,7 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_2() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         int prevCount = this->incCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry symbol1 e1, tlr entry symbol1 e2",
@@ -2741,7 +2741,7 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_1() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry symbol1 e1, lost tlr entry symbol1 e2, wait_snap, hbeat",
@@ -2756,7 +2756,7 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_1() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry symbol1 e1, lost tlr entry symbol1 e2 entry symbol1 e3, wait_snap",
@@ -2775,7 +2775,7 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_2() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry symbol1 e1, lost tlr entry symbol1 e2 entry symbol1 e3, wait_snap, hbeat",
@@ -2794,7 +2794,7 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_3() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry symbol1 e1, lost tlr entry symbol1 e2 entry symbol1 e3, wait_snap, hbeat",
@@ -2813,7 +2813,7 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_4() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry symbol1 e1, lost tlr entry symbol1 e2 entry symbol1 e3, wait_snap, hbeat,                        hbeat",
@@ -2832,7 +2832,7 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_2_5() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessages(this->incCurr, this->snapCurr,
                            "tlr entry symbol1 e1, lost tlr entry symbol1 e2 entry symbol1 e3, wait_snap, hbeat,                          hbeat",
@@ -2861,7 +2861,7 @@ public:
         // there is no UpdateAction in snap messages so we don't have to check these cases
         /*this->Clear();
 
-        this->AddSymbol("s1", "session1");
+        this->AddSymbol("s1", "ses1");
         int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         this->SendMessagesIdf(this->incCurr, this->snapCurr,
                            "tlr entry s1 e1, tlr entry s1 e2, lost tlr entry s1 e4 entry s1 e4, wait_snap, hbeat",
@@ -2877,9 +2877,9 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_4() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
-        this->AddSymbol("symbol2", "session1");
-        this->AddSymbol("symbol3", "session1");
+        this->AddSymbol("symbol1", "ses1");
+        this->AddSymbol("symbol2", "ses1");
+        this->AddSymbol("symbol3", "ses1");
 
         if(incCurr->TradeCurr()->Symbol(0)->SessionCount() != 1)
             throw;
@@ -2900,7 +2900,7 @@ public:
     // check in case CheckProcessNullSnapshot
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_5() {
         this->Clear();
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
         incCurr->Start();
 
         int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
@@ -2917,7 +2917,7 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Snap_6() {
         this->Clear();
 
-        this->AddSymbol("symbol1", "session1");
+        this->AddSymbol("symbol1", "ses1");
 
         int prevCount = this->snapCurr->m_fastProtocolManager->m_astsTLSCURRItems->Count();
         SendMessages(incCurr, snapCurr,

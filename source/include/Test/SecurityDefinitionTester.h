@@ -106,26 +106,26 @@ public:
         this->m_helper->AddMarketSegemntGroup(info);
         this->m_helper->AddMarketSegemntGroup(info);
 
-        this->m_helper->AddTradingSession(info, 0, "t1");
-        this->m_helper->AddTradingSession(info, 0, "t2");
-        this->m_helper->AddTradingSession(info, 1, "t3");
-        this->m_helper->AddTradingSession(info, 1, "t4");
+        this->m_helper->AddTradingSession(info, 0, "trd1");
+        this->m_helper->AddTradingSession(info, 0, "trd2");
+        this->m_helper->AddTradingSession(info, 1, "trd3");
+        this->m_helper->AddTradingSession(info, 1, "trd4");
 
         if(info->MarketSegmentGrpCount != 2)
             throw;
 
         this->idf->BeforeProcessSecurityDefinitions();
-        if(!StringIdComparer::Equal(info->Symbol, 2, "symbol1", 2))
+        if(!StringIdComparer::Equal(info->Symbol, 7, "symbol1", 7))
             throw;
         if(!this->idf->ProcessSecurityDefinition(info))
             throw;
-        if(!StringIdComparer::Equal(info->Symbol, 2, "symbol1", 2))
+        if(!StringIdComparer::Equal(info->Symbol, 7, "symbol1", 7))
             throw;
         if(this->idf->Symbols()[0]->Data() != info)
             throw;
         if(this->idf->SymbolCount() != 1)
             throw;
-        if(!StringIdComparer::Equal(info->Symbol, 2, "symbol1", 2))
+        if(!StringIdComparer::Equal(info->Symbol, 7, "symbol1", 7))
             throw;
         this->idf->AfterProcessSecurityDefinitions();
 
@@ -234,19 +234,19 @@ public:
         this->m_helper->AddMarketSegemntGroup(info);
         this->m_helper->AddMarketSegemntGroup(info);
 
-        this->m_helper->AddTradingSession(info, 0, "t1");
-        this->m_helper->AddTradingSession(info, 0, "t2");
-        this->m_helper->AddTradingSession(info, 1, "t3");
-        this->m_helper->AddTradingSession(info, 1, "t4");
+        this->m_helper->AddTradingSession(info, 0, "trd1");
+        this->m_helper->AddTradingSession(info, 0, "trd2");
+        this->m_helper->AddTradingSession(info, 1, "trd3");
+        this->m_helper->AddTradingSession(info, 1, "trd4");
 
         AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("symbol2");
         this->m_helper->AddMarketSegemntGroup(info2);
         this->m_helper->AddMarketSegemntGroup(info2);
 
-        this->m_helper->AddTradingSession(info2, 0, "t1");
-        this->m_helper->AddTradingSession(info2, 0, "t2");
-        this->m_helper->AddTradingSession(info2, 1, "t3");
-        this->m_helper->AddTradingSession(info2, 1, "t4");
+        this->m_helper->AddTradingSession(info2, 0, "trd1");
+        this->m_helper->AddTradingSession(info2, 0, "trd2");
+        this->m_helper->AddTradingSession(info2, 1, "trd3");
+        this->m_helper->AddTradingSession(info2, 1, "trd4");
 
         if(info->MarketSegmentGrpCount != 2)
             throw;
@@ -323,8 +323,8 @@ public:
         AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
         this->m_helper->AddMarketSegemntGroup(info);
 
-        this->m_helper->AddTradingSession(info, 0, "t1");
-        this->m_helper->AddTradingSession(info, 0, "t2");
+        this->m_helper->AddTradingSession(info, 0, "trd1");
+        this->m_helper->AddTradingSession(info, 0, "trd2");
 
         AstsSecurityDefinitionInfo *prev = this->olr->OrderFond()->Symbol(0)->SecurityDefinitionAsts();
         this->idf->UpdateSecurityDefinition(info);
@@ -363,7 +363,7 @@ public:
         if(this->idf->IsIdfDataCollected())
             throw;
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "totNumReports 2 idf symbol1 session t1 session t2, totNumReports 2 idf symbol2 session t1 session t2, msgSeqNo 1 totNumReports 2 idf symbol1 session t1 session t2",
+                                        "totNumReports 2 idf symbol1 session trd1 session trd2, totNumReports 2 idf symbol2 session trd1 session trd2, msgSeqNo 1 totNumReports 2 idf symbol1 session trd1 session trd2",
                                         30);
         if(this->idf->m_startMsgSeqNum != 0)
             throw;
@@ -391,7 +391,7 @@ public:
         if(this->idf->IsIdfDataCollected())
             throw;
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "msgSeqNo 2 totNumReports 2 idf symbol1 session t1 session t2, msgSeqNo 1 totNumReports 2 idf symbol2 session t1 session t2, msgSeqNo 2 totNumReports 2 idf symbol1 session t1 session t2",
+                                        "msgSeqNo 2 totNumReports 2 idf symbol1 session trd1 session trd2, msgSeqNo 1 totNumReports 2 idf symbol2 session trd1 session trd2, msgSeqNo 2 totNumReports 2 idf symbol1 session trd1 session trd2",
                                         30);
         if(this->idf->m_startMsgSeqNum != 0)
             throw;
@@ -434,7 +434,7 @@ public:
         if(this->idf->State() == FeedConnectionState::fcsSuspend)
             throw;
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "idf symbol1 totNumReports 3 session t1 session t2, idf symbol2 totNumReports 3 session t1 session t2, idf symbol3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf symbol1 totNumReports 3 session t1 session t2",
+                                        "idf symbol1 totNumReports 3 session trd1 session trd2, idf symbol2 totNumReports 3 session trd1 session trd2, idf symbol3 totNumReports 3 session trd1 session trd2, msgSeqNo 1 idf symbol1 totNumReports 3 session trd1 session trd2",
                                         30);
         // check - stop called? but i dont know if we should stop connection
         if(this->idf->State() != FeedConnectionState::fcsSuspend)
@@ -471,19 +471,19 @@ public:
         idf->Start();
 
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "idf symbol1 totNumReports 3 session t1 session t2, lost idf symbol2 totNumReports 3 session t1 session t2, idf symbol3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf symbol1 totNumReports 3 session t1 session t2",
+                                        "idf symbol1 totNumReports 3 session trd1 session trd2, lost idf symbol2 totNumReports 3 session trd1 session trd2, idf symbol3 totNumReports 3 session trd1 session trd2, msgSeqNo 1 idf symbol1 totNumReports 3 session trd1 session trd2",
                                         30);
         if(this->idf->m_idfDataCollected)
             throw;
         if(this->idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             throw;
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "lost idf symbol1 totNumReports 3  session t1 session t2, lost idf symbol2 totNumReports 3  session t1 session t2, idf symbol3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf symbol1 totNumReports 3 session t1 session t2",
+                                        "lost idf symbol1 totNumReports 3  session trd1 session trd2, lost idf symbol2 totNumReports 3  session trd1 session trd2, idf symbol3 totNumReports 3 session trd1 session trd2, msgSeqNo 1 idf symbol1 totNumReports 3 session trd1 session trd2",
                                         30);
         if(this->idf->m_idfDataCollected)
             throw;
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "idf symbol1 totNumReports 3 session t1 session t2, idf symbol2 totNumReports 3 session t1 session t2, idf symbol3 totNumReports 3 session t1 session t2, msgSeqNo 1 idf symbol1 totNumReports 3 session t1 session t2",
+                                        "idf symbol1 totNumReports 3 session trd1 session trd2, idf symbol2 totNumReports 3 session trd1 session trd2, idf symbol3 totNumReports 3 session trd1 session trd2, msgSeqNo 1 idf symbol1 totNumReports 3 session trd1 session trd2",
                                         30);
         if(!this->idf->m_idfDataCollected)
             throw;
@@ -499,10 +499,10 @@ public:
         idf->Start();
 
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "     msgSeqNo 2 idf symbol1 totNumReports 4 session t1 session t2,"
-                                                "lost msgSeqNo 3 idf symbol2 totNumReports 4 session t1 session t2,"
-                                                "lost msgSeqNo 4 idf symbol3 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 1 idf symbol1 totNumReports 4 session t1 session t2", 30);
+                                        "     msgSeqNo 2 idf symbol1 totNumReports 4 session trd1 session trd2,"
+                                                "lost msgSeqNo 3 idf symbol2 totNumReports 4 session trd1 session trd2,"
+                                                "lost msgSeqNo 4 idf symbol3 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 1 idf symbol1 totNumReports 4 session trd1 session trd2", 30);
         if(idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             throw;
         if(idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
@@ -510,10 +510,10 @@ public:
         if(idf->IsIdfDataCollected())
             throw;
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "     msgSeqNo 2 idf symbol1 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 3 idf symbol2 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 4 idf symbol3 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 1 idf symbol1 totNumReports 4 session t1 session t2", 30);
+                                        "     msgSeqNo 2 idf symbol1 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 3 idf symbol2 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 4 idf symbol3 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 1 idf symbol1 totNumReports 4 session trd1 session trd2", 30);
         if(idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessFromStart)
             throw;
         if(idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
@@ -521,7 +521,7 @@ public:
         if(idf->IsIdfDataCollected())
             throw;
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "     msgSeqNo 2 idf symbol1 totNumReports 4 session t1 session t2", 30);
+                                        "     msgSeqNo 2 idf symbol1 totNumReports 4 session trd1 session trd2", 30);
         if(idf->State() != FeedConnectionState::fcsSuspend)
             throw;
         if(!idf->IsIdfDataCollected())
@@ -536,11 +536,11 @@ public:
         idf->Start();
 
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "     msgSeqNo 2 idf symbol1 totNumReports 4 session t1 session t2,"
-                                                "lost msgSeqNo 3 idf symbol2 totNumReports 4 session t1 session t2,"
-                                                "lost msgSeqNo 4 idf symbol3 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 1 idf symbol1 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 2 idf symbol1 totNumReports 4 session t1 session t2", 30);
+                                        "     msgSeqNo 2 idf symbol1 totNumReports 4 session trd1 session trd2,"
+                                                "lost msgSeqNo 3 idf symbol2 totNumReports 4 session trd1 session trd2,"
+                                                "lost msgSeqNo 4 idf symbol3 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 1 idf symbol1 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 2 idf symbol1 totNumReports 4 session trd1 session trd2", 30);
         if(idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             throw;
         if(idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
@@ -557,11 +557,11 @@ public:
         idf->Start();
 
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "     msgSeqNo 2 idf symbol1 totNumReports 4 session t1 session t2,"
-                                                "lost msgSeqNo 3 idf symbol2 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 4 idf symbol3 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 1 idf symbol1 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 2 idf symbol1 totNumReports 4 session t1 session t2", 30);
+                                        "     msgSeqNo 2 idf symbol1 totNumReports 4 session trd1 session trd2,"
+                                                "lost msgSeqNo 3 idf symbol2 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 4 idf symbol3 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 1 idf symbol1 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 2 idf symbol1 totNumReports 4 session trd1 session trd2", 30);
         if(idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
             throw;
         if(idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
@@ -578,15 +578,15 @@ public:
         idf->Start();
 
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "     msgSeqNo 2 idf symbol1 totNumReports 4 session t1 session t2,"
-                                                "lost msgSeqNo 3 idf symbol2 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 4 idf symbol3 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 1 idf symbol1 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 2 idf symbol1 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 3 idf symbol2 totNumReports 4 session t1 session t2,"
-                                                "lost msgSeqNo 4 idf symbol3 totNumReports 4 session t1 session t2,"
-                                                "lost msgSeqNo 1 idf symbol1 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 2 idf symbol1 totNumReports 4 session t1 session t2", 30);
+                                        "     msgSeqNo 2 idf symbol1 totNumReports 4 session trd1 session trd2,"
+                                                "lost msgSeqNo 3 idf symbol2 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 4 idf symbol3 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 1 idf symbol1 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 2 idf symbol1 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 3 idf symbol2 totNumReports 4 session trd1 session trd2,"
+                                                "lost msgSeqNo 4 idf symbol3 totNumReports 4 session trd1 session trd2,"
+                                                "lost msgSeqNo 1 idf symbol1 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 2 idf symbol1 totNumReports 4 session trd1 session trd2", 30);
         if(idf->State() != FeedConnectionState::fcsListenSecurityDefinition)
             throw;
         if(idf->m_idfState != FeedConnectionSecurityDefinitionState::sdsProcessToEnd)
@@ -603,19 +603,19 @@ public:
         idf->Start();
 
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "     msgSeqNo 2 idf symbol1 totNumReports 4 session t1 session t2,"
-                                                "lost msgSeqNo 3 idf symbol2 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 4 idf symbol3 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 1 idf symbol1 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 2 idf symbol1 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 3 idf symbol2 totNumReports 4 session t1 session t2,"
-                                                "lost msgSeqNo 4 idf symbol3 totNumReports 4 session t1 session t2,"
-                                                "lost msgSeqNo 1 idf symbol1 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 2 idf symbol1 totNumReports 4 session t1 session t2"
-                                                "lost msgSeqNo 3 idf symbol2 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 4 idf symbol3 totNumReports 4 session t1 session t2,"
-                                                "lost msgSeqNo 1 idf symbol1 totNumReports 4 session t1 session t2,"
-                                                "     msgSeqNo 2 idf symbol1 totNumReports 4 session t1 session t2,", 30);
+                                        "     msgSeqNo 2 idf symbol1 totNumReports 4 session trd1 session trd2,"
+                                                "lost msgSeqNo 3 idf symbol2 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 4 idf symbol3 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 1 idf symbol1 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 2 idf symbol1 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 3 idf symbol2 totNumReports 4 session trd1 session trd2,"
+                                                "lost msgSeqNo 4 idf symbol3 totNumReports 4 session trd1 session trd2,"
+                                                "lost msgSeqNo 1 idf symbol1 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 2 idf symbol1 totNumReports 4 session trd1 session trd2"
+                                                "lost msgSeqNo 3 idf symbol2 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 4 idf symbol3 totNumReports 4 session trd1 session trd2,"
+                                                "lost msgSeqNo 1 idf symbol1 totNumReports 4 session trd1 session trd2,"
+                                                "     msgSeqNo 2 idf symbol1 totNumReports 4 session trd1 session trd2,", 30);
         if(idf->State() != FeedConnectionState::fcsSuspend)
             throw;
         if(!idf->IsIdfDataCollected())
@@ -679,7 +679,7 @@ public:
         this->idf->Start();
 
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "totNumReports 2 idf symbol1 session t1 session t2, totNumReports 2 idf symbol2 session t1 session t2, msgSeqNo 1 totNumReports 2 idf symbol1 session t1 session t2",
+                                        "totNumReports 2 idf symbol1 session trd1 session trd2, totNumReports 2 idf symbol2 session trd1 session trd2, msgSeqNo 1 totNumReports 2 idf symbol1 session trd1 session trd2",
                                         30);
         if(this->idf->m_idfMode != FeedConnectionSecurityDefinitionMode::sdmCollectData)
             throw;
@@ -696,7 +696,7 @@ public:
         this->idf->Start();
 
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "totNumReports 2 idf symbol1 session t1 session t2, totNumReports 2 idf symbol2 session t1 session t2, msgSeqNo 1 totNumReports 2 idf symbol1 session t1 session t2",
+                                        "totNumReports 2 idf symbol1 session trd1 session trd2, totNumReports 2 idf symbol2 session trd1 session trd2, msgSeqNo 1 totNumReports 2 idf symbol1 session trd1 session trd2",
                                         30);
         if(this->idf->m_idfMode != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
             throw;
@@ -713,12 +713,12 @@ public:
         this->idf->Start();
 
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "msgSeqNo 1 totNumReports 4 idf symbol1 session t1,"
-                                                "msgSeqNo 2 totNumReports 4 idf symbol2 session t1,"
-                                                "msgSeqNo 3 totNumReports 4 idf symbol1 session t2,"
-                                                "msgSeqNo 4 totNumReports 4 idf symbol2 session t2,"
-                                                "msgSeqNo 1 totNumReports 4 idf symbol1 session t1,"
-                                                "msgSeqNo 2 totNumReports 4 idf symbol2 session t1",
+                                        "msgSeqNo 1 totNumReports 4 idf symbol1 session trd1,"
+                                                "msgSeqNo 2 totNumReports 4 idf symbol2 session trd1,"
+                                                "msgSeqNo 3 totNumReports 4 idf symbol1 session trd2,"
+                                                "msgSeqNo 4 totNumReports 4 idf symbol2 session trd2,"
+                                                "msgSeqNo 1 totNumReports 4 idf symbol1 session trd1,"
+                                                "msgSeqNo 2 totNumReports 4 idf symbol2 session trd1",
                                         30);
         if(this->idf->m_idfMode != FeedConnectionSecurityDefinitionMode::sdmUpdateData)
             throw;
@@ -738,17 +738,17 @@ public:
             throw;
 
         AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = this->idf->Symbol(0)->MarketSegmentGrp[0];
-        if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, m->TradingSessionRulesGrp[0]->TradingSessionIDLength, "t1", 2))
+        if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, 4, "trd1", 4))
             throw;
         m = this->idf->Symbol(0)->MarketSegmentGrp[1];
-        if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, m->TradingSessionRulesGrp[0]->TradingSessionIDLength, "t2", 2))
+        if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, 4, "trd2", 4))
             throw;
 
         m = this->idf->Symbol(1)->MarketSegmentGrp[0];
-        if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, m->TradingSessionRulesGrp[0]->TradingSessionIDLength, "t1", 2))
+        if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, 4, "trd1", 4))
             throw;
         m = this->idf->Symbol(1)->MarketSegmentGrp[1];
-        if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, m->TradingSessionRulesGrp[0]->TradingSessionIDLength, "t2", 2))
+        if(!StringIdComparer::Equal(m->TradingSessionRulesGrp[0]->TradingSessionID, 4, "trd2", 4))
             throw;
     }
 
@@ -765,15 +765,15 @@ public:
         AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
         this->m_helper->AddMarketSegemntGroup(info);
 
-        this->m_helper->AddTradingSession(info, 0, "t1");
-        this->m_helper->AddTradingSession(info, 0, "t2");
+        this->m_helper->AddTradingSession(info, 0, "trd1");
+        this->m_helper->AddTradingSession(info, 0, "trd2");
 
         AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
         this->m_helper->AddMarketSegemntGroup(info2);
         this->m_helper->AddMarketSegemntGroup(info2);
 
-        this->m_helper->AddTradingSession(info2, 0, "t3");
-        this->m_helper->AddTradingSession(info2, 0, "t4");
+        this->m_helper->AddTradingSession(info2, 0, "trd3");
+        this->m_helper->AddTradingSession(info2, 0, "trd4");
 
         this->m_helper->AddTradingSession(info2, 1, "t5");
         this->m_helper->AddTradingSession(info2, 1, "t6");
@@ -799,11 +799,11 @@ public:
         this->idf->Start();
 
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "msgSeqNo 1 totNumReports 4 idf symbol1 session t1,"
-                                                "msgSeqNo 2 totNumReports 4 idf symbol2 session t1,"
-                                                "msgSeqNo 3 totNumReports 4 idf symbol1 session t2,"
-                                                "msgSeqNo 4 totNumReports 4 idf symbol2 session t2,"
-                                                "msgSeqNo 1 totNumReports 4 idf symbol1 session t1",
+                                        "msgSeqNo 1 totNumReports 4 idf symbol1 session trd1,"
+                                                "msgSeqNo 2 totNumReports 4 idf symbol2 session trd1,"
+                                                "msgSeqNo 3 totNumReports 4 idf symbol1 session trd2,"
+                                                "msgSeqNo 4 totNumReports 4 idf symbol2 session trd2,"
+                                                "msgSeqNo 1 totNumReports 4 idf symbol1 session trd1",
                                         30);
         if(this->idf->State() != FeedConnectionState::fcsSuspend)
             throw;
@@ -816,9 +816,9 @@ public:
             throw;
         if(info1->MarketSegmentGrp[1]->TradingSessionRulesGrpCount != 1)
             throw;
-        if(!StringIdComparer::Equal(info1->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionID, 2, "t1", 2))
+        if(!StringIdComparer::Equal(info1->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionID, 4, "trd1", 4))
             throw;
-        if(!StringIdComparer::Equal(info1->MarketSegmentGrp[1]->TradingSessionRulesGrp[0]->TradingSessionID, 2, "t2", 2))
+        if(!StringIdComparer::Equal(info1->MarketSegmentGrp[1]->TradingSessionRulesGrp[0]->TradingSessionID, 4, "trd2", 4))
             throw;
 
         AstsSecurityDefinitionInfo *info2 = this->idf->Symbol(1);
@@ -828,9 +828,9 @@ public:
             throw;
         if(info2->MarketSegmentGrp[1]->TradingSessionRulesGrpCount != 1)
             throw;
-        if(!StringIdComparer::Equal(info2->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionID, 2, "t1", 2))
+        if(!StringIdComparer::Equal(info2->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionID, 4, "trd1", 4))
             throw;
-        if(!StringIdComparer::Equal(info2->MarketSegmentGrp[1]->TradingSessionRulesGrp[0]->TradingSessionID, 2, "t2", 2))
+        if(!StringIdComparer::Equal(info2->MarketSegmentGrp[1]->TradingSessionRulesGrp[0]->TradingSessionID, 4, "trd2", 4))
             throw;
     }
 
@@ -843,12 +843,12 @@ public:
         AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
 
         this->m_helper->AddMarketSegemntGroup(info);
-        this->m_helper->AddTradingSession(info, 0, "t1");
+        this->m_helper->AddTradingSession(info, 0, "trd1");
 
         AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
 
         this->m_helper->AddMarketSegemntGroup(info2);
-        this->m_helper->AddTradingSession(info2, 0, "t1");
+        this->m_helper->AddTradingSession(info2, 0, "trd1");
 
         this->idf->ReplaceMarketSegmentGroupById(info, info2->MarketSegmentGrp[0]);
         if(info->MarketSegmentGrp[0] != info2->MarketSegmentGrp[0])
@@ -859,14 +859,14 @@ public:
         AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
 
         this->m_helper->AddMarketSegemntGroup(info);
-        this->m_helper->AddTradingSession(info, 0, "t1");
-        this->m_helper->AddTradingSession(info, 0, "t2");
+        this->m_helper->AddTradingSession(info, 0, "trd1");
+        this->m_helper->AddTradingSession(info, 0, "trd2");
 
         AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
 
         this->m_helper->AddMarketSegemntGroup(info2);
-        this->m_helper->AddTradingSession(info2, 0, "t1");
-        this->m_helper->AddTradingSession(info2, 0, "t2");
+        this->m_helper->AddTradingSession(info2, 0, "trd1");
+        this->m_helper->AddTradingSession(info2, 0, "trd2");
 
         this->idf->ReplaceMarketSegmentGroupById(info, info2->MarketSegmentGrp[0]);
         if(info->MarketSegmentGrp[0] != info2->MarketSegmentGrp[0])
@@ -877,13 +877,13 @@ public:
         AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
 
         this->m_helper->AddMarketSegemntGroup(info);
-        this->m_helper->AddTradingSession(info, 0, "t1");
-        this->m_helper->AddTradingSession(info, 0, "t2");
+        this->m_helper->AddTradingSession(info, 0, "trd1");
+        this->m_helper->AddTradingSession(info, 0, "trd2");
 
         AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
 
         this->m_helper->AddMarketSegemntGroup(info2);
-        this->m_helper->AddTradingSession(info2, 0, "t1");
+        this->m_helper->AddTradingSession(info2, 0, "trd1");
 
         this->idf->ReplaceMarketSegmentGroupById(info, info2->MarketSegmentGrp[0]);
         if(info->MarketSegmentGrp[0] == info2->MarketSegmentGrp[0])
@@ -894,13 +894,13 @@ public:
         AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
 
         this->m_helper->AddMarketSegemntGroup(info);
-        this->m_helper->AddTradingSession(info, 0, "t1");
+        this->m_helper->AddTradingSession(info, 0, "trd1");
 
         AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
 
         this->m_helper->AddMarketSegemntGroup(info2);
-        this->m_helper->AddTradingSession(info2, 0, "t1");
-        this->m_helper->AddTradingSession(info2, 0, "t2");
+        this->m_helper->AddTradingSession(info2, 0, "trd1");
+        this->m_helper->AddTradingSession(info2, 0, "trd2");
 
         this->idf->ReplaceMarketSegmentGroupById(info, info2->MarketSegmentGrp[0]);
         if(info->MarketSegmentGrp[0] == info2->MarketSegmentGrp[0])
@@ -911,14 +911,14 @@ public:
         AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
 
         this->m_helper->AddMarketSegemntGroup(info);
-        this->m_helper->AddTradingSession(info, 0, "t1");
-        this->m_helper->AddTradingSession(info, 0, "t2");
+        this->m_helper->AddTradingSession(info, 0, "trd1");
+        this->m_helper->AddTradingSession(info, 0, "trd2");
 
         AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
 
         this->m_helper->AddMarketSegemntGroup(info2);
-        this->m_helper->AddTradingSession(info2, 0, "t2");
-        this->m_helper->AddTradingSession(info2, 0, "t1");
+        this->m_helper->AddTradingSession(info2, 0, "trd2");
+        this->m_helper->AddTradingSession(info2, 0, "trd1");
 
         this->idf->ReplaceMarketSegmentGroupById(info, info2->MarketSegmentGrp[0]);
         if(info->MarketSegmentGrp[0] == info2->MarketSegmentGrp[0])
@@ -929,18 +929,18 @@ public:
         AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
 
         this->m_helper->AddMarketSegemntGroup(info);
-        this->m_helper->AddTradingSession(info, 0, "t1");
-        this->m_helper->AddTradingSession(info, 0, "t2");
+        this->m_helper->AddTradingSession(info, 0, "trd1");
+        this->m_helper->AddTradingSession(info, 0, "trd2");
 
         this->m_helper->AddMarketSegemntGroup(info);
-        this->m_helper->AddTradingSession(info, 1, "t2");
-        this->m_helper->AddTradingSession(info, 1, "t1");
+        this->m_helper->AddTradingSession(info, 1, "trd2");
+        this->m_helper->AddTradingSession(info, 1, "trd1");
 
         AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
 
         this->m_helper->AddMarketSegemntGroup(info2);
-        this->m_helper->AddTradingSession(info2, 0, "t2");
-        this->m_helper->AddTradingSession(info2, 0, "t1");
+        this->m_helper->AddTradingSession(info2, 0, "trd2");
+        this->m_helper->AddTradingSession(info2, 0, "trd1");
 
         this->idf->ReplaceMarketSegmentGroupById(info, info2->MarketSegmentGrp[0]);
         if(info->MarketSegmentGrp[0] == info2->MarketSegmentGrp[0])
@@ -962,12 +962,12 @@ public:
         AstsSecurityDefinitionInfo *info = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
 
         this->m_helper->AddMarketSegemntGroup(info);
-        this->m_helper->AddTradingSession(info, 0, "t1");
-        this->m_helper->AddTradingSession(info, 0, "t2");
+        this->m_helper->AddTradingSession(info, 0, "trd1");
+        this->m_helper->AddTradingSession(info, 0, "trd2");
 
         this->m_helper->AddMarketSegemntGroup(info);
-        this->m_helper->AddTradingSession(info, 1, "t3");
-        this->m_helper->AddTradingSession(info, 1, "t4");
+        this->m_helper->AddTradingSession(info, 1, "trd3");
+        this->m_helper->AddTradingSession(info, 1, "trd4");
 
         this->m_helper->AddMarketSegemntGroup(info);
         this->m_helper->AddTradingSession(info, 2, "t5");
@@ -976,12 +976,12 @@ public:
         AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
 
         this->m_helper->AddMarketSegemntGroup(info2);
-        this->m_helper->AddTradingSession(info2, 0, "t1");
-        this->m_helper->AddTradingSession(info2, 0, "t2");
+        this->m_helper->AddTradingSession(info2, 0, "trd1");
+        this->m_helper->AddTradingSession(info2, 0, "trd2");
 
         this->m_helper->AddMarketSegemntGroup(info2);
-        this->m_helper->AddTradingSession(info2, 1, "t3");
-        this->m_helper->AddTradingSession(info2, 1, "t4");
+        this->m_helper->AddTradingSession(info2, 1, "trd3");
+        this->m_helper->AddTradingSession(info2, 1, "trd4");
 
         LinkedPointer<AstsSecurityDefinitionInfo> *ptr = new LinkedPointer<AstsSecurityDefinitionInfo>();
         ptr->Data(info);

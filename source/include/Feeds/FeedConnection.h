@@ -2723,48 +2723,33 @@ protected:
     FILE *obrLogFile;
 
     inline void OnIncrementalRefresh_OLR_FOND(AstsOLSFONDItemInfo *info) {
-        //TODO remove debug
-        //info->MDEntryID[info->MDEntryIDLength] = '\0';
-        //printf("OLR FOND %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-        this->m_orderTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_orderTableFond->ProcessIncremental(info, index, info->TradingSessionIDUint);
     }
 
     inline void OnIncrementalRefresh_OLR_CURR(AstsOLSCURRItemInfo *info) {
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-        this->m_orderTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_orderTableCurr->ProcessIncremental(info, index, info->TradingSessionIDUint);
     }
 
     inline void OnIncrementalRefresh_TLR_FOND(AstsTLSFONDItemInfo *info) {
-        //TODO remove debug
-        //info->MDEntryID[info->MDEntryIDLength] = '\0';
-        //printf("TRL FOND %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-        this->m_tradeTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_tradeTableFond->ProcessIncremental(info, index, info->TradingSessionIDUint);
     }
 
     inline void OnIncrementalRefresh_TLR_CURR(AstsTLSCURRItemInfo *info) {
-        //TODO remove debug
-        //info->MDEntryID[info->MDEntryIDLength] = '\0';
-        //printf("TLR CURR %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-        this->m_tradeTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_tradeTableCurr->ProcessIncremental(info, index, info->TradingSessionIDUint);
     }
 
     inline void OnIncrementalRefresh_MSR_FOND(AstsGenericItemInfo *info) {
-        //TODO remove debug
-        //info->MDEntryID[info->MDEntryIDLength] = '\0';
-        //printf("MSR FOND %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-        this->m_statTableFond->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_statTableFond->ProcessIncremental(info, index, info->TradingSessionIDUint);
     }
 
     inline void OnIncrementalRefresh_MSR_CURR(AstsGenericItemInfo *info) {
-        //TODO remove debug
-        //info->MDEntryID[info->MDEntryIDLength] = '\0';
-        //printf("MSR CURR %s\n", info->MDEntryID);
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
-        this->m_statTableCurr->ProcessIncremental(info, index, info->TradingSessionID, info->TradingSessionIDLength);
+        this->m_statTableCurr->ProcessIncremental(info, index, info->TradingSessionIDUint);
     }
 
     inline UINT64 GetFortsSecurityId(FortsDefaultSnapshotMessageMDEntriesItemInfo *info) {
@@ -3235,14 +3220,6 @@ public:
             symbol->InitSessions(1);
             symbol->AddSession(info->TradingSessionID);
         }
-        // TODO remove debug
-        //  printf("%s %d add symbol %s %lu %s %s\n", this->m_idName,
-        //               index,
-        //               DebugInfoManager::Default->GetString(sd->Symbol, sd->SymbolLength, 0),
-        //               sd->SecurityID,
-        //               DebugInfoManager::Default->GetString(sd->MarketID, sd->MarketIDLength, 1),
-        //               DebugInfoManager::Default->GetString(sd->MarketSegmentID, sd->MarketSegmentIDLength, 2)
-        //        );
     }
 
     void AddSymbol(LinkedPointer<AstsSecurityDefinitionInfo> *ptr, int index) {
@@ -3258,7 +3235,7 @@ public:
                 AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
                 AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
                 for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
-                    symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
+                    symbol->AddSession((*trading)->TradingSessionID);
                 }
             }
             return;
@@ -3274,7 +3251,7 @@ public:
                 AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
                 AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
                 for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
-                    symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
+                    symbol->AddSession((*trading)->TradingSessionID);
                 }
             }
             return;
@@ -3290,7 +3267,7 @@ public:
                 AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
                 AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
                 for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
-                    symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
+                    symbol->AddSession((*trading)->TradingSessionID);
                 }
             }
             return;
@@ -3306,7 +3283,7 @@ public:
                 AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
                 AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
                 for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
-                    symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
+                    symbol->AddSession((*trading)->TradingSessionID);
                 }
             }
             return;
@@ -3322,7 +3299,7 @@ public:
                 AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
                 AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
                 for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
-                    symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
+                    symbol->AddSession((*trading)->TradingSessionID);
                 }
             }
             return;
@@ -3338,7 +3315,7 @@ public:
                 AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = *market;
                 AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
                 for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
-                    symbol->AddSession((*trading)->TradingSessionID, (*trading)->TradingSessionIDLength);
+                    symbol->AddSession((*trading)->TradingSessionID);
                 }
             }
             return;
@@ -3590,20 +3567,13 @@ public:
             this->m_connectionsToRecvSymbols[c]->AddSymbol(ptr, smb->m_index);
     }
 
-    inline AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* FindTradingSession(AstsSecurityDefinitionInfo *info, const char *tradingSession, int tradingSessionLength) {
+    inline AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* FindTradingSession(AstsSecurityDefinitionInfo *info, UINT32 tradingSessionId) {
         for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
             AstsSecurityDefinitionMarketSegmentGrpItemInfo *m = info->MarketSegmentGrp[i];
             for(int j = 0; j < m->TradingSessionRulesGrpCount; j++) {
                 AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *t = m->TradingSessionRulesGrp[j];
-                if(StringIdComparer::EqualFast(t->TradingSessionID, t->TradingSessionIDLength, tradingSession, tradingSessionLength))
+                if(t->TradingSessionIDUint == tradingSessionId)
                     return t;
-                /*char smb = *(t->TradingSessionSubID);
-                if(smb == *tradingSession) {
-                    if(smb != 'N') // ONLY N subId can have 2 symbol length - 'NA' - other symbols - only one
-                        return t;
-                    if(t->TradingSessionSubIDLength == tradingSessionLength) // if both has 1 symbol 'N' or 2 symbols 'NA'
-                        return t;
-                }*/
             }
         }
         return 0;
@@ -3621,7 +3591,7 @@ public:
         info->Clear(); // just free object before. Data will not be corrupt
         int index = this->IdfFindBySymbol(info->Symbol, info->SymbolLength);
         AstsSecurityDefinitionInfo *sd = this->Symbol(index);
-        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *trading = FindTradingSession(sd, info->TradingSessionID, info->TradingSessionIDLength);
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *trading = FindTradingSession(sd, info->TradingSessionIDUint);
         if(trading == 0) // TODO should we do something for unknow session? or just skip?
             return true;
         UpdateTradingSession(trading, info);
@@ -3701,7 +3671,7 @@ public:
             AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **s = m->TradingSessionRulesGrp;
             found = true;
             for(int i = 0; i < sCount; i++, is++, s++) {
-                if(!StringIdComparer::EqualFast((*is)->TradingSessionID, (*is)->TradingSessionIDLength, (*s)->TradingSessionID, (*s)->TradingSessionIDLength)) {
+                if((*is)->TradingSessionIDUint != (*s)->TradingSessionIDUint) {
                     found = false;
                     break;
                 }

@@ -68,7 +68,7 @@ public:
         this->m_entryType = MDEntryType::mdetBuyQuote;
         this->m_symbol = symbol;
         this->m_securityId = securityId;
-        this->m_tradingSession = "session1";
+        this->m_tradingSession = "ses1";
         this->m_entryIdInt = entryId;
         this->m_entryPx.Set(1, 1);
         this->m_entrySizeInt = 10;
@@ -79,7 +79,7 @@ public:
         this->m_action = MDUpdateAction::mduaAdd;
         this->m_entryType = MDEntryType::mdetBuyQuote;
         this->m_symbol = symbol;
-        this->m_tradingSession = "session1";
+        this->m_tradingSession = "ses1";
         this->m_entryId = entryId;
         this->m_entryPx.Set(1, 1);
         this->m_entrySize.Set(1, 1);

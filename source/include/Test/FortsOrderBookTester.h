@@ -2646,8 +2646,8 @@ public:
     void TestConnection_ParallelWorkingIncrementalAndSnapshot_3_1() {
 //        this->Clear();
 //
-//        incForts->OrderBookForts()->Add("s1", "session1");
-//        incForts->OrderBookForts()->Add("symbol3", "session1");
+//        incForts->OrderBookForts()->Add("s1", "ses1");
+//        incForts->OrderBookForts()->Add("symbol3", "ses1");
 //
 //        if(snapForts->State() != FeedConnectionState::fcsSuspend)
 //            throw;
@@ -3541,7 +3541,7 @@ public:
         // there is no UpdateAction in snap messages so we don't have to check these cases
         /*this->Clear();
 
-        this->incForts->OrderBookForts()->Add("s1", "session1");
+        this->incForts->OrderBookForts()->Add("s1", "ses1");
         int prevCount = this->snapForts->m_fastProtocolManager->m_fortsDefaultSnapshotMessageMDEntriesItems->Count();
         this->SendMessagesIdf(this->incForts, this->snapForts,
                            "olr entry s1 e1, olr entry s1 e2, lost olr entry s1 e4 entry s1 e4, wait_snap, hbeat",

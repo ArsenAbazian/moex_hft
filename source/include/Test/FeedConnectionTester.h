@@ -150,7 +150,7 @@ public:
         info->m_items[0] = item;
 
         item->m_symbol = "symbol1";
-        item->m_tradingSession = "session1";
+        item->m_tradingSession = "ses1";
         item->m_entryId = "111111";
         item->m_action = MDUpdateAction::mduaAdd;
         item->m_entryType = MDEntryType::mdetBuyQuote;
@@ -189,7 +189,7 @@ public:
         info->m_items[0] = item;
 
         item->m_symbol = "symbol1";
-        item->m_tradingSession = "session1";
+        item->m_tradingSession = "ses1";
         item->m_entryId = "111111";
         item->m_action = MDUpdateAction::mduaAdd;
         item->m_entryType = MDEntryType::mdetBuyQuote;
@@ -253,7 +253,7 @@ public:
         info->m_items[0] = item;
 
         item->m_symbol = "symbol1";
-        item->m_tradingSession = "session1";
+        item->m_tradingSession = "ses1";
         item->m_entryId = "111111";
         item->m_action = MDUpdateAction::mduaAdd;
         item->m_entryType = MDEntryType::mdetBuyQuote;
@@ -296,7 +296,7 @@ public:
         info2->m_itemsCount = 1;
         info2->m_items[0] = item2;
         info2->m_symbol = "symbol1";
-        info2->m_session = "session1";
+        info2->m_session = "ses1";
         info2->m_lastMsgSeqNoProcessed = 11;
         info2->m_routeFirst = true;
         info2->m_lastFragment = true;

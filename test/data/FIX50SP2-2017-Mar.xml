@@ -32,7 +32,7 @@
 		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
-		<string name="TradingSessionID" id="336" aligned="16" presence="optional"></string>
+		<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
 		<string name="Symbol" id="55" aligned="16"></string>
 		<uInt32 name="LastMsgSeqNumProcessed" id="369" presence="optional"></uInt32>
 		<int32 name="RptSeq" id="83"></int32>
@@ -142,7 +142,7 @@
 			<decimal name="BuyBackPx" id="5558" presence="optional"></decimal>
 			<uInt32 name="BuyBackDate" id="5559" presence="optional"></uInt32>
 			<string name="CXFlag" id="5154" presence="optional"></string>
-			<string name="TradingSessionID" id="336" aligned="16" presence="optional"></string>
+			<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
 			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 		</sequence>
 	</template>
@@ -161,7 +161,7 @@
         <uInt32 name="LastFragment" id="893" presence="optional"></uInt32>
 		<uInt32 name="RouteFirst" id="7944" presence="optional"></uInt32>
 		<int32 name="TradSesStatus" id="340" presence="optional"></int32>
-		<string name="TradingSessionID" id="336" aligned="16" presence="optional"></string>
+		<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
 		<string name="Symbol" id="55" aligned="16"></string>
 		<int32 name="MDSecurityTradingStatus" id="1682" presence="optional"></int32>
     	<uInt32 name="AuctionIndicator" id="5509" presence="optional"></uInt32>
@@ -195,7 +195,7 @@
         <uInt32 name="LastFragment" id="893" presence="optional"></uInt32>
 		<uInt32 name="RouteFirst" id="7944" presence="optional"></uInt32>
 		<int32 name="TradSesStatus" id="340" presence="optional"></int32>
-		<string name="TradingSessionID" id="336" aligned="16" presence="optional"></string>
+		<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
 		<string name="Symbol" id="55" aligned="16"></string>
 		<int32 name="MDSecurityTradingStatus" id="1682" presence="optional"></int32>
 		<sequence name="GroupMDEntries">
@@ -226,7 +226,7 @@
 		<uInt32 name="LastFragment" id="893" presence="optional"></uInt32>
 		<uInt32 name="RouteFirst" id="7944" presence="optional"></uInt32>
 		<int32 name="TradSesStatus" id="340" presence="optional"></int32>
-		<string name="TradingSessionID" id="336" aligned="16" presence="optional"></string>
+		<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
 		<string name="Symbol" id="55" aligned="16"></string>
 		<int32 name="MDSecurityTradingStatus" id="1682" presence="optional"></int32>
 		<uInt32 name="AuctionIndicator" id="5509" presence="optional"></uInt32>
@@ -268,7 +268,7 @@
 		<uInt32 name="LastFragment" id="893" presence="optional"></uInt32>
 		<uInt32 name="RouteFirst" id="7944" presence="optional"></uInt32>
 		<int32 name="TradSesStatus" id="340" presence="optional"></int32>
-		<string name="TradingSessionID" id="336" aligned="16" presence="optional"></string>
+		<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
 		<string name="Symbol" id="55" aligned="16"></string>
 		<int32 name="MDSecurityTradingStatus" id="1682" presence="optional"></int32>
 		<sequence name="GroupMDEntries">
@@ -338,7 +338,7 @@
 			<uInt32 name="SettlDate" id="64" presence="optional"></uInt32>
 			<string name="SettleType" id="5459" presence="optional"></string>
 			<string name="CXFlag" id="5154" presence="optional"></string>
-			<string name="TradingSessionID" id="336" aligned="16" presence="optional"></string>
+			<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
 			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 		</sequence>
 	</template>
@@ -380,7 +380,7 @@
 			<uInt32 name="SettlDate" id="64" presence="optional"></uInt32>
 			<string name="SettleType" id="5459" presence="optional"></string>
 			<string name="CXFlag" id="5154" presence="optional"></string>
-			<string name="TradingSessionID" id="336" aligned="16" presence="optional"></string>
+			<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
 			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 		</sequence>
 	</template>
@@ -410,7 +410,7 @@
 			<string name="OrderStatus" id="10505" presence="optional" fixed_size="1"><copy/></string>
 			<string name="OrdType" id="40" presence="optional"><copy/></string>
 			<decimal name="TotalVolume" id="5791" presence="optional"><copy/></decimal>
-			<string name="TradingSessionID" id="336" aligned="16" presence="optional"><copy/></string>
+			<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"><copy/></string>
 			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"><copy/></string>
 		</sequence>
 	</template>
@@ -436,7 +436,7 @@
             <decimal name="MDEntryPx" id="270" presence="optional"><copy/></decimal>
 			<decimal name="MDEntrySize" id="271" presence="optional"><copy/></decimal>
 			<string name="OrderStatus" id="10505" presence="optional" fixed_size="1"><copy/></string>
-			<string name="TradingSessionID" id="336" aligned="16" presence="optional"><copy/></string>
+			<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"><copy/></string>
 			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"><copy/></string>
 		</sequence>
 	</template>
@@ -473,7 +473,7 @@
 			<decimal name="RepoToPx" id="5677" presence="optional"></decimal>
 			<decimal name="BuyBackPx" id="5558" presence="optional"></decimal>
 			<uInt32 name="BuyBackDate" id="5559" presence="optional"></uInt32>
-			<string name="TradingSessionID" id="336" aligned="16" presence="optional"></string>
+			<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
 			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 			<string name="RefOrderID" id="1080" presence="optional"></string>
 		</sequence>
@@ -509,7 +509,7 @@
 			<decimal name="RepoToPx" id="5677" presence="optional"></decimal>
 			<decimal name="BuyBackPx" id="5558" presence="optional"></decimal>
 			<uInt32 name="BuyBackDate" id="5559" presence="optional"></uInt32>
-			<string name="TradingSessionID" id="336" aligned="16" presence="optional"></string>
+			<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
 			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 			<string name="RefOrderID" id="1080" presence="optional"></string>
 		</sequence>
@@ -554,7 +554,7 @@
 			<decimal name="RoundLot" id="561" presence="optional"></decimal>
 			<sequence name="TradingSessionRulesGrp" presence="optional">
 				<length name="NoTradingSessionRules" id="1309"/>
-				<string name="TradingSessionID" id="336" aligned="16"></string>
+				<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4"></string>
 				<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 				<int32 name="SecurityTradingStatus" id="326" presence="optional"></int32>
 				<int32 name="OrderNote" id="9680" presence="optional"></int32>
@@ -589,7 +589,7 @@
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<string name="Symbol" id="55" aligned="16"></string>
-		<string name="TradingSessionID" id="336" aligned="16" presence="optional"></string>
+		<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
 		<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 		<int32 name="SecurityTradingStatus" id="326" presence="optional"></int32>
 		<uInt32 name="AuctionIndicator" id="5509" presence="optional"></uInt32>
@@ -604,7 +604,7 @@
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<int32 name="TradSesStatus" id="340"></int32>
 		<string name="Text" id="58" presence="optional"></string>
-		<string name="TradingSessionID" id="336" aligned="16"></string>
+		<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4"></string>
 	</template>
 	<!-- Heartbeat -->
 	<template name="0" id="2108" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
