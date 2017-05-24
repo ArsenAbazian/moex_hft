@@ -36,8 +36,8 @@ FeedConnection::FeedConnection(const char *id, const char *name, char value, Fee
     this->m_waitLostIncrementalMessageMaxTimeMcs = 100000;
     this->m_waitIncrementalMessageMaxTimeMcs = this->WaitAnyPacketMaxTimeMcs;
     this->m_snapshotMaxTimeMcs = 30000;
-    this->m_maxLostPacketCountForStartSnapshot = 2000;
 #endif
+    this->m_maxLostPacketCountForStartSnapshot = 2000;
 
     this->m_astsSnapshotInfo = 0;
     this->m_fortsSnapshotInfo = 0;

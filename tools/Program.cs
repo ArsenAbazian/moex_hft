@@ -2024,8 +2024,8 @@ namespace prebuild {
 		}
 
 		int CalcPresenceMapByteCount(int bitCount) {
-			int res = bitCount / 8;
-			if(bitCount % 8 > 0)
+			int res = bitCount / 7;
+			if(bitCount % 7 > 0)
 				res++;
 			return res;
 		}
@@ -2165,15 +2165,19 @@ namespace prebuild {
 		}
 
 		void WriteParsePresenceMap (XmlNode node, string info, string tabString) {
-			WriteLine(tabString + "UINT64 pmap" + LevelCount + " = this->ParsePresenceMap();");
-			//WriteLine(tabString + "this->ParsePresenceMap(&(" + info + "->PresenceMap));");
+			int byteCount = CalcPresenceMapByteCount (node);
+			WriteLine(tabString + "UINT64 pmap" + LevelCount + " = this->ParsePresenceMap" + byteCount + "();");
 		}
 
 		private  int GetMaxPresenceBitCount (XmlNode node) {
 			int count = 0;
-			foreach(XmlNode field in node.ChildNodes)
-				if(ShouldWriteCheckPresenceMapCode(field))
+			foreach (XmlNode field in node.ChildNodes) {
+				//Console.WriteLine (Name (field) + " presence = " + ShouldWriteCheckPresenceMapCode (field))/;
+				if (ShouldWriteCheckPresenceMapCode (field)) {
 					count++;
+				}
+			}
+			//Console.WriteLine("calc presence map for " + Name(node) + " = " + count);
 			return count;
 		}
 
@@ -2947,9 +2951,13 @@ namespace prebuild {
 		}
 
 		private  void WriteStringCopyValueCode (StructureInfo str, XmlNode value, string info, string tabString) {
-			WriteLine(tabString + "this->CopyString(" + info + "->" + Name(value) + ", " + str.PrevValueName + "->" + Name(value) + ", " + str.PrevValueName + "->" + Name(value) + "Length" + ");");
-			//WriteLine(tabString + info + "->" + Name(value) + " = this->" + str.PrevValueName + "->" + Name(value) + ";");
-			WriteLine(tabString + info + "->" + Name(value) + "Length = this->" + str.PrevValueName + "->" + Name(value) + "Length;");
+			if (HasAttribute (value, "union")) {
+				WriteLine(tabString + info + "->" + Name(value) + GetTypeSuffix(value) + " = this->" + str.PrevValueName + "->" + Name(value) + GetTypeSuffix(value) + ";");
+			}
+			else {
+				WriteLine(tabString + "this->CopyString(" + info + "->" + Name(value) + ", " + str.PrevValueName + "->" + Name(value) + ", " + str.PrevValueName + "->" + Name(value) + "Length" + ");");
+				WriteLine(tabString + info + "->" + Name(value) + "Length = this->" + str.PrevValueName + "->" + Name(value) + "Length;");
+			}
 		}
 
 		private bool CanParseValue(XmlNode value) {

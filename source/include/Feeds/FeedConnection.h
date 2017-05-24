@@ -1220,7 +1220,6 @@ protected:
 
     inline void ProcessIncrementalMessages() {
         if(this->m_windowMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
-            printf("one message inc s = %d e = %d w = %d\n", this->m_startMsgSeqNum, this->m_endMsgSeqNum, this->m_windowMsgSeqNum);
             FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
             this->m_startMsgSeqNum++;
             this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
@@ -2612,6 +2611,8 @@ protected:
         bool recv = this->ProcessServerASecurityStatusAsts();
         if(!recv)
             recv = this->ProcessServerBSecurityStatusAsts();
+        else
+            this->ProcessServerBSecurityStatusAsts();
 
         if(!recv) {
             if(!this->m_waitTimer->Active(1)) {

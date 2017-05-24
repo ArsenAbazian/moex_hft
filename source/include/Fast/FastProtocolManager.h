@@ -2806,6 +2806,41 @@ public:
         this->currentPos += length;
     }
 
+	inline UINT64 ParsePresenceMap0() {
+		this->currentPos++;
+		return 0;
+	}
+
+	inline UINT64 ParsePresenceMap1() {
+		UINT32 value = (*(this->currentPos)) & 0x7f;
+		this->currentPos++;
+		return value;
+	}
+
+	inline UINT64 ParsePresenceMap2() {
+		UINT32 value = *((UINT32*)this->currentPos);
+		if((value & 0x80) != 0) {
+			this->currentPos++;
+			return value & 0x0000007f;
+		}
+		this->currentPos += 2;
+		return value & 0x00007f7f;
+	}
+
+	inline UINT64 ParsePresenceMap3() {
+		UINT32 value = *((UINT32*)this->currentPos);
+		if((value & 0x80) != 0) {
+			this->currentPos++;
+			return value & 0x0000007f;
+		}
+		if((value & 0x8000) != 0) {
+			this->currentPos += 2;
+			return value & 0x00007f7f;
+		}
+		this->currentPos += 3;
+		return value & 0x007f7f7f;
+	}
+
 	inline UINT64 ParsePresenceMap() {
 		UINT64 value = *((UINT*)this->currentPos);
 		if((value & FAST_STOPBIT_FIRST_BYTE) != 0) {
@@ -3328,7 +3363,7 @@ public:
 			gmdeItemInfo = GetFreeAstsOLSFONDItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 
-			UINT64 pmap2 = this->ParsePresenceMap();
+			UINT64 pmap2 = this->ParsePresenceMap2();
 			UINT64 nmap2 = 0;
 
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX0)) {
@@ -3453,7 +3488,7 @@ public:
 			gmdeItemInfo = GetFreeAstsOLSCURRItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 
-			UINT64 pmap2 = this->ParsePresenceMap();
+			UINT64 pmap2 = this->ParsePresenceMap2();
 			UINT64 nmap2 = 0;
 
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX0)) {
@@ -3558,7 +3593,7 @@ public:
 			gmdeItemInfo = GetFreeAstsTLSFONDItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 
-			UINT64 pmap2 = this->ParsePresenceMap();
+			UINT64 pmap2 = this->ParsePresenceMap3();
 			UINT64 nmap2 = 0;
 
 			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType);
@@ -3733,7 +3768,7 @@ public:
 			gmdeItemInfo = GetFreeAstsTLSCURRItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 
-			UINT64 pmap2 = this->ParsePresenceMap();
+			UINT64 pmap2 = this->ParsePresenceMap3();
 			UINT64 nmap2 = 0;
 
 			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType);
@@ -4060,7 +4095,7 @@ public:
 			gmdeItemInfo = GetFreeAstsOLSFONDItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 
-			UINT64 pmap2 = this->ParsePresenceMap();
+			UINT64 pmap2 = this->ParsePresenceMap2();
 			UINT64 nmap2 = 0;
 
 			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
@@ -4155,8 +4190,7 @@ public:
 					nmap2 |= NULL_MAP_INDEX14;
 			}
 			else {
-				this->CopyString(gmdeItemInfo->TradingSessionID, m_prevastsOLSFONDItemInfo->TradingSessionID, m_prevastsOLSFONDItemInfo->TradingSessionIDLength);
-				gmdeItemInfo->TradingSessionIDLength = this->m_prevastsOLSFONDItemInfo->TradingSessionIDLength;
+				gmdeItemInfo->TradingSessionIDUint = this->m_prevastsOLSFONDItemInfo->TradingSessionIDUint;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX12)) {
 				if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
@@ -4191,7 +4225,7 @@ public:
 			gmdeItemInfo = GetFreeAstsOLSCURRItemInfo();
 			info->GroupMDEntries[i] = gmdeItemInfo;
 
-			UINT64 pmap2 = this->ParsePresenceMap();
+			UINT64 pmap2 = this->ParsePresenceMap2();
 			UINT64 nmap2 = 0;
 
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX0)) {
@@ -4269,8 +4303,7 @@ public:
 					nmap2 |= NULL_MAP_INDEX11;
 			}
 			else {
-				this->CopyString(gmdeItemInfo->TradingSessionID, m_prevastsOLSCURRItemInfo->TradingSessionID, m_prevastsOLSCURRItemInfo->TradingSessionIDLength);
-				gmdeItemInfo->TradingSessionIDLength = this->m_prevastsOLSCURRItemInfo->TradingSessionIDLength;
+				gmdeItemInfo->TradingSessionIDUint = this->m_prevastsOLSCURRItemInfo->TradingSessionIDUint;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX10)) {
 				if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))

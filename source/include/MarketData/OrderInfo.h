@@ -310,13 +310,14 @@ public:
     }
 
     inline void ForceProcessMessage(T *info) {
+        /*
         if(info->MDUpdateAction == MDUpdateAction::mduaAdd)
             this->Add(info);
         else if(info->MDUpdateAction == MDUpdateAction::mduaDelete)
             this->Remove(info);
         else
             this->Change(info);
-
+        */
     }
 
     inline bool IsOutdatedMessage(T *info) {
