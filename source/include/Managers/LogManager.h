@@ -30,30 +30,31 @@ typedef  enum _BinaryLogItemType {
 typedef struct _BinaryLogItem {
     struct timespec     m_startTime;        // timestamp DO NOT MOVE THIS FIELD!!!!!
     struct timespec     m_endTime;          // end timestamp
-    int                 m_message;          // char message code - optimize - do not copy string - usually name of object
-    int                 m_message2;         // char message code2 - usually - method name
-    BinaryLogItemType   m_type;             // by default (do not set) is NodeItem
+    short               m_message;          // char message code - optimize - do not copy string - usually name of object
+    short               m_message2;         // char message code2 - usually - method name
     int                 m_bufferIndex;      //
     int                 m_itemIndex;        //
     int                 m_errno;            // error number
-    NullableBoolean     m_result;           // method result - 0 - fail, 1 - success, -1 - no value
     int                 m_index;            // global index
     union {
         int m_startIndex;
         int m_endIndex;
     };
+    BinaryLogItemType   m_type;             // by default (do not set) is NodeItem
+    NullableBoolean     m_result;           // method result - 0 - fail, 1 - success, -1 - no value
 }BinaryLogItem;
 
 class BinaryLogManager {
-    BinaryLogItem       *m_stack[256];
-    int                 m_stackTop;
+    static const int    m_itemsCount = 200000;  // set 200000 for a while
 
+    BinaryLogItem       *m_stack[256];
     BinaryLogItem       *m_items;
-    const int           m_itemsCount = 200000;  // set 200000 for a while
-    int                 m_itemIndex;
 
     char                m_tabs[64];
+    int                 m_stackTop;
+    int                 m_itemIndex;
     int                 m_tabsCount;
+    int                 m_paddingBytes;
 
     inline void AddTab() {
         this->m_tabs[this->m_tabsCount] = '\t';

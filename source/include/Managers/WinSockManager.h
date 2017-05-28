@@ -87,9 +87,13 @@ private:
     static WinSockManager           **m_registeredManagers;
     static int                      m_pollRes;
 
-    int                             m_socket;
-    //bool                            m_shouldRecv;
     struct pollfd                   *m_poll;
+    unsigned char                   *m_recvBytes;
+    int                             m_recvSize;
+    int                             m_socket;
+
+    unsigned char                   *m_tempBuffer;
+    unsigned char                   *m_sendBytes;
     sockaddr_in                     m_adress;
     struct sockaddr					*m_senderAddr;
     socklen_t 						m_senderAddrLength;
@@ -98,21 +102,15 @@ private:
     WinSockConnectionType           m_connectionType;
     char                            m_fullAddress[64];
     int                             m_serverAddressLogIndex;
-
-    bool                            m_connected;
-    unsigned char                   *m_tempBuffer;
     int                             m_sendSize;
     int                             m_sendSizeActual;
-    int                             m_recvSize;
-    unsigned char                   *m_recvBytes;
-    unsigned char                   *m_sendBytes;
 
     WinSockStatus                   m_sendStatus;
     WinSockStatus                   m_recvStatus;
-
     int                             m_pollIndex;
-
     LogMessageCode                  m_socketLogName;
+    bool                            m_connected;
+    char                            m_paddingBytes[3];
 
     inline int GetFreePollIndex() { return WinSockManager::m_registeredCount; }
     inline void IncPollIndex() { WinSockManager::m_registeredCount++;  }

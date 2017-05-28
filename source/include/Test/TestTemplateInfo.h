@@ -12,16 +12,16 @@
 
 class TestTemplateItemInfo {
 public:
-    MDUpdateAction  m_action;
     const char*     m_symbol;
-    UINT64          m_securityId;
     const char*     m_tradingSession;
-    MDEntryType     m_entryType;
     const char*     m_entryId;
-    UINT64          m_entryIdInt;
     Decimal         m_entryPx;
     Decimal         m_entrySize;
+    UINT64          m_securityId;
+    UINT64          m_entryIdInt;
     UINT64          m_entrySizeInt;
+    MDUpdateAction  m_action;
+    MDEntryType     m_entryType;
     int             m_rptSeq;
     int             m_sessionStatus;
 
@@ -114,26 +114,27 @@ public:
 
 class TestTemplateInfo {
 public:
-    FeedTemplateId   m_templateId;
-    int                     m_msgSeqNo;
-    bool                    m_routeFirst;
-    bool                    m_lastFragment;
-    int                     m_itemsCount;
-    int                     m_rptSec;
-    int                     m_lastMsgSeqNoProcessed;
     TestTemplateItemInfo*   m_items[8];
     const char              *m_symbol;
-    UINT64                  m_securityId;
     const char              *m_session;
     const char              *m_sessionSubId;
     char                    *m_senderId;
     char                    *m_pass;
+    UINT64                  m_securityId;
+    int                     m_msgSeqNo;
+    int                     m_itemsCount;
+    int                     m_rptSec;
+    int                     m_lastMsgSeqNoProcessed;
+    int                     m_totNumReports;
+    int                     m_auctionIndicator;
+    FeedTemplateId   m_templateId;
+    SecurityStatus          m_sessionStatus;
+    bool                    m_routeFirst;
+    bool                    m_lastFragment;
     bool                    m_lost;
     bool                    m_wait;
     bool                    m_skip;
-    int                     m_totNumReports;
-    SecurityStatus          m_sessionStatus;
-    int                     m_auctionIndicator;
+    char                    m_paddingBytes[3];
 
     TestTemplateInfo() {
         this->m_templateId = FeedTemplateId::fcmHeartBeat;

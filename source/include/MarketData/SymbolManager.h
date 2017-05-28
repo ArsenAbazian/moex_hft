@@ -11,20 +11,24 @@
 #include <memory.h>
 
 class SymbolInfo {
-    static const int m_textSize = 17;
+    static const int m_textSize = 16;
 public:
-    LinkedPointer<SymbolInfo>   *m_pointer;
-    int                         m_index;
-    int                         m_length;
-    char                        m_text[SymbolInfo::m_textSize] __attribute__((aligned(16)));
+    union {
+        char m_text[SymbolInfo::m_textSize] __attribute__((aligned(16)));
+        struct {
+            UINT64          m_symbol1;
+            UINT32          m_symbol2;
+            short           m_index;
+            unsigned short  m_length;
+        };
+    };
 
     SymbolInfo() :
-            m_pointer(0),
             m_index(-1),
             m_length(0) {
-        memset(this->m_text, 0, SymbolInfo::m_textSize);
+        memset(this->m_text, 0, sizeof(SymbolInfo));
     }
-    void Set(const char *symbol, int length, int index) {
+    void Set(const char *symbol, unsigned short length, unsigned short index) {
         memcpy(this->m_text, symbol, length);
         this->m_text[length] = '\0';
         this->m_length = length;
@@ -38,15 +42,16 @@ class SymbolManager {
     friend class SymbolManagerTester;
     friend class SecurityDefinitionTester;
 
-    const int                   BucketList2Count = 1000000;
+    static const int            BucketList2Count = 1000000;
 
-    int                         m_capacity;
-    int                         m_count;
-    short                       m_freeIndex;
-
-    PointerList<SymbolInfo>      *m_pool;
     LinkedPointer<SymbolInfo>   **m_bucketList;
     SymbolInfo                  **m_bucketList2;
+    PointerList<SymbolInfo>      *m_pool;
+
+    int                         m_capacity;
+    unsigned short              m_count;
+    short                       m_freeIndex;
+
     inline short GetFreeIndex() {
         this->m_freeIndex++;
         return this->m_freeIndex;
@@ -78,10 +83,6 @@ class SymbolManager {
             }
         }
         else if(this->m_bucketList2 != 0) {
-            for(int i = 0; i < BucketList2Count; i++) {
-                if(this->m_bucketList2[i] != 0)
-                    this->m_pool->Push(this->m_bucketList2[i]->m_pointer);
-            }
             memset(this->m_bucketList2, 0, sizeof(SymbolInfo *) * BucketList2Count);
         }
         this->m_pool->Clear();
@@ -124,13 +125,13 @@ class SymbolManager {
         this->m_count++;
     }
     void AssignPointersToSymbols() {
-        LinkedPointer<SymbolInfo> *ptr = this->m_pool->PoolStart();
-        while(true) {
-            ptr->Data()->m_pointer = ptr;
-            if(ptr == this->m_pool->PoolEnd())
-                break;
-            ptr = ptr->Next();
-        }
+        //LinkedPointer<SymbolInfo> *ptr = this->m_pool->PoolStart();
+        //while(true) {
+        //    ptr->Data()->m_pointer = ptr;
+        //    if(ptr == this->m_pool->PoolEnd())
+        //        break;
+        //    ptr = ptr->Next();
+        //}
     }
 public:
     SymbolManager(int capacity) {
@@ -140,7 +141,7 @@ public:
 
         this->m_pool = new PointerList<SymbolInfo>(capacity + 10);
         this->m_pool->AllocData();
-        this->AssignPointersToSymbols();
+        //this->AssignPointersToSymbols();
         this->m_bucketList = new LinkedPointer<SymbolInfo>*[StringHash::HashArrayItemsCount];
         for(int i = 0; i < StringHash::HashArrayItemsCount; i++)
             this->m_bucketList[i] = 0;

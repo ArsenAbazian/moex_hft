@@ -36,11 +36,11 @@ class FortsMarketDataGroup {
     FeedConnection          *m_instrumentReplay;
 
     FeedConnection          *m_hr;
+    const char              *m_marketId;
+    const char              *m_label;
+    int                     m_marketDepth;
 
     MarketDataGroupId       m_id;
-    const char              *m_marketId;
-    int                     m_marketDepth;
-    const char              *m_label;
 
 public:
     FortsMarketDataGroup(MarketDataGroupId id, const char *marketId, int marketDepth, const char *label) : FortsMarketDataGroup() {

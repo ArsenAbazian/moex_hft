@@ -18,13 +18,14 @@ template <typename T> class TradeInfo {
     PointerListLite<T>                  *m_trades;
     MDEntryQueue                        *m_entryInfo;
 
-    bool                                m_shouldProcessSnapshot;
     int                                 m_rptSeq;
+    UINT32                              m_sessionInt;
     int                                 m_savedRptSeq;
+    int                                 m_snapshotProcessedCount;
     MarketSymbolInfo<TradeInfo<T>>      *m_symbolInfo;
     SizedArray                          *m_tradingSession;
-    int                                 m_snapshotProcessedCount;
-    UINT32                              m_sessionInt;
+    bool                                m_shouldProcessSnapshot;
+    char                                m_paddingBytes[7];
 
 public:
     TradeInfo();
@@ -35,6 +36,11 @@ public:
 
     inline void ReleaseEntryQue() {
         if(this->m_entryInfo != 0) {
+            for(int i = 0; i <= this->m_entryInfo->MaxIndex(); i++) {
+                if(this->m_entryInfo->Entries()[i] != 0) {
+                    ((T *) this->m_entryInfo->Entries()[i])->Clear();
+                }
+            }
             this->m_entryInfo->Reset();
             MDEntryQueue::Pool->FreeItem(this->m_entryInfo->Pointer);
         }
@@ -117,6 +123,7 @@ public:
         this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
         this->m_entryInfo->AddEntry(info, info->RptSeq);
+        info->Used = true;
     }
 
     inline void ForceProcessMessage(T *info) {
@@ -169,12 +176,14 @@ public:
         int startIndex = this->m_rptSeq + 1 - incRptSeq;
         for(int i = 0; i < startIndex && i < this->m_entryInfo->Capacity(); i++, entry++) {
             if((*entry) != 0) (*entry)->Clear();
+            (*entry) = 0;
         }
         for(int index = startIndex; index <= maxIndex; index++) {
             if((*entry) == 0)
                 return false;
             ForceProcessMessage(*entry);
             this->m_rptSeq = (*entry)->RptSeq;
+            (*entry) = 0;
             entry++;
         }
         this->ReleaseEntryQue();

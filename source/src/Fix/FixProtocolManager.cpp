@@ -12,6 +12,7 @@ FixProtocolManager::FixProtocolManager(ISocketBufferProvider *provider, const ch
     this->m_bufferProvider = provider;
     this->m_protocolVersion = protocolVersion;
     this->m_protocolVersionLength = strlen(protocolVersion);
+    this->m_paddingBytes = 0;
 
     memset(this->senderComputerId, 0, 100);
     this->senderComputerIdLength = 0;

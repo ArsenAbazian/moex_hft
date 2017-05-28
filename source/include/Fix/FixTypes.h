@@ -9,13 +9,13 @@
 #include "../Converters/UTCTimeConverter.h"
 #include "FixProtocolMacros.h"
 
-#pragma pack(push)
-#pragma pack(4)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpadded"
 typedef struct _PartyInfo {
-    char    ID[16];
     int     IDLength;
-    char    IDSource;
     int     Role;
+    char    ID[19];
+    char    IDSource;
 } FixPartyInfo;
 
 typedef struct _UnderlyingSymbolInfo {
@@ -137,19 +137,19 @@ typedef struct _LogonInfo {
     int                 MsgStartSeqNo;
     int                 EncryptionType;
     int                 HearthBtInt;
-    bool                ShouldResetSeqNum;
-    char                SenderCompID[32];
     int                 SenderCompIDLength;
-    char                UserName[32];
     int                 UserNameLength;
-    char                Password[12];
     int                 PassLength;
-    char                NewPassword[12];
     int                 NewPassLength;
-    bool                AllowSessionStatus;
+    char                SenderCompID[32];
+    char                UserName[32];
+    char                Password[16];
+    char                NewPassword[16];
     FixSessionStatus    SessionStatus;
+    bool                AllowSessionStatus;
     bool                CancelOnDisconnect;
     char                LanguageId;
+    bool                ShouldResetSeqNum;
 }FixLogonInfo;
 
 typedef enum _FixSessionRejectReason {
@@ -352,18 +352,19 @@ typedef enum _FixSecurityListRequestType {
 
 typedef struct _FixHeaderInfo {
     char*       name;
+    char*       sendingTime;
+    char*       origSendingTime;
+    char*       senderCompID;
+    char*       targetCompID;
     int         nameLength;
     int         bodyLength;
-    char        msgType;
-    char*       senderCompID;
     int         senderCompIDLength;
-    char*       targetCompID;
     int         targetCompIDLength;
     int         msgSeqNum;
     bool        possDupFlag;
     bool        possResend;
-    char*       sendingTime;
-    char*       origSendingTime;
+    char        msgType;
+    char        paddingByte;
 }FixHeaderInfo;
 
 typedef struct _FixTagValueInfo {
@@ -378,13 +379,13 @@ typedef struct _FixTagValueInfo {
 }FixTagValueInfo;
 
 typedef struct _FixRejectInfo {
+    char        *Text;
     int         RefMsgSeqNum;
     int         RefTagId;
+    FixSessionRejectReason SessionRejectReason;
+    short       TextLength;
     bool        AllowRefMsgType;
     char        RefMsgType;
-    FixSessionRejectReason SessionRejectReason;
-    char        *Text;
-    int         TextLength;
 }FixRejectInfo;
 
 typedef struct _FixHearthBeatInfo {
@@ -401,34 +402,33 @@ typedef struct _FixMarketDataRequestInfo {
     int         FeedIdLength;
     int         BeginSeqNo;
     int         EndSeqNo;
+    int         PaddingByte;
 }FixMarketDataRequestInfo;
+
+#pragma clang diagnostic pop
 
 class Decimal {
     static INT64 PowOf10[10];
-    static double MulOf10[10];
-    static double DivOf10[10];
+    static float MulOf10[10];
+    static float DivOf10[10];
 
 public:
     INT64       Mantissa;
+    float       Value;
     INT32       Exponent;
-    INT64       MantissaDigitCount;
-    double      Value;
 
     Decimal(int value) :
             Mantissa(value),
             Exponent(0),
             Value(0) {
-        MantissaDigitCount = CalcMantissaDigitCount();
     }
     Decimal() : Mantissa(0),
                 Exponent(0),
-                MantissaDigitCount(0),
                 Value(0) {
     }
     Decimal(INT64 mantissa, INT32 exponent) :
             Mantissa(mantissa),
             Exponent(exponent),
-            MantissaDigitCount(0),
             Value(0) {
     }
     inline void Set(INT64 mantissa, INT32 exponent) {
@@ -439,48 +439,7 @@ public:
         this->Mantissa = value->Mantissa;
         this->Exponent = value->Exponent;
     }
-    inline int CalcMantissaDigitCount() {
-        INT64 m = Mantissa;
-        if(m > 99999) { // 6 digits and above
-            if(m > 9999999) { // 8 and above
-                if(m > 99999999999) { // 10 and above
-                    if(m < 10000000000)
-                        MantissaDigitCount = 10;
-                    throw;
-                }
-                else {
-                    if(m > 99999999)
-                        MantissaDigitCount = 9;
-                    else
-                        MantissaDigitCount = 8;
-                }
-            }
-            else {
-                if(m > 999999)
-                    MantissaDigitCount = 7;
-                else
-                    MantissaDigitCount = 6;
-            }
-        }
-        else {
-            if(m > 999) { // 4 digits and above
-                if(m > 9999)
-                    MantissaDigitCount = 5;
-                else
-                    MantissaDigitCount = 4;
-            }
-            else {
-                if(m > 99)
-                    MantissaDigitCount = 3;
-                else if(m > 9)
-                    MantissaDigitCount = 2;
-                else
-                    MantissaDigitCount = 1;
-            }
-        }
-        return MantissaDigitCount;
-    }
-    inline double DivOf10Func(int value) {
+    inline float DivOf10Func(int value) {
         if(value > 4) {
             if(value > 7) {
                 if(value > 8)
@@ -554,7 +513,7 @@ public:
             }
         }
     }
-    inline double MulOf10Func(int value) {
+    inline float MulOf10Func(int value) {
         if(value > 4) {
             if(value > 7) {
                 if(value > 8)
@@ -591,24 +550,24 @@ public:
             }
         }
     }
-    inline double Calculate() {
+    inline float Calculate() {
         if(Exponent < 0)
-            Value = ((double)Mantissa) * DivOf10[-Exponent];
+            Value = ((float)Mantissa) * DivOf10[-Exponent];
         else
-            Value = ((double)Mantissa) * MulOf10[Exponent];
+            Value = ((float)Mantissa) * MulOf10[Exponent];
         return Value;
     }
-    inline double CalculateFunc() {
+    inline float CalculateFunc() {
         if(Exponent < 0)
-            Value = ((double)Mantissa) * DivOf10Func(-Exponent);
+            Value = ((float)Mantissa) * DivOf10Func(-Exponent);
         else
-            Value = ((double)Mantissa) * MulOf10Func(Exponent);
+            Value = ((float)Mantissa) * MulOf10Func(Exponent);
         return Value;
     }
-    inline double Calculate(INT64 mantissa, INT32 exponent) {
+    inline float Calculate(INT64 mantissa, INT32 exponent) {
         if(Exponent < 0)
-            return ((double)mantissa) * DivOf10[-exponent];
-        return ((double)mantissa) * MulOf10[exponent];
+            return ((float)mantissa) * DivOf10[-exponent];
+        return ((float)mantissa) * MulOf10[exponent];
     }
     inline INT64 CalculatePositiveInteger() {
         int mul = PowOf10[this->Exponent];
@@ -638,10 +597,6 @@ public:
         this->Value = value->Value;
     }
 };
-
-
-
-#pragma pack(pop)
 
 #define FIX_SEPARATOR                   0x01
 #define FIX_SEPARATOR_SECOND_BYTE       0x00000100L

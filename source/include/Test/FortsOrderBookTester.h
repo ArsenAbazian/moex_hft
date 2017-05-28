@@ -292,14 +292,9 @@ public:
         item4->MDUpdateAction = mduaDelete;
 
         info->MDEntriesCount = 1;
-        info->MDEntries[0] = item4;
-        item4->RptSeq = 5;
+        info->MDEntries[0] = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 25, -3, 100, mduaDelete, mdetBuyQuote, 444444, 5);
 
         this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-        if(item4->Used)
-            throw;
-        if(item4->Allocator->Count() != 0)
-            throw;
 
         if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
             throw;
@@ -315,8 +310,7 @@ public:
             throw;
 
         info->MDEntriesCount = 1;
-        info->MDEntries[0] = item3;
-        item3->RptSeq = 6;
+        info->MDEntries[0] = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 2, -2, 100, mduaDelete, mdetBuyQuote, 333333, 6);
 
         this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
 
@@ -332,8 +326,7 @@ public:
             throw;
 
         info->MDEntriesCount = 1;
-        info->MDEntries[0] = item2;
-        item2->RptSeq = 7;
+        info->MDEntries[0] = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 4, -2, 100, mduaDelete, mdetBuyQuote, 222222, 7);
 
         this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
 
@@ -347,8 +340,7 @@ public:
             throw;
 
         info->MDEntriesCount = 1;
-        info->MDEntries[0] = item1;
-        item1->RptSeq = 8;
+        info->MDEntries[0] = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaDelete, mdetBuyQuote, 111111, 8);
 
         this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
 
@@ -716,8 +708,7 @@ public:
         item4->MDUpdateAction = mduaDelete;
 
         info->MDEntriesCount = 1;
-        info->MDEntries[0] = item4;
-        item4->RptSeq = 5;
+        info->MDEntries[0] = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 25, -3, 100, mduaDelete, mdetSellQuote, 444444, 5);
 
         this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
 
@@ -736,8 +727,7 @@ public:
             throw;
 
         info->MDEntriesCount = 1;
-        info->MDEntries[0] = item3;
-        item3->RptSeq = 6;
+        info->MDEntries[0] = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 2, -2, 100, mduaDelete, mdetSellQuote, 333333, 6);
 
         this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
 
@@ -753,8 +743,7 @@ public:
             throw;
 
         info->MDEntriesCount = 1;
-        info->MDEntries[0] = item2;
-        item2->RptSeq = 7;
+        info->MDEntries[0] = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 4, -2, 100, mduaDelete, mdetSellQuote, 222222, 7);
 
         this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
 
@@ -768,8 +757,7 @@ public:
             throw;
 
         info->MDEntriesCount = 1;
-        info->MDEntries[0] = item1;
-        item1->RptSeq = 8;
+        info->MDEntries[0] = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaDelete, mdetSellQuote, 111111, 8);
 
         this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
 
@@ -955,7 +943,7 @@ public:
         Test_Clear_SellQuotes();
     }
 
-    void Test_OLR_CURR() {
+    void Test_OBR_FORTS() {
         printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR\n");
         Test_OnIncrementalRefresh_FORTS_OBR();
         printf("OBR FORTS Test_OnFullRefresh_OLS_CURR\n");
@@ -3483,9 +3471,10 @@ public:
         info->ReleaseUnused();
         if(info->Allocator->Count() != 0)
             throw;
-        info->ReleaseUnused();
-        if(info->Allocator->Count() != 0)
-            throw;
+        // such situation should not be happened
+        //info->ReleaseUnused();
+        //if(info->Allocator->Count() != 0)
+        //    throw;
     }
 
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_5() {
@@ -3681,801 +3670,6 @@ public:
         TestInfoAndItemInfoUsageAndAllocationCurr_Snap_6();
     }
 
-    void Test_OnIncrementalRefresh_FORTS_OBR_Add_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1", 111111);
-
-        FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
-
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetBuyQuote, 111111, 1);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item2 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 4, -2, 100, mduaAdd, mdetBuyQuote, 222222, 2);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item3 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 2, -2, 100, mduaAdd, mdetBuyQuote, 333333, 3);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item4 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 25, -3, 100, mduaAdd, mdetBuyQuote, 444444, 4);
-
-        if(item4->Used)
-            throw;
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item1;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(!item1->Used)
-            throw;
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->SymbolsCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->Symbol(0)->Count() != 1)
-            throw;
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi == 0)
-            throw;
-        if(obi->BuyQuotes()->Count() != 1)
-            throw;
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *quote = obi->BuyQuotes()->Item(0);
-        Decimal price(3, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(quote->MDEntrySize != 100)
-            throw;
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item2;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->SymbolsCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi == 0)
-            throw;
-        if(obi->BuyQuotes()->Count() != 2)
-            throw;
-        quote = obi->BuyQuotes()->Start()->Data();
-        price.Set(4, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(quote->MDEntrySize != 100)
-            throw;
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item3;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->SymbolsCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi == 0)
-            throw;
-        if(obi->BuyQuotes()->Count() != 3)
-            throw;
-
-        quote = obi->BuyQuotes()->Start()->Data();
-        price.Set(4, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(quote->MDEntrySize != 100)
-            throw;
-
-        quote = obi->BuyQuotes()->Start()->Next()->Data();
-        price.Set(3, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(quote->MDEntrySize != 100)
-            throw;
-
-        quote = obi->BuyQuotes()->Last()->Data();
-        price.Set(2, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(quote->MDEntrySize != 100)
-            throw;
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item4;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->SymbolsCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi == 0)
-            throw;
-        if(obi->BuyQuotes()->Count() != 4)
-            throw;
-
-        quote = obi->BuyQuotes()->Start()->Data();
-        price.Set(4, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(quote->MDEntrySize != 100)
-            throw;
-
-        quote = obi->BuyQuotes()->Start()->Next()->Data();
-        price.Set(3, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(quote->MDEntrySize != 100)
-            throw;
-
-        quote = obi->BuyQuotes()->Start()->Next()->Next()->Data();
-        price.Set(25, -3);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(quote->MDEntrySize != 100)
-            throw;
-
-        quote = obi->BuyQuotes()->Last()->Data();
-        price.Set(2, -2);
-        if(!quote->MDEntryPx.Equal(&price))
-            throw;
-        if(quote->MDEntrySize != 100)
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_FORTS_OBR_Remove_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1", 111111);
-
-        FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetBuyQuote, 111111, 1);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item2 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 4, -2, 100, mduaAdd, mdetBuyQuote, 222222, 2);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item3 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 2, -2, 100, mduaAdd, mdetBuyQuote, 333333, 3);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item4 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 25, -3, 100, mduaAdd, mdetBuyQuote, 444444, 4);
-
-        info->MDEntriesCount = 4;
-        info->MDEntries[0] = item1;
-        info->MDEntries[1] = item2;
-        info->MDEntries[2] = item3;
-        info->MDEntries[3] = item4;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(item1->Allocator->Count() != 1)
-            throw;
-        if(item2->Allocator->Count() != 1)
-            throw;
-        if(item3->Allocator->Count() != 1)
-            throw;
-        if(item4->Allocator->Count() != 1)
-            throw;
-
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ob = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(!ob->BuyQuotes()->Item(0)->MDEntryPx.Equal(4, -2))
-            throw;
-        if(!ob->BuyQuotes()->Item(1)->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!ob->BuyQuotes()->Item(2)->MDEntryPx.Equal(25, -3))
-            throw;
-        if(!ob->BuyQuotes()->Item(3)->MDEntryPx.Equal(2, -2))
-            throw;
-
-        item1->MDUpdateAction = mduaDelete;
-        item2->MDUpdateAction = mduaDelete;
-        item3->MDUpdateAction = mduaDelete;
-        item4->MDUpdateAction = mduaDelete;
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item4;
-        item4->RptSeq = 5;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-        if(item4->Used)
-            throw;
-        if(item4->Allocator->Count() != 0)
-            throw;
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi->BuyQuotes()->Count() != 3)
-            throw;
-        if(!obi->BuyQuotes()->Item(0)->MDEntryPx.Equal(4, -2))
-            throw;
-        if(!obi->BuyQuotes()->Item(1)->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!obi->BuyQuotes()->Item(2)->MDEntryPx.Equal(2, -2))
-            throw;
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item3;
-        item3->RptSeq = 6;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi->BuyQuotes()->Count() != 2)
-            throw;
-        if(!obi->BuyQuotes()->Item(0)->MDEntryPx.Equal(4, -2))
-            throw;
-        if(!obi->BuyQuotes()->Item(1)->MDEntryPx.Equal(3, -2))
-            throw;
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item2;
-        item2->RptSeq = 7;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi->BuyQuotes()->Count() != 1)
-            throw;
-        if(!obi->BuyQuotes()->Item(0)->MDEntryPx.Equal(3, -2))
-            throw;
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item1;
-        item1->RptSeq = 8;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi->BuyQuotes()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_FORTS_OBR_Change_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1", 111111);
-
-        FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetBuyQuote, 111111, 1);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item2 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 4, -2, 100, mduaAdd, mdetBuyQuote, 222222, 2);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item3 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 2, -2, 100, mduaAdd, mdetBuyQuote, 333333, 3);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item4 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 25, -3, 100, mduaAdd, mdetBuyQuote, 444444, 4);
-
-        info->MDEntriesCount = 4;
-        info->MDEntries[0] = item1;
-        info->MDEntries[1] = item2;
-        info->MDEntries[2] = item3;
-        info->MDEntries[3] = item4;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi2 = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(!obi2->BuyQuotes()->Item(0)->MDEntryPx.Equal(4, -2))
-            throw;
-        if(!obi2->BuyQuotes()->Item(1)->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!obi2->BuyQuotes()->Item(2)->MDEntryPx.Equal(25, -3))
-            throw;
-        if(!obi2->BuyQuotes()->Item(3)->MDEntryPx.Equal(2, -2))
-            throw;
-
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item5 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 24, -3, 1000, mduaChange, mdetBuyQuote, 222222, 5);
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item5;
-        item5->RptSeq = 5;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(item2->Used || item2->Allocator->Count() != 0)
-            throw;
-        if(!item5->Used)
-            throw;
-        if(item5->Allocator->Count() != 1)
-            throw;
-
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi = this->incForts->OrderBookForts()->GetItemByIndex(0);
-
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *qt1 = obi->BuyQuotes()->Item(0);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *qt2 = obi->BuyQuotes()->Item(1);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *qt3 = obi->BuyQuotes()->Item(2);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *qt4 = obi->BuyQuotes()->Item(3);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-        if(obi->BuyQuotes()->Count() != 4)
-            throw;
-        if(!qt1->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!qt2->MDEntryPx.Equal(25, -3))
-            throw;
-        if(!qt3->MDEntryPx.Equal(24, -3))
-            throw;
-        if(!qt4->MDEntryPx.Equal(2, -2))
-            throw;
-    }
-
-    void Test_Clear_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1", 111111);
-
-        FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetBuyQuote, 111111, 1);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item2 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 4, -2, 100, mduaAdd, mdetBuyQuote, 222222, 2);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item3 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 2, -2, 100, mduaAdd, mdetBuyQuote, 333333, 3);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item4 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 25, -3, 100, mduaAdd, mdetBuyQuote, 444444, 4);
-
-        info->MDEntriesCount = 4;
-        info->MDEntries[0] = item1;
-        info->MDEntries[1] = item2;
-        info->MDEntries[2] = item3;
-        info->MDEntries[3] = item4;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        this->incForts->OrderBookForts()->Clear();
-        if(item1->Used || item2->Used || item3->Used || item4->Used)
-            throw;
-        if(item1->Allocator->Count() != 0 ||
-           item2->Allocator->Count() != 0 ||
-           item3->Allocator->Count() != 0 ||
-           item4->Allocator->Count() != 0)
-            throw;
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 0)
-            throw;
-
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi->BuyQuotes()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnFullRefresh_OBS_CURR_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1", 111111);
-        this->AddSymbol("t1s2", 121212);
-
-        FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetBuyQuote, 111111, 1);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item2 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 4, -2, 100, mduaAdd, mdetBuyQuote, 222222, 2);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item3 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 2, -2, 100, mduaAdd, mdetBuyQuote, 333333, 3);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item4 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 25, -3, 100, mduaAdd, mdetBuyQuote, 444444, 4);
-
-        info->MDEntriesCount = 4;
-        info->MDEntries[0] = item1;
-        info->MDEntries[1] = item2;
-        info->MDEntries[2] = item3;
-        info->MDEntries[3] = item4;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi2 = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi2->BuyQuotes()->Count() != 4)
-            throw;
-
-        FortsDefaultSnapshotMessageInfo *info2 = this->m_helper->CreateFortsSnapshotInfo("t1s2", 121212);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *newItem1 = this->m_helper->CreateFortsOBSItemInfo(7,-2, 100, mdetBuyQuote, 777777);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *newItem2 = this->m_helper->CreateFortsOBSItemInfo(8,-2, 100, mdetBuyQuote, 888888);
-        info2->RptSeq = 5;
-
-        info2->MDEntriesCount = 2;
-        info2->MDEntries[0] = newItem1;
-        info2->MDEntries[1] = newItem2;
-
-        this->incForts->OrderBookForts()->ObtainSnapshotItemForts(info2);
-        this->incForts->OrderBookForts()->ProcessSnapshotForts(info2);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 2)
-            throw;
-
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi3 = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi3->BuyQuotes()->Count() != 4)
-            throw;
-
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi = this->incForts->OrderBookForts()->GetItemBySecurityId(121212, 0);
-        if(obi->BuyQuotes()->Count() != 2)
-            throw;
-
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *qt1 = obi->BuyQuotes()->Start()->Data();
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *qt2 = obi->BuyQuotes()->Start()->Next()->Data();
-
-        if(!qt1->MDEntryPx.Equal(8, -2))
-            throw;
-        if(!qt2->MDEntryPx.Equal(7, -2))
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_FORTS_OBR_Add_SellQuotes_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1", 111111);
-
-        FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
-
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetSellQuote, 111111, 1);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item2 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 4, -2, 100, mduaAdd, mdetSellQuote, 222222, 2);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item3 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 2, -2, 100, mduaAdd, mdetSellQuote, 333333, 3);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item4 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 25, -3, 100, mduaAdd, mdetSellQuote, 444444, 4);
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item1;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->SymbolsCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->Symbol(0)->Count() != 1)
-            throw;
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111);
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 1)
-            throw;
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item2;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->SymbolsCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 2)
-            throw;
-        quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-
-        quote = obi->SellQuotes()->Item(1);
-        if(!quote->MDEntryPx.Equal(4, -2))
-            throw;
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item3;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->SymbolsCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incForts->OrderBookForts()->GetItemByIndex(0);
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 3)
-            throw;
-
-        quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->MDEntryPx.Equal(2, -2))
-            throw;
-
-        quote = obi->SellQuotes()->Start()->Next()->Data();
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-
-        quote = obi->SellQuotes()->Last()->Data();
-        if(!quote->MDEntryPx.Equal(4, -2))
-            throw;
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item4;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->SymbolsCount() != 1)
-            throw;
-        if(this->incForts->OrderBookForts()->Symbol(0)->Count() != 1)
-            throw;
-        obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi == 0)
-            throw;
-        if(obi->SellQuotes()->Count() != 4)
-            throw;
-
-        quote = obi->SellQuotes()->Start()->Data();
-        if(!quote->MDEntryPx.Equal(2, -2))
-            throw;
-
-        quote = obi->SellQuotes()->Start()->Next()->Data();
-        if(!quote->MDEntryPx.Equal(25, -3))
-            throw;
-
-        quote = obi->SellQuotes()->Start()->Next()->Next()->Data();
-        if(!quote->MDEntryPx.Equal(3, -2))
-            throw;
-
-        quote = obi->SellQuotes()->Last()->Data();
-        if(!quote->MDEntryPx.Equal(4, -2))
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_FORTS_OBR_Remove_SellQuotes_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1", 111111);
-
-        FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetSellQuote, 111111, 1);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item2 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 4, -2, 100, mduaAdd, mdetSellQuote, 222222, 2);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item3 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 2, -2, 100, mduaAdd, mdetSellQuote, 333333, 3);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item4 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 25, -3, 100, mduaAdd, mdetSellQuote, 444444, 4);
-
-        info->MDEntriesCount = 4;
-        info->MDEntries[0] = item1;
-        info->MDEntries[1] = item2;
-        info->MDEntries[2] = item3;
-        info->MDEntries[3] = item4;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        item1->MDUpdateAction = mduaDelete;
-        item2->MDUpdateAction = mduaDelete;
-        item3->MDUpdateAction = mduaDelete;
-        item4->MDUpdateAction = mduaDelete;
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item4;
-        item4->RptSeq = 5;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi->SellQuotes()->Count() != 3)
-            throw;
-
-        if(!obi->SellQuotes()->Item(0)->MDEntryPx.Equal(2, -2))
-            throw;
-        if(!obi->SellQuotes()->Item(1)->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!obi->SellQuotes()->Item(2)->MDEntryPx.Equal(4, -2))
-            throw;
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item3;
-        item3->RptSeq = 6;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi->SellQuotes()->Count() != 2)
-            throw;
-        if(!obi->SellQuotes()->Item(0)->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!obi->SellQuotes()->Item(1)->MDEntryPx.Equal(4, -2))
-            throw;
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item2;
-        item2->RptSeq = 7;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi->SellQuotes()->Count() != 1)
-            throw;
-        if(!obi->SellQuotes()->Item(0)->MDEntryPx.Equal(3, -2))
-            throw;
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item1;
-        item1->RptSeq = 8;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-
-        obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi->SellQuotes()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnIncrementalRefresh_FORTS_OBR_Change_SellQuotes_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1", 111111);
-
-        FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetSellQuote, 111111, 1);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item2 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 4, -2, 100, mduaAdd, mdetSellQuote, 222222, 2);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item3 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 2, -2, 100, mduaAdd, mdetSellQuote, 333333, 3);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item4 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 25, -3, 100, mduaAdd, mdetSellQuote, 444444, 4);
-
-        info->MDEntriesCount = 4;
-        info->MDEntries[0] = item1;
-        info->MDEntries[1] = item2;
-        info->MDEntries[2] = item3;
-        info->MDEntries[3] = item4;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi2 = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(!obi2->SellQuotes()->Item(0)->MDEntryPx.Equal(2, -2))
-            throw;
-        if(!obi2->SellQuotes()->Item(1)->MDEntryPx.Equal(25, -3))
-            throw;
-        if(!obi2->SellQuotes()->Item(2)->MDEntryPx.Equal(3, -2))
-            throw;
-        if(!obi2->SellQuotes()->Item(3)->MDEntryPx.Equal(4, -2))
-            throw;
-
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item5 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 24, -3, 1000, mduaChange, mdetSellQuote, 222222, 5);
-
-        info->MDEntriesCount = 1;
-        info->MDEntries[0] = item5;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *qt1 = obi->SellQuotes()->Item(0);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *qt2 = obi->SellQuotes()->Item(1);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *qt3 = obi->SellQuotes()->Item(2);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *qt4 = obi->SellQuotes()->Item(3);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
-            throw;
-        if(obi->SellQuotes()->Count() != 4)
-            throw;
-        if(!qt1->MDEntryPx.Equal(2, -2))
-            throw;
-        if(!qt2->MDEntryPx.Equal(24, -3))
-            throw;
-        if(!qt3->MDEntryPx.Equal(25, -3))
-            throw;
-        if(!qt4->MDEntryPx.Equal(3, -2))
-            throw;
-    }
-
-    void Test_Clear_SellQuotes_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1", 111111);
-
-        FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetSellQuote, 111111, 1);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item2 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 4, -2, 100, mduaAdd, mdetSellQuote, 222222, 2);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item3 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 2, -2, 100, mduaAdd, mdetSellQuote, 333333, 3);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item4 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 25, -3, 100, mduaAdd, mdetSellQuote, 444444, 4);
-
-        info->MDEntriesCount = 4;
-        info->MDEntries[0] = item1;
-        info->MDEntries[1] = item2;
-        info->MDEntries[2] = item3;
-        info->MDEntries[3] = item4;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        this->incForts->OrderBookForts()->Clear();
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 0)
-            throw;
-
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi->SellQuotes()->Count() != 0)
-            throw;
-    }
-
-    void Test_OnFullRefresh_OBS_CURR_SellQuotes_Aggregated() {
-        this->Clear();
-        this->TestDefaults();
-        this->AddSymbol("symbol1", 111111);
-        this->AddSymbol("t1s2", 121212);
-
-        FortsDefaultIncrementalRefreshMessageInfo *info = this->m_helper->CreateFortsDefaultIncrementalRefreshMessageInfo();
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item1 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 3, -2, 100, mduaAdd, mdetSellQuote, 111111, 1);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item2 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 4, -2, 100, mduaAdd, mdetSellQuote, 222222, 2);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item3 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 2, -2, 100, mduaAdd, mdetSellQuote, 333333, 3);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item4 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 25, -3, 100, mduaAdd, mdetSellQuote, 444444, 4);
-
-        info->MDEntriesCount = 4;
-        info->MDEntries[0] = item1;
-        info->MDEntries[1] = item2;
-        info->MDEntries[2] = item3;
-        info->MDEntries[3] = item4;
-
-        this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
-
-        FortsDefaultSnapshotMessageInfo *info2 = this->m_helper->CreateFortsSnapshotInfo("t1s2", 121212);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *newItem1 = this->m_helper->CreateFortsOBSItemInfo(7,-2, 100, mdetSellQuote, 777777);
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *newItem2 = this->m_helper->CreateFortsOBSItemInfo(8,-2, 100, mdetSellQuote, 888888);
-
-        info2->MDEntriesCount = 2;
-        info2->MDEntries[0] = newItem1;
-        info2->MDEntries[1] = newItem2;
-
-        this->incForts->OrderBookForts()->ObtainSnapshotItemForts(info2);
-        this->incForts->OrderBookForts()->ProcessSnapshotForts(info2);
-
-        if(this->incForts->OrderBookForts()->UsedItemCount() != 2)
-            throw;
-
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi3 = this->incForts->OrderBookForts()->GetItemBySecurityId(111111, 0);
-        if(obi3->SellQuotes()->Count() != 4)
-            throw;
-
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *obi = this->incForts->OrderBookForts()->GetItemBySecurityId(121212, 0);
-        if(obi->SellQuotes()->Count() != 2)
-            throw;
-
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *qt1 = obi->SellQuotes()->Start()->Data();
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *qt2 = obi->SellQuotes()->Start()->Next()->Data();
-
-        if(!qt1->MDEntryPx.Equal(7, -2))
-            throw;
-        if(!qt2->MDEntryPx.Equal(8, -2))
-            throw;
-    }
-
-
-    void Test_OnIncrementalRefresh_FORTS_OBR_Aggregated() {
-        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Add_Aggregated\n");
-        Test_OnIncrementalRefresh_FORTS_OBR_Add_Aggregated();
-        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Remove_Aggregated\n");
-        Test_OnIncrementalRefresh_FORTS_OBR_Remove_Aggregated();
-        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Change_Aggregated\n");
-        Test_OnIncrementalRefresh_FORTS_OBR_Change_Aggregated();
-        printf("OBR FORTS Test_Clear_Aggregated\n");
-        Test_Clear();
-    }
-
-    void Test_OnIncrementalRefresh_FORTS_OBR_SellQuotes_Aggregated() {
-        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Add_SellQuotes_Aggregated\n");
-        Test_OnIncrementalRefresh_FORTS_OBR_Add_SellQuotes_Aggregated();
-        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Remove_SellQuotes_Aggregated\n");
-        Test_OnIncrementalRefresh_FORTS_OBR_Remove_SellQuotes_Aggregated();
-        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_Change_SellQuotes_Aggregated\n");
-        Test_OnIncrementalRefresh_FORTS_OBR_Change_SellQuotes_Aggregated();
-        printf("OBR FORTS Test_Clear_SellQuotes_Aggregated\n");
-        Test_Clear_SellQuotes();
-    }
-
-    void Test_Aggregated() {
-        this->m_helper->SetFortsMode();
-        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR\n");
-        Test_OnIncrementalRefresh_FORTS_OBR_Aggregated();
-        printf("OBR FORTS Test_OnFullRefresh_OBS_CURR\n");
-        Test_OnFullRefresh_OBS_CURR_Aggregated();
-        printf("OBR FORTS Test_OnIncrementalRefresh_FORTS_OBR_SellQuotes\n");
-        Test_OnIncrementalRefresh_FORTS_OBR_SellQuotes_Aggregated();
-        printf("OBR FORTS Test_OnFullRefresh_OBS_CURR_SellQuotes\n");
-        Test_OnFullRefresh_OBS_CURR_SellQuotes_Aggregated();
-    }
-
     FortsDefaultSnapshotMessageMDEntriesItemInfo* CreatePerformanceItem(int price) {
         AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo> *list = new AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>(2, 1);
         FortsDefaultSnapshotMessageMDEntriesItemInfo* item = list->NewItem();
@@ -4594,7 +3788,7 @@ template <typename T>
             w->Start();
             for (int i = 0; i < count; i++) {
                 HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->AddBuyQuote(item50);
-                obi->RemoveBuyQuote(ptr->Data());
+                obi->DebugRemoveQuoteNoClear(obi->BuyQuotes(), ptr->Data());
 
                 if(obi->BuyQuotes()->Count() != itemsCount)
                     throw;
@@ -4609,7 +3803,7 @@ template <typename T>
             w->Start();
             for (int i = 0; i < count; i++) {
                 HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->AddBuyQuote(item50);
-                obi->RemoveBuyQuote(ptr->Data());
+                obi->DebugRemoveQuoteNoClear(obi->BuyQuotes(), ptr->Data());
             }
             UINT64 en2 = w->ElapsedNanosecondsSlow();
             w->Stop();
@@ -4619,6 +3813,8 @@ template <typename T>
     }
 
     void TestPerformance() {
+        TestPerformance(5000);
+        TestPerformance(2000);
         TestPerformance(1000);
         TestPerformance(800);
         TestPerformance(600);
@@ -6890,15 +6086,14 @@ template <typename T>
     void Test() {
         TestDefaults();
         TestStringIdComparer();
+        Test_OBR_FORTS();
 #ifdef USE_SKIP_LIST
         TestHr();
-        TestPerformance();
+        //TestPerformance();
 #endif
         TestOrderTableItem();
         TestConnection();
         TestInfoAndItemInfoUsageAndAllocationCurr();
-        Test_OLR_CURR();
-        Test_Aggregated();
     }
 };
 

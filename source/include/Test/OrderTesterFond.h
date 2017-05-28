@@ -282,13 +282,14 @@ public:
         item4->MDUpdateAction = mduaDelete;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-        item4->RptSeq = 5;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRFondItemInfo("symbol1", "ses1", 25, -3, 1, 2, mduaDelete, mdetBuyQuote, "444444", 5);
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
         if(item4->Used)
             throw;
         if(item4->Allocator->Count() != 0)
+            throw;
+        if(info->GroupMDEntries[0]->Allocator->Count() != 0)
             throw;
 
         if(this->incFond->OrderFond()->UsedItemCount() != 1)
@@ -305,8 +306,7 @@ public:
             throw;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-        item3->RptSeq = 6;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRFondItemInfo("symbol1", "ses1", 2, -2, 1, 2, mduaDelete, mdetBuyQuote, "333333", 6);
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
@@ -322,8 +322,7 @@ public:
             throw;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-        item2->RptSeq = 7;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRFondItemInfo("symbol1", "ses1", 4, -2, 1, 2, mduaDelete, mdetBuyQuote, "222222", 7);
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
@@ -337,8 +336,7 @@ public:
             throw;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-        item1->RptSeq = 8;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRFondItemInfo("symbol1", "ses1", 3, -2, 1, 2, mduaDelete, mdetBuyQuote, "111111", 8);
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
@@ -705,8 +703,7 @@ public:
         item4->MDUpdateAction = mduaDelete;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-        item4->RptSeq = 5;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRFondItemInfo("symbol1", "ses1", 25, -3, 1, 2, mduaDelete, mdetSellQuote, "444444", 5);
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
@@ -725,8 +722,7 @@ public:
             throw;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-        item3->RptSeq = 6;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRFondItemInfo("symbol1", "ses1", 2, -2, 1, 2, mduaDelete, mdetSellQuote, "333333", 6);
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
@@ -742,8 +738,7 @@ public:
             throw;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-        item2->RptSeq = 7;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRFondItemInfo("symbol1", "ses1", 4, -2, 1, 2, mduaDelete, mdetSellQuote, "222222", 7);
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
@@ -757,8 +752,7 @@ public:
             throw;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-        item1->RptSeq = 8;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRFondItemInfo("symbol1", "ses1", 3, -2, 1, 2, mduaDelete, mdetSellQuote, "111111", 8);
 
         this->incFond->OnIncrementalRefresh_OLR_FOND(info);
 
@@ -3330,9 +3324,10 @@ public:
         info->ReleaseUnused();
         if(info->Allocator->Count() != 0)
             throw;
-        info->ReleaseUnused();
-        if(info->Allocator->Count() != 0)
-            throw;
+        // such situation should not be happened
+        //info->ReleaseUnused();
+        //if(info->Allocator->Count() != 0)
+        //    throw;
     }
 
     void TestInfoAndItemInfoUsageAndAllocationFond_Inc_5() {

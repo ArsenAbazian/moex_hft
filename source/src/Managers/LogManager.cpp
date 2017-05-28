@@ -14,6 +14,7 @@ BinaryLogManager::BinaryLogManager() {
     }
     this->m_itemIndex = 0;
     this->m_stackTop = -1;
+    this->m_paddingBytes = 0;
     DebugInfoManager::Default->PrintMemoryInfo("BinaryLogManager::BinaryLogManager");
 }
 

@@ -36,8 +36,9 @@ class HashTable {
     static const int m_itemsCount = 1024 * 1024 + 1;
     LinkedPointer<HashTableItemInfo>                        **m_bucket;
     PointerList<HashTableItemInfo>                          *m_pool;
-    int                                                     m_count;
     ItoaConverter                                           *m_converter;
+    int                                                     m_count;
+    int                                                     m_paddingBytes;
 
     inline void Remove(LinkedPointer<HashTableItemInfo> *node) { // not bidirectional
         LinkedPointer<HashTableItemInfo> *prev = node->Prev();
@@ -68,7 +69,8 @@ public:
             m_bucket(0),
             m_pool(0),
             m_count(0),
-            m_converter(0) {
+            m_converter(0),
+            m_paddingBytes(0) {
         this->m_bucket = new LinkedPointer<HashTableItemInfo>*[HashTable::m_itemsCount];
         memset(this->m_bucket, 0, sizeof(LinkedPointer<HashTableItemInfo>*) * HashTable::m_itemsCount);
         this->m_pool = new PointerList<HashTableItemInfo>(m_poolSize, true, "HashTable::Pool");

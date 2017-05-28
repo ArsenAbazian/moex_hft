@@ -84,10 +84,10 @@ public:
 
         AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
 
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         if(item4->Used)
             throw;
@@ -116,7 +116,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "111111", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -141,7 +141,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "222222", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -167,7 +167,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "222222", 6))
             throw;
 
         quote = obi->BuyQuotes()->Start()->Next()->Data();
@@ -176,7 +176,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "111111", 6))
             throw;
 
         quote = obi->BuyQuotes()->End()->Data();
@@ -185,7 +185,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e3", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "333333", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -211,7 +211,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "222222", 6))
             throw;
 
         quote = obi->BuyQuotes()->Start()->Next()->Data();
@@ -220,7 +220,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "111111", 6))
             throw;
 
         quote = obi->BuyQuotes()->Start()->Next()->Next()->Data();
@@ -229,7 +229,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e4", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "444444", 6))
             throw;
 
         quote = obi->BuyQuotes()->End()->Data();
@@ -238,7 +238,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e3", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "333333", 6))
             throw;
     }
 
@@ -247,10 +247,10 @@ public:
         this->TestDefaults();
 
         AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -290,11 +290,11 @@ public:
         StatisticsInfo<AstsGenericItemInfo> *obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi->BuyQuotes()->Count() != 3)
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "e2", 2))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "222222", 2))
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 2, "e1", 2))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 2, "111111", 2))
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(2)->MDEntryID, 2, "e3", 2))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(2)->MDEntryID, 2, "333333", 2))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -309,9 +309,9 @@ public:
         obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi->BuyQuotes()->Count() != 2)
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "e2", 2))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "222222", 2))
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 2, "e1", 2))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(1)->MDEntryID, 2, "111111", 2))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -326,7 +326,7 @@ public:
         obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi->BuyQuotes()->Count() != 1)
             throw;
-        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "e1", 2))
+        if(!StringIdComparer::Equal(obi->BuyQuotes()->Item(0)->MDEntryID, 2, "111111", 2))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -348,10 +348,10 @@ public:
         this->TestDefaults();
 
         AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -362,16 +362,16 @@ public:
         this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
         StatisticsInfo<AstsGenericItemInfo> *obi2 = this->incFond->StatisticFond()->GetItemByIndex("s1", "t1");
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 2, "e2", 2))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(0)->MDEntryID, 2, "222222", 2))
             throw;
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 2, "e1", 2))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(1)->MDEntryID, 2, "111111", 2))
             throw;
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(2)->MDEntryID, 2, "e4", 2))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(2)->MDEntryID, 2, "444444", 2))
             throw;
-        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(3)->MDEntryID, 2, "e3", 2))
+        if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(3)->MDEntryID, 2, "333333", 2))
             throw;
 
-        AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "e2", 5);
+        AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "222222", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
@@ -397,13 +397,13 @@ public:
             throw;
         if(obi->BuyQuotes()->Count() != 4)
             throw;
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e1", 2))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "111111", 2))
             throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e4", 2))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "444444", 2))
             throw;
-        if(!StringIdComparer::Equal(qt3->MDEntryID, 2, "e2", 2))
+        if(!StringIdComparer::Equal(qt3->MDEntryID, 2, "222222", 2))
             throw;
-        if(!StringIdComparer::Equal(qt4->MDEntryID, 2, "e3", 2))
+        if(!StringIdComparer::Equal(qt4->MDEntryID, 2, "333333", 2))
             throw;
 
         if(qt1->MDEntryPx.Mantissa != item1->MDEntryPx.Mantissa)
@@ -422,10 +422,10 @@ public:
         this->TestDefaults();
 
         AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -456,10 +456,10 @@ public:
         this->TestDefaults();
 
         AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -474,8 +474,8 @@ public:
             throw;
 
         AstsGenericInfo *info2 = this->m_helper->CreateMSSFondInfo("t1s2", "t1");
-        AstsGenericItemInfo *newItem1 = this->m_helper->CreateGenericItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
-        AstsGenericItemInfo *newItem2 = this->m_helper->CreateGenericItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
+        AstsGenericItemInfo *newItem1 = this->m_helper->CreateGenericItemInfo(7,-2, 1, 2, mdetBuyQuote, "777777");
+        AstsGenericItemInfo *newItem2 = this->m_helper->CreateGenericItemInfo(8,-2, 1, 2, mdetBuyQuote, "888888");
         info2->RptSeq = 5;
 
         info2->GroupMDEntriesCount = 2;
@@ -499,9 +499,9 @@ public:
         AstsGenericItemInfo *qt1 = obi->BuyQuotes()->Start()->Data();
         AstsGenericItemInfo *qt2 = obi->BuyQuotes()->Start()->Next()->Data();
 
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e8", 2))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "888888", 2))
             throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e7", 2))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "777777", 2))
             throw;
         if(!qt1->MDEntryPx.Equal(8, -2))
             throw;
@@ -517,10 +517,10 @@ public:
 
         AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
 
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item1;
@@ -543,7 +543,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "111111", 2))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -567,7 +567,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "111111", 2))
             throw;
 
         quote = obi->SellQuotes()->Item(1);
@@ -575,7 +575,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "222222", 2))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -600,7 +600,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "333333", 2))
             throw;
 
         quote = obi->SellQuotes()->Start()->Next()->Data();
@@ -608,7 +608,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "111111", 2))
             throw;
 
         quote = obi->SellQuotes()->End()->Data();
@@ -616,7 +616,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "222222", 2))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -641,7 +641,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e3", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "333333", 2))
             throw;
 
         quote = obi->SellQuotes()->Start()->Next()->Data();
@@ -649,7 +649,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e4", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "444444", 2))
             throw;
 
         quote = obi->SellQuotes()->Start()->Next()->Next()->Data();
@@ -657,7 +657,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e1", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "111111", 2))
             throw;
 
         quote = obi->SellQuotes()->End()->Data();
@@ -665,7 +665,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(1, 2))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "e2", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, 2, "222222", 2))
             throw;
     }
 
@@ -674,10 +674,10 @@ public:
         this->TestDefaults();
 
         AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -705,11 +705,11 @@ public:
         if(obi->SellQuotes()->Count() != 3)
             throw;
 
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"e3", 2))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"333333", 2))
             throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 2,"e1", 2))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 2,"111111", 2))
             throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(2)->MDEntryID, 2,"e2", 2))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(2)->MDEntryID, 2,"222222", 2))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -724,9 +724,9 @@ public:
         obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi->SellQuotes()->Count() != 2)
             throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"e1", 2))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"111111", 2))
             throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 2,"e2", 2))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(1)->MDEntryID, 2,"222222", 2))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -741,7 +741,7 @@ public:
         obi = this->incFond->StatisticFond()->GetItem("s1", "t1");
         if(obi->SellQuotes()->Count() != 1)
             throw;
-        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"e1", 2))
+        if(!StringIdComparer::Equal(obi->SellQuotes()->Item(0)->MDEntryID, 2,"111111", 2))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -763,10 +763,10 @@ public:
         this->TestDefaults();
 
         AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -777,16 +777,16 @@ public:
         this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
         StatisticsInfo<AstsGenericItemInfo> *obi2 = this->incFond->StatisticFond()->GetItem("s1", "t1");
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 2, "e3", 2))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(0)->MDEntryID, 2, "333333", 2))
             throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 2, "e4", 2))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(1)->MDEntryID, 2, "444444", 2))
             throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(2)->MDEntryID, 2, "e1", 2))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(2)->MDEntryID, 2, "111111", 2))
             throw;
-        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 2, "e2", 2))
+        if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 2, "222222", 2))
             throw;
 
-        AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "e2", 5);
+        AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "t1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "222222", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
@@ -804,13 +804,13 @@ public:
             throw;
         if(obi->SellQuotes()->Count() != 4)
             throw;
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e3", 2))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "333333", 2))
             throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e2", 2))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "222222", 2))
             throw;
-        if(!StringIdComparer::Equal(qt3->MDEntryID, 2, "e4", 2))
+        if(!StringIdComparer::Equal(qt3->MDEntryID, 2, "444444", 2))
             throw;
-        if(!StringIdComparer::Equal(qt4->MDEntryID, 2, "e1", 2))
+        if(!StringIdComparer::Equal(qt4->MDEntryID, 2, "111111", 2))
             throw;
 
         if(qt1->MDEntryPx.Mantissa != item3->MDEntryPx.Mantissa)
@@ -829,10 +829,10 @@ public:
         this->TestDefaults();
 
         AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -856,10 +856,10 @@ public:
         this->TestDefaults();
 
         AstsIncrementalMSRFONDInfo *info = new AstsIncrementalMSRFONDInfo;
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "e1", 1);
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "e2", 2);
-        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "e3", 3);
-        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "e4", 4);
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "t1", 3, -2, 1, 2, mduaAdd, mdetSellQuote, "111111", 1);
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "t1", 4, -2, 1, 2, mduaAdd, mdetSellQuote, "222222", 2);
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "t1", 2, -2, 1, 2, mduaAdd, mdetSellQuote, "333333", 3);
+        AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "t1", 25, -3, 1, 2, mduaAdd, mdetSellQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -870,8 +870,8 @@ public:
         this->incFond->OnIncrementalRefresh_MSR_FOND(info);
 
         AstsGenericInfo *info2 = this->m_helper->CreateMSSFondInfo("t1s2", "t1");
-        AstsGenericItemInfo *newItem1 = this->m_helper->CreateGenericItemInfo(7,-2, 1, 2, mdetSellQuote, "e7");
-        AstsGenericItemInfo *newItem2 = this->m_helper->CreateGenericItemInfo(8,-2, 1, 2, mdetSellQuote, "e8");
+        AstsGenericItemInfo *newItem1 = this->m_helper->CreateGenericItemInfo(7,-2, 1, 2, mdetSellQuote, "777777");
+        AstsGenericItemInfo *newItem2 = this->m_helper->CreateGenericItemInfo(8,-2, 1, 2, mdetSellQuote, "888888");
 
         info2->GroupMDEntriesCount = 2;
         info2->GroupMDEntries[0] = newItem1;
@@ -894,9 +894,9 @@ public:
         AstsGenericItemInfo *qt1 = obi->SellQuotes()->Start()->Data();
         AstsGenericItemInfo *qt2 = obi->SellQuotes()->Start()->Next()->Data();
 
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "777777", 2))
             throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e8", 2))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "888888", 2))
             throw;
         if(!qt1->MDEntryPx.Equal(7, -2))
             throw;
@@ -949,7 +949,7 @@ public:
     void TestTableItem_CorrectBegin() {
         StatisticsInfo<AstsGenericItemInfo> *tb = new StatisticsInfo<AstsGenericItemInfo>();
 
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "111111");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
@@ -968,7 +968,7 @@ public:
     void TestTableItem_IncorrectBegin() {
         StatisticsInfo<AstsGenericItemInfo> *tb = new StatisticsInfo<AstsGenericItemInfo>();
 
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "111111");
         item1->RptSeq = 2;
         item1->MDUpdateAction = mduaAdd;
 
@@ -989,13 +989,13 @@ public:
     void TestTableItem_SkipMessage() {
         StatisticsInfo<AstsGenericItemInfo> *tb = new StatisticsInfo<AstsGenericItemInfo>();
 
-        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "111111");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
         tb->ProcessIncrementalMessage(item1);
 
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "222222");
         item2->RptSeq = 3;
         item2->MDUpdateAction = mduaAdd;
 
@@ -1008,7 +1008,7 @@ public:
         if(tb->RptSeq() != 1)
             throw;
 
-        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "333333");
         item3->RptSeq = 4;
         item3->MDUpdateAction = mduaAdd;
 
@@ -1036,13 +1036,13 @@ public:
     void TestTable_AfterClear() {
         this->m_table->Clear();
 
-        AstsGenericItemInfo *item = this->m_helper->CreateGenericItemInfo("s1", "ses1", "e1");
+        AstsGenericItemInfo *item = this->m_helper->CreateGenericItemInfo("s1", "ses1", "111111");
         item->RptSeq = 1;
 
-        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "ses1", "e1");
+        AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "ses1", "111111");
         item2->RptSeq = 2;
 
-        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "ses1", "e1");
+        AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "ses1", "111111");
         item3->RptSeq = 4;
 
         this->m_table->ProcessIncremental(item);
@@ -1072,7 +1072,7 @@ public:
         this->m_table->Clear();
 
         AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
@@ -1085,7 +1085,7 @@ public:
         this->m_table->Clear();
 
         AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 2;
 
         if(this->m_table->ProcessIncremental(item1))
@@ -1098,14 +1098,14 @@ public:
         this->m_table->Clear();
 
         AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
         AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 3);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 3);
         item2->RptSeq = 3;
 
         if(this->m_table->ProcessIncremental(item2))
@@ -1118,14 +1118,14 @@ public:
         this->m_table->Clear();
 
         AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1))
             throw;
 
         AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s2", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item2->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item2))
@@ -1141,34 +1141,34 @@ public:
         this->m_table->Clear();
 
         AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
         AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e2", 3);
+                                                                           MDEntryType::mdetBuyQuote, "222222", 3);
         item2->RptSeq = 3;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
         AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e3", 4);
+                                                                           MDEntryType::mdetBuyQuote, "333333", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
         AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e4", 5);
+                                                                           MDEntryType::mdetBuyQuote, "444444", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
         AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e5", 3);
+                                                                           MDEntryType::mdetBuyQuote, "555555", 3);
         item5->RptSeq = 3;
 
         AstsGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "ses1");
@@ -1209,20 +1209,20 @@ public:
         this->m_table->Clear();
 
         AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
         AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e3", 4);
+                                                                           MDEntryType::mdetBuyQuote, "333333", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
         AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e4", 5);
+                                                                           MDEntryType::mdetBuyQuote, "444444", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4))
@@ -1232,13 +1232,13 @@ public:
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
-        info1->GroupMDEntries[0] = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        info1->GroupMDEntries[0] = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "222222");
 
         AstsGenericInfo *info2 = this->m_helper->CreateMSSFondInfo("s1", "ses1");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
-        info2->GroupMDEntries[0] = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        info2->GroupMDEntries[0] = this->m_helper->CreateGenericItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "222222");
 
         StatisticsInfo<AstsGenericItemInfo> *tb = this->m_table->GetItem("s1", "ses1");
 
@@ -1265,34 +1265,34 @@ public:
         this->m_table->Clear();
 
         AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
         AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e2", 4);
+                                                                           MDEntryType::mdetBuyQuote, "222222", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
         AstsGenericItemInfo *item3 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e3", 5);
+                                                                           MDEntryType::mdetBuyQuote, "333333", 5);
         item3->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item3))
             throw;
 
         AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e4", 6);
+                                                                           MDEntryType::mdetBuyQuote, "444444", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
         AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e5", 2);
+                                                                           MDEntryType::mdetBuyQuote, "555555", 2);
         item5->RptSeq = 2;
 
         AstsGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "ses1");
@@ -1326,27 +1326,27 @@ public:
         this->m_table->Clear();
 
         AstsGenericItemInfo *item1 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1);
 
         AstsGenericItemInfo *item2 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e2", 4);
+                                                                           MDEntryType::mdetBuyQuote, "222222", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2))
             throw;
 
         AstsGenericItemInfo *item4 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e4", 6);
+                                                                           MDEntryType::mdetBuyQuote, "444444", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4))
             throw;
 
         AstsGenericItemInfo *item5 = this->m_helper->CreateGenericItemInfo("s1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e5", 3);
+                                                                           MDEntryType::mdetBuyQuote, "555555", 3);
         item5->RptSeq = 3;
 
         AstsGenericInfo *info = this->m_helper->CreateMSSFondInfo("s1", "ses1");
@@ -1403,16 +1403,16 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[3] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e3", 3, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "333333", 3, 3, 1, 3, 1),
                                      }, 1),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e4", 4, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "444444", 4, 3, 1, 3, 1),
                                      }, 1)
         }, 3);
 
@@ -1428,7 +1428,7 @@ public:
             throw;
     }
 
-    /*
+     *
      * Incremental message num 2 is lost. This means that for item s1 and session1 only first two MDEntryItems will be applied and
      * MDEntryItem with rptseq = 4 will be added to que
      * and then we receive msg num 3 and apply all
@@ -1439,12 +1439,12 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e3", 4, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "333333", 4, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incFond->ListenIncremental_Core())
@@ -1470,7 +1470,7 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e4", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "444444", 3, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1493,12 +1493,12 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "555555", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incFond->ListenIncremental_Core())
@@ -1526,8 +1526,8 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 2,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e3", 3, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e4", 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "333333", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "444444", 4, 1, 1, 1, 1),
                                      }, 2)
         }, 1);
 
@@ -1550,12 +1550,12 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "555555", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incFond->ListenIncremental_Core())
@@ -1583,7 +1583,7 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e3", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "333333", 3, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1606,7 +1606,7 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e3", 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "333333", 4, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1631,12 +1631,12 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "555555", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incFond->ListenIncremental_Core())
@@ -1664,7 +1664,7 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e3", 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "333333", 4, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1687,7 +1687,7 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e3", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "333333", 3, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1715,12 +1715,12 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "s1", "ses1", "555555", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incFond->ListenIncremental_Core())
@@ -1807,8 +1807,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 2, "s1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1834,8 +1834,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 2, "s1", "ses1", true, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1880,8 +1880,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 1, "s1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1901,8 +1901,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 2, "s1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1922,13 +1922,13 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 3, "s1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4),
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 4, "s1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 2);
 
@@ -1948,13 +1948,13 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 5, "s1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4),
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 6, "s1", "ses1", true, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 2);
 
@@ -1998,8 +1998,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 1, "s1", "ses1", false, true,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -2026,8 +2026,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 1, "s1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -2037,8 +2037,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 3, "s1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -2079,8 +2079,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 1, "s1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -2090,8 +2090,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 3, "s1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -2122,8 +2122,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 2, "s1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -2159,8 +2159,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 2, "s1", "ses1", true, true,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -2202,13 +2202,13 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 2, "s1", "ses1", true, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4),
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 4, "s1", "ses1", false, true,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 6),
         }, 2);
 
@@ -2251,7 +2251,7 @@ public:
         if(snapFond->m_waitTimer->Active(1))
             throw;
     }
-    /*
+     *
      * Snapshot received for only one item, this means that snapshot connection should not be stopped
      *
     void TestConnectionFond_TestMessagesLost_2Items_SnapshotReceivedForOneItem() {
@@ -2263,13 +2263,13 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("s1", "e1", 1),
-                                             new TestTemplateItemInfo("s2", "e1", 1),
+                                             new TestTemplateItemInfo("s1", "111111", 1),
+                                             new TestTemplateItemInfo("s2", "111111", 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 3,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("s1", "e1", 4),
-                                             new TestTemplateItemInfo("s2", "e1", 4),
+                                             new TestTemplateItemInfo("s1", "111111", 4),
+                                             new TestTemplateItemInfo("s2", "111111", 4),
                                      }, 2)
         }, 2);
 
@@ -2290,8 +2290,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_Generic, 2, "s1", "ses1", true, true,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e1"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("111111"),
                                      }, 2, 4)
         }, 1);
         if(!snapFond->ListenSnapshot_Core())
@@ -2916,7 +2916,7 @@ public:
     void TestConnectionFond_ResetEntriesQueueIfNullSnapshotIsReceived() {
         this->Clear();
 
-        /*
+        *
         unsigned char *msg = new unsigned char[52] {
                 0x65, 0x23, 0x00, 0x00, 0xe0, 0x12, 0xec, 0x46, 0xe5, 0x23,
                 0x68, 0x08, 0x12, 0x7f, 0x4c, 0x74, 0xc0, 0x81, 0x80, 0x00,
@@ -3085,13 +3085,13 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("s1", "e1", 1),
-                                             new TestTemplateItemInfo("s2", "e1", 1),
+                                             new TestTemplateItemInfo("s1", "111111", 1),
+                                             new TestTemplateItemInfo("s2", "111111", 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_MSR_FOND, 3,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("s1", "e1", 4),
-                                             new TestTemplateItemInfo("s2", "e1", 4),
+                                             new TestTemplateItemInfo("s1", "111111", 4),
+                                             new TestTemplateItemInfo("s2", "111111", 4),
                                      }, 2)
         }, 2);
 
@@ -3254,7 +3254,7 @@ public:
     }
 
     void TestInfoAndItemInfoUsageAndAllocationFond_Inc_4() {
-        AstsGenericItemInfo *info = this->m_helper->CreateGenericItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsGenericItemInfo *info = this->m_helper->CreateGenericItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "111111");
         if(info->Allocator->Count() != 1)
             throw;
         info->Used = false;
@@ -3317,7 +3317,7 @@ public:
 
     void TestInfoAndItemInfoUsageAndAllocationFond_Snap_3() {
         // there is no UpdateAction in snap messages so we don't have to check these cases
-        /*this->Clear();
+        *this->Clear();
 
         this->incFond->StatisticFond()->Add("s1", "ses1");
         int prevCount = this->snapFond->m_fastProtocolManager->m_genericItems->Count();

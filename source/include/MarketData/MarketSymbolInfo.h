@@ -10,14 +10,16 @@
 
 template <typename T> class MarketSymbolInfo {
     T                                  **m_items;
+    LinkedPointer<AstsSecurityDefinitionInfo> *m_securityDefinitionPtr;
+    LinkedPointer<FortsSecurityDefinitionInfo> *m_securityDefinitionFortsPtr;
+    UINT64                              m_securityId;
     UINT32                              m_sessionId[128];
     SizedArray                         *m_symbol;
     int                                 m_count;
     int                                 m_maxCount;
     int                                 m_sessionsToRecvSnapshot;
-    LinkedPointer<AstsSecurityDefinitionInfo> *m_securityDefinitionPtr;
-    LinkedPointer<FortsSecurityDefinitionInfo> *m_securityDefinitionFortsPtr;
-    UINT64                              m_securityId;
+    int                                 m_paddingBytes;
+
 public:
     MarketSymbolInfo() :
             m_items(0),
@@ -26,7 +28,8 @@ public:
             m_sessionsToRecvSnapshot(0),
             m_securityDefinitionPtr(0),
             m_securityDefinitionFortsPtr(0),
-            m_securityId(0) {
+            m_securityId(0),
+            m_paddingBytes(0) {
         this->m_symbol = new SizedArray();
         memset(this->m_sessionId, 0, sizeof(UINT32) * 128);
     }

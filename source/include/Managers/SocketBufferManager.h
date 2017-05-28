@@ -8,17 +8,17 @@ public:
 };
 
 class SocketBuffer {
-    const int           AdditionalBufferMemory = 8192;
-
-    unsigned int         m_bufferIndex;
     unsigned char       *m_buffer;
     unsigned char       *m_current;
     unsigned char       *m_end;
+    unsigned char*      *m_items;
+    unsigned int        *m_itemLength;
+    unsigned int         m_bufferIndex;
     unsigned int        m_maxItemsCount;
     unsigned int        m_itemsCount;
     unsigned int        m_size;
-    unsigned char*      *m_items;
-    unsigned int        *m_itemLength;
+
+    static const int           AdditionalBufferMemory = 8192;
 public:
     SocketBuffer(unsigned int bufferSize, unsigned int maxItemsCount, unsigned int bufferIndex);
     ~SocketBuffer();
@@ -78,6 +78,7 @@ class SocketBufferManager : public INextIndexProvider {
     int                 m_maxItemsCount;
     int                 m_itemsCount;
     unsigned int        m_globalIndex;
+    int                 m_paddingBytes;
 
     void PrintMemoryInfo(const char *string);
 public:

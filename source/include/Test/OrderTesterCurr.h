@@ -282,8 +282,7 @@ public:
         item4->MDUpdateAction = mduaDelete;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-        item4->RptSeq = 5;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRCurrItemInfo("symbol1", "ses1", 25, -3, 1, 2, mduaDelete, mdetBuyQuote, "444444", 5);
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
         if(item4->Used)
@@ -305,8 +304,7 @@ public:
             throw;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
-        item3->RptSeq = 6;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRCurrItemInfo("symbol1", "ses1", 2, -2, 1, 2, mduaDelete, mdetBuyQuote, "333333", 6);
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
@@ -322,8 +320,7 @@ public:
             throw;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-        item2->RptSeq = 7;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRCurrItemInfo("symbol1", "ses1", 4, -2, 1, 2, mduaDelete, mdetBuyQuote, "222222", 7);
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
@@ -337,8 +334,7 @@ public:
             throw;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-        item1->RptSeq = 8;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRCurrItemInfo("symbol1", "ses1", 3, -2, 1, 2, mduaDelete, mdetBuyQuote, "111111", 8);
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
@@ -385,13 +381,12 @@ public:
         info->GroupMDEntries[0] = item5;
         item5->RptSeq = 5;
 
+        int beforeChangeCount = item5->Allocator->Count();
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
-        if(item2->Used || item2->Allocator->Count() != 0)
+        if(item2->Used || item2->Allocator->Count() != beforeChangeCount - 1)
             throw;
         if(!item5->Used)
-            throw;
-        if(item5->Allocator->Count() != 1)
             throw;
 
         OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "ses1");
@@ -705,8 +700,7 @@ public:
         item4->MDUpdateAction = mduaDelete;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item4;
-        item4->RptSeq = 5;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRCurrItemInfo("symbol1", "ses1", 25, -3, 1, 2, mduaDelete, mdetSellQuote, "444444", 5);
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
@@ -725,7 +719,7 @@ public:
             throw;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item3;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRCurrItemInfo("symbol1", "ses1", 2, -2, 1, 2, mduaDelete, mdetSellQuote, "333333", 6);
         item3->RptSeq = 6;
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
@@ -742,8 +736,7 @@ public:
             throw;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item2;
-        item2->RptSeq = 7;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRCurrItemInfo("symbol1", "ses1", 4, -2, 1, 2, mduaDelete, mdetSellQuote, "222222", 7);
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
@@ -757,8 +750,7 @@ public:
             throw;
 
         info->GroupMDEntriesCount = 1;
-        info->GroupMDEntries[0] = item1;
-        item1->RptSeq = 8;
+        info->GroupMDEntries[0] = this->m_helper->CreateOLRCurrItemInfo("symbol1", "ses1", 3, -2, 1, 2, mduaDelete, mdetSellQuote, "111111", 8);
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
@@ -961,6 +953,7 @@ public:
     }
 
     void TestTableItem_CorrectBegin() {
+
         OrderInfo<AstsOLSCURRItemInfo> *tb = new OrderInfo<AstsOLSCURRItemInfo>();
         tb->SymbolInfo(this->m_helper->CreateSymbol<OrderInfo<AstsOLSCURRItemInfo>>("symbol1"));
 
@@ -1471,6 +1464,7 @@ public:
         this->Clear();
         this->AddSymbol("symbol1");
 
+        int count = this->incCurr->FastManager()->GetAstsOLSCURRItemInfoPool()->Count();
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
@@ -1489,6 +1483,9 @@ public:
 
         OrderInfo<AstsOLSCURRItemInfo> *item = incCurr->OrderCurr()->GetItem("symbol1", "ses1");
         if(item->BuyQuotes()->Count() != 2)
+            throw;
+        int count2 = this->incCurr->FastManager()->GetAstsOLSCURRItemInfoPool()->Count();
+        if(count2 - count != 3)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
@@ -1518,6 +1515,9 @@ public:
             throw;
         if(item->BuyQuotes()->Count() != 4) // all messages from que should be applied
             throw;
+        count2 = this->incCurr->FastManager()->GetAstsOLSCURRItemInfoPool()->Count();
+        if(count2 - count != 4)
+            throw;
         if(item->EntriesQueue() != 0) // should be reset
             throw;
     }
@@ -1526,6 +1526,7 @@ public:
         this->Clear();
         this->AddSymbol("symbol1");
 
+        int count = this->incCurr->FastManager()->GetAstsOLSCURRItemInfoPool()->Count();
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_OLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
@@ -1544,6 +1545,10 @@ public:
 
         OrderInfo<AstsOLSCURRItemInfo> *item = incCurr->OrderCurr()->GetItem("symbol1", "ses1");
         if(item->BuyQuotes()->Count() != 2)
+            throw;
+
+        int count2 = this->incCurr->FastManager()->GetAstsOLSCURRItemInfoPool()->Count();
+        if(count2 - count != 3)
             throw;
         if(!incCurr->m_waitTimer->Active()) // not all messages was processed - some messages was skipped
             throw;
@@ -1577,6 +1582,9 @@ public:
         if(item->BuyQuotes()->Count() != 5) // all messages from que should be applied
             throw;
         if(item->EntriesQueue() != 0) // should be reset
+            throw;
+        count2 = this->incCurr->FastManager()->GetAstsOLSCURRItemInfoPool()->Count();
+        if(count2 - count != 5)
             throw;
     }
 
@@ -3342,15 +3350,11 @@ public:
 
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_4() {
         AstsOLSCURRItemInfo *info = this->m_helper->CreateOLSCurrItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "111111");
-        if(info->Allocator->Count() != 1)
-            throw;
+        int count = info->Allocator->Count();
         info->Used = false;
         info->ReleaseUnused();
-        if(info->Allocator->Count() != 0)
+        if(info->Allocator->Count() != count - 1)
             throw;
-        //info->ReleaseUnused();
-        //if(info->Allocator->Count() != 0)
-        //    throw;
     }
 
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_5() {
@@ -3495,8 +3499,8 @@ public:
     void Test() {
         TestDefaults();
         TestStringIdComparer();
-        TestInfoAndItemInfoUsageAndAllocationCurr();
         Test_OLR_CURR();
+        TestInfoAndItemInfoUsageAndAllocationCurr();
         TestOrderTableItem();
         TestConnection();
     }

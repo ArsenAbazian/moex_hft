@@ -9,6 +9,8 @@
 
 #define MARKET_INFO_CAPACITY 16
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpadded"
 class Robot {
     AstsFeedChannel *channels[MARKET_INFO_CAPACITY];
     int     channelsCount;
@@ -454,3 +456,4 @@ public:
             this->PrintStatisticsForts();
     }
 };
+#pragma clang diagnostic pop

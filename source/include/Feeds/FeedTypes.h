@@ -133,34 +133,34 @@ typedef enum _FeedConnectionType {
 class FeedConnectionMessageInfo {
 public:
     unsigned char       *m_address;
-    int                  m_size;
-    bool                 m_processed;
-    bool                 m_requested;
+    unsigned int        m_processed;
+    unsigned short      m_requested;
+    unsigned short      m_size;
 
     FeedConnectionMessageInfo() :
-            m_processed(false),
-            m_requested(false),
+            m_processed(0),
+            m_requested(0),
             m_address(0),
             m_size(0) {
     }
 
     inline void Clear() {
         this->m_address = 0;
-        this->m_processed = false;
-        this->m_requested = false;
+        this->m_processed = 0;
+        this->m_requested = 0;
     }
     inline bool IsCleared() {
-        return this->m_address == 0 && !this->m_processed && !this->m_requested;
+        return this->m_address == 0 && this->m_processed == 0 && this->m_requested == 0;
     }
 };
 
 class FeedConnectionRequestMessageInfo {
-    int                         m_startMsgSeqNo;
-    int                         m_endMsgSeqNo;
-    int                         m_lastRecvMsgSeqNo;
 public:
     FeedConnection             *m_conn;
     int                         m_requestCount;
+    int                         m_startMsgSeqNo;
+    int                         m_endMsgSeqNo;
+    int                         m_lastRecvMsgSeqNo;
 
     FeedConnectionRequestMessageInfo() :
             m_startMsgSeqNo(0),

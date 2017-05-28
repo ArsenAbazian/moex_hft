@@ -123,6 +123,7 @@ void LogMessageProvider::InitializeLogMessageText() {
 
 LogMessageProvider::LogMessageProvider() {
     this->m_dynamicLogMessageCount = 0;
+	this->m_paddingBytes = 0;
     this->InitializeLogMessageText();
 }
 

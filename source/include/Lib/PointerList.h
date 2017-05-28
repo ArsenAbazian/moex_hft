@@ -16,15 +16,13 @@ template <typename T> class LinkedPointer {
     LinkedPointer   *m_next;
     LinkedPointer   *m_prev;
     T               *m_data;
-    bool             m_released;
 
 public:
     LinkedPointer() :
             m_owner(0),
             m_next(0),
             m_prev(0),
-            m_data(0),
-            m_released(true) {
+            m_data(0) {
     }
 
     inline bool HasNext() { return this->m_next != 0; }
@@ -36,8 +34,6 @@ public:
     inline void Data(T *data) { this->m_data = data; }
     inline PointerList<T>* Owner() { return this->m_owner; }
     inline void Owner(PointerList<T> *owner) { this->m_owner = owner; }
-    inline bool Released() { return this->m_released; }
-    inline void Released(bool released) { this->m_released = released; }
     inline void Connect(LinkedPointer<T> *next) {
         this->m_next = next;
         if(next != 0)
@@ -55,17 +51,18 @@ class PointerListTester;
 template <typename T> class PointerList {
     friend  class PointerListLite<T>;
     friend  class PointerListTester;
-    int             m_capacity;
 
     LinkedPointer<T> *m_poolHead;
     LinkedPointer<T> *m_poolTail;
 
     LinkedPointer<T> *m_head;
     LinkedPointer<T> *m_tail;
+    const char       *m_name;
+
+    int              m_capacity;
     int              m_count;
     bool             m_autoAllocate;
-    const char      *m_name;
-
+    char             m_paddingBytes[7];
 public:
     PointerList(int capacity, bool autoAllocate) :
             m_capacity(capacity),
@@ -111,7 +108,6 @@ public:
         LinkedPointer<T> *node = this->m_poolHead;
         this->m_poolHead = this->m_poolHead->Next();
         this->m_count++;
-        node->Released(false);
         return node;
     }
     inline LinkedPointer<T>* Pop() {
@@ -121,23 +117,27 @@ public:
         LinkedPointer<T> *node = this->m_poolHead;
         this->m_poolHead = this->m_poolHead->Next();
         this->m_count++;
-        node->Released(false);
         return node;
     }
 
     inline void Push(LinkedPointer<T> *node) {
-        if(node->Released())
-            return;
-        node->Released(true);
         this->m_poolTail->Next(node);
         this->m_poolTail = node;
         this->m_count--;
+#ifdef TEST
+        if(this->m_count < 0)
+            throw;
+#endif
     }
 
     inline void PushUnsafe(LinkedPointer<T> *node) {
         this->m_poolTail->Next(node);
         this->m_poolTail = node;
         this->m_count--;
+#ifdef TEST
+        if(this->m_count < 0)
+            throw;
+#endif
     }
 
     inline void FreeData() {
@@ -347,12 +347,6 @@ public:
         LinkedPointer<T> *st = this->Start();
         LinkedPointer<T> *end = this->End();
         LinkedPointer<T> *node = st;
-        while(true) {
-            node->Released(true);
-            if(node == end)
-                break;
-            node = node->Next();
-        }
         this->m_poolTail->Next(st);
         this->m_poolTail = end;
         this->m_tail = this->m_head;
@@ -394,6 +388,7 @@ template <typename T> class PointerListLite {
     LinkedPointer<T>    *m_head;
     LinkedPointer<T>    *m_tail;
     int                 m_count;
+    int                 m_paddingBytes;
 public:
     PointerListLite(PointerList<T> *globalPool) {
         this->m_pool = globalPool;
@@ -401,6 +396,7 @@ public:
         this->m_tail->Next(0);
         this->m_head->Prev(0);
         this->m_count = 0;
+        this->m_paddingBytes = 0;
     }
     ~PointerListLite() {
         Clear();
@@ -495,6 +491,10 @@ public:
         }
         this->m_count--;
         this->m_pool->Push(node);
+#ifdef TEST
+        if(this->m_count < 0)
+            throw;
+#endif
     }
     inline T* Item(int index) {
         LinkedPointer<T> *node = this->Start();

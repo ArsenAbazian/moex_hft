@@ -56,15 +56,15 @@ template <typename T> class StatisticsInfo {
     PointerListLite<StatisticItemDecimal>                    *m_auctionMagnitudeBigPackets;
     PointerListLite<StatisticItemDecimal>                    *m_cumulativeCouponDebit;
 
-    bool                 m_shouldProcessSnapshot;
-    int                  m_rptSeq;
-    int                  m_savedRptSeq;
+    int                     m_rptSeq;
+    UINT32                  m_sessionInt;
+    int                     m_savedRptSeq;
+    int                     m_snapshotProcessedCount;
     MarketSymbolInfo<StatisticsInfo<T>>    *m_symbolInfo;
-    SizedArray          *m_tradingSession;
-    UINT32              m_sessionInt;
-
-    UINT64               m_time;
-    int                  m_snapshotProcessedCount;
+    SizedArray              *m_tradingSession;
+    UINT64                  m_time;
+    bool                    m_shouldProcessSnapshot;
+    char                    m_paddingBytes[7];
 public:
     StatisticsInfo() :
             m_entryInfo(0),
@@ -162,8 +162,13 @@ public:
 
     inline void ReleaseEntryQue() {
         if(this->m_entryInfo != 0) {
+            for(int i = 0; i <= this->m_entryInfo->MaxIndex(); i++) {
+                if(this->m_entryInfo->Entries()[i] != 0) {
+                    ((T *) this->m_entryInfo->Entries()[i])->Clear();
+                }
+            }
             this->m_entryInfo->Reset();
-            MDEntryQueue::Pool->FreeItem(this->m_entryInfo->Pointer);
+            MDEntryQueue::Pool->FreeItemUnsafe(this->m_entryInfo->Pointer);
         }
         this->m_entryInfo = 0;
     }
@@ -1469,6 +1474,7 @@ public:
         this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
         this->m_entryInfo->AddEntry(info, info->RptSeq);
+        info->Used = true;
     }
 
     inline void ForceProcessMessage(T *info) {
@@ -1525,12 +1531,14 @@ public:
         int startIndex = this->m_rptSeq + 1 - incRptSeq;
         for(int i = 0; i < startIndex && i < this->m_entryInfo->Capacity(); i++, entry++) {
             if((*entry) != 0) (*entry)->Clear();
+            (*entry) = 0;
         }
         for(int index = startIndex; index <= maxIndex; index++) {
             if((*entry) == 0)
                 return false;
             ForceProcessMessage(*entry);
             this->m_rptSeq = (*entry)->RptSeq;
+            (*entry) = 0;
             entry++;
         }
         this->ReleaseEntryQue();

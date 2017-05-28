@@ -71,6 +71,7 @@ protected:
     Decimal         *m_changeFromWAPricePtr;
     Decimal         *m_tradeValuePtr;
     UINT32          m_dealTime;
+    int             m_paddingBytes;
 public:
     StatisticItemLastDealInfo() :
             m_time(0),
@@ -79,7 +80,8 @@ public:
             m_netChangePrevDay(0, 0),
             m_changeFromWAPrice(0, 0),
             m_tradeValue(0, 0),
-            m_dealTime(0) {
+            m_dealTime(0),
+            m_paddingBytes(0) {
         this->m_pricePtr = &(this->m_price);
         this->m_sizePtr = &(this->m_size);
         this->m_netChangePrevDayPtr = &(this->m_netChangePrevDay);
@@ -108,15 +110,16 @@ public:
 class StatisticItemTotalOffer {
 protected:
     UINT64          m_time;
+    Decimal         *m_sizePtr;
     Decimal         m_size;
     int             m_offerNbOr;
-    Decimal         *m_sizePtr;
-
+    int             m_paddingBytes;
 public:
     StatisticItemTotalOffer() :
             m_time(0),
             m_size(0, 0),
-            m_offerNbOr(0) {
+            m_offerNbOr(0),
+            m_paddingBytes(0) {
         this->m_sizePtr = &(this->m_size);
     }
     ~StatisticItemTotalOffer() { }
@@ -133,17 +136,19 @@ public:
 class StatisticItemTransactionsMagnitude {
 protected:
     UINT64          m_time;
+    Decimal         *m_sizePtr;
+    Decimal         *m_tradeValuePtr;
     Decimal         m_size;
     Decimal         m_tradeValue;
     int             m_totalNumOfTrades;
-    Decimal         *m_sizePtr;
-    Decimal         *m_tradeValuePtr;
+    int             m_paddingBytes;
 public:
     StatisticItemTransactionsMagnitude() :
             m_time(0),
             m_size(0, 0),
             m_tradeValue(0, 0),
-            m_totalNumOfTrades(0) {
+            m_totalNumOfTrades(0),
+            m_paddingBytes(0) {
         this->m_sizePtr = &(this->m_size);
         this->m_tradeValuePtr = &(this->m_tradeValue);
     }
@@ -163,12 +168,13 @@ public:
 class StatisticItemIndexList {
 protected:
     UINT64          m_time;
-    Decimal         m_price;
-    Decimal         m_size;
-    Decimal         m_tradeValue;
     Decimal         *m_pricePtr;
     Decimal         *m_sizePtr;
     Decimal         *m_tradeValuePtr;
+    Decimal         m_price;
+    Decimal         m_size;
+    Decimal         m_tradeValue;
+
 public:
     StatisticItemIndexList() :
             m_time(0),
@@ -195,15 +201,16 @@ public:
 class StatisticItemTotalBid {
 protected:
     UINT64          m_time;
+    Decimal         *m_sizePtr;
     Decimal         m_size;
     int             m_bidNbOr;
-    Decimal         *m_sizePtr;
-
+    int             m_paddingBytes;
 public:
     StatisticItemTotalBid() :
             m_time(0),
             m_size(0, 0),
-            m_bidNbOr(0) {
+            m_bidNbOr(0),
+            m_paddingBytes(0) {
         this->m_sizePtr = &(this->m_size);
     }
     ~StatisticItemTotalBid() { }
@@ -216,7 +223,8 @@ public:
     inline Decimal* Size() { return this->m_sizePtr; };
     inline int BidNbOr() { return this->m_bidNbOr; }
 };  // v
-
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpadded"
 template <typename T> class StatisticItem {
     UINT64          m_time;
     T               m_value;
@@ -231,7 +239,7 @@ public:
     inline UINT64 Time() { return this->m_time; }
     inline T Value() { return this->m_value; }
 };
-
+#pragma clang diagnostic pop
 class StatisticItemAllocator {
     PointerList<StatisticItemDecimal>                       *m_decimals;
     PointerList<StatisticItemDecimal2>                      *m_decimals2;

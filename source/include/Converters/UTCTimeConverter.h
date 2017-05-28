@@ -21,15 +21,14 @@ typedef char CharVector2[2];
 typedef char CharVector3[3];
 class UTCTimeConverter
 {
+    ItoaConverter           *converter;
     static CharVector4      *years;
     static CharVector2      *hours;
     static CharVector3      *miliseconds;
-    SYSTEMTIME              currentTime;
     struct timeval          *tval;
     struct tm               *calendarTime;
     int                     currentMs;
-
-    ItoaConverter           *converter;
+    int                     paddingBytes;
 
     inline void Init(CharVector4 v, char p1, char p2, char p3, char p4) { v[0] = p1; v[1] = p2; v[2] = p3; v[3] = p4; }
     inline void Init(CharVector3 v, char p1, char p2, char p3) { v[0] = p1; v[1] = p2; v[2] = p3; }

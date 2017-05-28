@@ -19,39 +19,36 @@
 #define AddTagData(tagName, tagData, tagDataLen) tagName AddEqual(); { AddArray(tagData, tagDataLen); AddSeparator(); }
 
 class FixProtocolManager {
+    static const int                m_maxRecvMessageCount = 128;
 
-    char                            senderComputerId[100];
-    char                            targetComputerId[100];
-    int                             senderComputerIdLength;
-    int                             targetComputerIdLength;
-
-    const char                      *m_protocolVersion;
-    int                             m_protocolVersionLength;
-
-    SYSTEMTIME                      *currentTime;
-
-    int                             receivedMessageLength;
-    unsigned char                   *m_sendMessageBuffer;
-    int                             m_sendItemStartIndex;
-    char                            *messageBuffer;
-    int                             messageBufferSize;
-
-    const int                       m_maxRecvMessageCount = 128;
-    int                             m_recvMessageCount;
-    FixProtocolMessage              *m_currMsg;
-    FixProtocolMessage              *m_recvMessage[128];
-
-    char                            *currentPos;
-    int                             m_sendMsgSeqNo;
-    int                             m_recvMsgSeqNo;
-
-    DtoaConverter                   *doubleConverter;
     ItoaConverter                   *intConverter;
+    UTCTimeConverter                *timeConverter;
+    DtoaConverter                   *doubleConverter;
 
     ISocketBufferProvider           *m_bufferProvider;
     SocketBuffer                    *m_sendBuffer;
     SocketBuffer                    *m_recvBuffer;
     FixRejectInfo                   *m_rejectInfo;
+    FixProtocolMessage              *m_currMsg;
+    FixProtocolMessage              *m_recvMessage[128];
+    const char                      *m_protocolVersion;
+    SYSTEMTIME                      *currentTime;
+    unsigned char                   *m_sendMessageBuffer;
+    char                            *messageBuffer;
+    char                            *currentPos;
+
+    char                            senderComputerId[128];
+    char                            targetComputerId[128];
+    int                             senderComputerIdLength;
+    int                             targetComputerIdLength;
+    int                             m_protocolVersionLength;
+    int                             receivedMessageLength;
+    int                             m_sendItemStartIndex;
+    int                             messageBufferSize;
+    int                             m_recvMessageCount;
+    int                             m_sendMsgSeqNo;
+    int                             m_recvMsgSeqNo;
+    int                             m_paddingBytes;
 
     inline void AddSymbol(char symbol) { *(this->currentPos) = symbol; this->currentPos++; }
     inline void AddEqual() { *(this->currentPos) = '='; this->currentPos++; }
@@ -283,8 +280,6 @@ public:
         AddValue(messageSeqNumber);
         AddSeparator();
     }
-
-    private: UTCTimeConverter *timeConverter;
 
     public:
     inline int GetUTCTimeString(char *buf) {

@@ -3,15 +3,13 @@
 #include "Feeds/AstsFeedChannel.h"
 
 class MarketInfo {
-
-    char                m_name[16];
-    int                 m_nameLogIndex;
-
+    AstsFeedChannel     *m_feedChannel;
     MarketServerInfo    *m_trade;
     MarketServerInfo    *m_tradeCapture;
     MarketServerInfo    *m_dropCopy;
 
-    AstsFeedChannel     *m_feedChannel;
+    int                 m_nameLogIndex;
+    char                m_name[20];
 
     virtual MarketServerInfo* CreateTradeServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName);
     virtual MarketServerInfo* CreateTradeCaptureServerInfo(const char *name, const char *internetAddress, int internetPort, const char *senderComputerId, const char *password, const char *targetComputerId, const char *astsServerName);

@@ -15,7 +15,7 @@ INT64 Decimal::PowOf10[10] = { 1,
                                       100000000,
                                       1000000000 };
 
-double Decimal::MulOf10[10] = {
+float Decimal::MulOf10[10] = {
                                         1.0,
                                         10.0,
                                         100.0,
@@ -28,7 +28,7 @@ double Decimal::MulOf10[10] = {
                                         1000000000.0
 };
 
-double Decimal::DivOf10[10] = {
+float Decimal::DivOf10[10] = {
                                         1.0,
                                         0.1,
                                         0.01,

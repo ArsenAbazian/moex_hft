@@ -23,23 +23,28 @@ template <typename T> class OrderInfo {
     HrPointerListLite<T>                  *m_sellQuoteList;
     HrPointerListLite<T>                  *m_buyQuoteList;
 
+    UINT32                              m_sessionInt;
+    int                                 m_rptSeq;
+
     OrderedListManager<HrPointerListLite, HrLinkedPointer, T>   *m_buyQuoteManager;
     OrderedListManager<HrPointerListLite, HrLinkedPointer, T>   *m_sellQuoteManager;
 
     MDEntryQueue                       *m_entryInfo;
-
-    bool                                m_shouldProcessSnapshot;
-    int                                 m_rptSeq;
-    int                                 m_savedRptSeq;
     MarketSymbolInfo<OrderInfo<T>>      *m_symbolInfo;
     SizedArray                          *m_tradingSession;
-    UINT32                              m_sessionInt;
-
+    int                                 m_savedRptSeq;
     int                                 m_snapshotProcessedCount;
 
 #ifdef TEST
     ListType                            m_listMode;
 #endif
+    bool                                m_shouldProcessSnapshot;
+#ifdef TEST
+    char                                m_paddingBytes[3];
+#else
+    char                                m_paddingBytes[7];
+#endif
+
 public:
     OrderInfo();
     ~OrderInfo() {
@@ -52,8 +57,13 @@ public:
 
     inline void ReleaseEntryQue() {
         if(this->m_entryInfo != 0) {
+            for(int i = 0; i <= this->m_entryInfo->MaxIndex(); i++) {
+                if(this->m_entryInfo->Entries()[i] != 0) {
+                    ((T *) this->m_entryInfo->Entries()[i])->Clear();
+                }
+            }
             this->m_entryInfo->Reset();
-            MDEntryQueue::Pool->FreeItem(this->m_entryInfo->Pointer);
+            MDEntryQueue::Pool->FreeItemUnsafe(this->m_entryInfo->Pointer);
         }
         this->m_entryInfo = 0;
     }
@@ -101,13 +111,6 @@ public:
         HrLinkedPointer<T> *node = list->Start();
         while(true) {
             T *data = node->Data();
-            /*
-            LinkedPointer<HashTableItemInfo> *ptr = HashTable::Default->GetPointer(list, data->MDEntryID, data->MDEntryIDLength);
-            if(ptr == 0) {
-                printf("error: there is no HashTableItem for %s\n", DebugInfoManager::Default->GetString(data->MDEntryID, data->MDEntryIDLength, 0));
-                DebugInfoManager::Default->PrintQuotes("BuyQuotes", list);
-                throw;
-            }*/
             FreePointer(data, list);
             data->Clear();
             if(node == list->End())
@@ -307,17 +310,16 @@ public:
         this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
         this->m_entryInfo->AddEntry(info, info->RptSeq);
+        info->Used = true;
     }
 
     inline void ForceProcessMessage(T *info) {
-        /*
         if(info->MDUpdateAction == MDUpdateAction::mduaAdd)
             this->Add(info);
         else if(info->MDUpdateAction == MDUpdateAction::mduaDelete)
             this->Remove(info);
         else
             this->Change(info);
-        */
     }
 
     inline bool IsOutdatedMessage(T *info) {

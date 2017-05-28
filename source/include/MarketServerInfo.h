@@ -28,7 +28,19 @@ typedef enum class _MarketServerState : uint8_t{
     mssPanic
 } MarketServerState;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpadded"
 class MarketServerInfo {
+    WinSockManager                          *m_socketManager;
+    FixProtocolManager                      *m_fixManager;
+    FixLogonInfo                            *m_logonInfo;
+    Stopwatch                               *m_stopwatch;
+    FixResendRequestInfo                    *m_resendRequestInfo;
+
+    MarketServerState                       m_state;
+    MarketServerState                       m_sendState;
+    MarketServerState                       m_nextState;
+
     char                                    m_name[128];
     int                                     m_nameLogIndex;
     char                                    m_internetAddress[32];
@@ -41,10 +53,6 @@ class MarketServerInfo {
     char                                    m_password[16];
     int                                     m_passwordLength;
     int                                     m_testRequestId;
-    MarketServerState                       m_state;
-    MarketServerState                       m_sendState;
-
-    MarketServerState                       m_nextState;
 
     unsigned int                            m_resendBeginSeqNo;
     unsigned int                            m_resendEndSeqNo;
@@ -53,12 +61,6 @@ class MarketServerInfo {
     bool                                    m_inSendResendRequest;
     bool                                    m_shouldRecvMessage;
     bool                                    m_shouldResendMessages;
-
-    WinSockManager                          *m_socketManager;
-    FixProtocolManager                      *m_fixManager;
-    FixLogonInfo                            *m_logonInfo;
-    Stopwatch                               *m_stopwatch;
-    FixResendRequestInfo                    *m_resendRequestInfo;
 
     virtual ISocketBufferProvider*  CreateSocketBufferProvider();
     FixLogonInfo* CreateLogonInfo();
@@ -504,3 +506,4 @@ public:
             MarketServerInfo(name, internetAddress, internetPort, senderComputerId, password, targetComputerId, astsServerName) { }
 };
 
+#pragma clang diagnostic pop

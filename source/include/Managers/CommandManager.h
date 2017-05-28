@@ -37,12 +37,13 @@ typedef enum _CommandMode {
 
 class CommandInfo {
 public:
-    CommandManagerCommand   m_command;
-    CommandMode             m_mode;
     struct sockaddr         *m_target;
     socklen_t               m_targetLength;
     int                     m_commandId;
+    CommandManagerCommand   m_command;
+    CommandMode             m_mode;
     bool                    m_shouldRemove;
+    char                    m_paddingBytes[7];
 
     CommandInfo() :
             m_command(CommandManagerCommand::hcNone),
@@ -66,12 +67,13 @@ public:
 };
 
 class CommandManager {
-    const int                   m_bufferLength = 128;
-    const int                   m_sendBufferMaxLength = 8192;
-    const int                   m_spaceDataForPacketIndexLength = 2;
+    static const int            m_bufferLength = 128;
+    static const int            m_sendBufferMaxLength = 8192;
+    static const int            m_spaceDataForPacketIndexLength = 2;
     WinSockManager              *m_manager;
-    int                         m_port;
-    CommandManagerState         m_state;
+    PointerList<CommandInfo>    *m_commands;
+    LinkedPointer<CommandInfo>  *m_currentCommand;
+    Stopwatch                   *m_timer;
     unsigned char               *m_buffer;
     unsigned short              *m_packetIndexPtr;
     unsigned char               *m_sendBuffer;
@@ -79,9 +81,9 @@ class CommandManager {
     int                         m_packetIndex;
     int                         m_sendIndex;
     int                         m_sendSize;
-    PointerList<CommandInfo>    *m_commands;
-    LinkedPointer<CommandInfo>  *m_currentCommand;
-    Stopwatch                   *m_timer;
+    int                         m_port;
+
+    CommandManagerState         m_state;
 public:
     CommandManager(int port) :
             m_state(CommandManagerState::cmsIdle),

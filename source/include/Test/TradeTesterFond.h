@@ -102,10 +102,10 @@ public:
 
         AstsIncrementalTLRFONDInfo *info = this->m_helper->CreateAstsIncrementalTLRFONDInfo();
 
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         if(item4->Used)
             throw;
@@ -135,7 +135,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "111111", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -160,7 +160,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "111111", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -186,7 +186,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "111111", 6))
             throw;
 
         quote = obi->Trades()->Item(1);
@@ -195,7 +195,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "222222", 6))
             throw;
 
         quote = obi->Trades()->Last()->Data();
@@ -204,7 +204,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e3", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "333333", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -230,7 +230,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "111111", 6))
             throw;
 
         quote = obi->Trades()->Item(1);
@@ -239,7 +239,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "222222", 6))
             throw;
 
         quote = obi->Trades()->Start()->Next()->Next()->Data();
@@ -248,7 +248,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e3", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "333333", 6))
             throw;
 
         quote = obi->Trades()->Last()->Data();
@@ -257,7 +257,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e4", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "444444", 6))
             throw;
     }
 
@@ -267,10 +267,10 @@ public:
         this->AddSymbol("symbol1", "ses1");
 
         AstsIncrementalTLRFONDInfo *info = this->m_helper->CreateAstsIncrementalTLRFONDInfo();
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -302,10 +302,10 @@ public:
         this->AddSymbol("symbol1", "ses1");
 
         AstsIncrementalTLRFONDInfo *info = this->m_helper->CreateAstsIncrementalTLRFONDInfo();
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "e1", 1);
-        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "e2", 2);
-        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "e3", 3);
-        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "e4", 4);
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 3, -2, 1, 2, mduaAdd, mdetBuyQuote, "111111", 1);
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 4, -2, 1, 2, mduaAdd, mdetBuyQuote, "222222", 2);
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
+        AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -320,8 +320,8 @@ public:
             throw;
 
         AstsTLSFONDInfo *info2 = this->m_helper->CreateTLSFondInfo("t1s2", "ses1");
-        AstsTLSFONDItemInfo *newItem1 = this->m_helper->CreateTLSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "e7");
-        AstsTLSFONDItemInfo *newItem2 = this->m_helper->CreateTLSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "e8");
+        AstsTLSFONDItemInfo *newItem1 = this->m_helper->CreateTLSFondItemInfo(7,-2, 1, 2, mdetBuyQuote, "777777");
+        AstsTLSFONDItemInfo *newItem2 = this->m_helper->CreateTLSFondItemInfo(8,-2, 1, 2, mdetBuyQuote, "888888");
         info2->RptSeq = 5;
 
         info2->GroupMDEntriesCount = 2;
@@ -345,9 +345,9 @@ public:
         AstsTLSFONDItemInfo *qt1 = obi->Trades()->Item(0);
         AstsTLSFONDItemInfo *qt2 = obi->Trades()->Item(1);
 
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "777777", 2))
             throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e8", 2))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "888888", 2))
             throw;
         if(!qt1->MDEntryPx.Equal(7, -2))
             throw;
@@ -391,7 +391,7 @@ public:
     void TestTableItem_CorrectBegin() {
         TradeInfo<AstsTLSFONDItemInfo> *tb = new TradeInfo<AstsTLSFONDItemInfo>();
 
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "111111");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
@@ -409,7 +409,7 @@ public:
         TradeInfo<AstsTLSFONDItemInfo> *tb = new TradeInfo<AstsTLSFONDItemInfo>();
         tb->SymbolInfo(this->m_helper->CreateSymbol<TradeInfo<AstsTLSFONDItemInfo>>("symbol1"));
 
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "111111");
         item1->RptSeq = 2;
         item1->MDUpdateAction = mduaAdd;
 
@@ -431,13 +431,13 @@ public:
         TradeInfo<AstsTLSFONDItemInfo> *tb = new TradeInfo<AstsTLSFONDItemInfo>();
         tb->SymbolInfo(this->m_helper->CreateSymbol<TradeInfo<AstsTLSFONDItemInfo>>("symbol1"));
 
-        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "111111");
         item1->RptSeq = 1;
         item1->MDUpdateAction = mduaAdd;
 
         tb->ProcessIncrementalMessage(item1);
 
-        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "222222");
         item2->RptSeq = 3;
         item2->MDUpdateAction = mduaAdd;
 
@@ -450,7 +450,7 @@ public:
         if(tb->RptSeq() != 1)
             throw;
 
-        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "333333");
         item3->RptSeq = 4;
         item3->MDUpdateAction = mduaAdd;
 
@@ -492,13 +492,13 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSFONDItemInfo *item = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", "e1", 1);
+        AstsTLSFONDItemInfo *item = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", "111111", 1);
         item->RptSeq = 1;
 
-        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", "e1", 2);
+        AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", "111111", 2);
         item2->RptSeq = 2;
 
-        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", "e1", 4);
+        AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", "111111", 4);
         item3->RptSeq = 4;
 
         this->m_table->ProcessIncremental(item, 0, item->TradingSessionIDUint);
@@ -528,7 +528,7 @@ public:
         this->AddSymbol("symbol1");
 
         AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint))
@@ -540,7 +540,7 @@ public:
         this->AddSymbol("symbol1");
 
         AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 2;
 
         if(this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint))
@@ -552,14 +552,14 @@ public:
         this->AddSymbol("symbol1");
 
         AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint))
             throw;
 
         AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 3);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 3);
         item2->RptSeq = 3;
 
         if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionIDUint))
@@ -574,14 +574,14 @@ public:
         this->AddSymbol("symbol2");
 
         AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint))
             throw;
 
         AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol2", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item2->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item2, 1, item2->TradingSessionIDUint))
@@ -598,34 +598,34 @@ public:
         this->AddSymbol("symbol1");
 
         AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint);
 
         AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e2", 3);
+                                                                           MDEntryType::mdetBuyQuote, "222222", 3);
         item2->RptSeq = 3;
 
         if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionIDUint))
             throw;
 
         AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e3", 4);
+                                                                           MDEntryType::mdetBuyQuote, "333333", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionIDUint))
             throw;
 
         AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e4", 5);
+                                                                           MDEntryType::mdetBuyQuote, "444444", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionIDUint))
             throw;
 
         AstsTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e5", 3);
+                                                                           MDEntryType::mdetBuyQuote, "555555", 3);
         item5->RptSeq = 3;
 
         AstsTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("symbol1", "ses1");
@@ -663,20 +663,20 @@ public:
         this->AddSymbol("symbol1");
 
         AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint);
 
         AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e3", 4);
+                                                                           MDEntryType::mdetBuyQuote, "333333", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionIDUint))
             throw;
 
         AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e4", 5);
+                                                                           MDEntryType::mdetBuyQuote, "444444", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionIDUint))
@@ -686,13 +686,13 @@ public:
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
-        info1->GroupMDEntries[0] = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        info1->GroupMDEntries[0] = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "222222");
 
         AstsTLSFONDInfo *info2 = this->m_helper->CreateTLSFondInfo("symbol1", "ses1");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
-        info2->GroupMDEntries[0] = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        info2->GroupMDEntries[0] = this->m_helper->CreateTLSFondItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "222222");
 
         TradeInfo<AstsTLSFONDItemInfo> *tb = this->m_table->GetItem("symbol1", "ses1");
 
@@ -718,34 +718,34 @@ public:
         this->AddSymbol("symbol1");
 
         AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint);
 
         AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e2", 4);
+                                                                           MDEntryType::mdetBuyQuote, "222222", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionIDUint))
             throw;
 
         AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e3", 5);
+                                                                           MDEntryType::mdetBuyQuote, "333333", 5);
         item3->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionIDUint))
             throw;
 
         AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e4", 6);
+                                                                           MDEntryType::mdetBuyQuote, "444444", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionIDUint))
             throw;
 
         AstsTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e5", 2);
+                                                                           MDEntryType::mdetBuyQuote, "555555", 2);
         item5->RptSeq = 2;
 
         AstsTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("symbol1", "ses1");
@@ -779,27 +779,27 @@ public:
         this->AddSymbol("symbol1");
 
         AstsTLSFONDItemInfo *item1 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint);
 
         AstsTLSFONDItemInfo *item2 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e2", 4);
+                                                                           MDEntryType::mdetBuyQuote, "222222", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionIDUint))
             throw;
 
         AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e4", 6);
+                                                                           MDEntryType::mdetBuyQuote, "444444", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionIDUint))
             throw;
 
         AstsTLSFONDItemInfo *item5 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e5", 3);
+                                                                           MDEntryType::mdetBuyQuote, "555555", 3);
         item5->RptSeq = 3;
 
         AstsTLSFONDInfo *info = this->m_helper->CreateTLSFondInfo("symbol1", "ses1");
@@ -861,16 +861,16 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[3] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 3, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "333333", 3, 3, 1, 3, 1),
                                      }, 1),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e4", 4, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "444444", 4, 3, 1, 3, 1),
                                      }, 1)
         }, 3);
 
@@ -898,12 +898,12 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 4, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "333333", 4, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incFond->ListenIncremental_Core())
@@ -929,7 +929,7 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e4", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "444444", 3, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -953,12 +953,12 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "555555", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incFond->ListenIncremental_Core())
@@ -986,8 +986,8 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 2,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 3, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e4", 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "333333", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "444444", 4, 1, 1, 1, 1),
                                      }, 2)
         }, 1);
 
@@ -1011,12 +1011,12 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "555555", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incFond->ListenIncremental_Core())
@@ -1044,7 +1044,7 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "333333", 3, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1067,7 +1067,7 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "333333", 4, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1093,12 +1093,12 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "555555", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incFond->ListenIncremental_Core())
@@ -1126,7 +1126,7 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "333333", 4, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1149,7 +1149,7 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "333333", 3, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1178,12 +1178,12 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "555555", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incFond->ListenIncremental_Core())
@@ -1285,8 +1285,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 2, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1313,8 +1313,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 2, "symbol1", "ses1", true, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1361,8 +1361,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 1, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1382,8 +1382,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 2, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1403,13 +1403,13 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 3, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4),
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 4, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 2);
 
@@ -1429,13 +1429,13 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 5, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4),
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 6, "symbol1", "ses1", true, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 2);
 
@@ -1481,8 +1481,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 1, "symbol1", "ses1", false, true,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1510,8 +1510,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 1, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1521,8 +1521,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 3, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1564,8 +1564,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 1, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1575,8 +1575,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 3, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1608,8 +1608,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 2, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1646,8 +1646,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 2, "symbol1", "ses1", true, true,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1689,13 +1689,13 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 2, "symbol1", "ses1", true, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4),
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 4, "symbol1", "ses1", false, true,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 6),
         }, 2);
 
@@ -1752,13 +1752,13 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("symbol1", "e1", 1),
-                                             new TestTemplateItemInfo("symbol2", "e1", 1),
+                                             new TestTemplateItemInfo("symbol1", "111111", 1),
+                                             new TestTemplateItemInfo("symbol2", "111111", 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 3,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("symbol1", "e1", 4),
-                                             new TestTemplateItemInfo("symbol2", "e1", 4),
+                                             new TestTemplateItemInfo("symbol1", "111111", 4),
+                                             new TestTemplateItemInfo("symbol2", "111111", 4),
                                      }, 2)
         }, 2);
 
@@ -1781,8 +1781,8 @@ public:
         SendMessages(snapFond, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_FOND, 2, "symbol1", "ses1", true, true,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e1"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("111111"),
                                      }, 2, 4)
         }, 1);
         if(!snapFond->ListenSnapshot_Core())
@@ -2599,13 +2599,13 @@ public:
         SendMessages(incFond, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("symbol1", "e1", 1),
-                                             new TestTemplateItemInfo("symbol2", "e1", 1),
+                                             new TestTemplateItemInfo("symbol1", "111111", 1),
+                                             new TestTemplateItemInfo("symbol2", "111111", 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_FOND, 3,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("symbol1", "e1", 4),
-                                             new TestTemplateItemInfo("symbol2", "e1", 4),
+                                             new TestTemplateItemInfo("symbol1", "111111", 4),
+                                             new TestTemplateItemInfo("symbol2", "111111", 4),
                                      }, 2)
         }, 2);
 
@@ -2755,13 +2755,10 @@ public:
     }
 
     void TestInfoAndItemInfoUsageAndAllocationFond_Inc_4() {
-        AstsTLSFONDItemInfo *info = this->m_helper->CreateTLSFondItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSFONDItemInfo *info = this->m_helper->CreateTLSFondItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "111111");
         if(info->Allocator->Count() != 1)
             throw;
         info->Used = false;
-        info->ReleaseUnused();
-        if(info->Allocator->Count() != 0)
-            throw;
         info->ReleaseUnused();
         if(info->Allocator->Count() != 0)
             throw;

@@ -13,24 +13,25 @@ typedef enum _FeedChannelState {
 }FeedChannelState;
 
 class AstsFeedChannel {
-    char                        id[16];
-    int                         m_idLogIndex;
-    char                        name[64];
-    int                         m_nameLogIndex;
-    const char                  *m_senderCompId;
-    const char                  *m_password;
-
-    FeedChannelState m_state;
-
-    FeedConnection *msr;
-    FeedConnection *mss;
+    // priority fields
     FeedConnection *olr;
     FeedConnection *ols;
+    FeedConnection *isf;
+    FeedConnection *hr;
+    FeedConnection *msr;
+    FeedConnection *mss;
     FeedConnection *tlr;
     FeedConnection *tls;
     FeedConnection *idf;
-    FeedConnection *isf;
-    FeedConnection *hr;
+
+    const char                  *m_senderCompId;
+    const char                  *m_password;
+    char                        id[16];
+    char                        name[64];
+    int                         m_nameLogIndex;
+    int                         m_idLogIndex;
+    FeedChannelState            m_state;
+    int                         m_paddingBytes;
 
     bool CheckConnections();
 

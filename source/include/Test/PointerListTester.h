@@ -13,10 +13,11 @@
 
 class SimpleData {
 public:
-    int a;
     LinkedPointer<SimpleData>           *Pointer;
     AutoAllocatePointerList<SimpleData> *Allocator;
+    int                                 a;
     bool                                Used;
+    char                                m_paddingBytes[3];
 };
 
 class PointerListTester {
@@ -70,7 +71,7 @@ public:
         LinkedPointer<SimpleData> *ptr = list->m_poolHead;
         int index = 0;
         while(ptr != list->m_poolTail) {
-            ptr->Released(false);
+            //ptr->Released(false);
             ptr = ptr->Next();
             index++;
         }
@@ -86,19 +87,19 @@ public:
         if(list->Count() != 0)
             throw;
         LinkedPointer<SimpleData> *ptr = list->PoolStart();
-        while(ptr != list->PoolEnd()) {
-            if(!ptr->Released())
-                throw;
-            ptr = ptr->Next();
-        }
+        //while(ptr != list->PoolEnd()) {
+        //    if(!ptr->Released())
+        //        throw;
+        //    ptr = ptr->Next();
+        //}
 
         list->Add(new SimpleData());
         if(list->Count() != 1)
             throw;
         if(list->CalcPoolCount() != list->Capacity() - 1)
             throw;
-        if(list->Start()->Released())
-            throw;
+        //if(list->Start()->Released())
+        //    throw;
 
         delete list;
     }
@@ -107,16 +108,20 @@ public:
         PointerList<SimpleData> *list = new PointerList<SimpleData>(10);
         for(int i = 0; i < 10; i++)
             list->Add(new SimpleData());
-        for(int i = 0; i < 10; i++) {
-            if(list->Pointer(i)->Released())
-                throw;
-        }
+        //for(int i = 0; i < 10; i++) {
+        //    if(list->Pointer(i)->Released())
+        //        throw;
+        //}
 
         list->Clear();
-        for(int i = 0; i < 10; i++) {
-            if(!list->PoolPointer(i)->Released())
-                throw;
-        }
+        if(list->Start() != 0)
+            throw;
+        if(list->CalcPoolCount() != 10)
+            throw;
+        //for(int i = 0; i < 10; i++) {
+        //    if(!list->PoolPointer(i)->Released())
+        //        throw;
+        //}
     }
 
     void TestPointerListLiteAddRemove() {
@@ -412,8 +417,8 @@ public:
             throw;
         if(data->Pointer == 0)
             throw;
-        if(data->Pointer->Released())
-            throw;
+        //if(data->Pointer->Released())
+        //    throw;
         if(list->Count() != 1)
             throw;
         if(list->CalcFreeItemsCount() != 9)
@@ -487,8 +492,8 @@ public:
         for(int i = 0; i < 10; i++)
             data[i] = list->NewItem();
         list->FreeItem(data[0]);
-        if(!data[0]->Pointer->Released())
-            throw;
+        //if(!data[0]->Pointer->Released())
+        //    throw;
         if(list->Count() != 9)
             throw;
         if(list->CalcFreeItemsCount() != 3)
@@ -497,9 +502,9 @@ public:
             throw;
         if(list->CalcUsedItemsCount() != list->Capacity() - list->CalcFreeItemsCount())
             throw;
-        list->FreeItem(data[0]);
-        if(list->Count() != 9)
-            throw;
+        //list->FreeItem(data[0]);
+        //if(list->Count() != 9)
+        //    throw;
         if(list->CalcFreeItemsCount() != 3)
             throw;
         if(list->CalcUsedItemsCount() != list->Capacity() - list->CalcFreeItemsCount())

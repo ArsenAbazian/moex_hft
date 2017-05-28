@@ -86,7 +86,6 @@ public:
                                         "msgSeqNo 1 totNumReports 2 idf smb1 session trd1 session trd2, "
                                                 "msgSeqNo 2 totNumReports 2 idf smb2 session trd1 session trd2, "
                                                 "msgSeqNo 1 totNumReports 2 idf smb1 session trd1 session trd2", 30);
-
         if(!this->idf->IsIdfDataCollected())
             throw;
         if(this->idf->m_symbolManager->SymbolCount() != 2)
@@ -507,6 +506,28 @@ public:
         TestIsfPackestClearedLocal(0, 30);
     }
 
+    // check allocation
+    void TestStartSnapshotInstedOfHistoricalReplay_5_1() {
+        this->Clear();
+
+        this->idf->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
+        this->isf->SetMaxLostPacketCountForStartSnapshot(2);
+
+        this->isf->Stop();
+        this->idf->Start();
+
+        this->m_helper->SendMessagesIsf_Idf_Hr(
+                this->isf, this->idf, this->hr,
+                "msgSeqNo 1 totNumReports 3 idf smb1 session trd1, "
+                        "msgSeqNo 2 totNumReports 3 idf smb2 session trd1, "
+                        "msgSeqNo 3 totNumReports 3 idf smb3 session trd1, "
+                        "msgSeqNo 1 totNumReports 3 idf smb1 session trd1 "
+                        ,
+                "",
+                30,
+                true);
+    }
+
     // when security definition should stop?
     // lets try appreach when security definition is process one circle and then stop
     void TestStartSnapshotInstedOfHistoricalReplay_5() {
@@ -647,6 +668,7 @@ public:
                         "     hbeat, ",
                 30,
                 true);
+
         if(this->idf->State() != FeedConnectionState::fcsSuspend)
             throw;
         if(this->isf->State() != FeedConnectionState::fcsListenSecurityStatus)
@@ -957,6 +979,8 @@ public:
         printf("ISF TestStartSnapshotInstedOfHistoricalReplay_4\n");
         TestStartSnapshotInstedOfHistoricalReplay_4();
         printf("ISF TestStartSnapshotInstedOfHistoricalReplay_5\n");
+        TestStartSnapshotInstedOfHistoricalReplay_5_1();
+        printf("ISF TestStartSnapshotInstedOfHistoricalReplay_5\n");
         TestStartSnapshotInstedOfHistoricalReplay_5();
         printf("ISF TestStartSnapshotInstedOfHistoricalReplay_6\n");
         TestStartSnapshotInstedOfHistoricalReplay_6();
@@ -1185,10 +1209,15 @@ public:
     void Test() {
         printf("ISF TestDefaults\n");
         TestDefaults();
-        printf("ISF TestReceiveExistingSymbol\n");
-        TestReceiveExistingSymbol();
+
         printf("ISF TestCallHistoricalReplayWhenLostMessage\n");
         TestCallHistoricalReplayWhenLostMessage();
+
+        printf("ISF TestReceiveExistingSymbol\n");
+        TestReceiveExistingSymbol();
+
+
+
         printf("ISF TestRequestLostMessagesLogic\n");
         TestRequestLostMessagesLogic();
         printf("ISF TestStartSnapshotInstedOfHistoricalReplay\n");

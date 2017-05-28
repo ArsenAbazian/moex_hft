@@ -10,21 +10,18 @@
 template <typename T> class HrPointerList;
 
 template <typename T> class HrLinkedPointer {
-    HrPointerList<T>  *m_owner;
-    HrLinkedPointer   *m_next;
-    HrLinkedPointer   *m_prev;
-    HrLinkedPointer   *m_next2;
-    HrLinkedPointer   *m_prev2;
-    HrLinkedPointer   *m_next3;
-    HrLinkedPointer   *m_prev3;
-    HrLinkedPointer   *m_next4;
-    HrLinkedPointer   *m_prev4;
-    HrLinkedPointer   *m_next5;
-    HrLinkedPointer   *m_prev5;
-
-    T               *m_data;
-    bool             m_released;
-
+    HrPointerList<T>    *m_owner;
+    HrLinkedPointer     *m_next;
+    HrLinkedPointer     *m_prev;
+    HrLinkedPointer     *m_next2;
+    HrLinkedPointer     *m_prev2;
+    HrLinkedPointer     *m_next3;
+    HrLinkedPointer     *m_prev3;
+    HrLinkedPointer     *m_next4;
+    HrLinkedPointer     *m_prev4;
+    HrLinkedPointer     *m_next5;
+    HrLinkedPointer     *m_prev5;
+    T                   *m_data;
 public:
     HrLinkedPointer() :
             m_owner(0),
@@ -33,8 +30,7 @@ public:
             m_next3(0), m_prev3(0),
             m_next4(0), m_prev4(0),
             m_next5(0), m_prev5(0),
-            m_data(0),
-            m_released(true) {
+            m_data(0) {
     }
 
     inline bool HasNext() { return this->m_next != 0; }
@@ -136,12 +132,16 @@ public:
     inline void Data(T *data) { this->m_data = data; }
     inline HrPointerList<T>* Owner() { return this->m_owner; }
     inline void Owner(HrPointerList<T> *owner) { this->m_owner = owner; }
-    inline bool Released() { return this->m_released; }
-    inline void Released(bool released) {
-        this->m_released = released;
-
-        if(!released)
-            return;
+    inline void Release() {
+        this->m_next2 = 0;
+        this->m_prev2 = 0;
+        this->m_next3 = 0;
+        this->m_prev3 = 0;
+        this->m_next4 = 0;
+        this->m_prev4 = 0;
+        this->m_next5 = 0;
+        this->m_prev5 = 0;
+        /*
         if(this->m_next2 != 0) {
             this->m_next2 = 0;
             if(this->m_next3 != 0) {
@@ -163,6 +163,7 @@ public:
                 }
             }
         }
+        */
     }
 };
 
@@ -173,16 +174,18 @@ class HrPointerListTester;
 template <typename T> class HrPointerList {
     friend  class HrPointerListLite<T>;
     friend  class PointerListTester;
-    int             m_capacity;
 
-    HrLinkedPointer<T> *m_poolHead;
-    HrLinkedPointer<T> *m_poolTail;
+    HrLinkedPointer<T>  *m_poolHead;
+    HrLinkedPointer<T>  *m_poolTail;
 
-    HrLinkedPointer<T> *m_head;
-    HrLinkedPointer<T> *m_tail;
-    int              m_count;
-    bool             m_autoAllocate;
-    const char      *m_name;
+    HrLinkedPointer<T>  *m_head;
+    HrLinkedPointer<T>  *m_tail;
+
+    const char          *m_name;
+    int                 m_count;
+    int                 m_capacity;
+    bool                m_autoAllocate;
+    char                m_paddingBytes[7];
 
 public:
     HrPointerList(int capacity, bool autoAllocate) :
@@ -229,7 +232,6 @@ public:
         HrLinkedPointer<T> *node = this->m_poolHead;
         this->m_poolHead = this->m_poolHead->Next();
         this->m_count++;
-        node->Released(false);
         return node;
     }
     inline HrLinkedPointer<T>* Pop() {
@@ -239,17 +241,18 @@ public:
         HrLinkedPointer<T> *node = this->m_poolHead;
         this->m_poolHead = this->m_poolHead->Next();
         this->m_count++;
-        node->Released(false);
         return node;
     }
 
     inline void Push(HrLinkedPointer<T> *node) {
-        if(node->Released())
-            return;
-        node->Released(true);
+        node->Release();
         this->m_poolTail->Next(node);
         this->m_poolTail = node;
         this->m_count--;
+#ifdef TEST
+        if(this->m_count < 0)
+            throw;
+#endif
     }
 
     inline void FreeData() {
@@ -457,12 +460,6 @@ public:
         HrLinkedPointer<T> *st = this->Start();
         HrLinkedPointer<T> *end = this->End();
         HrLinkedPointer<T> *node = st;
-        while(true) {
-            node->Released(true);
-            if(node == end)
-                break;
-            node = node->Next();
-        }
         this->m_poolTail->Next(st);
         this->m_poolTail = end;
         this->m_tail = this->m_head;
@@ -504,6 +501,7 @@ template <typename T> class HrPointerListLite {
     HrLinkedPointer<T>     *m_head;
     HrLinkedPointer<T>     *m_tail;
     int                     m_count;
+    int                     m_paddingBytes;
 public:
     HrPointerListLite(HrPointerList<T> *globalPool) {
         this->m_pool = globalPool;
@@ -511,6 +509,7 @@ public:
         this->m_tail->Next(0);
         this->m_head->Prev(0);
         this->m_count = 0;
+        this->m_paddingBytes = 0;
     }
     ~HrPointerListLite() {
         Clear();
@@ -826,6 +825,10 @@ public:
         }
         this->m_count--;
         this->m_pool->Push(node);
+#ifdef TEST
+        if(this->m_count < 0)
+            throw;
+#endif
     }
     inline T* Item(int index) {
         HrLinkedPointer<T> *node = this->Start();

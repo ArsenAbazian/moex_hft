@@ -28,20 +28,21 @@ typedef struct _FixTag {
 }FixTag;
 
 class FixProtocolMessage {
-    const int                   m_tagsMaxCount = 256;
+    static const int            m_tagsMaxCount = 256;
 
     FixHeaderInfo               *m_headerInfo;
     FixResendRequestInfo        *m_resendRequestInfo;
     FixMarketDataRequestInfo    *m_marketDataRequestInfo;
-    int                         m_size;
     char*                       m_buffer;
+    int                         m_size;
     int                         m_tagsCount;
     FixTag*                     m_tags[256];
     ItoaConverter               *m_intConv;
     UTCTimeConverter            *m_timeConv;
     DtoaConverter               *m_doubleConv;
-    int                         m_currentTag;
     FixRejectInfo               *m_rejectInfo;
+    int                         m_currentTag;
+    int                         m_paddingBytes;
 
 public:
     FixProtocolMessage(ItoaConverter *intConv, UTCTimeConverter *timeConv, DtoaConverter *doubleConv, FixRejectInfo *rejectInfo) {
@@ -56,6 +57,7 @@ public:
         this->m_timeConv = timeConv;
         this->m_doubleConv = doubleConv;
         this->m_rejectInfo = rejectInfo;
+        this->m_paddingBytes = 0;
         for(int i = 0; i < this->m_tagsMaxCount; i++)
             this->m_tags[i] = new FixTag();
     }

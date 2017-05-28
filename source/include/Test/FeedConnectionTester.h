@@ -87,6 +87,8 @@ public:
         RobotSettings::Default->DefaultFeedConnectionRecvBufferSize = 2 * 1024 * 1024;
         RobotSettings::Default->DefaultFeedConnectionRecvItemsCount = 500;
 
+        Stopwatch::Default->ElapsedNanosecondsSlow();
+
         this->m_helper = new TestMessagesHelper();
         this->m_helper->SetCurrMode();
         this->inc = new FeedConnection_CURR_OLR("OLR", "Refresh Incremental", 'I',
@@ -904,25 +906,41 @@ public:
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
 
         //TestStopwatchPerformance();
+        PointerListTester *pt = new PointerListTester();
+        pt->Test();
+        delete pt;
+
+        SymbolManagerTester *ht = new SymbolManagerTester();
+        ht->Test();
+        delete ht;
+
+        TradeTesterCurr *ttCurr = new TradeTesterCurr();
+        ttCurr->Test();
+        delete ttCurr;
+
+        TradeTesterFond *ttFond = new TradeTesterFond();
+        ttFond->Test();
+        delete ttFond;
+
+        OrderBookTesterForts *fob = new OrderBookTesterForts();
+        fob->Test();
+        delete fob;
+
+        SecurityDefinitionTester *ids = new SecurityDefinitionTester();
+        ids->Test();
+        delete ids;
 
         SecurityStatusTester *ist = new SecurityStatusTester();
         ist->Test();
         delete ist;
 
-        PointerListTester *pt = new PointerListTester();
-        pt->Test();
-        delete pt;
-
         OrderTesterCurr *otCurr = new OrderTesterCurr();
         otCurr->Test();
         delete otCurr;
+
         OrderTesterFond *otFond = new OrderTesterFond();
         otFond->Test();
         delete otFond;
-
-        SymbolManagerTester *ht = new SymbolManagerTester();
-        ht->Test();
-        delete ht;
 
         HashTableTester *htt = new HashTableTester();
         htt->Test();
@@ -931,21 +949,6 @@ public:
         HistoricalReplayTester *hrt = new HistoricalReplayTester();
         hrt->Test();
         delete hrt;
-
-        SecurityDefinitionTester *ids = new SecurityDefinitionTester();
-        ids->Test();
-        delete ids;
-
-        OrderBookTesterForts *fob = new OrderBookTesterForts();
-        fob->Test();
-        delete fob;
-
-        TradeTesterCurr *ttCurr = new TradeTesterCurr();
-        ttCurr->Test();
-        delete ttCurr;
-        TradeTesterFond *ttFond = new TradeTesterFond();
-        ttFond->Test();
-        delete ttFond;
 
         TestFeedConnectionBase();
 

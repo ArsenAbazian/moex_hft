@@ -18,6 +18,7 @@ class OrderBookTesterForts;
 class StatisticsTesterFond;
 class StatisticsTesterCurr;
 class FeedConnection;
+class TestMessagesHelper;
 
 #pragma region Checking_Presence_GeneratedCode
 #define CheckMandatoryFieldPresence(map, field) ((map & field) != 0)
@@ -37,16 +38,17 @@ class FastProtocolManager {
     friend class StatisticsTesterFond;
     friend class StatisticsTesterCurr;
     friend class FeedConnection;
+	friend class TestMessagesHelper;
 
-    const int maxBufferLength = 16000;
-    BYTE                        *buffer;
-    BYTE                        *currentPos;
+    static const int maxBufferLength = 16000;
+	BYTE                        *currentPos;
+	UINT64                      m_presenceMap;
+	BYTE                        *buffer;
+
+	UINT                        m_templateId;
     int                         bufferLength;
-    UINT                        m_templateId;
-    UINT64                      m_presenceMap;
 
-    FILE                        *m_xmlFilePtr;
-
+	FILE                        *m_xmlFilePtr;
     void                        *m_lastDecodedInfo;
 
 #pragma region Asts_Declare_AllocationInfo_GeneratedCode
@@ -60,8 +62,8 @@ class FastProtocolManager {
 
 #pragma region String_Constant_Declaration_GeneratedCode
 public:
-	char	MessageEncodingConstString[6];
-	const UINT	MessageEncodingConstStringLength = 5;
+	char	MessageEncodingConstString[8];
+	static const UINT	MessageEncodingConstStringLength = 5;
 private:
 
 	void InitializeConstantStrings() {
@@ -2547,6 +2549,14 @@ public:
         this->currentPos += length;
     }
 
+	inline void CopyString_Fixed1(char *dst, char *src) {
+		(*dst) = (*src);
+	}
+
+	inline void CopyString_Fixed4(char *dst, char *src) {
+		*((UINT32*)dst) = *((UINT32*)src);
+	}
+
     inline void CopyString(char *dst, char *src, int count) {
 		while(count >= 8) {
             *((UINT64*)dst) = *((UINT64*)src);
@@ -3057,8 +3067,6 @@ public:
 	inline AstsSnapshotInfo* GetAstsSnapshotInfoUnsupported() { return 0; }
 	inline AstsLogonInfo* DecodeAstsLogon() {
 		AstsLogonInfo* info = GetFreeAstsLogonInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		ReadString_Mandatory(info->TargetCompID, &(info->TargetCompIDLength));
@@ -3076,8 +3084,6 @@ public:
 	}
 	inline AstsLogoutInfo* DecodeAstsLogout() {
 		AstsLogoutInfo* info = GetFreeAstsLogoutInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		ReadString_Mandatory(info->TargetCompID, &(info->TargetCompIDLength));
@@ -3091,8 +3097,6 @@ public:
 	}
 	inline AstsGenericInfo* DecodeAstsGeneric() {
 		AstsGenericInfo* info = GetFreeAstsGenericInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -3216,8 +3220,6 @@ public:
 	}
 	inline AstsIncrementalGenericInfo* DecodeAstsIncrementalGeneric() {
 		AstsIncrementalGenericInfo* info = GetFreeAstsIncrementalGenericInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -3333,8 +3335,6 @@ public:
 	}
 	inline AstsOLSFONDInfo* DecodeAstsOLSFOND() {
 		AstsOLSFONDInfo* info = GetFreeAstsOLSFONDInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -3371,8 +3371,7 @@ public:
 					nmap2 |= NULL_MAP_INDEX0;
 			}
 			else {
-				this->CopyString(gmdeItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryTypeLength);
-				gmdeItemInfo->MDEntryTypeLength = this->m_prevastsOLSFONDItemInfo->MDEntryTypeLength;
+				this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryType);
 			}
 			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX1;
@@ -3423,8 +3422,7 @@ public:
 					nmap2 |= NULL_MAP_INDEX8;
 			}
 			else {
-				this->CopyString(gmdeItemInfo->OrderStatus, m_prevastsOLSFONDItemInfo->OrderStatus, m_prevastsOLSFONDItemInfo->OrderStatusLength);
-				gmdeItemInfo->OrderStatusLength = this->m_prevastsOLSFONDItemInfo->OrderStatusLength;
+				this->CopyString_Fixed1(gmdeItemInfo->OrderStatus, m_prevastsOLSFONDItemInfo->OrderStatus);
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX8)) {
 				if(!ReadString_Optional(gmdeItemInfo->OrdType, &(gmdeItemInfo->OrdTypeLength)))
@@ -3460,8 +3458,6 @@ public:
 	}
 	inline AstsOLSCURRInfo* DecodeAstsOLSCURR() {
 		AstsOLSCURRInfo* info = GetFreeAstsOLSCURRInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -3496,8 +3492,7 @@ public:
 					nmap2 |= NULL_MAP_INDEX0;
 			}
 			else {
-				this->CopyString(gmdeItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryTypeLength);
-				gmdeItemInfo->MDEntryTypeLength = this->m_prevastsOLSCURRItemInfo->MDEntryTypeLength;
+				this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryType);
 			}
 			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX1;
@@ -3541,8 +3536,7 @@ public:
 					nmap2 |= NULL_MAP_INDEX7;
 			}
 			else {
-				this->CopyString(gmdeItemInfo->OrderStatus, m_prevastsOLSCURRItemInfo->OrderStatus, m_prevastsOLSCURRItemInfo->OrderStatusLength);
-				gmdeItemInfo->OrderStatusLength = this->m_prevastsOLSCURRItemInfo->OrderStatusLength;
+				this->CopyString_Fixed1(gmdeItemInfo->OrderStatus, m_prevastsOLSCURRItemInfo->OrderStatus);
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX7)) {
 				if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
@@ -3563,8 +3557,6 @@ public:
 	}
 	inline AstsTLSFONDInfo* DecodeAstsTLSFOND() {
 		AstsTLSFONDInfo* info = GetFreeAstsTLSFONDInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -3740,8 +3732,6 @@ public:
 	}
 	inline AstsTLSCURRInfo* DecodeAstsTLSCURR() {
 		AstsTLSCURRInfo* info = GetFreeAstsTLSCURRInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -3901,8 +3891,6 @@ public:
 	}
 	inline AstsIncrementalMSRFONDInfo* DecodeAstsIncrementalMSRFOND() {
 		AstsIncrementalMSRFONDInfo* info = GetFreeAstsIncrementalMSRFONDInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -3996,8 +3984,6 @@ public:
 	}
 	inline AstsIncrementalMSRCURRInfo* DecodeAstsIncrementalMSRCURR() {
 		AstsIncrementalMSRCURRInfo* info = GetFreeAstsIncrementalMSRCURRInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -4081,8 +4067,6 @@ public:
 	}
 	inline AstsIncrementalOLRFONDInfo* DecodeAstsIncrementalOLRFOND() {
 		AstsIncrementalOLRFONDInfo* info = GetFreeAstsIncrementalOLRFONDInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -4105,8 +4089,7 @@ public:
 					nmap2 |= NULL_MAP_INDEX1;
 			}
 			else {
-				this->CopyString(gmdeItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryTypeLength);
-				gmdeItemInfo->MDEntryTypeLength = this->m_prevastsOLSFONDItemInfo->MDEntryTypeLength;
+				this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryType);
 			}
 			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX2;
@@ -4167,8 +4150,7 @@ public:
 					nmap2 |= NULL_MAP_INDEX11;
 			}
 			else {
-				this->CopyString(gmdeItemInfo->OrderStatus, m_prevastsOLSFONDItemInfo->OrderStatus, m_prevastsOLSFONDItemInfo->OrderStatusLength);
-				gmdeItemInfo->OrderStatusLength = this->m_prevastsOLSFONDItemInfo->OrderStatusLength;
+				this->CopyString_Fixed1(gmdeItemInfo->OrderStatus, m_prevastsOLSFONDItemInfo->OrderStatus);
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX9)) {
 				if(!ReadString_Optional(gmdeItemInfo->OrdType, &(gmdeItemInfo->OrdTypeLength)))
@@ -4211,8 +4193,6 @@ public:
 	}
 	inline AstsIncrementalOLRCURRInfo* DecodeAstsIncrementalOLRCURR() {
 		AstsIncrementalOLRCURRInfo* info = GetFreeAstsIncrementalOLRCURRInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -4240,8 +4220,7 @@ public:
 					nmap2 |= NULL_MAP_INDEX1;
 			}
 			else {
-				this->CopyString(gmdeItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryTypeLength);
-				gmdeItemInfo->MDEntryTypeLength = this->m_prevastsOLSCURRItemInfo->MDEntryTypeLength;
+				this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryType);
 			}
 			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX2;
@@ -4295,8 +4274,7 @@ public:
 					nmap2 |= NULL_MAP_INDEX10;
 			}
 			else {
-				this->CopyString(gmdeItemInfo->OrderStatus, m_prevastsOLSCURRItemInfo->OrderStatus, m_prevastsOLSCURRItemInfo->OrderStatusLength);
-				gmdeItemInfo->OrderStatusLength = this->m_prevastsOLSCURRItemInfo->OrderStatusLength;
+				this->CopyString_Fixed1(gmdeItemInfo->OrderStatus, m_prevastsOLSCURRItemInfo->OrderStatus);
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX9)) {
 				if(!ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID))
@@ -4324,8 +4302,6 @@ public:
 	}
 	inline AstsIncrementalTLRFONDInfo* DecodeAstsIncrementalTLRFOND() {
 		AstsIncrementalTLRFONDInfo* info = GetFreeAstsIncrementalTLRFONDInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -4396,8 +4372,6 @@ public:
 	}
 	inline AstsIncrementalTLRCURRInfo* DecodeAstsIncrementalTLRCURR() {
 		AstsIncrementalTLRCURRInfo* info = GetFreeAstsIncrementalTLRCURRInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -4464,8 +4438,6 @@ public:
 	}
 	inline AstsSecurityDefinitionInfo* DecodeAstsSecurityDefinition() {
 		AstsSecurityDefinitionInfo* info = GetFreeAstsSecurityDefinitionInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -4632,8 +4604,6 @@ public:
 	}
 	inline AstsSecurityStatusInfo* DecodeAstsSecurityStatus() {
 		AstsSecurityStatusInfo* info = GetFreeAstsSecurityStatusInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -4653,8 +4623,6 @@ public:
 	}
 	inline AstsTradingSessionStatusInfo* DecodeAstsTradingSessionStatus() {
 		AstsTradingSessionStatusInfo* info = GetFreeAstsTradingSessionStatusInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -4669,8 +4637,6 @@ public:
 	}
 	inline AstsHeartbeatInfo* DecodeAstsHeartbeat() {
 		AstsHeartbeatInfo* info = GetFreeAstsHeartbeatInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -5168,8 +5134,6 @@ public:
 	inline FortsSnapshotInfo* GetFortsSnapshotInfoUnsupported() { return 0; }
 	inline FortsDefaultIncrementalRefreshMessageInfo* DecodeFortsDefaultIncrementalRefreshMessage() {
 		FortsDefaultIncrementalRefreshMessageInfo* info = GetFreeFortsDefaultIncrementalRefreshMessageInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -5243,8 +5207,6 @@ public:
 	}
 	inline FortsDefaultSnapshotMessageInfo* DecodeFortsDefaultSnapshotMessage() {
 		FortsDefaultSnapshotMessageInfo* info = GetFreeFortsDefaultSnapshotMessageInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -5313,8 +5275,6 @@ public:
 	}
 	inline FortsSecurityDefinitionInfo* DecodeFortsSecurityDefinition() {
 		FortsSecurityDefinitionInfo* info = GetFreeFortsSecurityDefinitionInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -5478,8 +5438,6 @@ public:
 	}
 	inline FortsSecurityDefinitionUpdateReportInfo* DecodeFortsSecurityDefinitionUpdateReport() {
 		FortsSecurityDefinitionUpdateReportInfo* info = GetFreeFortsSecurityDefinitionUpdateReportInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -5497,8 +5455,6 @@ public:
 	}
 	inline FortsSecurityStatusInfo* DecodeFortsSecurityStatus() {
 		FortsSecurityStatusInfo* info = GetFreeFortsSecurityStatusInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -5523,8 +5479,6 @@ public:
 	}
 	inline FortsHeartbeatInfo* DecodeFortsHeartbeat() {
 		FortsHeartbeatInfo* info = GetFreeFortsHeartbeatInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -5535,8 +5489,6 @@ public:
 	}
 	inline FortsSequenceResetInfo* DecodeFortsSequenceReset() {
 		FortsSequenceResetInfo* info = GetFreeFortsSequenceResetInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -5548,8 +5500,6 @@ public:
 	}
 	inline FortsTradingSessionStatusInfo* DecodeFortsTradingSessionStatus() {
 		FortsTradingSessionStatusInfo* info = GetFreeFortsTradingSessionStatusInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -5577,8 +5527,6 @@ public:
 	}
 	inline FortsNewsInfo* DecodeFortsNews() {
 		FortsNewsInfo* info = GetFreeFortsNewsInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -5618,8 +5566,6 @@ public:
 	}
 	inline FortsOrdersLogInfo* DecodeFortsOrdersLog() {
 		FortsOrdersLogInfo* info = GetFreeFortsOrdersLogInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -5685,8 +5631,6 @@ public:
 	}
 	inline FortsOrdersBookInfo* DecodeFortsOrdersBook() {
 		FortsOrdersBookInfo* info = GetFreeFortsOrdersBookInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -5742,8 +5686,6 @@ public:
 	}
 	inline FortsLogonInfo* DecodeFortsLogon() {
 		FortsLogonInfo* info = GetFreeFortsLogonInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum
@@ -5754,8 +5696,6 @@ public:
 	}
 	inline FortsLogoutInfo* DecodeFortsLogout() {
 		FortsLogoutInfo* info = GetFreeFortsLogoutInfo();
-		info->PresenceMap = this->m_presenceMap;
-		UINT64 pmap1 = info->PresenceMap;
 		UINT64 nmap1 = 0;
 
 		SkipToNextField(); // MsgSeqNum

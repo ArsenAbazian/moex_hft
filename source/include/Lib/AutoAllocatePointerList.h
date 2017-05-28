@@ -8,14 +8,16 @@
 #include "PointerList.h"
 
 template<typename T> class AutoAllocatePointerList {
-    int                 m_addCapacity;
-    int                 m_count;
-    int                 m_capacity;
     LinkedPointer<T>    *m_head;
     LinkedPointer<T>    *m_tail;
     LinkedPointer<T>    *m_usedHead;
     LinkedPointer<T>    *m_usedTail;
     const char          *m_name;
+
+    int                 m_addCapacity;
+    int                 m_count;
+    int                 m_capacity;
+    int                 m_dummy;
 
     inline LinkedPointer<T>* CreatePointer() {
         LinkedPointer<T> *node = new LinkedPointer<T>();
@@ -53,6 +55,7 @@ public:
         this->m_head = CreatePointer();
         this->m_tail = CreatePointers(this->m_head, capacity);
         this->m_name = "";
+        this->m_dummy = 0;
 
         this->m_usedHead = new LinkedPointer<T>();
         this->m_usedTail = new LinkedPointer<T>();
@@ -82,7 +85,7 @@ public:
         this->m_count++;
         LinkedPointer<T> *node = this->m_head;
         this->m_head = this->m_head->Next();
-        node->Released(false);
+        this->AddUsed(node);
         if(this->m_head == 0)
             this->AppendAdditionalItemsToList();
         return node;
@@ -91,7 +94,6 @@ public:
         this->m_count++;
         LinkedPointer<T> *node = this->m_head;
         this->m_head = this->m_head->Next();
-        node->Released(false);
         this->AddUsed(node);
         if(this->m_head == 0)
             this->AppendAdditionalItemsToList();
@@ -103,24 +105,46 @@ public:
     inline T* NewItemUnsafe() {
         return this->NewPointerUnsafe()->Data();
     }
-    inline void FreeItemUnsafe(LinkedPointer<T> *node) {
-        if(node->Released())
-            return;
-        node->Released(true);
-        this->m_count--;
-        this->m_tail->Next(node);
-        this->m_tail = node;
-        this->m_tail->Next(0);
+
+    bool Contains(LinkedPointer<T> *node) {
+        LinkedPointer<T> *start = this->Start();
+        while(start != 0) {
+            if(start == node)
+                return true;
+            start = start->Next();
+        }
+        return false;
     }
-    inline void FreeItem(LinkedPointer<T> *node) {
-        if(node->Data()->Used || node->Released())
-            return;
-        node->Released(true);
+
+    inline void FreeItemUnsafe(LinkedPointer<T> *node) {
+#ifdef  TEST
+        if(this->Contains(node))
+            throw;
+#endif
         this->m_count--;
         this->m_tail->Next(node);
         this->m_tail = node;
         this->RemoveUsed(node);
         this->m_tail->Next(0);
+#ifdef TEST
+        if(this->m_count < 0)
+            throw;
+#endif
+    }
+    inline void FreeItem(LinkedPointer<T> *node) {
+#ifdef  TEST
+        if(this->Contains(node))
+            throw;
+#endif
+        this->m_count--;
+        this->m_tail->Next(node);
+        this->m_tail = node;
+        this->RemoveUsed(node);
+        this->m_tail->Next(0);
+#ifdef TEST
+        if(this->m_count < 0)
+            throw;
+#endif
     }
     inline void FreeItem(T *data) {
         FreeItem(data->Pointer);
@@ -157,6 +181,22 @@ public:
             node = node->Next();
         }
         return count;
+    }
+    LinkedPointer<T> *UsedPointer(int index) {
+        LinkedPointer<T> *node = this->UsedStart();
+        int count = index;
+        while((--count) >= 0) {
+            node = node->Next();
+        }
+        return node;
+    }
+    LinkedPointer<T> *Pointer(int index) {
+        LinkedPointer<T> *node = this->Start();
+        int count = index;
+        while((--count) >= 0) {
+            node = node->Next();
+        }
+        return node;
     }
 };
 

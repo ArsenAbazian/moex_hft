@@ -208,18 +208,18 @@ typedef enum _SecurityStatus {
 #pragma region Asts_Message_Info_Structures_Definition_GeneratedCode
 class AstsSnapshotInfo {
 public:
-	UINT64				PresenceMap;
-	UINT64				NullMap;
-	int				TemplateId;
-	INT32				RptSeq;
-	UINT32				LastFragment;
-	UINT32				RouteFirst;
-	UINT32				LastMsgSeqNumProcessed;
-	UINT64				SendingTime;
-	char				Symbol[16] __attribute__((aligned(16)));
-	int					SymbolLength;
-	char				TradingSessionID[16] __attribute__((aligned(16)));
-	int					TradingSessionIDLength;
+	UINT64							PresenceMap;
+	UINT64							NullMap;
+	UINT32							TemplateId;
+	INT32							RptSeq; // offset = 20
+	UINT32							LastFragment; // offset = 24
+	UINT32							RouteFirst; // offset = 28
+	UINT32							LastMsgSeqNumProcessed; // offset = 32
+	char							PaddingBytes0[12];
+	char							Symbol[16] __attribute__((aligned(16))); // offset = 48
+	int								SymbolLength; // offset = 64
+	char							TradingSessionID[4]; // offset = 68
+	char							PaddingBytes1[8];
 	AstsSnapshotInfo() {
 		memset(this, 0, sizeof(AstsSnapshotInfo));
 	}
@@ -254,28 +254,30 @@ class AstsIncrementalTLRCURRInfo;
 
 class AstsLogonInfo{
 public:
+	int								TargetCompIDLength;			// id=56   offset = 0 order =  0
+	char							TargetCompID[32];			// id=56   offset = 4 order =  0
+	INT32							HeartBtInt;			// id=108   offset = 36 order =  0
+	int								UsernameLength;			// id=553  presence=optional   offset = 40 order =  0
+	char							Username[16];			// id=553  presence=optional   offset = 44 order =  0
+	int								PasswordLength;			// id=554  presence=optional   offset = 60 order =  0
+	char							Password[16];			// id=554  presence=optional   offset = 64 order =  0
+	int								DefaultApplVerIDLength;			// id=1137   offset = 80 order =  0
+	char							DefaultApplVerID[16];			// id=1137   offset = 84 order =  0
+	int								MessageTypeLength;			// id=35    constant has constant value = A offset = 100 order =  999
+	char							MessageType[16];			// id=35    constant has constant value = A offset = 104 order =  999
+	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1 offset = 120 order =  999
+	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1 offset = 124 order =  999
+	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX offset = 140 order =  999
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX offset = 144 order =  999
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 176 order =  999
+	char							PaddingBytes0[4];
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 184 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsLogonInfo>							*Pointer;
 	AutoAllocatePointerList<AstsLogonInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = A
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	char							TargetCompID[32];			// id=56  
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	INT32							HeartBtInt;			// id=108  
-	char							Username[16];			// id=553  presence=optional  
-	char							Password[16];			// id=554  presence=optional  
-	char							DefaultApplVerID[16];			// id=1137  
-	int								MessageTypeLength;			// id=35    constant has constant value = A
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								TargetCompIDLength;			// id=56  
-	int								UsernameLength;			// id=553  presence=optional  
-	int								PasswordLength;			// id=554  presence=optional  
-	int								DefaultApplVerIDLength;			// id=1137  
+	char							PaddingBytes1[15];
 
 	AstsLogonInfo() {
 		memset(this, 0, sizeof(AstsLogonInfo));
@@ -291,27 +293,25 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class AstsLogoutInfo{
 public:
+	int								TargetCompIDLength;			// id=56   offset = 0 order =  0
+	char							TargetCompID[32];			// id=56   offset = 4 order =  0
+	int								TextLength;			// id=58  presence=optional   offset = 36 order =  0
+	char							Text[512];			// id=58  presence=optional   offset = 40 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 552 order =  999
+	char							PaddingBytes0[4];
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 560 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsLogoutInfo>							*Pointer;
 	AutoAllocatePointerList<AstsLogoutInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = 5
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	char							TargetCompID[32];			// id=56  
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	char							Text[512];			// id=58  presence=optional  
-	int								MessageTypeLength;			// id=35    constant has constant value = 5
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								TargetCompIDLength;			// id=56  
-	int								TextLength;			// id=58  presence=optional  
+	char							PaddingBytes1[7];
 
 	AstsLogoutInfo() {
 		memset(this, 0, sizeof(AstsLogoutInfo));
@@ -327,77 +327,81 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class AstsGenericItemInfo{
 public:
+	char							MDEntryType[4];			// id=269  presence=optional  fixed_size=1   offset = 0 order =  0
+	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other   offset = 4 order =  0
+	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other   offset = 8 order =  0
+	UINT32							MDEntryDate;			// id=272  presence=optional   offset = 24 order =  0
+	UINT32							MDEntryTime;			// id=273  presence=optional   offset = 28 order =  0
+	UINT32							OrigTime;			// id=9412  presence=optional   offset = 32 order =  0
+	char							PaddingBytes0[4];
+	Decimal							MDEntryPx;			// id=270  presence=optional   offset = 40 order =  0
+	Decimal							MDEntrySize;			// id=271  presence=optional   offset = 56 order =  0
+	int								QuoteConditionLength;			// id=276  presence=optional   offset = 72 order =  0
+	char							QuoteCondition[16];			// id=276  presence=optional   offset = 76 order =  0
+	int								TradeConditionLength;			// id=277  presence=optional   offset = 92 order =  0
+	char							TradeCondition[16];			// id=277  presence=optional   offset = 96 order =  0
+	int								OpenCloseSettlFlagLength;			// id=286  presence=optional   offset = 112 order =  0
+	char							OpenCloseSettlFlag[4];			// id=286  presence=optional   offset = 116 order =  0
+	int								OrdTypeLength;			// id=40  presence=optional   offset = 120 order =  0
+	char							OrdType[4];			// id=40  presence=optional   offset = 124 order =  0
+	UINT32							EffectiveTime;			// id=5902  presence=optional   offset = 128 order =  0
+	UINT32							StartTime;			// id=9820  presence=optional   offset = 132 order =  0
+	Decimal							AccruedInterestAmt;			// id=5384  presence=optional   offset = 136 order =  0
+	Decimal							ChgFromWAPrice;			// id=5510  presence=optional   offset = 152 order =  0
+	Decimal							ChgOpenInterest;			// id=5511  presence=optional   offset = 168 order =  0
+	Decimal							BidMarketSize;			// id=5292  presence=optional   offset = 184 order =  0
+	Decimal							AskMarketSize;			// id=5293  presence=optional   offset = 200 order =  0
+	INT32							TotalNumOfTrades;			// id=6139  presence=optional   offset = 216 order =  0
+	char							PaddingBytes1[4];
+	Decimal							TradeValue;			// id=6143  presence=optional   offset = 224 order =  0
+	Decimal							Yield;			// id=236  presence=optional   offset = 240 order =  0
+	Decimal							TotalVolume;			// id=5791  presence=optional   offset = 256 order =  0
+	INT32							OfferNbOr;			// id=9168  presence=optional   offset = 272 order =  0
+	INT32							BidNbOr;			// id=9169  presence=optional   offset = 276 order =  0
+	Decimal							ChgFromSettlmnt;			// id=9750  presence=optional   offset = 280 order =  0
+	UINT32							SettlDate;			// id=64  presence=optional   offset = 296 order =  0
+	int								SettleTypeLength;			// id=5459  presence=optional   offset = 300 order =  0
+	char							SettleType[16];			// id=5459  presence=optional   offset = 304 order =  0
+	INT32							SumQtyOfBest;			// id=10503  presence=optional   offset = 320 order =  0
+	int								OrderSideLength;			// id=10504  presence=optional   offset = 324 order =  0
+	char							OrderSide[4];			// id=10504  presence=optional   offset = 328 order =  0
+	char							OrderStatus[4];			// id=10505  presence=optional  fixed_size=1   offset = 332 order =  0
+	Decimal							MinCurrPx;			// id=10509  presence=optional   offset = 336 order =  0
+	UINT32							MinCurrPxChgTime;			// id=10510  presence=optional   offset = 352 order =  0
+	UINT32							VolumeIndicator;			// id=7017  presence=optional   offset = 356 order =  0
+	Decimal							Price;			// id=44  presence=optional   offset = 360 order =  0
+	INT32							PriceType;			// id=423  presence=optional   offset = 376 order =  0
+	char							PaddingBytes2[4];
+	Decimal							NominalValue;			// id=9280  presence=optional   offset = 384 order =  0
+	Decimal							RepoToPx;			// id=5677  presence=optional   offset = 400 order =  0
+	Decimal							BuyBackPx;			// id=5558  presence=optional   offset = 416 order =  0
+	UINT32							BuyBackDate;			// id=5559  presence=optional   offset = 432 order =  0
+	int								CXFlagLength;			// id=5154  presence=optional   offset = 436 order =  0
+	char							CXFlag[4];			// id=5154  presence=optional   offset = 440 order =  0
+	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12   offset = 444 order =  0
+	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12   offset = 448 order =  0
+	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1   offset = 452 order =  0
+	INT32							RptSeq;			// id=83  presence=optional   offset = 456 order =  0
+	int								SymbolLength;			// id=55  aligned=16  presence=optional   offset = 460 order =  0
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional   offset = 464 order =  0
+	Decimal							NetChgPrevDay;			// id=451  presence=optional   offset = 480 order =  0
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 496 order =  0
+		UINT32		TradingSessionIDUint;
+	};
+	char							PaddingBytes3[4];
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsGenericItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsGenericItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[4];			// id=269  presence=optional  fixed_size=1  
-	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other  
-	UINT32							MDEntryDate;			// id=272  presence=optional  
-	UINT32							MDEntryTime;			// id=273  presence=optional  
-	UINT32							OrigTime;			// id=9412  presence=optional  
-	Decimal							MDEntryPx;			// id=270  presence=optional  
-	Decimal							MDEntrySize;			// id=271  presence=optional  
-	char							QuoteCondition[16];			// id=276  presence=optional  
-	char							TradeCondition[16];			// id=277  presence=optional  
-	char							OpenCloseSettlFlag[4];			// id=286  presence=optional  
-	char							OrdType[4];			// id=40  presence=optional  
-	UINT32							EffectiveTime;			// id=5902  presence=optional  
-	UINT32							StartTime;			// id=9820  presence=optional  
-	Decimal							AccruedInterestAmt;			// id=5384  presence=optional  
-	Decimal							ChgFromWAPrice;			// id=5510  presence=optional  
-	Decimal							ChgOpenInterest;			// id=5511  presence=optional  
-	Decimal							BidMarketSize;			// id=5292  presence=optional  
-	Decimal							AskMarketSize;			// id=5293  presence=optional  
-	INT32							TotalNumOfTrades;			// id=6139  presence=optional  
-	Decimal							TradeValue;			// id=6143  presence=optional  
-	Decimal							Yield;			// id=236  presence=optional  
-	Decimal							TotalVolume;			// id=5791  presence=optional  
-	INT32							OfferNbOr;			// id=9168  presence=optional  
-	INT32							BidNbOr;			// id=9169  presence=optional  
-	Decimal							ChgFromSettlmnt;			// id=9750  presence=optional  
-	UINT32							SettlDate;			// id=64  presence=optional  
-	char							SettleType[16];			// id=5459  presence=optional  
-	INT32							SumQtyOfBest;			// id=10503  presence=optional  
-	char							OrderSide[4];			// id=10504  presence=optional  
-	char							OrderStatus[4];			// id=10505  presence=optional  fixed_size=1  
-	Decimal							MinCurrPx;			// id=10509  presence=optional  
-	UINT32							MinCurrPxChgTime;			// id=10510  presence=optional  
-	UINT32							VolumeIndicator;			// id=7017  presence=optional  
-	Decimal							Price;			// id=44  presence=optional  
-	INT32							PriceType;			// id=423  presence=optional  
-	Decimal							NominalValue;			// id=9280  presence=optional  
-	Decimal							RepoToPx;			// id=5677  presence=optional  
-	Decimal							BuyBackPx;			// id=5558  presence=optional  
-	UINT32							BuyBackDate;			// id=5559  presence=optional  
-	char							CXFlag[4];			// id=5154  presence=optional  
-	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12  
-	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1  
-	INT32							RptSeq;			// id=83  presence=optional  
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional  
-	Decimal							NetChgPrevDay;			// id=451  presence=optional  
-	union {
-		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
-		UINT32		TradingSessionIDUint;
-	};
-	int								MDEntryTypeLength;			// id=269  presence=optional  fixed_size=1  
-	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
-	int								QuoteConditionLength;			// id=276  presence=optional  
-	int								TradeConditionLength;			// id=277  presence=optional  
-	int								OpenCloseSettlFlagLength;			// id=286  presence=optional  
-	int								OrdTypeLength;			// id=40  presence=optional  
-	int								SettleTypeLength;			// id=5459  presence=optional  
-	int								OrderSideLength;			// id=10504  presence=optional  
-	int								OrderStatusLength;			// id=10505  presence=optional  fixed_size=1  
-	int								CXFlagLength;			// id=5154  presence=optional  
-	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12  
-	int								SymbolLength;			// id=55  aligned=16  presence=optional  
-	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
+	char							PaddingBytes4[7];
 
 	AstsGenericItemInfo() {
 		memset(this, 0, sizeof(AstsGenericItemInfo));
@@ -413,42 +417,40 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class AstsGenericInfo{
 public:
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 0 order =  0
+		UINT32		TradingSessionIDUint;
+	};
+	int								SymbolLength;			// id=55  aligned=16   offset = 4 order =  0
+	char							PaddingBytes0[8];
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16   offset = 16 order =  0
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional   offset = 32 order =  0
+	INT32							RptSeq;			// id=83   offset = 36 order =  0
+	UINT32							LastFragment;			// id=893  presence=optional   offset = 40 order =  0
+	UINT32							RouteFirst;			// id=7944  presence=optional   offset = 44 order =  0
+	INT32							TradSesStatus;			// id=340  presence=optional   offset = 48 order =  0
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional   offset = 52 order =  0
+	UINT32							AuctionIndicator;			// id=5509  presence=optional   offset = 56 order =  0
+	char							PaddingBytes1[4];
+	Decimal							NetChgPrevDay;			// id=451  presence=optional   offset = 64 order =  0
+	int								GroupMDEntriesCount;//		 offset = 80 order =  0
+	char							PaddingBytes2[4];
+	AstsGenericItemInfo* GroupMDEntries[256];//		 offset = 88 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2136 order =  999
+	char							PaddingBytes3[4];
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 2144 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsGenericInfo>							*Pointer;
 	AutoAllocatePointerList<AstsGenericInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = W
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	union {
-		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
-		UINT32		TradingSessionIDUint;
-	};
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  
-	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	INT32							RptSeq;			// id=83  
-	UINT32							LastFragment;			// id=893  presence=optional  
-	UINT32							RouteFirst;			// id=7944  presence=optional  
-	INT32							TradSesStatus;			// id=340  presence=optional  
-	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
-	UINT32							AuctionIndicator;			// id=5509  presence=optional  
-	Decimal							NetChgPrevDay;			// id=451  presence=optional  
-	AstsGenericItemInfo* GroupMDEntries[256];
-	int								MessageTypeLength;			// id=35    constant has constant value = W
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
-	int								SymbolLength;			// id=55  aligned=16  
-	int								GroupMDEntriesCount;
+	char							PaddingBytes4[7];
 
 	AstsGenericInfo() {
 		memset(this, 0, sizeof(AstsGenericInfo));
@@ -468,41 +470,46 @@ public:
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class AstsOLSFONDItemInfo{
 public:
+	char							MDEntryType[4];			// id=269  presence=optional  fixed_size=1    copy offset = 0 order =  0
+	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other   offset = 4 order =  0
+	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other   offset = 8 order =  0
+	UINT32							MDEntryDate;			// id=272  presence=optional    copy offset = 24 order =  0
+	UINT32							MDEntryTime;			// id=273  presence=optional    copy offset = 28 order =  0
+	UINT32							OrigTime;			// id=9412  presence=optional    copy offset = 32 order =  0
+	char							PaddingBytes0[4];
+	Decimal							MDEntryPx;			// id=270  presence=optional    copy offset = 40 order =  0
+	Decimal							MDEntrySize;			// id=271  presence=optional    copy offset = 56 order =  0
+	Decimal							Yield;			// id=236  presence=optional    copy offset = 72 order =  0
+	char							OrderStatus[4];			// id=10505  presence=optional  fixed_size=1    copy offset = 88 order =  0
+	int								OrdTypeLength;			// id=40  presence=optional    copy offset = 92 order =  0
+	char							OrdType[4];			// id=40  presence=optional    copy offset = 96 order =  0
+	char							PaddingBytes1[4];
+	Decimal							TotalVolume;			// id=5791  presence=optional    copy offset = 104 order =  0
+	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy offset = 120 order =  0
+	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy offset = 124 order =  0
+	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1   offset = 128 order =  0
+	int								SymbolLength;			// id=55  aligned=16  presence=optional    copy offset = 132 order =  0
+	char							PaddingBytes2[8];
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional    copy offset = 144 order =  0
+	INT32							RptSeq;			// id=83  presence=optional   offset = 160 order =  0
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional    copy offset = 164 order =  0
+		UINT32		TradingSessionIDUint;
+	};
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsOLSFONDItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsOLSFONDItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[4];			// id=269  presence=optional  fixed_size=1    copy
-	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other  
-	UINT32							MDEntryDate;			// id=272  presence=optional    copy
-	UINT32							MDEntryTime;			// id=273  presence=optional    copy
-	UINT32							OrigTime;			// id=9412  presence=optional    copy
-	Decimal							MDEntryPx;			// id=270  presence=optional    copy
-	Decimal							MDEntrySize;			// id=271  presence=optional    copy
-	Decimal							Yield;			// id=236  presence=optional    copy
-	char							OrderStatus[4];			// id=10505  presence=optional  fixed_size=1    copy
-	char							OrdType[4];			// id=40  presence=optional    copy
-	Decimal							TotalVolume;			// id=5791  presence=optional    copy
-	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy
-	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1  
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional    copy
-	INT32							RptSeq;			// id=83  presence=optional  
-	union {
-		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional    copy
-		UINT32		TradingSessionIDUint;
-	};
-	int								MDEntryTypeLength;			// id=269  presence=optional  fixed_size=1    copy
-	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
-	int								OrderStatusLength;			// id=10505  presence=optional  fixed_size=1    copy
-	int								OrdTypeLength;			// id=40  presence=optional    copy
-	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy
-	int								SymbolLength;			// id=55  aligned=16  presence=optional    copy
-	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional    copy
+	char							PaddingBytes3[7];
 
 	AstsOLSFONDItemInfo() {
 		memset(this, 0, sizeof(AstsOLSFONDItemInfo));
@@ -518,41 +525,38 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class AstsOLSFONDInfo{
 public:
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional   offset = 0 order =  0
+	INT32							RptSeq;			// id=83   offset = 4 order =  0
+	UINT32							LastFragment;			// id=893  presence=optional   offset = 8 order =  0
+	UINT32							RouteFirst;			// id=7944  presence=optional   offset = 12 order =  0
+	INT32							TradSesStatus;			// id=340  presence=optional   offset = 16 order =  0
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 20 order =  0
+		UINT32		TradingSessionIDUint;
+	};
+	int								SymbolLength;			// id=55  aligned=16   offset = 24 order =  0
+	char							PaddingBytes0[4];
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16   offset = 32 order =  0
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional   offset = 48 order =  0
+	UINT32							AuctionIndicator;			// id=5509  presence=optional   offset = 52 order =  0
+	int								GroupMDEntriesCount;//		 offset = 56 order =  0
+	char							PaddingBytes1[4];
+	AstsOLSFONDItemInfo* GroupMDEntries[256];//		 offset = 64 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2112 order =  999
+	char							PaddingBytes2[4];
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 2120 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsOLSFONDInfo>							*Pointer;
 	AutoAllocatePointerList<AstsOLSFONDInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = W
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	INT32							RptSeq;			// id=83  
-	UINT32							LastFragment;			// id=893  presence=optional  
-	UINT32							RouteFirst;			// id=7944  presence=optional  
-	INT32							TradSesStatus;			// id=340  presence=optional  
-	union {
-		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
-		UINT32		TradingSessionIDUint;
-	};
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  
-	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
-	UINT32							AuctionIndicator;			// id=5509  presence=optional  
-	AstsOLSFONDItemInfo* GroupMDEntries[256];
-	int								MessageTypeLength;			// id=35    constant has constant value = W
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
-	int								SymbolLength;			// id=55  aligned=16  
-	int								GroupMDEntriesCount;
+	char							PaddingBytes3[15];
 
 	AstsOLSFONDInfo() {
 		memset(this, 0, sizeof(AstsOLSFONDInfo));
@@ -572,37 +576,41 @@ public:
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class AstsOLSCURRItemInfo{
 public:
+	char							MDEntryType[4];			// id=269  presence=optional  fixed_size=1    copy offset = 0 order =  0
+	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other   offset = 4 order =  0
+	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other   offset = 8 order =  0
+	UINT32							MDEntryDate;			// id=272  presence=optional    copy offset = 24 order =  0
+	UINT32							MDEntryTime;			// id=273  presence=optional    copy offset = 28 order =  0
+	UINT32							OrigTime;			// id=9412  presence=optional    copy offset = 32 order =  0
+	char							PaddingBytes0[4];
+	Decimal							MDEntryPx;			// id=270  presence=optional    copy offset = 40 order =  0
+	Decimal							MDEntrySize;			// id=271  presence=optional    copy offset = 56 order =  0
+	char							OrderStatus[4];			// id=10505  presence=optional  fixed_size=1    copy offset = 72 order =  0
+	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy offset = 76 order =  0
+	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy offset = 80 order =  0
+	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1    copy offset = 84 order =  0
+	int								SymbolLength;			// id=55  aligned=16  presence=optional    copy offset = 88 order =  0
+	char							PaddingBytes1[4];
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional    copy offset = 96 order =  0
+	INT32							RptSeq;			// id=83  presence=optional   offset = 112 order =  0
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional    copy offset = 116 order =  0
+		UINT32		TradingSessionIDUint;
+	};
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsOLSCURRItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsOLSCURRItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[4];			// id=269  presence=optional  fixed_size=1    copy
-	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other  
-	UINT32							MDEntryDate;			// id=272  presence=optional    copy
-	UINT32							MDEntryTime;			// id=273  presence=optional    copy
-	UINT32							OrigTime;			// id=9412  presence=optional    copy
-	Decimal							MDEntryPx;			// id=270  presence=optional    copy
-	Decimal							MDEntrySize;			// id=271  presence=optional    copy
-	char							OrderStatus[4];			// id=10505  presence=optional  fixed_size=1    copy
-	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy
-	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1    copy
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional    copy
-	INT32							RptSeq;			// id=83  presence=optional  
-	union {
-		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional    copy
-		UINT32		TradingSessionIDUint;
-	};
-	int								MDEntryTypeLength;			// id=269  presence=optional  fixed_size=1    copy
-	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
-	int								OrderStatusLength;			// id=10505  presence=optional  fixed_size=1    copy
-	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy
-	int								SymbolLength;			// id=55  aligned=16  presence=optional    copy
-	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional    copy
+	char							PaddingBytes2[7];
 
 	AstsOLSCURRItemInfo() {
 		memset(this, 0, sizeof(AstsOLSCURRItemInfo));
@@ -618,40 +626,36 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class AstsOLSCURRInfo{
 public:
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional   offset = 0 order =  0
+	INT32							RptSeq;			// id=83   offset = 4 order =  0
+	UINT32							LastFragment;			// id=893  presence=optional   offset = 8 order =  0
+	UINT32							RouteFirst;			// id=7944  presence=optional   offset = 12 order =  0
+	INT32							TradSesStatus;			// id=340  presence=optional   offset = 16 order =  0
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 20 order =  0
+		UINT32		TradingSessionIDUint;
+	};
+	int								SymbolLength;			// id=55  aligned=16   offset = 24 order =  0
+	char							PaddingBytes0[4];
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16   offset = 32 order =  0
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional   offset = 48 order =  0
+	int								GroupMDEntriesCount;//		 offset = 52 order =  0
+	AstsOLSCURRItemInfo* GroupMDEntries[256];//		 offset = 56 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2104 order =  999
+	char							PaddingBytes1[4];
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 2112 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsOLSCURRInfo>							*Pointer;
 	AutoAllocatePointerList<AstsOLSCURRInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = W
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	INT32							RptSeq;			// id=83  
-	UINT32							LastFragment;			// id=893  presence=optional  
-	UINT32							RouteFirst;			// id=7944  presence=optional  
-	INT32							TradSesStatus;			// id=340  presence=optional  
-	union {
-		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
-		UINT32		TradingSessionIDUint;
-	};
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  
-	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
-	AstsOLSCURRItemInfo* GroupMDEntries[256];
-	int								MessageTypeLength;			// id=35    constant has constant value = W
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
-	int								SymbolLength;			// id=55  aligned=16  
-	int								GroupMDEntriesCount;
+	char							PaddingBytes2[7];
 
 	AstsOLSCURRInfo() {
 		memset(this, 0, sizeof(AstsOLSCURRInfo));
@@ -671,50 +675,56 @@ public:
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class AstsTLSFONDItemInfo{
 public:
+	char							MDEntryType[4];			// id=269  fixed_size=1   offset = 0 order =  0
+	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other   offset = 4 order =  0
+	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other   offset = 8 order =  0
+	UINT32							MDEntryDate;			// id=272  presence=optional    copy offset = 24 order =  0
+	UINT32							MDEntryTime;			// id=273  presence=optional    copy offset = 28 order =  0
+	UINT32							OrigTime;			// id=9412  presence=optional    copy offset = 32 order =  0
+	int								OrderSideLength;			// id=10504  presence=optional    copy offset = 36 order =  0
+	char							OrderSide[4];			// id=10504  presence=optional    copy offset = 40 order =  0
+	char							PaddingBytes0[4];
+	Decimal							MDEntryPx;			// id=270  presence=optional    copy offset = 48 order =  0
+	Decimal							MDEntrySize;			// id=271  presence=optional    copy offset = 64 order =  0
+	Decimal							AccruedInterestAmt;			// id=5384  presence=optional    copy offset = 80 order =  0
+	Decimal							TradeValue;			// id=6143  presence=optional    copy offset = 96 order =  0
+	Decimal							Yield;			// id=236  presence=optional    copy offset = 112 order =  0
+	UINT32							SettlDate;			// id=64  presence=optional    copy offset = 128 order =  0
+	int								SettleTypeLength;			// id=5459  presence=optional    copy offset = 132 order =  0
+	char							SettleType[16];			// id=5459  presence=optional    copy offset = 136 order =  0
+	Decimal							Price;			// id=44  presence=optional    copy offset = 152 order =  0
+	INT32							PriceType;			// id=423  presence=optional    copy offset = 168 order =  0
+	char							PaddingBytes1[4];
+	Decimal							RepoToPx;			// id=5677  presence=optional    copy offset = 176 order =  0
+	Decimal							BuyBackPx;			// id=5558  presence=optional    copy offset = 192 order =  0
+	UINT32							BuyBackDate;			// id=5559  presence=optional    copy offset = 208 order =  0
+	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy offset = 212 order =  0
+	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy offset = 216 order =  0
+	int								RefOrderIDLength;			// id=1080  presence=optional    copy offset = 220 order =  0
+	char							RefOrderID[16];			// id=1080  presence=optional    copy offset = 224 order =  0
+	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1   offset = 240 order =  0
+	int								SymbolLength;			// id=55  aligned=16  presence=optional   offset = 244 order =  0
+	char							PaddingBytes2[8];
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional   offset = 256 order =  0
+	INT32							RptSeq;			// id=83  presence=optional   offset = 272 order =  0
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 276 order =  0
+		UINT32		TradingSessionIDUint;
+	};
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsTLSFONDItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsTLSFONDItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[4];			// id=269  fixed_size=1  
-	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other  
-	UINT32							MDEntryDate;			// id=272  presence=optional    copy
-	UINT32							MDEntryTime;			// id=273  presence=optional    copy
-	UINT32							OrigTime;			// id=9412  presence=optional    copy
-	char							OrderSide[4];			// id=10504  presence=optional    copy
-	Decimal							MDEntryPx;			// id=270  presence=optional    copy
-	Decimal							MDEntrySize;			// id=271  presence=optional    copy
-	Decimal							AccruedInterestAmt;			// id=5384  presence=optional    copy
-	Decimal							TradeValue;			// id=6143  presence=optional    copy
-	Decimal							Yield;			// id=236  presence=optional    copy
-	UINT32							SettlDate;			// id=64  presence=optional    copy
-	char							SettleType[16];			// id=5459  presence=optional    copy
-	Decimal							Price;			// id=44  presence=optional    copy
-	INT32							PriceType;			// id=423  presence=optional    copy
-	Decimal							RepoToPx;			// id=5677  presence=optional    copy
-	Decimal							BuyBackPx;			// id=5558  presence=optional    copy
-	UINT32							BuyBackDate;			// id=5559  presence=optional    copy
-	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy
-	char							RefOrderID[16];			// id=1080  presence=optional    copy
-	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1  
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional  
-	INT32							RptSeq;			// id=83  presence=optional  
-	union {
-		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
-		UINT32		TradingSessionIDUint;
-	};
-	int								MDEntryTypeLength;			// id=269  fixed_size=1  
-	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
-	int								OrderSideLength;			// id=10504  presence=optional    copy
-	int								SettleTypeLength;			// id=5459  presence=optional    copy
-	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy
-	int								RefOrderIDLength;			// id=1080  presence=optional    copy
-	int								SymbolLength;			// id=55  aligned=16  presence=optional  
-	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
+	char							PaddingBytes3[7];
 
 	AstsTLSFONDItemInfo() {
 		memset(this, 0, sizeof(AstsTLSFONDItemInfo));
@@ -730,41 +740,38 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class AstsTLSFONDInfo{
 public:
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional   offset = 0 order =  0
+	INT32							RptSeq;			// id=83   offset = 4 order =  0
+	UINT32							LastFragment;			// id=893  presence=optional   offset = 8 order =  0
+	UINT32							RouteFirst;			// id=7944  presence=optional   offset = 12 order =  0
+	INT32							TradSesStatus;			// id=340  presence=optional   offset = 16 order =  0
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 20 order =  0
+		UINT32		TradingSessionIDUint;
+	};
+	int								SymbolLength;			// id=55  aligned=16   offset = 24 order =  0
+	char							PaddingBytes0[4];
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16   offset = 32 order =  0
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional   offset = 48 order =  0
+	UINT32							AuctionIndicator;			// id=5509  presence=optional   offset = 52 order =  0
+	int								GroupMDEntriesCount;//		 offset = 56 order =  0
+	char							PaddingBytes1[4];
+	AstsTLSFONDItemInfo* GroupMDEntries[256];//		 offset = 64 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2112 order =  999
+	char							PaddingBytes2[4];
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 2120 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsTLSFONDInfo>							*Pointer;
 	AutoAllocatePointerList<AstsTLSFONDInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = W
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	INT32							RptSeq;			// id=83  
-	UINT32							LastFragment;			// id=893  presence=optional  
-	UINT32							RouteFirst;			// id=7944  presence=optional  
-	INT32							TradSesStatus;			// id=340  presence=optional  
-	union {
-		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
-		UINT32		TradingSessionIDUint;
-	};
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  
-	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
-	UINT32							AuctionIndicator;			// id=5509  presence=optional  
-	AstsTLSFONDItemInfo* GroupMDEntries[256];
-	int								MessageTypeLength;			// id=35    constant has constant value = W
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
-	int								SymbolLength;			// id=55  aligned=16  
-	int								GroupMDEntriesCount;
+	char							PaddingBytes3[15];
 
 	AstsTLSFONDInfo() {
 		memset(this, 0, sizeof(AstsTLSFONDInfo));
@@ -784,48 +791,54 @@ public:
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class AstsTLSCURRItemInfo{
 public:
+	char							MDEntryType[4];			// id=269  fixed_size=1   offset = 0 order =  0
+	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other   offset = 4 order =  0
+	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other   offset = 8 order =  0
+	UINT32							MDEntryDate;			// id=272  presence=optional    copy offset = 24 order =  0
+	UINT32							MDEntryTime;			// id=273  presence=optional    copy offset = 28 order =  0
+	UINT32							OrigTime;			// id=9412  presence=optional    copy offset = 32 order =  0
+	int								OrderSideLength;			// id=10504  presence=optional    copy offset = 36 order =  0
+	char							OrderSide[4];			// id=10504  presence=optional    copy offset = 40 order =  0
+	char							PaddingBytes0[4];
+	Decimal							MDEntryPx;			// id=270  presence=optional    copy offset = 48 order =  0
+	Decimal							MDEntrySize;			// id=271  presence=optional    copy offset = 64 order =  0
+	Decimal							TradeValue;			// id=6143  presence=optional    copy offset = 80 order =  0
+	UINT32							SettlDate;			// id=64  presence=optional    copy offset = 96 order =  0
+	int								SettleTypeLength;			// id=5459  presence=optional    copy offset = 100 order =  0
+	char							SettleType[16];			// id=5459  presence=optional    copy offset = 104 order =  0
+	Decimal							Price;			// id=44  presence=optional    copy offset = 120 order =  0
+	INT32							PriceType;			// id=423  presence=optional    copy offset = 136 order =  0
+	char							PaddingBytes1[4];
+	Decimal							RepoToPx;			// id=5677  presence=optional    copy offset = 144 order =  0
+	Decimal							BuyBackPx;			// id=5558  presence=optional    copy offset = 160 order =  0
+	UINT32							BuyBackDate;			// id=5559  presence=optional    copy offset = 176 order =  0
+	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy offset = 180 order =  0
+	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy offset = 184 order =  0
+	int								RefOrderIDLength;			// id=1080  presence=optional    copy offset = 188 order =  0
+	char							RefOrderID[16];			// id=1080  presence=optional    copy offset = 192 order =  0
+	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1   offset = 208 order =  0
+	int								SymbolLength;			// id=55  aligned=16  presence=optional   offset = 212 order =  0
+	char							PaddingBytes2[8];
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional   offset = 224 order =  0
+	INT32							RptSeq;			// id=83  presence=optional   offset = 240 order =  0
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 244 order =  0
+		UINT32		TradingSessionIDUint;
+	};
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsTLSCURRItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsTLSCURRItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[4];			// id=269  fixed_size=1  
-	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other  
-	UINT32							MDEntryDate;			// id=272  presence=optional    copy
-	UINT32							MDEntryTime;			// id=273  presence=optional    copy
-	UINT32							OrigTime;			// id=9412  presence=optional    copy
-	char							OrderSide[4];			// id=10504  presence=optional    copy
-	Decimal							MDEntryPx;			// id=270  presence=optional    copy
-	Decimal							MDEntrySize;			// id=271  presence=optional    copy
-	Decimal							TradeValue;			// id=6143  presence=optional    copy
-	UINT32							SettlDate;			// id=64  presence=optional    copy
-	char							SettleType[16];			// id=5459  presence=optional    copy
-	Decimal							Price;			// id=44  presence=optional    copy
-	INT32							PriceType;			// id=423  presence=optional    copy
-	Decimal							RepoToPx;			// id=5677  presence=optional    copy
-	Decimal							BuyBackPx;			// id=5558  presence=optional    copy
-	UINT32							BuyBackDate;			// id=5559  presence=optional    copy
-	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy
-	char							RefOrderID[16];			// id=1080  presence=optional    copy
-	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1  
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional  
-	INT32							RptSeq;			// id=83  presence=optional  
-	union {
-		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
-		UINT32		TradingSessionIDUint;
-	};
-	int								MDEntryTypeLength;			// id=269  fixed_size=1  
-	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other  
-	int								OrderSideLength;			// id=10504  presence=optional    copy
-	int								SettleTypeLength;			// id=5459  presence=optional    copy
-	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy
-	int								RefOrderIDLength;			// id=1080  presence=optional    copy
-	int								SymbolLength;			// id=55  aligned=16  presence=optional  
-	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
+	char							PaddingBytes3[7];
 
 	AstsTLSCURRItemInfo() {
 		memset(this, 0, sizeof(AstsTLSCURRItemInfo));
@@ -841,40 +854,36 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class AstsTLSCURRInfo{
 public:
+	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional   offset = 0 order =  0
+	INT32							RptSeq;			// id=83   offset = 4 order =  0
+	UINT32							LastFragment;			// id=893  presence=optional   offset = 8 order =  0
+	UINT32							RouteFirst;			// id=7944  presence=optional   offset = 12 order =  0
+	INT32							TradSesStatus;			// id=340  presence=optional   offset = 16 order =  0
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 20 order =  0
+		UINT32		TradingSessionIDUint;
+	};
+	int								SymbolLength;			// id=55  aligned=16   offset = 24 order =  0
+	char							PaddingBytes0[4];
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16   offset = 32 order =  0
+	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional   offset = 48 order =  0
+	int								GroupMDEntriesCount;//		 offset = 52 order =  0
+	AstsTLSCURRItemInfo* GroupMDEntries[256];//		 offset = 56 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2104 order =  999
+	char							PaddingBytes1[4];
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 2112 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsTLSCURRInfo>							*Pointer;
 	AutoAllocatePointerList<AstsTLSCURRInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = W
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional  
-	INT32							RptSeq;			// id=83  
-	UINT32							LastFragment;			// id=893  presence=optional  
-	UINT32							RouteFirst;			// id=7944  presence=optional  
-	INT32							TradSesStatus;			// id=340  presence=optional  
-	union {
-		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
-		UINT32		TradingSessionIDUint;
-	};
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  
-	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional  
-	AstsTLSCURRItemInfo* GroupMDEntries[256];
-	int								MessageTypeLength;			// id=35    constant has constant value = W
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
-	int								SymbolLength;			// id=55  aligned=16  
-	int								GroupMDEntriesCount;
+	char							PaddingBytes2[7];
 
 	AstsTLSCURRInfo() {
 		memset(this, 0, sizeof(AstsTLSCURRInfo));
@@ -894,18 +903,23 @@ public:
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class AstsSecurityDefinitionGroupInstrAttribItemInfo{
 public:
+	INT32							InstrAttribType;			// id=871   offset = 0 order =  0
+	int								InstrAttribValueLength;			// id=872  presence=optional   offset = 4 order =  0
+	unsigned char							InstrAttribValue[128];			// id=872  presence=optional   offset = 8
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsSecurityDefinitionGroupInstrAttribItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsSecurityDefinitionGroupInstrAttribItemInfo>							*Allocator;
 	bool							Used;
-	INT32							InstrAttribType;			// id=871  
-	unsigned char							InstrAttribValue[128];			// id=872  presence=optional  
-	int								InstrAttribValueLength;			// id=872  presence=optional  
+	char							PaddingBytes0[7];
 
 	AstsSecurityDefinitionGroupInstrAttribItemInfo() {
 		memset(this, 0, sizeof(AstsSecurityDefinitionGroupInstrAttribItemInfo));
@@ -921,24 +935,27 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo{
 public:
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4   offset = 0 order =  0
+		UINT32		TradingSessionIDUint;
+	};
+	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12   offset = 4 order =  0
+	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12   offset = 8 order =  0
+	INT32							SecurityTradingStatus;			// id=326  presence=optional   offset = 12 order =  0
+	INT32							OrderNote;			// id=9680  presence=optional   offset = 16 order =  0
+	char							PaddingBytes0[4];
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Allocator;
 	bool							Used;
-	union {
-		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  
-		UINT32		TradingSessionIDUint;
-	};
-	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12  
-	INT32							SecurityTradingStatus;			// id=326  presence=optional  
-	INT32							OrderNote;			// id=9680  presence=optional  
-	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  
-	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12  
+	char							PaddingBytes1[7];
 
 	AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() {
 		memset(this, 0, sizeof(AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo));
@@ -954,18 +971,22 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class AstsSecurityDefinitionMarketSegmentGrpItemInfo{
 public:
+	Decimal							RoundLot;			// id=561  presence=optional   offset = 0 order =  0
+	int								TradingSessionRulesGrpCount;//		 offset = 16 order =  0
+	char							PaddingBytes0[4];
+	AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* TradingSessionRulesGrp[16];			// presence=optional  max_count=16  //		 offset = 24 order =  0
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsSecurityDefinitionMarketSegmentGrpItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpItemInfo>							*Allocator;
 	bool							Used;
-	Decimal							RoundLot;			// id=561  presence=optional  
-	AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* TradingSessionRulesGrp[256];			// presence=optional  
-	int								TradingSessionRulesGrpCount;			// presence=optional  
+	char							PaddingBytes1[7];
 
 	AstsSecurityDefinitionMarketSegmentGrpItemInfo() {
 		memset(this, 0, sizeof(AstsSecurityDefinitionMarketSegmentGrpItemInfo));
@@ -985,83 +1006,86 @@ public:
 		for(int i = 0; i < this->TradingSessionRulesGrpCount; i++)
 			this->TradingSessionRulesGrp[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->TradingSessionRulesGrpCount; i++)
+			this->TradingSessionRulesGrp[i]->ReleaseUnused();
+	}
 };
 
 class AstsSecurityDefinitionInfo{
 public:
+	int								MessageEncodingLength;			// id=347    default offset = 0 order =  0
+	char							MessageEncoding[16];			// id=347    default offset = 4 order =  0
+	INT32							TotNumReports;			// id=911  presence=optional   offset = 20 order =  0
+	int								SymbolLength;			// id=55  aligned=16  presence=optional   offset = 24 order =  0
+	char							PaddingBytes0[4];
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional   offset = 32 order =  0
+	int								SecurityIDLength;			// id=48  presence=optional   offset = 48 order =  0
+	unsigned char							SecurityID[128];			// id=48  presence=optional   offset = 52
+	int								SecurityIDSourceLength;			// id=22  presence=optional   offset = 68 order =  0
+	unsigned char							SecurityIDSource[128];			// id=22  presence=optional   offset = 72
+	INT32							Product;			// id=460  presence=optional   offset = 88 order =  0
+	int								CFICodeLength;			// id=461  presence=optional   offset = 92 order =  0
+	unsigned char							CFICode[128];			// id=461  presence=optional   offset = 96
+	int								SecurityTypeLength;			// id=167  presence=optional   offset = 112 order =  0
+	unsigned char							SecurityType[128];			// id=167  presence=optional   offset = 116
+	UINT32							MaturityDate;			// id=541  presence=optional   offset = 132 order =  0
+	UINT32							SettlDate;			// id=64  presence=optional   offset = 136 order =  0
+	int								SettleTypeLength;			// id=5459  presence=optional   offset = 140 order =  0
+	char							SettleType[16];			// id=5459  presence=optional   offset = 144 order =  0
+	Decimal							OrigIssueAmt;			// id=5850  presence=optional   offset = 160 order =  0
+	UINT32							CouponPaymentDate;			// id=224  presence=optional   offset = 176 order =  0
+	char							PaddingBytes1[4];
+	Decimal							CouponRate;			// id=223  presence=optional   offset = 184 order =  0
+	UINT32							SettlFixingDate;			// id=9119  presence=optional   offset = 200 order =  0
+	char							PaddingBytes2[4];
+	Decimal							DividendNetPx;			// id=9982  presence=optional   offset = 208 order =  0
+	int								SecurityDescLength;			// id=107  presence=optional   offset = 224 order =  0
+	unsigned char							SecurityDesc[128];			// id=107  presence=optional   offset = 228
+	int								EncodedSecurityDescLength;			// id=351  presence=optional   offset = 244 order =  0
+	unsigned char							EncodedSecurityDesc[128];			// id=351  presence=optional   offset = 248
+	int								QuoteTextLength;			// id=9696  presence=optional   offset = 264 order =  0
+	unsigned char							QuoteText[128];			// id=9696  presence=optional   offset = 268
+	int								GroupInstrAttribCount;//		 offset = 284 order =  0
+	AstsSecurityDefinitionGroupInstrAttribItemInfo* GroupInstrAttrib[16];			// presence=optional  max_count=16  //		 offset = 288 order =  0
+	int								CurrencyLength;			// id=15  presence=optional   offset = 2336 order =  0
+	char							Currency[4];			// id=15  presence=optional   offset = 2340 order =  0
+	int								MarketSegmentGrpCount;//		 offset = 2344 order =  0
+	char							PaddingBytes3[4];
+	AstsSecurityDefinitionMarketSegmentGrpItemInfo* MarketSegmentGrp[16];			// presence=optional  max_count=16  //		 offset = 2352 order =  0
+	int								SettlCurrencyLength;			// id=120  presence=optional   offset = 4400 order =  0
+	char							SettlCurrency[16];			// id=120  presence=optional   offset = 4404 order =  0
+	INT32							PriceType;			// id=423  presence=optional   offset = 4420 order =  0
+	int								StateSecurityIDLength;			// id=5217  presence=optional   offset = 4424 order =  0
+	char							StateSecurityID[16];			// id=5217  presence=optional   offset = 4428 order =  0
+	int								EncodedShortSecurityDescLength;			// id=5383  presence=optional   offset = 4444 order =  0
+	unsigned char							EncodedShortSecurityDesc[128];			// id=5383  presence=optional   offset = 4448
+	int								MarketCodeLength;			// id=5385  presence=optional   offset = 4464 order =  0
+	unsigned char							MarketCode[128];			// id=5385  presence=optional   offset = 4468
+	char							PaddingBytes4[4];
+	Decimal							MinPriceIncrement;			// id=969  presence=optional   offset = 4488 order =  0
+	Decimal							MktShareLimit;			// id=5387  presence=optional   offset = 4504 order =  0
+	Decimal							MktShareThreshold;			// id=5388  presence=optional   offset = 4520 order =  0
+	Decimal							MaxOrdersVolume;			// id=5389  presence=optional   offset = 4536 order =  0
+	Decimal							PriceMvmLimit;			// id=5470  presence=optional   offset = 4552 order =  0
+	Decimal							FaceValue;			// id=5508  presence=optional   offset = 4568 order =  0
+	Decimal							BaseSwapPx;			// id=5556  presence=optional   offset = 4584 order =  0
+	Decimal							RepoToPx;			// id=5677  presence=optional   offset = 4600 order =  0
+	Decimal							BuyBackPx;			// id=5558  presence=optional   offset = 4616 order =  0
+	UINT32							BuyBackDate;			// id=5559  presence=optional   offset = 4632 order =  0
+	char							PaddingBytes5[4];
+	Decimal							NoSharesIssued;			// id=7595  presence=optional   offset = 4640 order =  0
+	Decimal							HighLimit;			// id=9199  presence=optional   offset = 4656 order =  0
+	Decimal							LowLimit;			// id=9200  presence=optional   offset = 4672 order =  0
+	INT32							NumOfDaysToMaturity;			// id=10508  presence=optional   offset = 4688 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true    increment offset = 4692 order =  999
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 4696 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsSecurityDefinitionInfo>							*Pointer;
 	AutoAllocatePointerList<AstsSecurityDefinitionInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = d
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true    increment
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	char							MessageEncoding[16];			// id=347    default
-	INT32							TotNumReports;			// id=911  presence=optional  
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional  
-	unsigned char							SecurityID[128];			// id=48  presence=optional  
-	unsigned char							SecurityIDSource[128];			// id=22  presence=optional  
-	INT32							Product;			// id=460  presence=optional  
-	unsigned char							CFICode[128];			// id=461  presence=optional  
-	unsigned char							SecurityType[128];			// id=167  presence=optional  
-	UINT32							MaturityDate;			// id=541  presence=optional  
-	UINT32							SettlDate;			// id=64  presence=optional  
-	char							SettleType[16];			// id=5459  presence=optional  
-	Decimal							OrigIssueAmt;			// id=5850  presence=optional  
-	UINT32							CouponPaymentDate;			// id=224  presence=optional  
-	Decimal							CouponRate;			// id=223  presence=optional  
-	UINT32							SettlFixingDate;			// id=9119  presence=optional  
-	Decimal							DividendNetPx;			// id=9982  presence=optional  
-	unsigned char							SecurityDesc[128];			// id=107  presence=optional  
-	unsigned char							EncodedSecurityDesc[128];			// id=351  presence=optional  
-	unsigned char							QuoteText[128];			// id=9696  presence=optional  
-	AstsSecurityDefinitionGroupInstrAttribItemInfo* GroupInstrAttrib[256];			// presence=optional  
-	char							Currency[4];			// id=15  presence=optional  
-	AstsSecurityDefinitionMarketSegmentGrpItemInfo* MarketSegmentGrp[256];			// presence=optional  
-	char							SettlCurrency[16];			// id=120  presence=optional  
-	INT32							PriceType;			// id=423  presence=optional  
-	char							StateSecurityID[16];			// id=5217  presence=optional  
-	unsigned char							EncodedShortSecurityDesc[128];			// id=5383  presence=optional  
-	unsigned char							MarketCode[128];			// id=5385  presence=optional  
-	Decimal							MinPriceIncrement;			// id=969  presence=optional  
-	Decimal							MktShareLimit;			// id=5387  presence=optional  
-	Decimal							MktShareThreshold;			// id=5388  presence=optional  
-	Decimal							MaxOrdersVolume;			// id=5389  presence=optional  
-	Decimal							PriceMvmLimit;			// id=5470  presence=optional  
-	Decimal							FaceValue;			// id=5508  presence=optional  
-	Decimal							BaseSwapPx;			// id=5556  presence=optional  
-	Decimal							RepoToPx;			// id=5677  presence=optional  
-	Decimal							BuyBackPx;			// id=5558  presence=optional  
-	UINT32							BuyBackDate;			// id=5559  presence=optional  
-	Decimal							NoSharesIssued;			// id=7595  presence=optional  
-	Decimal							HighLimit;			// id=9199  presence=optional  
-	Decimal							LowLimit;			// id=9200  presence=optional  
-	INT32							NumOfDaysToMaturity;			// id=10508  presence=optional  
-	int								MessageTypeLength;			// id=35    constant has constant value = d
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								MessageEncodingLength;			// id=347    default
-	int								SymbolLength;			// id=55  aligned=16  presence=optional  
-	int								SecurityIDLength;			// id=48  presence=optional  
-	int								SecurityIDSourceLength;			// id=22  presence=optional  
-	int								CFICodeLength;			// id=461  presence=optional  
-	int								SecurityTypeLength;			// id=167  presence=optional  
-	int								SettleTypeLength;			// id=5459  presence=optional  
-	int								SecurityDescLength;			// id=107  presence=optional  
-	int								EncodedSecurityDescLength;			// id=351  presence=optional  
-	int								QuoteTextLength;			// id=9696  presence=optional  
-	int								GroupInstrAttribCount;			// presence=optional  
-	int								CurrencyLength;			// id=15  presence=optional  
-	int								MarketSegmentGrpCount;			// presence=optional  
-	int								SettlCurrencyLength;			// id=120  presence=optional  
-	int								StateSecurityIDLength;			// id=5217  presence=optional  
-	int								EncodedShortSecurityDescLength;			// id=5383  presence=optional  
-	int								MarketCodeLength;			// id=5385  presence=optional  
+	char							PaddingBytes6[15];
 
 	AstsSecurityDefinitionInfo() {
 		memset(this, 0, sizeof(AstsSecurityDefinitionInfo));
@@ -1085,36 +1109,35 @@ public:
 		for(int i = 0; i < this->MarketSegmentGrpCount; i++)
 			this->MarketSegmentGrp[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->GroupInstrAttribCount; i++)
+			this->GroupInstrAttrib[i]->ReleaseUnused();
+		for(int i = 0; i < this->MarketSegmentGrpCount; i++)
+			this->MarketSegmentGrp[i]->ReleaseUnused();
+	}
 };
 
 class AstsSecurityStatusInfo{
 public:
+	int								SymbolLength;			// id=55  aligned=16   offset = 0 order =  0
+	char							PaddingBytes0[12];
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16   offset = 16 order =  0
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 32 order =  0
+		UINT32		TradingSessionIDUint;
+	};
+	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12   offset = 36 order =  0
+	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12   offset = 40 order =  0
+	INT32							SecurityTradingStatus;			// id=326  presence=optional   offset = 44 order =  0
+	UINT32							AuctionIndicator;			// id=5509  presence=optional   offset = 48 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 52 order =  999
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 56 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsSecurityStatusInfo>							*Pointer;
 	AutoAllocatePointerList<AstsSecurityStatusInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = f
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  
-	union {
-		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
-		UINT32		TradingSessionIDUint;
-	};
-	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12  
-	INT32							SecurityTradingStatus;			// id=326  presence=optional  
-	UINT32							AuctionIndicator;			// id=5509  presence=optional  
-	int								MessageTypeLength;			// id=35    constant has constant value = f
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								SymbolLength;			// id=55  aligned=16  
-	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  presence=optional  
-	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12  
+	char							PaddingBytes1[15];
 
 	AstsSecurityStatusInfo() {
 		memset(this, 0, sizeof(AstsSecurityStatusInfo));
@@ -1127,33 +1150,27 @@ public:
 			return;
 
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class AstsTradingSessionStatusInfo{
 public:
+	INT32							TradSesStatus;			// id=340   offset = 0 order =  0
+	int								TextLength;			// id=58  presence=optional   offset = 4 order =  0
+	char							Text[512];			// id=58  presence=optional   offset = 8 order =  0
+	union {
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4   offset = 520 order =  0
+		UINT32		TradingSessionIDUint;
+	};
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 524 order =  999
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 528 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsTradingSessionStatusInfo>							*Pointer;
 	AutoAllocatePointerList<AstsTradingSessionStatusInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = h
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	INT32							TradSesStatus;			// id=340  
-	char							Text[512];			// id=58  presence=optional  
-	union {
-		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  
-		UINT32		TradingSessionIDUint;
-	};
-	int								MessageTypeLength;			// id=35    constant has constant value = h
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								TextLength;			// id=58  presence=optional  
-	int								TradingSessionIDLength;			// id=336  fixed_size=4  union=uint32  size=4  
+	char							PaddingBytes0[7];
 
 	AstsTradingSessionStatusInfo() {
 		memset(this, 0, sizeof(AstsTradingSessionStatusInfo));
@@ -1166,23 +1183,21 @@ public:
 			return;
 
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class AstsHeartbeatInfo{
 public:
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 0 order =  999
+	char							PaddingBytes0[4];
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 8 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsHeartbeatInfo>							*Pointer;
 	AutoAllocatePointerList<AstsHeartbeatInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = 0
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	int								MessageTypeLength;			// id=35    constant has constant value = 0
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
+	char							PaddingBytes1[15];
 
 	AstsHeartbeatInfo() {
 		memset(this, 0, sizeof(AstsHeartbeatInfo));
@@ -1195,27 +1210,24 @@ public:
 			return;
 
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class AstsIncrementalGenericInfo{
 public:
+	int								GroupMDEntriesCount;//		 offset = 0 order =  0
+	char							PaddingBytes0[4];
+	AstsGenericItemInfo* GroupMDEntries[256];//		 offset = 8 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2056 order =  999
+	char							PaddingBytes1[4];
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 2064 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsIncrementalGenericInfo>							*Pointer;
 	AutoAllocatePointerList<AstsIncrementalGenericInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = X
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	AstsGenericItemInfo* GroupMDEntries[256];
-	int								MessageTypeLength;			// id=35    constant has constant value = X
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								GroupMDEntriesCount;
+	char							PaddingBytes2[7];
 
 	AstsIncrementalGenericInfo() {
 		memset(this, 0, sizeof(AstsIncrementalGenericInfo));
@@ -1235,28 +1247,27 @@ public:
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class AstsIncrementalMSRFONDInfo{
 public:
+	UINT64							LastUpdateTime;			// id=779  presence=optional   offset = 0 order =  0
+	int								GroupMDEntriesCount;//		 offset = 8 order =  0
+	char							PaddingBytes0[4];
+	AstsGenericItemInfo* GroupMDEntries[256];//		 offset = 16 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2064 order =  999
+	char							PaddingBytes1[4];
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 2072 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsIncrementalMSRFONDInfo>							*Pointer;
 	AutoAllocatePointerList<AstsIncrementalMSRFONDInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = X
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	UINT64							LastUpdateTime;			// id=779  presence=optional  
-	AstsGenericItemInfo* GroupMDEntries[256];
-	int								MessageTypeLength;			// id=35    constant has constant value = X
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								GroupMDEntriesCount;
+	char							PaddingBytes2[15];
 
 	AstsIncrementalMSRFONDInfo() {
 		memset(this, 0, sizeof(AstsIncrementalMSRFONDInfo));
@@ -1276,28 +1287,27 @@ public:
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class AstsIncrementalMSRCURRInfo{
 public:
+	UINT64							LastUpdateTime;			// id=779  presence=optional   offset = 0 order =  0
+	int								GroupMDEntriesCount;//		 offset = 8 order =  0
+	char							PaddingBytes0[4];
+	AstsGenericItemInfo* GroupMDEntries[256];//		 offset = 16 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2064 order =  999
+	char							PaddingBytes1[4];
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 2072 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsIncrementalMSRCURRInfo>							*Pointer;
 	AutoAllocatePointerList<AstsIncrementalMSRCURRInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = X
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	UINT64							LastUpdateTime;			// id=779  presence=optional  
-	AstsGenericItemInfo* GroupMDEntries[256];
-	int								MessageTypeLength;			// id=35    constant has constant value = X
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								GroupMDEntriesCount;
+	char							PaddingBytes2[15];
 
 	AstsIncrementalMSRCURRInfo() {
 		memset(this, 0, sizeof(AstsIncrementalMSRCURRInfo));
@@ -1317,27 +1327,26 @@ public:
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class AstsIncrementalOLRFONDInfo{
 public:
+	int								GroupMDEntriesCount;//		 offset = 0 order =  0
+	char							PaddingBytes0[4];
+	AstsOLSFONDItemInfo* GroupMDEntries[256];//		 offset = 8 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2056 order =  999
+	char							PaddingBytes1[4];
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 2064 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsIncrementalOLRFONDInfo>							*Pointer;
 	AutoAllocatePointerList<AstsIncrementalOLRFONDInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = X
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	AstsOLSFONDItemInfo* GroupMDEntries[256];
-	int								MessageTypeLength;			// id=35    constant has constant value = X
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								GroupMDEntriesCount;
+	char							PaddingBytes2[7];
 
 	AstsIncrementalOLRFONDInfo() {
 		memset(this, 0, sizeof(AstsIncrementalOLRFONDInfo));
@@ -1354,27 +1363,26 @@ public:
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class AstsIncrementalOLRCURRInfo{
 public:
+	int								GroupMDEntriesCount;//		 offset = 0 order =  0
+	char							PaddingBytes0[4];
+	AstsOLSCURRItemInfo* GroupMDEntries[256];//		 offset = 8 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2056 order =  999
+	char							PaddingBytes1[4];
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 2064 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsIncrementalOLRCURRInfo>							*Pointer;
 	AutoAllocatePointerList<AstsIncrementalOLRCURRInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = X
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	AstsOLSCURRItemInfo* GroupMDEntries[256];
-	int								MessageTypeLength;			// id=35    constant has constant value = X
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								GroupMDEntriesCount;
+	char							PaddingBytes2[7];
 
 	AstsIncrementalOLRCURRInfo() {
 		memset(this, 0, sizeof(AstsIncrementalOLRCURRInfo));
@@ -1391,27 +1399,26 @@ public:
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class AstsIncrementalTLRFONDInfo{
 public:
+	int								GroupMDEntriesCount;//		 offset = 0 order =  0
+	char							PaddingBytes0[4];
+	AstsTLSFONDItemInfo* GroupMDEntries[256];//		 offset = 8 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2056 order =  999
+	char							PaddingBytes1[4];
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 2064 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsIncrementalTLRFONDInfo>							*Pointer;
 	AutoAllocatePointerList<AstsIncrementalTLRFONDInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = X
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	AstsTLSFONDItemInfo* GroupMDEntries[256];
-	int								MessageTypeLength;			// id=35    constant has constant value = X
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								GroupMDEntriesCount;
+	char							PaddingBytes2[7];
 
 	AstsIncrementalTLRFONDInfo() {
 		memset(this, 0, sizeof(AstsIncrementalTLRFONDInfo));
@@ -1428,27 +1435,26 @@ public:
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
 };
 
 class AstsIncrementalTLRCURRInfo{
 public:
+	int								GroupMDEntriesCount;//		 offset = 0 order =  0
+	char							PaddingBytes0[4];
+	AstsTLSCURRItemInfo* GroupMDEntries[256];//		 offset = 8 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2056 order =  999
+	char							PaddingBytes1[4];
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 2064 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsIncrementalTLRCURRInfo>							*Pointer;
 	AutoAllocatePointerList<AstsIncrementalTLRCURRInfo>							*Allocator;
 	bool							Used;
-	char							MessageType[16];			// id=35    constant has constant value = X
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							BeginString[16];			// id=8    constant has constant value = FIXT.1.1
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  predict=9  skip=true  
-	AstsTLSCURRItemInfo* GroupMDEntries[256];
-	int								MessageTypeLength;			// id=35    constant has constant value = X
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								BeginStringLength;			// id=8    constant has constant value = FIXT.1.1
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								GroupMDEntriesCount;
+	char							PaddingBytes2[7];
 
 	AstsIncrementalTLRCURRInfo() {
 		memset(this, 0, sizeof(AstsIncrementalTLRCURRInfo));
@@ -1462,6 +1468,10 @@ public:
 		if(this->Used)
 			return;
 
+		for(int i = 0; i < this->GroupMDEntriesCount; i++)
+			this->GroupMDEntries[i]->ReleaseUnused();
+	}
+	inline void ReleaseUnusedChildren() {
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -2407,14 +2417,14 @@ public:
 #pragma region Forts_Message_Info_Structures_Definition_GeneratedCode
 class FortsSnapshotInfo {
 public:
-	UINT64				PresenceMap;
-	UINT64				NullMap;
-	int				TemplateId;
-	UINT32				RptSeq;
-	UINT32				LastFragment;
-	UINT32				LastMsgSeqNumProcessed;
-	UINT64				SendingTime;
-	UINT64				SecurityID;
+	UINT64							PresenceMap;
+	UINT64							NullMap;
+	UINT32							TemplateId;
+	UINT32							RptSeq; // offset = 20
+	UINT32							LastFragment; // offset = 24
+	UINT32							LastMsgSeqNumProcessed; // offset = 28
+	UINT64							SecurityID; // offset = 32
+	char							PaddingBytes0[8];
 	FortsSnapshotInfo() {
 		memset(this, 0, sizeof(FortsSnapshotInfo));
 	}
@@ -2445,40 +2455,45 @@ class FortsDefaultIncrementalRefreshMessageInfo;
 
 class FortsDefaultSnapshotMessageMDEntriesItemInfo{
 public:
+	int								MDEntryTypeLength;			// id=269   offset = 0 order =  0
+	char							MDEntryType[4];			// id=269   offset = 4 order =  0
+	UINT32							ExchangeTradingSessionID;			// id=5842  presence=optional   offset = 8 order =  0
+	char							PaddingBytes0[4];
+	UINT64							MDEntryID;			// id=278  presence=optional   offset = 16 order =  0
+	UINT32							MarketDepth;			// id=264  presence=optional   offset = 24 order =  0
+	char							PaddingBytes1[4];
+	Decimal							MDEntryPx;			// id=270  presence=optional   offset = 32 order =  0
+	UINT32							MDEntryDate;			// id=272  presence=optional   offset = 48 order =  0
+	char							PaddingBytes2[4];
+	UINT64							MDEntryTime;			// id=273   offset = 56 order =  0
+	UINT64							MDEntrySize;			// id=271  presence=optional   offset = 64 order =  0
+	UINT32							MDPriceLevel;			// id=1023  presence=optional   offset = 72 order =  0
+	INT32							NumberOfOrders;			// id=346  presence=optional   offset = 76 order =  0
+	int								MDEntryTradeTypeLength;			// id=20003  presence=optional   offset = 80 order =  0
+	char							MDEntryTradeType[4];			// id=20003  presence=optional   offset = 84 order =  0
+	INT32							TrdType;			// id=828  presence=optional   offset = 88 order =  0
+	INT32							MDFlags;			// id=20017  presence=optional   offset = 92 order =  0
+	int								CurrencyLength;			// id=15  presence=optional   offset = 96 order =  0
+	char							Currency[4];			// id=15  presence=optional   offset = 100 order =  0
+	int								OrderSideLength;			// id=10504  presence=optional   offset = 104 order =  0
+	char							OrderSide[4];			// id=10504  presence=optional   offset = 108 order =  0
+	UINT32							MDUpdateAction;			// id=279   offset = 112 order =  0
+	char							PaddingBytes3[4];
+	UINT64							SecurityID;			// id=48  presence=optional   offset = 120 order =  0
+	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8 offset = 128 order =  0
+	int								SymbolLength;			// id=55  presence=optional   offset = 132 order =  0
+	char							Symbol[16];			// id=55  presence=optional   offset = 136 order =  0
+	int								SecurityGroupLength;			// id=1151  presence=optional   offset = 152 order =  0
+	char							SecurityGroup[16];			// id=1151  presence=optional   offset = 156 order =  0
+	UINT32							RptSeq;			// id=83   offset = 172 order =  0
+	Decimal							LastPx;			// id=31  presence=optional   offset = 176 order =  0
+	UINT64							Revision;			// id=20018  presence=optional   offset = 192 order =  0
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[4];			// id=269  
-	UINT32							ExchangeTradingSessionID;			// id=5842  presence=optional  
-	UINT64							MDEntryID;			// id=278  presence=optional  
-	UINT32							MarketDepth;			// id=264  presence=optional  
-	Decimal							MDEntryPx;			// id=270  presence=optional  
-	UINT32							MDEntryDate;			// id=272  presence=optional  
-	UINT64							MDEntryTime;			// id=273  
-	UINT64							MDEntrySize;			// id=271  presence=optional  
-	UINT32							MDPriceLevel;			// id=1023  presence=optional  
-	INT32							NumberOfOrders;			// id=346  presence=optional  
-	char							MDEntryTradeType[4];			// id=20003  presence=optional  
-	INT32							TrdType;			// id=828  presence=optional  
-	INT32							MDFlags;			// id=20017  presence=optional  
-	char							Currency[4];			// id=15  presence=optional  
-	char							OrderSide[4];			// id=10504  presence=optional  
-	UINT32							MDUpdateAction;			// id=279  
-	UINT64							SecurityID;			// id=48  presence=optional  
-	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8
-	char							Symbol[16];			// id=55  presence=optional  
-	char							SecurityGroup[16];			// id=1151  presence=optional  
-	UINT32							RptSeq;			// id=83  
-	Decimal							LastPx;			// id=31  presence=optional  
-	UINT64							Revision;			// id=20018  presence=optional  
-	int								MDEntryTypeLength;			// id=269  
-	int								MDEntryTradeTypeLength;			// id=20003  presence=optional  
-	int								CurrencyLength;			// id=15  presence=optional  
-	int								OrderSideLength;			// id=10504  presence=optional  
-	int								SymbolLength;			// id=55  presence=optional  
-	int								SecurityGroupLength;			// id=1151  presence=optional  
+	char							PaddingBytes4[7];
 
 	FortsDefaultSnapshotMessageMDEntriesItemInfo() {
 		memset(this, 0, sizeof(FortsDefaultSnapshotMessageMDEntriesItemInfo));
@@ -2494,35 +2509,38 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsDefaultSnapshotMessageInfo{
 public:
+	UINT32							LastFragment;			// id=893  presence=optional   offset = 0 order =  0
+	UINT32							RptSeq;			// id=83   offset = 4 order =  0
+	UINT32							TotNumReports;			// id=911   offset = 8 order =  0
+	UINT32							LastMsgSeqNumProcessed;			// id=369   offset = 12 order =  0
+	UINT64							SecurityID;			// id=48  presence=optional   offset = 16 order =  0
+	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8 offset = 24 order =  0
+	int								SymbolLength;			// id=55  presence=optional   offset = 28 order =  0
+	char							Symbol[16];			// id=55  presence=optional   offset = 32 order =  0
+	int								SecurityGroupLength;			// id=1151  presence=optional   offset = 48 order =  0
+	char							SecurityGroup[16];			// id=1151  presence=optional   offset = 52 order =  0
+	int								MDEntriesCount;//		 offset = 68 order =  0
+	FortsDefaultSnapshotMessageMDEntriesItemInfo* MDEntries[256];//		 offset = 72 order =  0
+	int								ApplVerIDLength;			// id=1128    constant has constant value = 9 offset = 2120 order =  999
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9 offset = 2124 order =  999
+	int								MessageTypeLength;			// id=35    constant has constant value = W offset = 2140 order =  999
+	char							MessageType[16];			// id=35    constant has constant value = W offset = 2144 order =  999
+	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX offset = 2160 order =  999
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX offset = 2164 order =  999
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2196 order =  999
+	UINT64							SendingTime;			// id=52  skip=true   offset = 2200 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsDefaultSnapshotMessageInfo>							*Pointer;
 	AutoAllocatePointerList<FortsDefaultSnapshotMessageInfo>							*Allocator;
 	bool							Used;
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							MessageType[16];			// id=35    constant has constant value = W
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  skip=true  
-	UINT32							LastFragment;			// id=893  presence=optional  
-	UINT32							RptSeq;			// id=83  
-	UINT32							TotNumReports;			// id=911  
-	UINT32							LastMsgSeqNumProcessed;			// id=369  
-	UINT64							SecurityID;			// id=48  presence=optional  
-	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8
-	char							Symbol[16];			// id=55  presence=optional  
-	char							SecurityGroup[16];			// id=1151  presence=optional  
-	FortsDefaultSnapshotMessageMDEntriesItemInfo* MDEntries[256];
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								MessageTypeLength;			// id=35    constant has constant value = W
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								SymbolLength;			// id=55  presence=optional  
-	int								SecurityGroupLength;			// id=1151  presence=optional  
-	int								MDEntriesCount;
+	char							PaddingBytes0[15];
 
 	FortsDefaultSnapshotMessageInfo() {
 		memset(this, 0, sizeof(FortsDefaultSnapshotMessageInfo));
@@ -2542,19 +2560,25 @@ public:
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->MDEntriesCount; i++)
+			this->MDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FortsSecurityDefinitionMDFeedTypesItemInfo{
 public:
+	int								MDFeedTypeLength;			// id=1022   offset = 0 order =  0
+	char							MDFeedType[16];			// id=1022   offset = 4 order =  0
+	UINT32							MarketDepth;			// id=264  presence=optional   offset = 20 order =  0
+	UINT32							MDBookType;			// id=1021  presence=optional   offset = 24 order =  0
+	char							PaddingBytes0[4];
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityDefinitionMDFeedTypesItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityDefinitionMDFeedTypesItemInfo>							*Allocator;
 	bool							Used;
-	char							MDFeedType[16];			// id=1022  
-	UINT32							MarketDepth;			// id=264  presence=optional  
-	UINT32							MDBookType;			// id=1021  presence=optional  
-	int								MDFeedTypeLength;			// id=1022  
+	char							PaddingBytes1[15];
 
 	FortsSecurityDefinitionMDFeedTypesItemInfo() {
 		memset(this, 0, sizeof(FortsSecurityDefinitionMDFeedTypesItemInfo));
@@ -2570,18 +2594,22 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsSecurityDefinitionUnderlyingsItemInfo{
 public:
+	int								UnderlyingSymbolLength;			// id=311   offset = 0 order =  0
+	char							UnderlyingSymbol[16];			// id=311   offset = 4 order =  0
+	char							PaddingBytes0[4];
+	UINT64							UnderlyingSecurityID;			// id=309  presence=optional   offset = 24 order =  0
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityDefinitionUnderlyingsItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityDefinitionUnderlyingsItemInfo>							*Allocator;
 	bool							Used;
-	char							UnderlyingSymbol[16];			// id=311  
-	UINT64							UnderlyingSecurityID;			// id=309  presence=optional  
-	int								UnderlyingSymbolLength;			// id=311  
+	char							PaddingBytes1[15];
 
 	FortsSecurityDefinitionUnderlyingsItemInfo() {
 		memset(this, 0, sizeof(FortsSecurityDefinitionUnderlyingsItemInfo));
@@ -2597,19 +2625,23 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsSecurityDefinitionInstrumentLegsItemInfo{
 public:
+	int								LegSymbolLength;			// id=600   offset = 0 order =  0
+	char							LegSymbol[16];			// id=600   offset = 4 order =  0
+	char							PaddingBytes0[4];
+	UINT64							LegSecurityID;			// id=602   offset = 24 order =  0
+	Decimal							LegRatioQty;			// id=623   offset = 32 order =  0
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityDefinitionInstrumentLegsItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityDefinitionInstrumentLegsItemInfo>							*Allocator;
 	bool							Used;
-	char							LegSymbol[16];			// id=600  
-	UINT64							LegSecurityID;			// id=602  
-	Decimal							LegRatioQty;			// id=623  
-	int								LegSymbolLength;			// id=600  
+	char							PaddingBytes1[15];
 
 	FortsSecurityDefinitionInstrumentLegsItemInfo() {
 		memset(this, 0, sizeof(FortsSecurityDefinitionInstrumentLegsItemInfo));
@@ -2625,18 +2657,21 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsSecurityDefinitionInstrumentAttributesItemInfo{
 public:
+	INT32							InstrAttribType;			// id=871   offset = 0 order =  0
+	int								InstrAttribValueLength;			// id=872   offset = 4 order =  0
+	char							InstrAttribValue[16];			// id=872   offset = 8 order =  0
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityDefinitionInstrumentAttributesItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityDefinitionInstrumentAttributesItemInfo>							*Allocator;
 	bool							Used;
-	INT32							InstrAttribType;			// id=871  
-	char							InstrAttribValue[16];			// id=872  
-	int								InstrAttribValueLength;			// id=872  
+	char							PaddingBytes0[7];
 
 	FortsSecurityDefinitionInstrumentAttributesItemInfo() {
 		memset(this, 0, sizeof(FortsSecurityDefinitionInstrumentAttributesItemInfo));
@@ -2652,18 +2687,21 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsSecurityDefinitionEvntGrpItemInfo{
 public:
+	INT32							EventType;			// id=865   offset = 0 order =  0
+	UINT32							EventDate;			// id=866   offset = 4 order =  0
+	UINT64							EventTime;			// id=1145   offset = 8 order =  0
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityDefinitionEvntGrpItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityDefinitionEvntGrpItemInfo>							*Allocator;
 	bool							Used;
-	INT32							EventType;			// id=865  
-	UINT32							EventDate;			// id=866  
-	UINT64							EventTime;			// id=1145  
+	char							PaddingBytes0[15];
 
 	FortsSecurityDefinitionEvntGrpItemInfo() {
 		memset(this, 0, sizeof(FortsSecurityDefinitionEvntGrpItemInfo));
@@ -2679,76 +2717,87 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsSecurityDefinitionInfo{
 public:
+	UINT32							TotNumReports;			// id=911   offset = 0 order =  0
+	int								SymbolLength;			// id=55   offset = 4 order =  0
+	char							Symbol[16];			// id=55   offset = 8 order =  0
+	int								SecurityDescLength;			// id=107  presence=optional  charset=unicode   offset = 24 order =  0
+	unsigned char							SecurityDesc[128];			// id=107  presence=optional  charset=unicode   offset = 28
+	char							PaddingBytes0[4];
+	UINT64							SecurityID;			// id=48   offset = 48 order =  0
+	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8 offset = 56 order =  0
+	int								SecurityAltIDLength;			// id=455  presence=optional   offset = 60 order =  0
+	char							SecurityAltID[16];			// id=455  presence=optional   offset = 64 order =  0
+	int								SecurityAltIDSourceLength;			// id=456  presence=optional   offset = 80 order =  0
+	char							SecurityAltIDSource[16];			// id=456  presence=optional   offset = 84 order =  0
+	int								SecurityTypeLength;			// id=167  presence=optional   offset = 100 order =  0
+	char							SecurityType[16];			// id=167  presence=optional   offset = 104 order =  0
+	int								CFICodeLength;			// id=461  presence=optional   offset = 120 order =  0
+	char							CFICode[16];			// id=461  presence=optional   offset = 124 order =  0
+	char							PaddingBytes1[4];
+	Decimal							StrikePrice;			// id=202  presence=optional   offset = 144 order =  0
+	Decimal							ContractMultiplier;			// id=231  presence=optional   offset = 160 order =  0
+	UINT32							SecurityTradingStatus;			// id=326  presence=optional   offset = 176 order =  0
+	int								CurrencyLength;			// id=15  presence=optional   offset = 180 order =  0
+	char							Currency[4];			// id=15  presence=optional   offset = 184 order =  0
+	int								MarketIDLength;			// id=1301    constant has constant value = MOEX offset = 188 order =  0
+	char							MarketID[16];			// id=1301    constant has constant value = MOEX offset = 192 order =  0
+	int								MarketSegmentIDLength;			// id=1300   offset = 208 order =  0
+	char							MarketSegmentID[16];			// id=1300   offset = 212 order =  0
+	UINT32							TradingSessionID;			// id=336  presence=optional   offset = 228 order =  0
+	UINT32							ExchangeTradingSessionID;			// id=5842  presence=optional   offset = 232 order =  0
+	char							PaddingBytes2[4];
+	Decimal							Volatility;			// id=5678  presence=optional   offset = 240 order =  0
+	int								MDFeedTypesCount;//		 offset = 256 order =  0
+	char							PaddingBytes3[4];
+	FortsSecurityDefinitionMDFeedTypesItemInfo* MDFeedTypes[256];//		 offset = 264 order =  0
+	int								UnderlyingsCount;//		 offset = 2312 order =  0
+	char							PaddingBytes4[4];
+	FortsSecurityDefinitionUnderlyingsItemInfo* Underlyings[256];			// presence=optional  //		 offset = 2320 order =  0
+	Decimal							HighLimitPx;			// id=1149  presence=optional   offset = 4368 order =  0
+	Decimal							LowLimitPx;			// id=1148  presence=optional   offset = 4384 order =  0
+	Decimal							MinPriceIncrement;			// id=969  presence=optional   offset = 4400 order =  0
+	Decimal							MinPriceIncrementAmount;			// id=1146  presence=optional   offset = 4416 order =  0
+	Decimal							InitialMarginOnBuy;			// id=20002  presence=optional   offset = 4432 order =  0
+	Decimal							InitialMarginOnSell;			// id=20000  presence=optional   offset = 4448 order =  0
+	Decimal							InitialMarginSyntetic;			// id=20001  presence=optional   offset = 4464 order =  0
+	int								QuotationListLength;			// id=20005  presence=optional   offset = 4480 order =  0
+	char							QuotationList[16];			// id=20005  presence=optional   offset = 4484 order =  0
+	char							PaddingBytes5[4];
+	Decimal							TheorPrice;			// id=20006  presence=optional   offset = 4504 order =  0
+	Decimal							TheorPriceLimit;			// id=20007  presence=optional   offset = 4520 order =  0
+	int								InstrumentLegsCount;//		 offset = 4536 order =  0
+	char							PaddingBytes6[4];
+	FortsSecurityDefinitionInstrumentLegsItemInfo* InstrumentLegs[256];			// presence=optional  //		 offset = 4544 order =  0
+	int								InstrumentAttributesCount;//		 offset = 6592 order =  0
+	char							PaddingBytes7[4];
+	FortsSecurityDefinitionInstrumentAttributesItemInfo* InstrumentAttributes[256];			// presence=optional  //		 offset = 6600 order =  0
+	Decimal							UnderlyingQty;			// id=879  presence=optional   offset = 8648 order =  0
+	int								UnderlyingCurrencyLength;			// id=318  presence=optional   offset = 8664 order =  0
+	char							UnderlyingCurrency[16];			// id=318  presence=optional   offset = 8668 order =  0
+	int								EvntGrpCount;//		 offset = 8684 order =  0
+	FortsSecurityDefinitionEvntGrpItemInfo* EvntGrp[256];			// presence=optional  //		 offset = 8688 order =  0
+	UINT32							MaturityDate;			// id=541  presence=optional   offset = 10736 order =  0
+	UINT32							MaturityTime;			// id=1079  presence=optional   offset = 10740 order =  0
+	int								ApplVerIDLength;			// id=1128    constant has constant value = 9 offset = 10744 order =  999
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9 offset = 10748 order =  999
+	int								MessageTypeLength;			// id=35    constant has constant value = d offset = 10764 order =  999
+	char							MessageType[16];			// id=35    constant has constant value = d offset = 10768 order =  999
+	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX offset = 10784 order =  999
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX offset = 10788 order =  999
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 10820 order =  999
+	UINT64							SendingTime;			// id=52  skip=true   offset = 10824 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityDefinitionInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityDefinitionInfo>							*Allocator;
 	bool							Used;
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							MessageType[16];			// id=35    constant has constant value = d
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  skip=true  
-	UINT32							TotNumReports;			// id=911  
-	char							Symbol[16];			// id=55  
-	unsigned char							SecurityDesc[128];			// id=107  presence=optional  charset=unicode  
-	UINT64							SecurityID;			// id=48  
-	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8
-	char							SecurityAltID[16];			// id=455  presence=optional  
-	char							SecurityAltIDSource[16];			// id=456  presence=optional  
-	char							SecurityType[16];			// id=167  presence=optional  
-	char							CFICode[16];			// id=461  presence=optional  
-	Decimal							StrikePrice;			// id=202  presence=optional  
-	Decimal							ContractMultiplier;			// id=231  presence=optional  
-	UINT32							SecurityTradingStatus;			// id=326  presence=optional  
-	char							Currency[4];			// id=15  presence=optional  
-	char							MarketID[16];			// id=1301    constant has constant value = MOEX
-	char							MarketSegmentID[16];			// id=1300  
-	UINT32							TradingSessionID;			// id=336  presence=optional  
-	UINT32							ExchangeTradingSessionID;			// id=5842  presence=optional  
-	Decimal							Volatility;			// id=5678  presence=optional  
-	FortsSecurityDefinitionMDFeedTypesItemInfo* MDFeedTypes[256];
-	FortsSecurityDefinitionUnderlyingsItemInfo* Underlyings[256];			// presence=optional  
-	Decimal							HighLimitPx;			// id=1149  presence=optional  
-	Decimal							LowLimitPx;			// id=1148  presence=optional  
-	Decimal							MinPriceIncrement;			// id=969  presence=optional  
-	Decimal							MinPriceIncrementAmount;			// id=1146  presence=optional  
-	Decimal							InitialMarginOnBuy;			// id=20002  presence=optional  
-	Decimal							InitialMarginOnSell;			// id=20000  presence=optional  
-	Decimal							InitialMarginSyntetic;			// id=20001  presence=optional  
-	char							QuotationList[16];			// id=20005  presence=optional  
-	Decimal							TheorPrice;			// id=20006  presence=optional  
-	Decimal							TheorPriceLimit;			// id=20007  presence=optional  
-	FortsSecurityDefinitionInstrumentLegsItemInfo* InstrumentLegs[256];			// presence=optional  
-	FortsSecurityDefinitionInstrumentAttributesItemInfo* InstrumentAttributes[256];			// presence=optional  
-	Decimal							UnderlyingQty;			// id=879  presence=optional  
-	char							UnderlyingCurrency[16];			// id=318  presence=optional  
-	FortsSecurityDefinitionEvntGrpItemInfo* EvntGrp[256];			// presence=optional  
-	UINT32							MaturityDate;			// id=541  presence=optional  
-	UINT32							MaturityTime;			// id=1079  presence=optional  
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								MessageTypeLength;			// id=35    constant has constant value = d
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								SymbolLength;			// id=55  
-	int								SecurityDescLength;			// id=107  presence=optional  charset=unicode  
-	int								SecurityAltIDLength;			// id=455  presence=optional  
-	int								SecurityAltIDSourceLength;			// id=456  presence=optional  
-	int								SecurityTypeLength;			// id=167  presence=optional  
-	int								CFICodeLength;			// id=461  presence=optional  
-	int								CurrencyLength;			// id=15  presence=optional  
-	int								MarketIDLength;			// id=1301    constant has constant value = MOEX
-	int								MarketSegmentIDLength;			// id=1300  
-	int								MDFeedTypesCount;
-	int								UnderlyingsCount;			// presence=optional  
-	int								QuotationListLength;			// id=20005  presence=optional  
-	int								InstrumentLegsCount;			// presence=optional  
-	int								InstrumentAttributesCount;			// presence=optional  
-	int								UnderlyingCurrencyLength;			// id=318  presence=optional  
-	int								EvntGrpCount;			// presence=optional  
+	char							PaddingBytes8[15];
 
 	FortsSecurityDefinitionInfo() {
 		memset(this, 0, sizeof(FortsSecurityDefinitionInfo));
@@ -2784,28 +2833,42 @@ public:
 		for(int i = 0; i < this->EvntGrpCount; i++)
 			this->EvntGrp[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->MDFeedTypesCount; i++)
+			this->MDFeedTypes[i]->ReleaseUnused();
+		for(int i = 0; i < this->UnderlyingsCount; i++)
+			this->Underlyings[i]->ReleaseUnused();
+		for(int i = 0; i < this->InstrumentLegsCount; i++)
+			this->InstrumentLegs[i]->ReleaseUnused();
+		for(int i = 0; i < this->InstrumentAttributesCount; i++)
+			this->InstrumentAttributes[i]->ReleaseUnused();
+		for(int i = 0; i < this->EvntGrpCount; i++)
+			this->EvntGrp[i]->ReleaseUnused();
+	}
 };
 
 class FortsSecurityDefinitionUpdateReportInfo{
 public:
+	UINT64							SecurityID;			// id=48   offset = 0 order =  0
+	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8 offset = 8 order =  0
+	char							PaddingBytes0[4];
+	Decimal							Volatility;			// id=5678  presence=optional   offset = 16 order =  0
+	Decimal							TheorPrice;			// id=20006  presence=optional   offset = 32 order =  0
+	Decimal							TheorPriceLimit;			// id=20007  presence=optional   offset = 48 order =  0
+	int								ApplVerIDLength;			// id=1128    constant has constant value = 9 offset = 64 order =  999
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9 offset = 68 order =  999
+	int								MessageTypeLength;			// id=35    constant has constant value = BP offset = 84 order =  999
+	char							MessageType[16];			// id=35    constant has constant value = BP offset = 88 order =  999
+	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX offset = 104 order =  999
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX offset = 108 order =  999
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 140 order =  999
+	UINT64							SendingTime;			// id=52  skip=true   offset = 144 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityDefinitionUpdateReportInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityDefinitionUpdateReportInfo>							*Allocator;
 	bool							Used;
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							MessageType[16];			// id=35    constant has constant value = BP
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  skip=true  
-	UINT64							SecurityID;			// id=48  
-	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8
-	Decimal							Volatility;			// id=5678  presence=optional  
-	Decimal							TheorPrice;			// id=20006  presence=optional  
-	Decimal							TheorPriceLimit;			// id=20007  presence=optional  
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								MessageTypeLength;			// id=35    constant has constant value = BP
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
+	char							PaddingBytes1[7];
 
 	FortsSecurityDefinitionUpdateReportInfo() {
 		memset(this, 0, sizeof(FortsSecurityDefinitionUpdateReportInfo));
@@ -2821,33 +2884,37 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsSecurityStatusInfo{
 public:
+	UINT64							SecurityID;			// id=48   offset = 0 order =  0
+	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8 offset = 8 order =  0
+	int								SymbolLength;			// id=55   offset = 12 order =  0
+	char							Symbol[16];			// id=55   offset = 16 order =  0
+	UINT32							SecurityTradingStatus;			// id=326  presence=optional   offset = 32 order =  0
+	char							PaddingBytes0[4];
+	Decimal							HighLimitPx;			// id=1149  presence=optional   offset = 40 order =  0
+	Decimal							LowLimitPx;			// id=1148  presence=optional   offset = 56 order =  0
+	Decimal							InitialMarginOnBuy;			// id=20002  presence=optional   offset = 72 order =  0
+	Decimal							InitialMarginOnSell;			// id=20000  presence=optional   offset = 88 order =  0
+	Decimal							InitialMarginSyntetic;			// id=20001  presence=optional   offset = 104 order =  0
+	int								ApplVerIDLength;			// id=1128    constant has constant value = 9 offset = 120 order =  999
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9 offset = 124 order =  999
+	int								MessageTypeLength;			// id=35    constant has constant value = f offset = 140 order =  999
+	char							MessageType[16];			// id=35    constant has constant value = f offset = 144 order =  999
+	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX offset = 160 order =  999
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX offset = 164 order =  999
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 196 order =  999
+	UINT64							SendingTime;			// id=52  skip=true   offset = 200 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityStatusInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityStatusInfo>							*Allocator;
 	bool							Used;
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							MessageType[16];			// id=35    constant has constant value = f
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  skip=true  
-	UINT64							SecurityID;			// id=48  
-	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8
-	char							Symbol[16];			// id=55  
-	UINT32							SecurityTradingStatus;			// id=326  presence=optional  
-	Decimal							HighLimitPx;			// id=1149  presence=optional  
-	Decimal							LowLimitPx;			// id=1148  presence=optional  
-	Decimal							InitialMarginOnBuy;			// id=20002  presence=optional  
-	Decimal							InitialMarginOnSell;			// id=20000  presence=optional  
-	Decimal							InitialMarginSyntetic;			// id=20001  presence=optional  
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								MessageTypeLength;			// id=35    constant has constant value = f
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								SymbolLength;			// id=55  
+	char							PaddingBytes1[15];
 
 	FortsSecurityStatusInfo() {
 		memset(this, 0, sizeof(FortsSecurityStatusInfo));
@@ -2863,23 +2930,26 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsHeartbeatInfo{
 public:
+	int								ApplVerIDLength;			// id=1128    constant has constant value = 9 offset = 0 order =  999
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9 offset = 4 order =  999
+	int								MessageTypeLength;			// id=35    constant has constant value = 0 offset = 20 order =  999
+	char							MessageType[16];			// id=35    constant has constant value = 0 offset = 24 order =  999
+	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX offset = 40 order =  999
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX offset = 44 order =  999
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 76 order =  999
+	UINT64							SendingTime;			// id=52  skip=true   offset = 80 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsHeartbeatInfo>							*Pointer;
 	AutoAllocatePointerList<FortsHeartbeatInfo>							*Allocator;
 	bool							Used;
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							MessageType[16];			// id=35    constant has constant value = 0
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  skip=true  
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								MessageTypeLength;			// id=35    constant has constant value = 0
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
+	char							PaddingBytes0[7];
 
 	FortsHeartbeatInfo() {
 		memset(this, 0, sizeof(FortsHeartbeatInfo));
@@ -2895,24 +2965,28 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsSequenceResetInfo{
 public:
+	UINT32							NewSeqNo;			// id=36   offset = 0 order =  0
+	int								ApplVerIDLength;			// id=1128    constant has constant value = 9 offset = 4 order =  999
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9 offset = 8 order =  999
+	int								MessageTypeLength;			// id=35    constant has constant value = 4 offset = 24 order =  999
+	char							MessageType[16];			// id=35    constant has constant value = 4 offset = 28 order =  999
+	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX offset = 44 order =  999
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX offset = 48 order =  999
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 80 order =  999
+	char							PaddingBytes0[4];
+	UINT64							SendingTime;			// id=52  skip=true   offset = 88 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsSequenceResetInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSequenceResetInfo>							*Allocator;
 	bool							Used;
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							MessageType[16];			// id=35    constant has constant value = 4
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  skip=true  
-	UINT32							NewSeqNo;			// id=36  
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								MessageTypeLength;			// id=35    constant has constant value = 4
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
+	char							PaddingBytes1[15];
 
 	FortsSequenceResetInfo() {
 		memset(this, 0, sizeof(FortsSequenceResetInfo));
@@ -2928,35 +3002,38 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsTradingSessionStatusInfo{
 public:
+	UINT64							TradSesOpenTime;			// id=342   offset = 0 order =  0
+	UINT64							TradSesCloseTime;			// id=344   offset = 8 order =  0
+	UINT64							TradSesIntermClearingStartTime;			// id=5840  presence=optional   offset = 16 order =  0
+	UINT64							TradSesIntermClearingEndTime;			// id=5841  presence=optional   offset = 24 order =  0
+	UINT32							TradingSessionID;			// id=336   offset = 32 order =  0
+	UINT32							ExchangeTradingSessionID;			// id=5842  presence=optional   offset = 36 order =  0
+	UINT32							TradSesStatus;			// id=340   offset = 40 order =  0
+	int								MarketIDLength;			// id=1301    constant has constant value = MOEX offset = 44 order =  0
+	char							MarketID[16];			// id=1301    constant has constant value = MOEX offset = 48 order =  0
+	int								MarketSegmentIDLength;			// id=1300   offset = 64 order =  0
+	char							MarketSegmentID[16];			// id=1300   offset = 68 order =  0
+	INT32							TradSesEvent;			// id=1368  presence=optional   offset = 84 order =  0
+	int								ApplVerIDLength;			// id=1128    constant has constant value = 9 offset = 88 order =  999
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9 offset = 92 order =  999
+	int								MessageTypeLength;			// id=35    constant has constant value = h offset = 108 order =  999
+	char							MessageType[16];			// id=35    constant has constant value = h offset = 112 order =  999
+	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX offset = 128 order =  999
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX offset = 132 order =  999
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 164 order =  999
+	UINT64							SendingTime;			// id=52  skip=true   offset = 168 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsTradingSessionStatusInfo>							*Pointer;
 	AutoAllocatePointerList<FortsTradingSessionStatusInfo>							*Allocator;
 	bool							Used;
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							MessageType[16];			// id=35    constant has constant value = h
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  skip=true  
-	UINT64							TradSesOpenTime;			// id=342  
-	UINT64							TradSesCloseTime;			// id=344  
-	UINT64							TradSesIntermClearingStartTime;			// id=5840  presence=optional  
-	UINT64							TradSesIntermClearingEndTime;			// id=5841  presence=optional  
-	UINT32							TradingSessionID;			// id=336  
-	UINT32							ExchangeTradingSessionID;			// id=5842  presence=optional  
-	UINT32							TradSesStatus;			// id=340  
-	char							MarketID[16];			// id=1301    constant has constant value = MOEX
-	char							MarketSegmentID[16];			// id=1300  
-	INT32							TradSesEvent;			// id=1368  presence=optional  
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								MessageTypeLength;			// id=35    constant has constant value = h
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								MarketIDLength;			// id=1301    constant has constant value = MOEX
-	int								MarketSegmentIDLength;			// id=1300  
+	char							PaddingBytes0[15];
 
 	FortsTradingSessionStatusInfo() {
 		memset(this, 0, sizeof(FortsTradingSessionStatusInfo));
@@ -2972,17 +3049,21 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsNewsNewsTextItemInfo{
 public:
+	int								TextLength;			// id=58  charset=unicode   offset = 0 order =  0
+	unsigned char							Text[128];			// id=58  charset=unicode   offset = 4
+	char							PaddingBytes0[4];
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsNewsNewsTextItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsNewsNewsTextItemInfo>							*Allocator;
 	bool							Used;
-	unsigned char							Text[128];			// id=58  charset=unicode  
-	int								TextLength;			// id=58  charset=unicode  
+	char							PaddingBytes1[7];
 
 	FortsNewsNewsTextItemInfo() {
 		memset(this, 0, sizeof(FortsNewsNewsTextItemInfo));
@@ -2998,38 +3079,41 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsNewsInfo{
 public:
+	UINT32							LastFragment;			// id=893  presence=optional   offset = 0 order =  0
+	int								NewsIdLength;			// id=1472  presence=optional   offset = 4 order =  0
+	char							NewsId[16];			// id=1472  presence=optional   offset = 8 order =  0
+	UINT64							OrigTime;			// id=42  presence=optional   offset = 24 order =  0
+	int								LanguageCodeLength;			// id=1474  presence=optional   offset = 32 order =  0
+	char							LanguageCode[16];			// id=1474  presence=optional   offset = 36 order =  0
+	UINT32							Urgency;			// id=61  presence=optional   offset = 52 order =  0
+	int								HeadlineLength;			// id=148  charset=unicode   offset = 56 order =  0
+	unsigned char							Headline[128];			// id=148  charset=unicode   offset = 60
+	int								MarketIDLength;			// id=1301    constant has constant value = MOEX offset = 76 order =  0
+	char							MarketID[16];			// id=1301    constant has constant value = MOEX offset = 80 order =  0
+	int								MarketSegmentIDLength;			// id=1300  presence=optional   offset = 96 order =  0
+	char							MarketSegmentID[16];			// id=1300  presence=optional   offset = 100 order =  0
+	int								NewsTextCount;//		 offset = 116 order =  0
+	FortsNewsNewsTextItemInfo* NewsText[256];//		 offset = 120 order =  0
+	int								ApplVerIDLength;			// id=1128    constant has constant value = 9 offset = 2168 order =  999
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9 offset = 2172 order =  999
+	int								MessageTypeLength;			// id=35    constant has constant value = B offset = 2188 order =  999
+	char							MessageType[16];			// id=35    constant has constant value = B offset = 2192 order =  999
+	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX offset = 2208 order =  999
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX offset = 2212 order =  999
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2244 order =  999
+	UINT64							SendingTime;			// id=52  skip=true   offset = 2248 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsNewsInfo>							*Pointer;
 	AutoAllocatePointerList<FortsNewsInfo>							*Allocator;
 	bool							Used;
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							MessageType[16];			// id=35    constant has constant value = B
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  skip=true  
-	UINT32							LastFragment;			// id=893  presence=optional  
-	char							NewsId[16];			// id=1472  presence=optional  
-	UINT64							OrigTime;			// id=42  presence=optional  
-	char							LanguageCode[16];			// id=1474  presence=optional  
-	UINT32							Urgency;			// id=61  presence=optional  
-	unsigned char							Headline[128];			// id=148  charset=unicode  
-	char							MarketID[16];			// id=1301    constant has constant value = MOEX
-	char							MarketSegmentID[16];			// id=1300  presence=optional  
-	FortsNewsNewsTextItemInfo* NewsText[256];
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								MessageTypeLength;			// id=35    constant has constant value = B
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								NewsIdLength;			// id=1472  presence=optional  
-	int								LanguageCodeLength;			// id=1474  presence=optional  
-	int								HeadlineLength;			// id=148  charset=unicode  
-	int								MarketIDLength;			// id=1301    constant has constant value = MOEX
-	int								MarketSegmentIDLength;			// id=1300  presence=optional  
-	int								NewsTextCount;
+	char							PaddingBytes0[15];
 
 	FortsNewsInfo() {
 		memset(this, 0, sizeof(FortsNewsInfo));
@@ -3049,32 +3133,40 @@ public:
 		for(int i = 0; i < this->NewsTextCount; i++)
 			this->NewsText[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->NewsTextCount; i++)
+			this->NewsText[i]->ReleaseUnused();
+	}
 };
 
 class FortsOrdersLogMDEntriesItemInfo{
 public:
+	UINT32							MDUpdateAction;			// id=279   offset = 0 order =  0
+	int								MDEntryTypeLength;			// id=269   offset = 4 order =  0
+	char							MDEntryType[4];			// id=269   offset = 8 order =  0
+	char							PaddingBytes0[4];
+	UINT64							MDEntryID;			// id=278  presence=optional   offset = 16 order =  0
+	UINT64							SecurityID;			// id=48  presence=optional   offset = 24 order =  0
+	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8 offset = 32 order =  0
+	UINT32							RptSeq;			// id=83  presence=optional   offset = 36 order =  0
+	UINT32							MDEntryDate;			// id=272  presence=optional   offset = 40 order =  0
+	char							PaddingBytes1[4];
+	UINT64							MDEntryTime;			// id=273   offset = 48 order =  0
+	Decimal							MDEntryPx;			// id=270  presence=optional   offset = 56 order =  0
+	UINT64							MDEntrySize;			// id=271  presence=optional   offset = 72 order =  0
+	Decimal							LastPx;			// id=31  presence=optional   offset = 80 order =  0
+	UINT64							LastQty;			// id=32  presence=optional   offset = 96 order =  0
+	UINT64							TradeID;			// id=1003  presence=optional   offset = 104 order =  0
+	UINT32							ExchangeTradingSessionID;			// id=5842  presence=optional   offset = 112 order =  0
+	char							PaddingBytes2[4];
+	UINT64							MDFlags;			// id=20017  presence=optional   offset = 120 order =  0
+	UINT64							Revision;			// id=20018  presence=optional   offset = 128 order =  0
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsOrdersLogMDEntriesItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsOrdersLogMDEntriesItemInfo>							*Allocator;
 	bool							Used;
-	UINT32							MDUpdateAction;			// id=279  
-	char							MDEntryType[4];			// id=269  
-	UINT64							MDEntryID;			// id=278  presence=optional  
-	UINT64							SecurityID;			// id=48  presence=optional  
-	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8
-	UINT32							RptSeq;			// id=83  presence=optional  
-	UINT32							MDEntryDate;			// id=272  presence=optional  
-	UINT64							MDEntryTime;			// id=273  
-	Decimal							MDEntryPx;			// id=270  presence=optional  
-	UINT64							MDEntrySize;			// id=271  presence=optional  
-	Decimal							LastPx;			// id=31  presence=optional  
-	UINT64							LastQty;			// id=32  presence=optional  
-	UINT64							TradeID;			// id=1003  presence=optional  
-	UINT32							ExchangeTradingSessionID;			// id=5842  presence=optional  
-	UINT64							MDFlags;			// id=20017  presence=optional  
-	UINT64							Revision;			// id=20018  presence=optional  
-	int								MDEntryTypeLength;			// id=269  
+	char							PaddingBytes3[7];
 
 	FortsOrdersLogMDEntriesItemInfo() {
 		memset(this, 0, sizeof(FortsOrdersLogMDEntriesItemInfo));
@@ -3090,26 +3182,29 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsOrdersLogInfo{
 public:
+	UINT32							LastFragment;			// id=893   offset = 0 order =  0
+	int								MDEntriesCount;//		 offset = 4 order =  0
+	FortsOrdersLogMDEntriesItemInfo* MDEntries[256];//		 offset = 8 order =  0
+	int								ApplVerIDLength;			// id=1128    constant has constant value = 9 offset = 2056 order =  999
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9 offset = 2060 order =  999
+	int								MessageTypeLength;			// id=35    constant has constant value = X offset = 2076 order =  999
+	char							MessageType[16];			// id=35    constant has constant value = X offset = 2080 order =  999
+	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX offset = 2096 order =  999
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX offset = 2100 order =  999
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2132 order =  999
+	UINT64							SendingTime;			// id=52  skip=true   offset = 2136 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsOrdersLogInfo>							*Pointer;
 	AutoAllocatePointerList<FortsOrdersLogInfo>							*Allocator;
 	bool							Used;
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							MessageType[16];			// id=35    constant has constant value = X
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  skip=true  
-	UINT32							LastFragment;			// id=893  
-	FortsOrdersLogMDEntriesItemInfo* MDEntries[256];
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								MessageTypeLength;			// id=35    constant has constant value = X
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								MDEntriesCount;
+	char							PaddingBytes0[15];
 
 	FortsOrdersLogInfo() {
 		memset(this, 0, sizeof(FortsOrdersLogInfo));
@@ -3129,24 +3224,30 @@ public:
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->MDEntriesCount; i++)
+			this->MDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FortsOrdersBookMDEntriesItemInfo{
 public:
+	int								MDEntryTypeLength;			// id=269   offset = 0 order =  0
+	char							MDEntryType[4];			// id=269   offset = 4 order =  0
+	UINT64							MDEntryID;			// id=278  presence=optional   offset = 8 order =  0
+	UINT32							MDEntryDate;			// id=272  presence=optional   offset = 16 order =  0
+	char							PaddingBytes0[4];
+	UINT64							MDEntryTime;			// id=273   offset = 24 order =  0
+	Decimal							MDEntryPx;			// id=270  presence=optional   offset = 32 order =  0
+	UINT64							MDEntrySize;			// id=271  presence=optional   offset = 48 order =  0
+	UINT64							TradeID;			// id=1003  presence=optional   offset = 56 order =  0
+	UINT64							MDFlags;			// id=20017  presence=optional   offset = 64 order =  0
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsOrdersBookMDEntriesItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsOrdersBookMDEntriesItemInfo>							*Allocator;
 	bool							Used;
-	char							MDEntryType[4];			// id=269  
-	UINT64							MDEntryID;			// id=278  presence=optional  
-	UINT32							MDEntryDate;			// id=272  presence=optional  
-	UINT64							MDEntryTime;			// id=273  
-	Decimal							MDEntryPx;			// id=270  presence=optional  
-	UINT64							MDEntrySize;			// id=271  presence=optional  
-	UINT64							TradeID;			// id=1003  presence=optional  
-	UINT64							MDFlags;			// id=20017  presence=optional  
-	int								MDEntryTypeLength;			// id=269  
+	char							PaddingBytes1[7];
 
 	FortsOrdersBookMDEntriesItemInfo() {
 		memset(this, 0, sizeof(FortsOrdersBookMDEntriesItemInfo));
@@ -3162,32 +3263,36 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsOrdersBookInfo{
 public:
+	UINT32							LastMsgSeqNumProcessed;			// id=369   offset = 0 order =  0
+	UINT32							RptSeq;			// id=83  presence=optional   offset = 4 order =  0
+	UINT32							LastFragment;			// id=893   offset = 8 order =  0
+	UINT32							RouteFirst;			// id=7944   offset = 12 order =  0
+	UINT32							ExchangeTradingSessionID;			// id=5842   offset = 16 order =  0
+	char							PaddingBytes0[4];
+	UINT64							SecurityID;			// id=48  presence=optional   offset = 24 order =  0
+	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8 offset = 32 order =  0
+	int								MDEntriesCount;//		 offset = 36 order =  0
+	FortsOrdersBookMDEntriesItemInfo* MDEntries[256];//		 offset = 40 order =  0
+	int								ApplVerIDLength;			// id=1128    constant has constant value = 9 offset = 2088 order =  999
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9 offset = 2092 order =  999
+	int								MessageTypeLength;			// id=35    constant has constant value = W offset = 2108 order =  999
+	char							MessageType[16];			// id=35    constant has constant value = W offset = 2112 order =  999
+	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX offset = 2128 order =  999
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX offset = 2132 order =  999
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2164 order =  999
+	UINT64							SendingTime;			// id=52  skip=true   offset = 2168 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsOrdersBookInfo>							*Pointer;
 	AutoAllocatePointerList<FortsOrdersBookInfo>							*Allocator;
 	bool							Used;
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							MessageType[16];			// id=35    constant has constant value = W
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  skip=true  
-	UINT32							LastMsgSeqNumProcessed;			// id=369  
-	UINT32							RptSeq;			// id=83  presence=optional  
-	UINT32							LastFragment;			// id=893  
-	UINT32							RouteFirst;			// id=7944  
-	UINT32							ExchangeTradingSessionID;			// id=5842  
-	UINT64							SecurityID;			// id=48  presence=optional  
-	UINT32							SecurityIDSource;			// id=22    constant has constant value = 8
-	FortsOrdersBookMDEntriesItemInfo* MDEntries[256];
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								MessageTypeLength;			// id=35    constant has constant value = W
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								MDEntriesCount;
+	char							PaddingBytes1[15];
 
 	FortsOrdersBookInfo() {
 		memset(this, 0, sizeof(FortsOrdersBookInfo));
@@ -3207,23 +3312,28 @@ public:
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->ReleaseUnused();
 	}
+	inline void ReleaseUnusedChildren() {
+		for(int i = 0; i < this->MDEntriesCount; i++)
+			this->MDEntries[i]->ReleaseUnused();
+	}
 };
 
 class FortsLogonInfo{
 public:
+	int								ApplVerIDLength;			// id=1128    constant has constant value = 9 offset = 0 order =  999
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9 offset = 4 order =  999
+	int								MessageTypeLength;			// id=35    constant has constant value = A offset = 20 order =  999
+	char							MessageType[16];			// id=35    constant has constant value = A offset = 24 order =  999
+	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX offset = 40 order =  999
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX offset = 44 order =  999
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 76 order =  999
+	UINT64							SendingTime;			// id=52  skip=true   offset = 80 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsLogonInfo>							*Pointer;
 	AutoAllocatePointerList<FortsLogonInfo>							*Allocator;
 	bool							Used;
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							MessageType[16];			// id=35    constant has constant value = A
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  skip=true  
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								MessageTypeLength;			// id=35    constant has constant value = A
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
+	char							PaddingBytes0[7];
 
 	FortsLogonInfo() {
 		memset(this, 0, sizeof(FortsLogonInfo));
@@ -3239,25 +3349,29 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsLogoutInfo{
 public:
+	int								TextLength;			// id=58  presence=optional   offset = 0 order =  0
+	char							Text[512];			// id=58  presence=optional   offset = 4 order =  0
+	int								ApplVerIDLength;			// id=1128    constant has constant value = 9 offset = 516 order =  999
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9 offset = 520 order =  999
+	int								MessageTypeLength;			// id=35    constant has constant value = 5 offset = 536 order =  999
+	char							MessageType[16];			// id=35    constant has constant value = 5 offset = 540 order =  999
+	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX offset = 556 order =  999
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX offset = 560 order =  999
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 592 order =  999
+	char							PaddingBytes0[4];
+	UINT64							SendingTime;			// id=52  skip=true   offset = 600 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsLogoutInfo>							*Pointer;
 	AutoAllocatePointerList<FortsLogoutInfo>							*Allocator;
 	bool							Used;
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							MessageType[16];			// id=35    constant has constant value = 5
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  skip=true  
-	char							Text[512];			// id=58  presence=optional  
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								MessageTypeLength;			// id=35    constant has constant value = 5
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								TextLength;			// id=58  presence=optional  
+	char							PaddingBytes1[15];
 
 	FortsLogoutInfo() {
 		memset(this, 0, sizeof(FortsLogoutInfo));
@@ -3273,26 +3387,29 @@ public:
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
+	inline void ReleaseUnusedChildren() {
+	}
 };
 
 class FortsDefaultIncrementalRefreshMessageInfo{
 public:
+	UINT32							LastFragment;			// id=893  presence=optional   offset = 0 order =  0
+	int								MDEntriesCount;//		 offset = 4 order =  0
+	FortsDefaultSnapshotMessageMDEntriesItemInfo* MDEntries[256];//		 offset = 8 order =  0
+	int								ApplVerIDLength;			// id=1128    constant has constant value = 9 offset = 2056 order =  999
+	char							ApplVerID[16];			// id=1128    constant has constant value = 9 offset = 2060 order =  999
+	int								MessageTypeLength;			// id=35    constant has constant value = X offset = 2076 order =  999
+	char							MessageType[16];			// id=35    constant has constant value = X offset = 2080 order =  999
+	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX offset = 2096 order =  999
+	char							SenderCompID[32];			// id=49    constant has constant value = MOEX offset = 2100 order =  999
+	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2132 order =  999
+	UINT64							SendingTime;			// id=52  skip=true   offset = 2136 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<FortsDefaultIncrementalRefreshMessageInfo>							*Pointer;
 	AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageInfo>							*Allocator;
 	bool							Used;
-	char							ApplVerID[16];			// id=1128    constant has constant value = 9
-	char							MessageType[16];			// id=35    constant has constant value = X
-	char							SenderCompID[32];			// id=49    constant has constant value = MOEX
-	UINT32							MsgSeqNum;			// id=34  skip=true  
-	UINT64							SendingTime;			// id=52  skip=true  
-	UINT32							LastFragment;			// id=893  presence=optional  
-	FortsDefaultSnapshotMessageMDEntriesItemInfo* MDEntries[256];
-	int								ApplVerIDLength;			// id=1128    constant has constant value = 9
-	int								MessageTypeLength;			// id=35    constant has constant value = X
-	int								SenderCompIDLength;			// id=49    constant has constant value = MOEX
-	int								MDEntriesCount;
+	char							PaddingBytes0[15];
 
 	FortsDefaultIncrementalRefreshMessageInfo() {
 		memset(this, 0, sizeof(FortsDefaultIncrementalRefreshMessageInfo));
@@ -3309,6 +3426,10 @@ public:
 			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
+		for(int i = 0; i < this->MDEntriesCount; i++)
+			this->MDEntries[i]->ReleaseUnused();
+	}
+	inline void ReleaseUnusedChildren() {
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->ReleaseUnused();
 	}

@@ -551,7 +551,7 @@ void FastProtocolTester::TestMessages() {
     msgSeqNo = manager->ReadMsgSeqNumber();
     AstsIncrementalOLRCURRInfo *olsCurr1 = (AstsIncrementalOLRCURRInfo*)manager->DecodeAsts();
     if(!StringIdComparer::Equal(olsCurr1->GroupMDEntries[0]->TradingSessionID,
-                                olsCurr1->GroupMDEntries[0]->TradingSessionIDLength, "CETS", 4))
+                                4, "CETS", 4))
         throw;
 
     message = new unsigned char[130] {
@@ -581,7 +581,7 @@ void FastProtocolTester::TestMessages() {
         throw;
     if(!StringIdComparer::Equal(
             sec->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionID,
-            sec->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->TradingSessionIDLength,
+            4,
             "TQBR",
             4)) throw;
 
@@ -675,7 +675,7 @@ void FastProtocolTester::TestMessages() {
         throw;
     if(msr->GroupMDEntries[0]->QuoteConditionLength != 1)
         throw;
-    if(!StringIdComparer::Equal(msr->GroupMDEntries[0]->TradingSessionID, msr->GroupMDEntries[0]->TradingSessionIDLength, "EQDB", 4))
+    if(!StringIdComparer::Equal(msr->GroupMDEntries[0]->TradingSessionID, 4, "EQDB", 4))
         throw;
 
     message = new unsigned char[18] {

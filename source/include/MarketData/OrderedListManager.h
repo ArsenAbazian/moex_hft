@@ -245,10 +245,11 @@ class OrderedListManager {
     }
 #pragma endregion
 public:
-    int                  m_debugLevel;
+    LIST<DATA>           *m_list;
     unsigned int         g_seed;
     int                  m_LevelIndex = 0;
-    LIST<DATA>           *m_list;
+    int                  m_debugLevel;
+    int                  m_paddingBytes;
 
     // Compute a pseudorandom integer.
     // Output value in range [0, 32767]
@@ -268,7 +269,8 @@ public:
             m_debugLevel(0),
             g_seed(0),
             m_LevelIndex(0),
-            m_list(0) {
+            m_list(0),
+            m_paddingBytes(0) {
         this->m_list = list;
         this->init_fast_srand();
     }

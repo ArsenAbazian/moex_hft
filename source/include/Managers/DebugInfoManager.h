@@ -50,12 +50,11 @@ class DebugInfoManager {
 
     MDEntryType     *MDEntryTypes;
     int             *MDEntryTypeRecv;
-
-    char            m_buffer[392];
-//    char            m_buffer2[392]; // unused
-    char            m_tabs[32];
-    int             m_tabsCount;
     FILE            *fp;
+    int             m_tabsCount;
+    char            m_buffer[392];
+    char            m_tabs[32];
+    char            m_paddingBytes[4];
 public:
     static DebugInfoManager *Default;
 

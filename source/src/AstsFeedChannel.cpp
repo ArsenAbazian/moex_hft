@@ -10,6 +10,7 @@ AstsFeedChannel::AstsFeedChannel(const char *id, const char *name) {
     this->m_senderCompId = 0;
     this->m_password = 0;
     this->m_state = FeedChannelState::fchSuspend;
+    this->m_paddingBytes = 0;
 
     this->msr = NULL;
     this->mss = NULL;

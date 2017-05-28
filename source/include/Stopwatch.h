@@ -15,16 +15,16 @@
 #endif
 
 class Stopwatch {
-    struct timespec     *m_specStart[10];
-    __syscall_slong_t   m_startMicroseconds[10];
+    bool                m_enabled[8];
+    __syscall_slong_t   m_startMicroseconds[8];
     struct timespec     *m_specEnd;
-    bool                m_enabled[10];
+    struct timespec     *m_specStart[8];
 public:
     static Stopwatch            *Default;
     static __syscall_slong_t    ElapsedMicroseconds;
 
     Stopwatch() {
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 8; i++) {
             this->m_specStart[i] = new struct timespec;
             memset(this->m_specStart[i], 0, sizeof(struct timespec));
             this->m_enabled[i] = false;
@@ -34,7 +34,7 @@ public:
         memset(this->m_specEnd, 0, sizeof(struct timespec));
     }
     ~Stopwatch() {
-        for(int i = 0; i < 10; i++)
+        for(int i = 0; i < 8; i++)
             delete this->m_specStart[i];
         delete this->m_specEnd;
     }

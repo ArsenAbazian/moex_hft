@@ -85,10 +85,10 @@ public:
 
         AstsIncrementalTLRCURRInfo *info = this->m_helper->CreateAstsIncrementalTLRCURRInfo();
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "111111", 1);
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "222222", 2);
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "333333", 3);
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "444444", 4);
 
         if(item4->Used)
             throw;
@@ -118,7 +118,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "111111", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -143,7 +143,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "111111", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -169,7 +169,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "111111", 6))
             throw;
 
         quote = obi->Trades()->Item(1);
@@ -178,7 +178,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "222222", 6))
             throw;
 
         quote = obi->Trades()->Last()->Data();
@@ -187,7 +187,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e3", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "333333", 6))
             throw;
 
         info->GroupMDEntriesCount = 1;
@@ -213,7 +213,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e1", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "111111", 6))
             throw;
 
         quote = obi->Trades()->Item(1);
@@ -222,7 +222,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e2", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "222222", 6))
             throw;
 
         quote = obi->Trades()->Start()->Next()->Next()->Data();
@@ -231,7 +231,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e3", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "333333", 6))
             throw;
 
         quote = obi->Trades()->Last()->Data();
@@ -240,7 +240,7 @@ public:
             throw;
         if(!quote->MDEntrySize.Equal(&size))
             throw;
-        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "e4", 2))
+        if(!StringIdComparer::Equal(quote->MDEntryID, quote->MDEntryIDLength, "444444", 6))
             throw;
     }
 
@@ -250,10 +250,10 @@ public:
         this->AddSymbol("symbol1", "ses1");
 
         AstsIncrementalTLRCURRInfo *info = this->m_helper->CreateAstsIncrementalTLRCURRInfo();
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "111111", 1);
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "222222", 2);
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "333333", 3);
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -285,10 +285,10 @@ public:
         this->AddSymbol("symbol1", "ses1");
 
         AstsIncrementalTLRCURRInfo *info = this->m_helper->CreateAstsIncrementalTLRCURRInfo();
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e1", 1);
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e2", 2);
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e3", 3);
-        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "e4", 4);
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 3, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "111111", 1);
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 4, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "222222", 2);
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "333333", 3);
+        AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "444444", 4);
 
         info->GroupMDEntriesCount = 4;
         info->GroupMDEntries[0] = item1;
@@ -303,8 +303,8 @@ public:
             throw;
 
         AstsTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("t1s2", "ses1");
-        AstsTLSCURRItemInfo *newItem1 = this->m_helper->CreateTLSCurrItemInfo(7,-2, 1, 2, MDEntryType::mdetBuyQuote, "e7");
-        AstsTLSCURRItemInfo *newItem2 = this->m_helper->CreateTLSCurrItemInfo(8,-2, 1, 2, MDEntryType::mdetBuyQuote, "e8");
+        AstsTLSCURRItemInfo *newItem1 = this->m_helper->CreateTLSCurrItemInfo(7,-2, 1, 2, MDEntryType::mdetBuyQuote, "777777");
+        AstsTLSCURRItemInfo *newItem2 = this->m_helper->CreateTLSCurrItemInfo(8,-2, 1, 2, MDEntryType::mdetBuyQuote, "888888");
         info2->RptSeq = 5;
 
         info2->GroupMDEntriesCount = 2;
@@ -328,9 +328,9 @@ public:
         AstsTLSCURRItemInfo *qt1 = obi->Trades()->Item(0);
         AstsTLSCURRItemInfo *qt2 = obi->Trades()->Item(1);
 
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "e7", 2))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 2, "777777", 2))
             throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "e8", 2))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 2, "888888", 2))
             throw;
         if(!qt1->MDEntryPx.Equal(7, -2))
             throw;
@@ -364,7 +364,7 @@ public:
         TradeInfo<AstsTLSCURRItemInfo> *tb = new TradeInfo<AstsTLSCURRItemInfo>();
         tb->SymbolInfo(this->m_helper->CreateSymbol<TradeInfo<AstsTLSCURRItemInfo>>("symbol1"));
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "111111");
         item1->RptSeq = 1;
         item1->MDUpdateAction = MDUpdateAction::mduaAdd;
 
@@ -382,7 +382,7 @@ public:
         TradeInfo<AstsTLSCURRItemInfo> *tb = new TradeInfo<AstsTLSCURRItemInfo>();
         tb->SymbolInfo(this->m_helper->CreateSymbol<TradeInfo<AstsTLSCURRItemInfo>>("symbol1"));
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "111111");
         item1->RptSeq = 2;
         item1->MDUpdateAction = MDUpdateAction::mduaAdd;
 
@@ -404,13 +404,13 @@ public:
         TradeInfo<AstsTLSCURRItemInfo> *tb = new TradeInfo<AstsTLSCURRItemInfo>();
         tb->SymbolInfo(this->m_helper->CreateSymbol<TradeInfo<AstsTLSCURRItemInfo>>("symbol1"));
 
-        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "111111");
         item1->RptSeq = 1;
         item1->MDUpdateAction = MDUpdateAction::mduaAdd;
 
         tb->ProcessIncrementalMessage(item1);
 
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "222222");
         item2->RptSeq = 3;
         item2->MDUpdateAction = MDUpdateAction::mduaAdd;
 
@@ -423,7 +423,7 @@ public:
         if(tb->RptSeq() != 1)
             throw;
 
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e3");
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "333333");
         item3->RptSeq = 4;
         item3->MDUpdateAction = MDUpdateAction::mduaAdd;
 
@@ -465,13 +465,13 @@ public:
         this->ClearSymbols();
         this->AddSymbol("symbol1");
 
-        AstsTLSCURRItemInfo *item = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", "e1", 1);
+        AstsTLSCURRItemInfo *item = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", "111111", 1);
         item->RptSeq = 1;
 
-        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", "e1", 2);
+        AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", "111111", 2);
         item2->RptSeq = 2;
 
-        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", "e1", 4);
+        AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", "111111", 4);
         item3->RptSeq = 4;
 
         this->m_table->ProcessIncremental(item, 0, item->TradingSessionIDUint);
@@ -501,7 +501,7 @@ public:
         this->AddSymbol("symbol1");
 
         AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint))
@@ -513,7 +513,7 @@ public:
         this->AddSymbol("symbol1");
 
         AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 2;
 
         if(this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint))
@@ -525,14 +525,14 @@ public:
         this->AddSymbol("symbol1");
 
         AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint))
             throw;
 
         AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 3);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 3);
         item2->RptSeq = 3;
 
         if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionIDUint))
@@ -547,14 +547,14 @@ public:
         this->AddSymbol("symbol2");
 
         AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint))
             throw;
 
         AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol2", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item2->RptSeq = 1;
 
         if(!this->m_table->ProcessIncremental(item2, 1, item2->TradingSessionIDUint))
@@ -571,34 +571,34 @@ public:
         this->AddSymbol("symbol1");
 
         AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint);
 
         AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e2", 3);
+                                                                           MDEntryType::mdetBuyQuote, "222222", 3);
         item2->RptSeq = 3;
 
         if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionIDUint))
             throw;
 
         AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e3", 4);
+                                                                           MDEntryType::mdetBuyQuote, "333333", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionIDUint))
             throw;
 
         AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e4", 5);
+                                                                           MDEntryType::mdetBuyQuote, "444444", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionIDUint))
             throw;
 
         AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e5", 3);
+                                                                           MDEntryType::mdetBuyQuote, "555555", 3);
         item5->RptSeq = 3;
 
         AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("symbol1", "ses1");
@@ -636,20 +636,20 @@ public:
         this->AddSymbol("symbol1");
 
         AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint);
 
         AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e3", 4);
+                                                                           MDEntryType::mdetBuyQuote, "333333", 4);
         item3->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionIDUint))
             throw;
 
         AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e4", 5);
+                                                                           MDEntryType::mdetBuyQuote, "444444", 5);
         item4->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionIDUint))
@@ -659,13 +659,13 @@ public:
         info1->GroupMDEntriesCount = 1;
         info1->RptSeq = 3;
         info1->RouteFirst = true;
-        info1->GroupMDEntries[0] = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        info1->GroupMDEntries[0] = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "222222");
 
         AstsTLSCURRInfo *info2 = this->m_helper->CreateTLSCurrInfo("symbol1", "ses1");
         info2->GroupMDEntriesCount = 1;
         info2->RptSeq = 3;
         info2->RouteFirst = true;
-        info2->GroupMDEntries[0] = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "e2");
+        info2->GroupMDEntries[0] = this->m_helper->CreateTLSCurrItemInfo(8, 1, 8, 1, MDEntryType::mdetBuyQuote, "222222");
 
         TradeInfo<AstsTLSCURRItemInfo> *tb = this->m_table->GetItem("symbol1", "ses1");
 
@@ -691,34 +691,34 @@ public:
         this->AddSymbol("symbol1");
 
         AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint);
 
         AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e2", 4);
+                                                                           MDEntryType::mdetBuyQuote, "222222", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionIDUint))
             throw;
 
         AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e3", 5);
+                                                                           MDEntryType::mdetBuyQuote, "333333", 5);
         item3->RptSeq = 5;
 
         if(this->m_table->ProcessIncremental(item3, 0, item3->TradingSessionIDUint))
             throw;
 
         AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e4", 6);
+                                                                           MDEntryType::mdetBuyQuote, "444444", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionIDUint))
             throw;
 
         AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e5", 2);
+                                                                           MDEntryType::mdetBuyQuote, "555555", 2);
         item5->RptSeq = 2;
 
         AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("symbol1", "ses1");
@@ -752,27 +752,27 @@ public:
         this->AddSymbol("symbol1");
 
         AstsTLSCURRItemInfo *item1 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e1", 1);
+                                                                           MDEntryType::mdetBuyQuote, "111111", 1);
         item1->RptSeq = 1;
 
         this->m_table->ProcessIncremental(item1, 0, item1->TradingSessionIDUint);
 
         AstsTLSCURRItemInfo *item2 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e2", 4);
+                                                                           MDEntryType::mdetBuyQuote, "222222", 4);
         item2->RptSeq = 4;
 
         if(this->m_table->ProcessIncremental(item2, 0, item2->TradingSessionIDUint))
             throw;
 
         AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e4", 6);
+                                                                           MDEntryType::mdetBuyQuote, "444444", 6);
         item4->RptSeq = 6;
 
         if(this->m_table->ProcessIncremental(item4, 0, item4->TradingSessionIDUint))
             throw;
 
         AstsTLSCURRItemInfo *item5 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 8, 1, 8, 1, MDUpdateAction::mduaAdd,
-                                                                           MDEntryType::mdetBuyQuote, "e5", 3);
+                                                                           MDEntryType::mdetBuyQuote, "555555", 3);
         item5->RptSeq = 3;
 
         AstsTLSCURRInfo *info = this->m_helper->CreateTLSCurrInfo("symbol1", "ses1");
@@ -834,16 +834,16 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[3] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 3, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "333333", 3, 3, 1, 3, 1),
                                      }, 1),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e4", 4, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "444444", 4, 3, 1, 3, 1),
                                      }, 1)
         }, 3);
 
@@ -871,12 +871,12 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 4, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "333333", 4, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incCurr->ListenIncremental_Core())
@@ -902,7 +902,7 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e4", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "444444", 3, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -926,12 +926,12 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "555555", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incCurr->ListenIncremental_Core())
@@ -959,8 +959,8 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 2,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 3, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e4", 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "333333", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "444444", 4, 1, 1, 1, 1),
                                      }, 2)
         }, 1);
 
@@ -984,12 +984,12 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "555555", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incCurr->ListenIncremental_Core())
@@ -1017,7 +1017,7 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "333333", 3, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1040,7 +1040,7 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "333333", 4, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1066,12 +1066,12 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "555555", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incCurr->ListenIncremental_Core())
@@ -1099,7 +1099,7 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 3,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 4, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "333333", 4, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1122,7 +1122,7 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 2,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e3", 3, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "333333", 3, 1, 1, 1, 1),
                                      }, 1)
         }, 1);
 
@@ -1151,12 +1151,12 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e1", 1, 1, 1, 1, 1),
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e2", 2, 2, 1, 2, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "111111", 1, 1, 1, 1, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "222222", 2, 2, 1, 2, 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 4,
                                      new TestTemplateItemInfo*[1] {
-                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "e5", 5, 3, 1, 3, 1),
+                                             new TestTemplateItemInfo(MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "symbol1", "ses1", "555555", 5, 3, 1, 3, 1),
                                      }, 1)
         }, 2);
         if(!incCurr->ListenIncremental_Core())
@@ -1257,8 +1257,8 @@ public:
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1285,8 +1285,8 @@ public:
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "ses1", true, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1333,8 +1333,8 @@ public:
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 1, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1354,8 +1354,8 @@ public:
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1375,13 +1375,13 @@ public:
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 3, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4),
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 4, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 2);
 
@@ -1401,13 +1401,13 @@ public:
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 5, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4),
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 6, "symbol1", "ses1", true, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 2);
 
@@ -1453,8 +1453,8 @@ public:
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 1, "symbol1", "ses1", false, true,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1482,8 +1482,8 @@ public:
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 1, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1493,8 +1493,8 @@ public:
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 3, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1536,8 +1536,8 @@ public:
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 1, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1547,8 +1547,8 @@ public:
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 3, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1580,8 +1580,8 @@ public:
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "ses1", false, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1618,8 +1618,8 @@ public:
         SendMessages(snapCurr, new TestTemplateInfo*[1] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "ses1", true, true,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4)
         }, 1);
 
@@ -1661,13 +1661,13 @@ public:
         SendMessages(snapCurr, new TestTemplateInfo*[2] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "ses1", true, false,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 4),
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 4, "symbol1", "ses1", false, true,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e2"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("222222"),
                                      }, 2, 6),
         }, 2);
 
@@ -1724,13 +1724,13 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("symbol1", "e1", 1),
-                                             new TestTemplateItemInfo("symbol2", "e1", 1),
+                                             new TestTemplateItemInfo("symbol1", "111111", 1),
+                                             new TestTemplateItemInfo("symbol2", "111111", 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 3,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("symbol1", "e1", 4),
-                                             new TestTemplateItemInfo("symbol2", "e1", 4),
+                                             new TestTemplateItemInfo("symbol1", "111111", 4),
+                                             new TestTemplateItemInfo("symbol2", "111111", 4),
                                      }, 2)
         }, 2);
 
@@ -1753,8 +1753,8 @@ public:
         SendMessages(snapCurr, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedTemplateId::fmcFullRefresh_TLS_CURR, 2, "symbol1", "ses1", true, true,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("e1"),
-                                             new TestTemplateItemInfo("e1"),
+                                             new TestTemplateItemInfo("111111"),
+                                             new TestTemplateItemInfo("111111"),
                                      }, 2, 4)
         }, 1);
         if(!snapCurr->ListenSnapshot_Core())
@@ -2569,13 +2569,13 @@ public:
         SendMessages(incCurr, new TestTemplateInfo*[4] {
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 1,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("symbol1", "e1", 1),
-                                             new TestTemplateItemInfo("symbol2", "e1", 1),
+                                             new TestTemplateItemInfo("symbol1", "111111", 1),
+                                             new TestTemplateItemInfo("symbol2", "111111", 1),
                                      }, 2),
                 new TestTemplateInfo(FeedTemplateId::fmcIncrementalRefresh_TLR_CURR, 3,
                                      new TestTemplateItemInfo*[2] {
-                                             new TestTemplateItemInfo("symbol1", "e1", 4),
-                                             new TestTemplateItemInfo("symbol2", "e1", 4),
+                                             new TestTemplateItemInfo("symbol1", "111111", 4),
+                                             new TestTemplateItemInfo("symbol2", "111111", 4),
                                      }, 2)
         }, 2);
 
@@ -2722,13 +2722,10 @@ public:
     }
 
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_4() {
-        AstsTLSCURRItemInfo *info = this->m_helper->CreateTLSCurrItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "e1");
+        AstsTLSCURRItemInfo *info = this->m_helper->CreateTLSCurrItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "111111");
         if(info->Allocator->Count() != 1)
             throw;
         info->Used = false;
-        info->ReleaseUnused();
-        if(info->Allocator->Count() != 0)
-            throw;
         info->ReleaseUnused();
         if(info->Allocator->Count() != 0)
             throw;

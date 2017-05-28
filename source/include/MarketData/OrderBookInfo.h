@@ -20,24 +20,29 @@ template <typename T> class MarketSymbolInfo;
 template <typename T> class OrderBookInfo {
     static HrPointerList<T>               *m_itemsPool;
 
-    OrderedListManager<HrPointerListLite, HrLinkedPointer, T>   *m_sellQuoteManager;
-    OrderedListManager<HrPointerListLite, HrLinkedPointer, T>   *m_buyQuoteManager;
     HrPointerListLite<T>                  *m_sellQuoteList;
     HrPointerListLite<T>                  *m_buyQuoteList;
 
-    MDEntryQueue                       *m_entryInfo;
+    OrderedListManager<HrPointerListLite, HrLinkedPointer, T>   *m_sellQuoteManager;
+    OrderedListManager<HrPointerListLite, HrLinkedPointer, T>   *m_buyQuoteManager;
 
-    bool                                m_shouldProcessSnapshot;
     int                                 m_rptSeq;
+    UINT32                              m_sessionInt;
+    MDEntryQueue                       *m_entryInfo;
     int                                 m_savedRptSeq;
+    int                                 m_snapshotProcessedCount;
     MarketSymbolInfo<OrderBookInfo<T>>  *m_symbolInfo;
     SizedArray                          *m_tradingSession;
-    UINT32                              m_sessionInt;
-
-    int                                 m_snapshotProcessedCount;
 #ifdef TEST
     ListType                            m_listMode;
 #endif
+    bool                                m_shouldProcessSnapshot;
+#ifdef TEST
+    char                                m_paddingBytes[3];
+#else
+    char                                m_paddingBytes[7];
+#endif
+
 public:
     OrderBookInfo();
     ~OrderBookInfo() {
@@ -59,8 +64,13 @@ public:
 
     inline void ReleaseEntryQue() {
         if(this->m_entryInfo != 0) {
+            for(int i = 0; i <= this->m_entryInfo->MaxIndex(); i++) {
+                if(this->m_entryInfo->Entries()[i] != 0) {
+                    ((T *) this->m_entryInfo->Entries()[i])->Clear();
+                }
+            }
             this->m_entryInfo->Reset();
-            MDEntryQueue::Pool->FreeItem(this->m_entryInfo->Pointer);
+            MDEntryQueue::Pool->FreeItemUnsafe(this->m_entryInfo->Pointer);
         }
         this->m_entryInfo = 0;
     }
@@ -151,6 +161,21 @@ public:
             return res;
         }
         return static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
+    }
+
+    inline void DebugRemoveQuoteNoClear(HrPointerListLite<T> *list, T *info) {
+        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, list);
+        if(hashItem == 0) {
+            // such thing could happen because of some packet lost
+            // so please do not return null :)
+            //TODO remove debug
+            printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
+            return;
+        }
+        HrLinkedPointer<T> *node = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
+        T *data = node->Data();
+        list->Remove(node);
+        this->FreePointer(hashItem);
     }
 
     inline void RemoveQuote(HrPointerListLite<T> *list, T *info) {
@@ -293,6 +318,7 @@ public:
         this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
         this->m_entryInfo->AddEntry(info, info->RptSeq);
+        info->Used = true;
     }
 
     inline void ForceProcessMessage(T *info) {

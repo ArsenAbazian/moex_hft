@@ -23,7 +23,7 @@
 
 
 class MDEntryQueue {
-    const int                                           m_incEntriesCount = MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH;
+    static const int                                    m_incEntriesCount = MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH;
     void                                                **m_incEntries;
     int                                                 m_incEntriesMaxIndex;
     int                                                 m_incStartRptSeq;
@@ -34,14 +34,12 @@ public:
 
     AutoAllocatePointerList<MDEntryQueue>               *Allocator;
     LinkedPointer<MDEntryQueue>                         *Pointer;
-    bool                                                Used;
 
     MDEntryQueue() :
             m_incEntriesMaxIndex(-1),
             m_incStartRptSeq(0),
             Allocator(0),
-            Pointer(0),
-            Used(false) {
+            Pointer(0) {
         this->m_incEntries = new void *[MDENTRYINFO_INCREMENTAL_ENTRIES_BUFFER_LENGTH];
         memset(this->m_incEntries, 0, sizeof(void *) * this->m_incEntriesCount);
     }
@@ -104,7 +102,7 @@ public:
 
     inline void Reset() {
         if(this->m_incEntriesMaxIndex >= 0)
-            memset(this->m_incEntries, 0, sizeof(void*) * (this->m_incEntriesMaxIndex + 1));
+            memset(this->m_incEntries, 0, sizeof(void *) * (this->m_incEntriesMaxIndex + 1));
         this->m_incEntriesMaxIndex = -1;
         this->m_incStartRptSeq = 0;
     }

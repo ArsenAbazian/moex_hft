@@ -13,18 +13,19 @@
 #include "../MarketData/SymbolManager.h"
 
 typedef struct _hashTextInfo {
-    int         lenght;
     char        text[17] __attribute__((aligned(16)));
+    char        m_paddingBytes[3];
+    int         lenght;
+    char        m_paddingBytes2[8];
 }hashTextInfo;
 
 class SymbolManagerTester {
-
-    hashTextInfo    *m_items;
-    int             m_itemsCount;
-    int             *m_hashCount;
-    int            *m_busy;
-
     SymbolManager   *m_manager;
+    hashTextInfo    *m_items;
+    int             *m_hashCount;
+    int             *m_busy;
+    int             m_itemsCount;
+    int             m_paddingBytes;
 
     void            LoadItems() {
         const char *fileName = "/home/arsen/Documents/hft_robot/hft/test/symbols";

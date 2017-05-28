@@ -119,12 +119,12 @@ typedef enum _LogMessageCode {
 
 
 class LogMessageProvider {
-    const int  m_dynamicLogMessageStartIndex = 5000;
-    const int  m_logMessageTextCapacity = 10000;
+    static const int  m_dynamicLogMessageStartIndex = 5000;
+    static const int  m_logMessageTextCapacity = 10000;
 
-    const char **m_logMessageText;
-    int         m_dynamicLogMessageCount;
-
+	const char **m_logMessageText;
+	int         m_dynamicLogMessageCount;
+	int			m_paddingBytes;
     void InitializeLogMessageText();
 public:
     LogMessageProvider();

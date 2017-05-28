@@ -8,14 +8,15 @@
 #include "../Fast/FastTypes.h"
 
 class QuoteInfo {
+    Decimal     *m_pricePtr;
     Decimal     m_price;
     int         m_size;
-
-    Decimal     *m_pricePtr;
+    int         m_paddingBytes;
 public:
     QuoteInfo() :
             m_price(0, 0),
-            m_size(0) {
+            m_size(0),
+            m_paddingBytes(0) {
         this->m_pricePtr = &(this->m_price);
     }
     QuoteInfo(Decimal *price, int size) :
@@ -47,7 +48,7 @@ public:
     }
     inline int Size() { return this->m_size; }
     inline void Size(Decimal *size) {
-        this->m_size = size->CalcMantissaDigitCount();
+        this->m_size = (int)(size->Calculate());
     }
 };
 

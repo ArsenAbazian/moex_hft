@@ -68,7 +68,7 @@ add_custom_target(fast_generate ALL
 set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_C_COMPILER clang)
 
-set(common_params "-march=corei7 -msse4.2 -msse4.1 -m64 -mtune=corei7 -fpic -pthread -std=gnu++1z -fms-extensions -mcx16 -D__STDC_LIMIT_MACROS")
+set(common_params "-march=corei7 -msse4.2 -msse4.1 -m64 -mtune=corei7 -fpic -pthread -std=gnu++1z -fms-extensions -mcx16 -D__STDC_LIMIT_MACROS -Wpadded")
 #set(common_params "${common_params} -S -mllvm --x86-asm-syntax=intel -g")
 #set(common_params "${common_params} -no-integrated-as -Xassembler -adhln")
 #set(common_params "${common_params} --target=x86_64-pc-linux-elf")
@@ -108,7 +108,7 @@ add_executable(hft_robot
         source/src/Settings.cpp
         source/src/Stopwatch.cpp
         ${sources}
-        source/include/Lib/HashTable.h source/src/Lib/HashTable.cpp source/include/MarketData/OrderedListManager.h source/include/Managers/CommandManager.h source/include/Test/HashTableTester.h)
+        )
 add_dependencies(hft_robot fast_generate)
 
 add_custom_command(TARGET fast_generate

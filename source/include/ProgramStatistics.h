@@ -155,6 +155,7 @@ class ProgramStatistics {
 #pragma region ProgramStatistics_GeneratedFields
 	int			m_cOlrMDEntryCount[128];
 #pragma endregion
+    int 			m_paddingBytes;
 public:
     ProgramStatistics() {
         this->InitializeNames();

@@ -17,17 +17,16 @@ template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename I
     int                                         m_symbolsCount;
     int                                         m_symbolsMaxCount;
     TABLEITEM<ITEMINFO>                         *m_snapshotItem;
-    TABLEITEM<ITEMINFO>                         *m_cachedItem;
     MarketSymbolInfo<TABLEITEM<ITEMINFO>>       *m_snapshotSymbol;
+    int                                         *m_ownerQueueItemsCount;
+    int                                         *m_ownerSymbolsToRecvSnapshot;
+    bool                                        *m_ownerTableInSnapshotMode;
     int                                         m_snapshotItemRptSeq;
     int                                         m_queueItemsCount;
     int                                         m_symbolsToRecvSnapshot;
     bool                                        m_allSessionsRecvSnapshot;
     bool                                        m_snapshotMode;
-    int                                         *m_ownerQueueItemsCount;
-    int                                         *m_ownerSymbolsToRecvSnapshot;
-    bool                                        *m_ownerTableInSnapshotMode;
-
+    short                                       m_paddingBytes;
 public:
     inline void InitSymbols(int count) {
         this->m_symbolsMaxCount = count;
@@ -46,7 +45,6 @@ public:
             m_symbolsCount(0),
             m_symbolsMaxCount(0),
             m_snapshotItem(0),
-            m_cachedItem(0),
             m_snapshotSymbol(0),
             m_snapshotItemRptSeq(0),
             m_queueItemsCount(0),
@@ -55,7 +53,8 @@ public:
             m_snapshotMode(false),
             m_ownerQueueItemsCount(0),
             m_ownerSymbolsToRecvSnapshot(0),
-            m_ownerTableInSnapshotMode(0) {
+            m_ownerTableInSnapshotMode(0),
+            m_paddingBytes(0) {
         this->m_ownerSymbolsToRecvSnapshot = new int;
         this->m_ownerQueueItemsCount = new int;
         this->m_ownerTableInSnapshotMode = new bool;
@@ -71,57 +70,31 @@ public:
         this->m_ownerSymbolsToRecvSnapshot = ownerSymbolsToRecvSnapshot;
         this->m_ownerTableInSnapshotMode = ownerTableInSnapshotMode;
     }
-    inline TABLEITEM<ITEMINFO>* GetCachedItem(UINT64 securityId, int sessionIndex) {
-        if(this->m_cachedItem == 0)
-            return 0;
-        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = this->m_cachedItem->SymbolInfo();
-        if(s->SecurityID() == securityId &&
-           s->Session(sessionIndex) == this->m_cachedItem)
-            return this->m_cachedItem;
-        return 0;
-    }
-    inline TABLEITEM<ITEMINFO>* GetCachedItem(const char *symbol, int symbolLen, UINT32 tradingSession) {
-        if(this->m_cachedItem == 0)
-            return 0;
-        if(this->m_cachedItem->Symbol()->Equal(symbol, symbolLen) && this->m_cachedItem->TradingSessionInt() == tradingSession)
-            return this->m_cachedItem;
-        return 0;
-    }
     inline void ObtainSnapshotItem(INFO *info) {
         UINT32 tradingId = *((UINT32*)info->TradingSessionID);
-        this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, tradingId);
-        if(this->m_snapshotItem == 0)
-            this->m_snapshotItem = this->GetItem(info->Symbol, info->SymbolLength, tradingId);
+        this->m_snapshotItem = this->GetItem(info->Symbol, info->SymbolLength, tradingId);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
     }
     inline void ObtainSnapshotItem(int symbolIndex, FortsSnapshotInfo *info) {
-        this->m_snapshotItem = this->GetCachedItem(info->SecurityID, 0);
-        if(this->m_snapshotItem == 0)
-            this->m_snapshotItem = this->Symbol(symbolIndex)->Session(0);
+        this->m_snapshotItem = this->Symbol(symbolIndex)->Session(0);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
     }
     inline void ObtainSnapshotItem(FortsSnapshotInfo *info) {
-        this->m_snapshotItem = this->GetCachedItem(info->SecurityID, 0);
-        if(this->m_snapshotItem == 0)
-            this->m_snapshotItem = this->GetItemBySecurityId(info->SecurityID, 0);
+        this->m_snapshotItem = this->GetItemBySecurityId(info->SecurityID, 0);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
     }
     inline void ObtainSnapshotItemForts(INFO *info) {
-        this->m_snapshotItem = this->GetCachedItem(info->SecurityID, 0);
-        if(this->m_snapshotItem == 0)
-            this->m_snapshotItem = this->GetItemBySecurityId(info->SecurityID, 0);
+        this->m_snapshotItem = this->GetItemBySecurityId(info->SecurityID, 0);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
     }
 
     inline void ObtainSnapshotItem(int symbolIndex, AstsSnapshotInfo *info) {
         UINT32 tradingId = *((UINT32*)info->TradingSessionID);
-        this->m_snapshotItem = this->GetCachedItem(info->Symbol, info->SymbolLength, tradingId);
-        if(this->m_snapshotItem == 0)
-            this->m_snapshotItem = this->GetItem(symbolIndex, tradingId);
+        this->m_snapshotItem = this->GetItem(symbolIndex, tradingId);
         this->m_snapshotSymbol = this->m_snapshotItem->SymbolInfo();
         this->m_snapshotItemRptSeq = info->RptSeq;
     }
@@ -476,7 +449,6 @@ public:
     inline TABLEITEM<ITEMINFO>* GetItem(const char *symbol, int symbolLen, UINT32 tradingSession) {
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = GetSymbol(symbol, symbolLen);
         TABLEITEM<ITEMINFO>* res = s->GetSession(tradingSession);
-        this->m_cachedItem = res;
         return res;
     }
 #ifdef TEST
@@ -496,19 +468,16 @@ public:
     inline TABLEITEM<ITEMINFO>* GetItem(int symbolIndex, UINT32 tradingSession) {
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = this->m_symbols[symbolIndex];
         TABLEITEM<ITEMINFO>* res = s->GetSession(tradingSession);
-        this->m_cachedItem = res;
         return res;
     }
     inline TABLEITEM<ITEMINFO>* GetItemByIndex(int symbolIndex, UINT32 tradingSession) {
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = this->m_symbols[symbolIndex];
         TABLEITEM<ITEMINFO>* res = s->Session(0);
-        this->m_cachedItem = res;
         return res;
     }
     inline TABLEITEM<ITEMINFO>* GetItemByIndex(int symbolIndex) {
         MarketSymbolInfo<TABLEITEM<ITEMINFO>> *s = this->m_symbols[symbolIndex];
         TABLEITEM<ITEMINFO>* res = s->Session(0);
-        this->m_cachedItem = res;
         return res;
     }
     inline TABLEITEM<ITEMINFO>* GetItemBySecurityId(UINT64 securityId, UINT32 tradingSession) {
@@ -516,7 +485,6 @@ public:
         for(int i = 0; i < this->m_symbolsCount; i++, s++) {
             if((*s)->SecurityID() == securityId) {
                 TABLEITEM<ITEMINFO>* res = (*s)->Session(tradingSession);
-                this->m_cachedItem = res;
                 return res;
             }
         }
@@ -527,7 +495,6 @@ public:
         for(int i = 0; i < this->m_symbolsCount; i++, s++) {
             if((*s)->SecurityID() == securityId) {
                 TABLEITEM<ITEMINFO>* res = (*s)->Session(0);
-                this->m_cachedItem = res;
                 return res;
             }
         }

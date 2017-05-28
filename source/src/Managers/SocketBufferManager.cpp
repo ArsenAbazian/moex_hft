@@ -26,6 +26,7 @@ SocketBufferManager::SocketBufferManager(int maxBuffersCount) {
     this->m_maxItemsCount = maxBuffersCount;
     this->m_buffers = new SocketBuffer*[maxBuffersCount];
     this->m_itemsCount = 0;
+    this->m_paddingBytes = 0;
     this->PrintMemoryInfo("After SocketBufferManager::SocketBufferManager");
 }
 

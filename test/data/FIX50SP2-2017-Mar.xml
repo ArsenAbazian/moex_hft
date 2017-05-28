@@ -15,9 +15,9 @@
 	</template>
 	<!-- Logout -->
 	<template name="5" id="2102" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
-		<string name="MessageType" id="35"><constant value="5" /></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="5" /></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<string name="TargetCompID" id="56"></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
@@ -26,10 +26,10 @@
 	</template>
 	<!-- Market Data - Snapshot/Full Refresh Generic-->
 	<template name="W-Generic" id="2103" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
-		<string name="MessageType" id="35"><constant value="W" /></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="ApplVerID" id="1128"><constant value="9"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="W" /></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
@@ -90,10 +90,10 @@
 
 	<!-- Market Data - Incremental Refresh Generic-->
 	<template name="X-Generic" id="2104" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
-		<string name="MessageType" id="35"><constant value="X" /></string>
-		<string name="ApplVerID" id="1128"><constant value="9"/></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="X" /></string>
+		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<sequence name="GroupMDEntries">
@@ -150,10 +150,10 @@
 
 	<!-- Market Data - Snapshot/Full Refresh OLS FOND -->
 	<template name="W-OLS-FOND" id="2510" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
-		<string name="MessageType" id="35"><constant value="W" /></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="ApplVerID" id="1128"><constant value="9"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="W" /></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<uInt32 name="LastMsgSeqNumProcessed" id="369" presence="optional"></uInt32>
@@ -184,10 +184,10 @@
 
 		<!-- Market Data - Snapshot/Full Refresh OLS CURR -->
 	<template name="W-OLS-CURR" id="3600" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
-		<string name="MessageType" id="35"><constant value="W" /></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="ApplVerID" id="1128"><constant value="9"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="W" /></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<uInt32 name="LastMsgSeqNumProcessed" id="369" presence="optional"></uInt32>
@@ -215,10 +215,10 @@
 
 	<!-- Market Data - Snapshot/Full Refresh TLS FOND-->
 	<template name="W-TLS-FOND" id="2511" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
-		<string name="MessageType" id="35"><constant value="W" /></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="ApplVerID" id="1128"><constant value="9"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="W" /></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<uInt32 name="LastMsgSeqNumProcessed" id="369" presence="optional"></uInt32>
@@ -257,10 +257,10 @@
 
 	<!-- Market Data - Snapshot/Full Refresh TLS CURR-->
 	<template name="W-TLS-CURR" id="3601" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
-		<string name="MessageType" id="35"><constant value="W" /></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="ApplVerID" id="1128"><constant value="9"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="W" /></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<uInt32 name="LastMsgSeqNumProcessed" id="369" presence="optional"></uInt32>
@@ -298,10 +298,10 @@
 
 	<!-- Market Data - Incremental Refresh MSR FOND-->
 	<template name="X-MSR-FOND" id="2523" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
-		<string name="MessageType" id="35"><constant value="X" /></string>
-		<string name="ApplVerID" id="1128"><constant value="9"/></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="X" /></string>
+		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<uInt64 name="LastUpdateTime" id="779" presence="optional"></uInt64>
@@ -345,10 +345,10 @@
 
 	<!-- Market Data - Incremental Refresh MSR CURR-->
 	<template name="X-MSR-CURR" id="3613" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
-		<string name="MessageType" id="35"><constant value="X" /></string>
-		<string name="ApplVerID" id="1128"><constant value="9"/></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="X" /></string>
+		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<uInt64 name="LastUpdateTime" id="779" presence="optional"></uInt64>
@@ -388,10 +388,10 @@
 
 	<!-- Market Data - Incremental Refresh OLR FOND-->
 	<template name="X-OLR-FOND" id="2520" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
-		<string name="MessageType" id="35"><constant value="X" /></string>
-		<string name="ApplVerID" id="1128"><constant value="9"/></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="X" /></string>
+		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<sequence name="GroupMDEntries">
@@ -417,10 +417,10 @@
 
 	<!-- Market Data - Incremental Refresh OLR CURR-->
 	<template name="X-OLR-CURR" id="3610" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
-		<string name="MessageType" id="35"><constant value="X" /></string>
-		<string name="ApplVerID" id="1128"><constant value="9"/></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="X" /></string>
+		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<sequence name="GroupMDEntries">
@@ -444,10 +444,10 @@
 
     	<!-- Market Data - Incremental Refresh TLR FOND-->
 	<template name="X-TLR-FOND" id="2521" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
-		<string name="MessageType" id="35"><constant value="X" /></string>
-		<string name="ApplVerID" id="1128"><constant value="9"/></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="X" /></string>
+		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<sequence name="GroupMDEntries">
@@ -482,10 +482,10 @@
 
     	<!-- Market Data - Incremental Refresh TLR CURR-->
 	<template name="X-TLR-CURR" id="3611" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
-		<string name="MessageType" id="35"><constant value="X" /></string>
-		<string name="ApplVerID" id="1128"><constant value="9"/></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="X" /></string>
+		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<sequence name="GroupMDEntries">
@@ -518,10 +518,10 @@
 
 	<!-- Security Definition -->
 	<template name="d" id="2115" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
-		<string name="MessageType" id="35"><constant value="d" /></string>
-		<string name="ApplVerID" id="1128"><constant value="9"/></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="d" /></string>
+		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"><increment/></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<string name="MessageEncoding" id="347"><default value="UTF-8"/></string>
@@ -543,16 +543,16 @@
 		<byteVector name="SecurityDesc" id="107" presence="optional"></byteVector>
 		<byteVector name="EncodedSecurityDesc" id="351" presence="optional"></byteVector>
 		<byteVector name="QuoteText" id="9696" presence="optional"></byteVector>
-		<sequence name="GroupInstrAttrib" presence="optional">
+		<sequence name="GroupInstrAttrib" presence="optional" max_count="16">
 			<length name="NoInstrAttrib" id="870"/>
 			<int32 name="InstrAttribType" id="871"></int32>
 			<byteVector name="InstrAttribValue" id="872" presence="optional"></byteVector>
 		</sequence>
 		<string name="Currency" id="15" presence="optional"></string>
-		<sequence name="MarketSegmentGrp" presence="optional">
+		<sequence name="MarketSegmentGrp" presence="optional" max_count="16">
 			<length name="NoMarketSegments" id="1310"/>
 			<decimal name="RoundLot" id="561" presence="optional"></decimal>
-			<sequence name="TradingSessionRulesGrp" presence="optional">
+			<sequence name="TradingSessionRulesGrp" presence="optional" max_count="16">
 				<length name="NoTradingSessionRules" id="1309"/>
 				<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4"></string>
 				<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
@@ -582,10 +582,10 @@
 	</template>
 	<!-- Security Status -->
 	<template name="f" id="2106" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
-		<string name="MessageType" id="35"><constant value="f" /></string>
-		<string name="ApplVerID" id="1128"><constant value="9"/></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="f" /></string>
+		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<string name="Symbol" id="55" aligned="16"></string>
@@ -596,10 +596,10 @@
 	</template>
 	<!-- Trading Session Status -->
 	<template name="h" id="2107" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
-		<string name="MessageType" id="35"><constant value="h" /></string>
-		<string name="ApplVerID" id="1128"><constant value="9"/></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="h" /></string>
+		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<int32 name="TradSesStatus" id="340"></int32>
@@ -608,9 +608,9 @@
 	</template>
 	<!-- Heartbeat -->
 	<template name="0" id="2108" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
-		<string name="MessageType" id="35"><constant value="0" /></string>
-		<string name="BeginString" id="8"><constant value="FIXT.1.1"/></string>
-		<string name="SenderCompID" id="49"><constant value="MOEX"/></string>
+		<string name="MessageType" id="35" remove="true"><constant value="0" /></string>
+		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
+		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 	</template>

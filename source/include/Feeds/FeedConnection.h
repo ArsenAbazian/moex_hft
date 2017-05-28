@@ -30,6 +30,7 @@ class SecurityStatusTester;
 class DebugInfoManager;
 class HistoricalReplayTester;
 
+#define max_fast(x, y) (x ^ ((x ^ y) & -(x < y)))
 class FeedConnection {
     friend class OrderTesterFond;
     friend class OrderTesterCurr;
@@ -46,86 +47,76 @@ class FeedConnection {
     friend class OrderBookTesterForts;
 
 public:
-    const int MaxReceiveBufferSize                      = 1500;
-    const int WaitAnyPacketMaxTimeMcs                   = 4000000;
-    const int WaitAnyPacketFortsMaxTimeMcs              = 40000000;
-    const int WaitSecurityStatusFortsMaxTimeMcs         = 120000000;
-    const int MaxHrUnsuccessfulConnectCount             = 20;
-    const int WaitSecurityDefinitionPacketMaxTimeMcs    = 20000000;
+    static const int MaxReceiveBufferSize                      = 1500;
+    static const int WaitAnyPacketMaxTimeMcs                   = 4000000;
+    static const int WaitAnyPacketFortsMaxTimeMcs              = 40000000;
+    static const int WaitSecurityStatusFortsMaxTimeMcs         = 120000000;
+    static const int MaxHrUnsuccessfulConnectCount             = 20;
+    static const int WaitSecurityDefinitionPacketMaxTimeMcs    = 20000000;
 protected:
-#ifdef TEST
-    TestMessagesHelper                          *m_testHelper;
-#endif
-    int                                         m_windowMsgSeqNum;
-    int                                         m_startMsgSeqNum;
-    int                                         m_endMsgSeqNum;
-    FeedConnection                              *m_snapshot;
-    Stopwatch                                   *m_waitTimer;
-    int                                         m_queueItemsCount;
-    int                                         m_symbolsToRecvSnapshot;
-    bool                                        m_tableInSnapshotMode;
-
-    SymbolManager                               *m_symbolManager;
-    FeedConnectionMessageInfo                   **m_packets;
-
-    FastProtocolManager                         *m_fastProtocolManager;
-
     WinSockManager                              *socketAManager;
     WinSockManager                              *socketBManager;
     unsigned char                               *m_recvBuffer;
     unsigned char                               *m_recvBufferCurrentPos;
+    FeedConnectionMessageInfo                   **m_packets;
+
+    int                                         m_windowMsgSeqNum;
+    int                                         m_startMsgSeqNum;
+    int                                         m_endMsgSeqNum;
+    int                                         m_packetsCount;
+
+    FeedConnection                              *m_snapshot;
+    Stopwatch                                   *m_waitTimer;
+
+    SymbolManager                               *m_symbolManager;
+    FastProtocolManager                         *m_fastProtocolManager;
 
     FeedConnectionState                         m_state;
+    int                                         m_symbolsToRecvSnapshot;
 
     MarketDataTable<OrderInfo, AstsOLSFONDInfo, AstsOLSFONDItemInfo>            *m_orderTableFond;
     MarketDataTable<OrderInfo, AstsOLSCURRInfo, AstsOLSCURRItemInfo>            *m_orderTableCurr;
-    MarketDataTable<TradeInfo, AstsTLSFONDInfo, AstsTLSFONDItemInfo>            *m_tradeTableFond;
-    MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo>            *m_tradeTableCurr;
-    MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>       *m_statTableFond;
-    MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>       *m_statTableCurr;
+    MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>           *m_fortsOrderBookTable;
 
+    LinkedPointer<FortsSecurityDefinitionInfo>  **m_symbolsForts;
+
+    int                                         m_queueItemsCount;
     int                                         m_fortsIncrementalRouteFirst;
     int                                         m_fortsRouteFirtsSecurityId;
-
-#pragma region FORTS
-    MarketDataTable<OrderBookInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>           *m_fortsOrderBookTable;
-    MarketDataTable<TradeInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>               *m_fortsTradeBookTable;
-    LinkedPointer<FortsSecurityDefinitionInfo>                                  **m_symbolsForts;
-#pragma endregion
-
     int                                         m_lostPacketCount;
     int                                         m_snapshotRouteFirst;
     int                                         m_snapshotLastFragment;
     int                                         m_nextFortsSnapshotRouteFirst;
     int                                         m_lastMsgSeqNumProcessed;
     int                                         m_rptSeq;
+    FeedConnectionProtocol                      protocol;
 
     AstsSnapshotInfo                            *m_astsSnapshotInfo;
     FortsSnapshotInfo                           *m_fortsSnapshotInfo;
+    MarketDataTable<TradeInfo, AstsTLSFONDInfo, AstsTLSFONDItemInfo>            *m_tradeTableFond;
+    MarketDataTable<TradeInfo, AstsTLSCURRInfo, AstsTLSCURRItemInfo>            *m_tradeTableCurr;
+    MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>       *m_statTableFond;
+    MarketDataTable<StatisticsInfo, AstsGenericInfo, AstsGenericItemInfo>       *m_statTableCurr;
+    MarketDataTable<TradeInfo, FortsDefaultSnapshotMessageInfo, FortsDefaultSnapshotMessageMDEntriesItemInfo>               *m_fortsTradeBookTable;
 
-    LinkedPointer<AstsSecurityDefinitionInfo>                                   **m_symbols;
-    int                                                                         m_symbolsCount;
+    LinkedPointer<AstsSecurityDefinitionInfo>   **m_symbols;
+    int                                         m_symbolsCount;
+    FeedConnectionType                          m_type;
+    FeedConnectionId                            m_id;
+    FeedMarketType                              m_marketType;
 
     char                                        m_idName[128];
     char                                        m_channelName[128];
     char                                        feedTypeName[128];
-    FeedConnectionType                          m_type;
-    FeedConnectionId                            m_id;
-    FeedMarketType                              m_marketType;
-    FeedConnection                              *m_incremental;
 
+    FeedConnection                              *m_incremental;
     FeedConnection                              *m_historicalReplay;
     FeedConnection                              *m_securityDefinition;
-    bool                                        m_securityStatusSnapshotActive;
-    int                                         m_isfStartSnapshotCount;
-
     FeedConnection                              *m_connectionsToRecvSymbols[32];
-    int                                         m_connectionsToRecvSymbolsCount;
-
     FeedConnection                              *m_connToRecvHistoricalReplay[32];
-    int                                         m_connToRecvHistoricalReplayCount;
-    bool                                        m_enableHistoricalReplay;
 
+    int                                         m_connectionsToRecvSymbolsCount;
+    int                                         m_connToRecvHistoricalReplayCount;
 
     FortsTradingSessionStatusInfo               *m_fortsTradingSessionStatus;
 
@@ -133,59 +124,49 @@ protected:
     FeedConnectionSecurityDefinitionState       m_idfState;
     int                                         m_idfMaxMsgSeqNo;
     int                                         m_idfStartMsgSeqNo;
-    bool                                        m_allowSaveSecurityDefinitions;
-    bool                                        m_idfDataCollected;
-    bool                                        m_idfAllowUpdateData;
-    bool                                        m_idfStopAfterUpdateAllMessages;
-    bool                                        m_allowGenerateSecurityDefinitions;
+    int                                         m_isfStartSnapshotCount;
+    int                                         m_hrMessageSize;
+
+    FeedConnection                                 *m_idfSnapshotClient;
+    PointerList<FeedConnectionRequestMessageInfo>  *m_hsRequestList;
 
     FeedConnectionHistoricalReplayState             m_hsState;
-    PointerList<FeedConnectionRequestMessageInfo>  *m_hsRequestList;
-    int                                             m_hrMessageSize;
     int                                             m_hrSizeRemain;
     int                                             m_hrUnsuccessfulConnectCount;
-    int                                         m_requestMessageStartIndex;
+    int                                             m_requestMessageStartIndex;
 
-    int                                         m_packetsCount;
-    int                                         m_idLogIndex;
-    int                                         m_feedTypeNameLogIndex;
 
-    char                                        feedTypeValue;
-
-    FeedConnectionProtocol                      protocol;
+    int                                             m_idLogIndex;
+    int                                             m_feedTypeNameLogIndex;
 
     char                                        feedASourceIp[64];
     char                                        feedAIp[64];
-    int                                         feedAPort;
-
     char                                        feedBSourceIp[64];
     char                                        feedBIp[64];
+
     int                                         feedBPort;
+    int                                         feedAPort;
 
     const char                                  *m_senderCompId;
-    int                                         m_senderCompIdLength;
     const char                                  *m_password;
+    int                                         m_senderCompIdLength;
     int                                         m_passwordLength;
 
     AstsLogonInfo                               *m_fastLogonInfo;
     FixProtocolManager                          *m_fixProtocolManager;
     FixLogonInfo                                *m_hsLogonInfo;
     FixRejectInfo                               *m_hsRejectInfo;
-    int                                          m_hsMsgSeqNo;
 
     FeedConnectionState                         m_nextState;
-
+    int                                          m_hsMsgSeqNo;
     int                                         m_reconnectCount;
     int                                         m_maxReconnectCount;
-    bool                                        m_shouldReceiveAnswer;
-    bool                                        m_shouldUseNextState;
 
     unsigned int                                m_recvBufferSize;
     unsigned int                                m_sendBufferSize;
     unsigned char                               *m_sendBuffer;
     unsigned char                               *m_sendBufferCurrentPos;
     ISocketBufferProvider                       *m_socketABufferProvider;
-
 
 #ifdef TEST
     int                                         m_waitLostIncrementalMessageMaxTimeMcs;
@@ -198,7 +179,23 @@ protected:
     const int                                   m_waitIncrementalMessageMaxTimeMcsForts = 40000000;
     const int                                   m_snapshotMaxTimeMcs = 30000;
 #endif
+#ifdef TEST
+    TestMessagesHelper                          *m_testHelper;
+#endif
+
     int                                         m_maxLostPacketCountForStartSnapshot;
+    char                                        feedTypeValue;
+    bool                                        m_tableInSnapshotMode;
+    bool                                        m_enableHistoricalReplay;
+    bool                                        m_allowSaveSecurityDefinitions;
+    bool                                        m_idfDataCollected;
+    bool                                        m_idfAllowUpdateData;
+    bool                                        m_idfStopAfterUpdateAllMessages;
+    bool                                        m_allowGenerateSecurityDefinitions;
+    bool                                        m_securityStatusSnapshotActive;
+    bool                                        m_shouldReceiveAnswer;
+    bool                                        m_shouldUseNextState;
+    bool                                        m_paddingByte;
 
     void InitializeHistoricalReplay() {
         this->m_hsRequestList = new PointerList<FeedConnectionRequestMessageInfo>(RobotSettings::Default->HistoricalReplayMaxMessageRequestCount);
@@ -438,22 +435,21 @@ protected:
         // we should start snapshot
         this->StartSecurityStatusSnapshot();
     }
-    __attribute__((noinline))
-    bool OnProcessServerCoreSecurityStatusNonNextItem(int size, int msgSeqNum) {
-        if(msgSeqNum < this->m_windowMsgSeqNum) // out of window
+    inline bool OnProcessServerCoreSecurityStatusNonNextItem(int size, int msgSeqNum) {
+        int local = msgSeqNum - this->m_windowMsgSeqNum;
+        if(local < 0) // out of window
             return true;
-        if(msgSeqNum - this->m_windowMsgSeqNum >= this->m_packetsCount) {
+        if(local >= this->m_packetsCount) {
             OnMsgSeqNumOutOfBoundsSecurityStatus(msgSeqNum);
             return false;
         }
-        FeedConnectionMessageInfo *info = this->Packet(msgSeqNum);
+        FeedConnectionMessageInfo *info = this->m_packets[local];
         if(info->m_address != 0) // already recv
             return true;
 
-        if(this->m_endMsgSeqNum < msgSeqNum)
-            this->m_endMsgSeqNum = msgSeqNum;
-        if(this->m_startMsgSeqNum == -1) // should we do this? well security status starts immediately after security definition so...
-            this->m_startMsgSeqNum = msgSeqNum;
+        this->m_endMsgSeqNum = max_fast(this->m_endMsgSeqNum, msgSeqNum);
+        //if(this->m_startMsgSeqNum == -1) // should we do this? well security status starts immediately after security definition so...
+        //    this->m_startMsgSeqNum = msgSeqNum;
 
         info->m_address = this->m_recvBufferCurrentPos + 4;
         this->NextRecv(size);
@@ -578,7 +574,7 @@ protected:
         int size = this->ProcessSocketManager(socketManager);
         if(size == 0)
             return false;
-        return ProcessServerCoreSnapshot(socketManager->RecvSize(), *((UINT*)socketManager->RecvBytes()));
+        return ProcessServerCoreSnapshot(socketManager->RecvSize(), *((UINT32*)this->m_recvBufferCurrentPos));
     }
     inline bool ProcessServerASnapshot() { return this->ProcessServerSnapshot(this->socketAManager); }
     inline bool ProcessServerBSnapshot() { return this->ProcessServerSnapshot(this->socketBManager); }
@@ -587,7 +583,7 @@ protected:
         int size = this->ProcessSocketManager(socketManager);
         if(size == 0)
             return false;
-        return ProcessServerCoreSecurityDefinition(size, *((UINT*)socketManager->RecvBytes()));
+        return ProcessServerCoreSecurityDefinition(size, *((UINT32*)this->m_recvBufferCurrentPos));
     }
     inline bool ProcessServerASecurityDefinition() { return this->ProcessServerSecurityDefinition(this->socketAManager); }
     inline bool ProcessServerBSecurityDefinition() { return this->ProcessServerSecurityDefinition(this->socketBManager); }
@@ -981,6 +977,7 @@ protected:
         DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_StartSecurityStatusSnapshot);
         this->m_securityDefinition->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmUpdateData;
         this->m_securityDefinition->IdfStopAfterUpdateMessages(true);
+        this->m_securityDefinition->m_idfSnapshotClient = this;
         if(!this->m_securityDefinition->Start()) {
             DefaultLogManager::Default->EndLog(false);
             return false;
@@ -1000,6 +997,7 @@ protected:
         DefaultLogManager::Default->StartLog(this->m_feedTypeNameLogIndex, LogMessageCode::lmcFeedConnection_FinishSecurityStatusSnapshot);
         this->m_securityDefinition->Stop();
         this->m_securityStatusSnapshotActive = false;
+        this->m_securityDefinition->m_idfSnapshotClient = 0;
         this->ClearLocalPackets(0, this->m_endMsgSeqNum - this->m_windowMsgSeqNum);
         this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
         this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
@@ -1068,9 +1066,6 @@ protected:
             if(this->m_requestMessageStartIndex > this->m_endMsgSeqNum)
                 break;
             int endIndex = GetRequestMessageEndIndex(this->m_requestMessageStartIndex);
-            //TODO remove debug info
-            printf("security status: request %d-%d\n", this->m_requestMessageStartIndex, endIndex);
-            printf("start %d end %d \n", this->m_startMsgSeqNum, this->m_endMsgSeqNum);
             if(ShouldStartSecurityStatusSnapshot(endIndex))
                 this->StartSecurityStatusSnapshot();
             else if(!IsSecurityStatusSnapshotActive())
@@ -1106,21 +1101,20 @@ protected:
             }
             i++;
         }
-        this->CheckRequestLostSecurityStatusMessages();
         if(i > end) {
             this->m_startMsgSeqNum = this->m_endMsgSeqNum + 1;
             this->ClearLocalPackets(0, end);
             this->m_windowMsgSeqNum = this->m_startMsgSeqNum;
             this->AfterMoveWindow();
         }
-        else
+        else {
             this->m_startMsgSeqNum = i + this->m_windowMsgSeqNum;
+            this->CheckRequestLostSecurityStatusMessages();
+        }
     }
 
     inline void ProcessSecurityStatusMessages() {
-        if(this->m_securityStatusSnapshotActive && this->m_securityDefinition->IsIdfDataCollected())
-            this->FinishSecurityStatusSnapshot();
-        if(this->m_startMsgSeqNum - this->m_endMsgSeqNum == 1)
+        if(this->m_startMsgSeqNum > this->m_endMsgSeqNum)
             return;
         if(this->m_startMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
             FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
@@ -2489,7 +2483,8 @@ public:
         FILE *fp = fopen(this->m_channelName, "wb");
         fwrite(&(this->m_idfMaxMsgSeqNo), sizeof(int), 1, fp);
         for(int i = 1; i <= this->m_idfMaxMsgSeqNo; i++) {
-            fwrite(&(this->m_packets[i]->m_size), sizeof(int), 1, fp);
+            unsigned short size = this->m_packets[i]->m_size;
+            fwrite(&(size), sizeof(int), 1, fp);
             fwrite(this->m_packets[i]->m_address, 1, this->m_packets[i]->m_size, fp);
         }
         fclose(fp);
@@ -2506,7 +2501,9 @@ public:
         }
         fread(&(this->m_idfMaxMsgSeqNo), sizeof(int), 1, fp);
         for(int i = 1; i <= this->m_idfMaxMsgSeqNo; i++) {
-            fread(&(this->m_packets[i]->m_size), sizeof(int), 1, fp);
+            unsigned short size = 0;
+            fread(&size, sizeof(int), 1, fp);
+            this->m_packets[i]->m_size = size;
             fread(this->m_recvBufferCurrentPos, 1, this->m_packets[i]->m_size, fp);
             this->m_packets[i]->m_address = this->m_recvBufferCurrentPos;
             this->NextRecv(this->m_packets[i]->m_size);
@@ -2721,8 +2718,6 @@ protected:
         this->SetState(this->m_nextState);
     }
 
-    FILE *obrLogFile;
-
     inline void OnIncrementalRefresh_OLR_FOND(AstsOLSFONDItemInfo *info) {
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
         this->m_orderTableFond->ProcessIncremental(info, index, info->TradingSessionIDUint);
@@ -2789,8 +2784,7 @@ protected:
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             this->OnIncrementalRefresh_OLR_FOND(info->GroupMDEntries[i]);
         }
-        info->Used = false;
-        info->ReleaseUnused();
+        info->ReleaseUnusedChildren();
     }
 
     inline void OnIncrementalRefresh_OLR_CURR(AstsIncrementalOLRCURRInfo *info) {
@@ -2800,8 +2794,7 @@ protected:
 #endif
         for(int i = 0; i < info->GroupMDEntriesCount; i++)
             this->OnIncrementalRefresh_OLR_CURR(info->GroupMDEntries[i]);
-        info->Used = false;
-        info->ReleaseUnused();
+        info->ReleaseUnusedChildren();
     }
 
     inline void OnIncrementalRefresh_TLR_FOND(AstsIncrementalTLRFONDInfo *info) {
@@ -2812,8 +2805,7 @@ protected:
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             this->OnIncrementalRefresh_TLR_FOND(info->GroupMDEntries[i]);
         }
-        info->Used = false;
-        info->ReleaseUnused();
+        info->ReleaseUnusedChildren();
     }
 
     inline void OnIncrementalRefresh_TLR_CURR(AstsIncrementalTLRCURRInfo *info) {
@@ -2824,8 +2816,7 @@ protected:
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             this->OnIncrementalRefresh_TLR_CURR(info->GroupMDEntries[i]);
         }
-        info->Used = false;
-        info->ReleaseUnused();
+        info->ReleaseUnusedChildren();
     }
 
     inline void OnIncrementalRefresh_MSR_FOND(AstsIncrementalMSRFONDInfo *info) {
@@ -2836,8 +2827,7 @@ protected:
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             this->OnIncrementalRefresh_MSR_FOND(info->GroupMDEntries[i]);
         }
-        info->Used = false;
-        info->ReleaseUnused();
+        info->ReleaseUnusedChildren();
     }
 
     inline void OnIncrementalRefresh_MSR_CURR(AstsIncrementalMSRCURRInfo *info) {
@@ -2848,8 +2838,7 @@ protected:
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             this->OnIncrementalRefresh_MSR_CURR(info->GroupMDEntries[i]);
         }
-        info->Used = false;
-        info->ReleaseUnused();
+        info->ReleaseUnusedChildren();
     }
 
     inline void OnTradingSessionStatusForts(FortsTradingSessionStatusInfo *info) {
@@ -2867,8 +2856,7 @@ protected:
         for(int i = 0; i < info->MDEntriesCount; i++) {
             this->OnIncrementalRefresh_FORTS_OBR(info->MDEntries[i]);
         }
-        info->Used = false;
-        info->ReleaseUnused();
+        info->ReleaseUnusedChildren();
     }
 
     inline void OnIncrementalRefresh_FORTS_TLR(FortsDefaultIncrementalRefreshMessageInfo *info) {
@@ -2879,8 +2867,7 @@ protected:
         for(int i = 0; i < info->MDEntriesCount; i++) {
             this->OnIncrementalRefresh_FORTS_TLR(info->MDEntries[i]);
         }
-        info->Used = false;
-        info->ReleaseUnused();
+        info->ReleaseUnusedChildren();
     }
 
     inline void OnHearthBeatMessage(AstsHeartbeatInfo *info) {
@@ -3392,6 +3379,8 @@ public:
             return;
         this->m_idfStartMsgSeqNo = 0;
         this->Stop();
+        if(this->m_idfSnapshotClient != 0)
+            this->m_idfSnapshotClient->FinishSecurityStatusSnapshot();
     }
 
     inline void OnSecurityDefinitionRecvAllMessages() {
@@ -3661,27 +3650,39 @@ public:
             UpdateSecurityDefinitionForts(info);
     }
 
+    bool IsEqualsMarketSegmentGroup(AstsSecurityDefinitionMarketSegmentGrpItemInfo *im, AstsSecurityDefinitionMarketSegmentGrpItemInfo *m) {
+        if(im->TradingSessionRulesGrpCount != m->TradingSessionRulesGrpCount)
+            return false;
+        int sCount = m->TradingSessionRulesGrpCount;
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **is = im->TradingSessionRulesGrp;
+        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **s = m->TradingSessionRulesGrp;
+        bool equals = true;
+        for(int i = 0; i < sCount; i++, is++, s++) {
+            if((*is)->TradingSessionIDUint != (*s)->TradingSessionIDUint) {
+                equals = false;
+                break;
+            }
+        }
+        return equals;
+    }
+
+    void ReleaseMarketSegmentGroup(AstsSecurityDefinitionMarketSegmentGrpItemInfo *m) {
+        m->Used = false;
+        for(int i = 0; i < m->TradingSessionRulesGrpCount; i++) {
+            m->TradingSessionRulesGrp[i]->Used = false;
+        }
+    }
+
     inline void ReplaceMarketSegmentGroupById(AstsSecurityDefinitionInfo *info, AstsSecurityDefinitionMarketSegmentGrpItemInfo *m) {
         AstsSecurityDefinitionMarketSegmentGrpItemInfo **im = info->MarketSegmentGrp;
-        int sCount = m->TradingSessionRulesGrpCount;
-        bool found;
         for(int i = 0; i < info->MarketSegmentGrpCount; i++, im++) {
-            if((*im)->TradingSessionRulesGrpCount != m->TradingSessionRulesGrpCount)
+            if(!IsEqualsMarketSegmentGroup(*im, m))
                 continue;
-            AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **is = (*im)->TradingSessionRulesGrp;
-            AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **s = m->TradingSessionRulesGrp;
-            found = true;
-            for(int i = 0; i < sCount; i++, is++, s++) {
-                if((*is)->TradingSessionIDUint != (*s)->TradingSessionIDUint) {
-                    found = false;
-                    break;
-                }
-            }
-            if(found) {
-                info->MarketSegmentGrp[i]->Clear();
-                info->MarketSegmentGrp[i] = m;
-                return;
-            }
+
+            this->ReleaseMarketSegmentGroup(info->MarketSegmentGrp[i]);
+            info->MarketSegmentGrp[i] = m;
+            m->Used = true;
+            return;
         }
     }
 

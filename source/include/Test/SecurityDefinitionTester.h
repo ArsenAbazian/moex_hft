@@ -434,7 +434,10 @@ public:
         if(this->idf->State() == FeedConnectionState::fcsSuspend)
             throw;
         this->m_helper->SendMessagesIdf(this->idf,
-                                        "idf symbol1 totNumReports 3 session trd1 session trd2, idf symbol2 totNumReports 3 session trd1 session trd2, idf symbol3 totNumReports 3 session trd1 session trd2, msgSeqNo 1 idf symbol1 totNumReports 3 session trd1 session trd2",
+                                        "idf symbol1 totNumReports 3 session trd1 session trd2, "
+                                                "idf symbol2 totNumReports 3 session trd1 session trd2, "
+                                                "idf symbol3 totNumReports 3 session trd1 session trd2, "
+                                                "msgSeqNo 1 idf symbol1 totNumReports 3 session trd1 session trd2",
                                         30);
         // check - stop called? but i dont know if we should stop connection
         if(this->idf->State() != FeedConnectionState::fcsSuspend)
@@ -775,8 +778,8 @@ public:
         this->m_helper->AddTradingSession(info2, 0, "trd3");
         this->m_helper->AddTradingSession(info2, 0, "trd4");
 
-        this->m_helper->AddTradingSession(info2, 1, "t5");
-        this->m_helper->AddTradingSession(info2, 1, "t6");
+        this->m_helper->AddTradingSession(info2, 1, "trd5");
+        this->m_helper->AddTradingSession(info2, 1, "trd6");
 
         this->idf->MergeSecurityDefinition(info, info2);
 
@@ -970,8 +973,8 @@ public:
         this->m_helper->AddTradingSession(info, 1, "trd4");
 
         this->m_helper->AddMarketSegemntGroup(info);
-        this->m_helper->AddTradingSession(info, 2, "t5");
-        this->m_helper->AddTradingSession(info, 2, "t6");
+        this->m_helper->AddTradingSession(info, 2, "trd5");
+        this->m_helper->AddTradingSession(info, 2, "trd6");
 
         AstsSecurityDefinitionInfo *info2 = this->m_helper->CreateSecurityDefinitionInfo("symbol1");
 
