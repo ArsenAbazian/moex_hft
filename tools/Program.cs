@@ -2777,7 +2777,7 @@ namespace prebuild {
 			WriteLine (tabString + "int " + i + " = 0;");
 			WriteLine (tabString + "do {");
 			WriteLine(tabString + "\t" + itemInfo + " = " + info.GetFreeMethodName + "();");
-			WriteLine (tabString + "\t_mm_prefetch(" + itemInfo + ", _MM_HINT_T0);");
+			WriteLine (tabString + "\t__builtin_prefetch(" + itemInfo + ", 0, _MM_HINT_T0);");
 			WriteLine(tabString + "\t" + objectValueName + "->" + Name(value) + "[" + i + "] = " + itemInfo + ";");
 			WriteLine (tabString + "\t" + i + "++;");
 			WriteLine (tabString + "}");

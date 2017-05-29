@@ -1191,9 +1191,9 @@ public:
         this->currentPos = buffer;
     }
     inline void SetNewBuffer(BYTE *buffer, int length) {
-        _mm_prefetch(buffer, _MM_HINT_T0);
-		for(int i = 64; i < length; i+= 64)
-			_mm_prefetch(buffer + i, _MM_HINT_T0);
+		__builtin_prefetch(buffer, 0, _MM_HINT_T0);
+		for(int i = 64; i < length; i+= 64, buffer += 64)
+			__builtin_prefetch(buffer, 0, _MM_HINT_T0);
 		this->buffer = buffer;
         this->bufferLength = length;
         this->ResetBuffer();
@@ -3132,7 +3132,7 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
-			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -3247,7 +3247,7 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
-			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -3388,7 +3388,7 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsOLSFONDItemInfo();
-			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -3519,7 +3519,7 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsOLSCURRItemInfo();
-			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -3630,7 +3630,7 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsTLSFONDItemInfo();
-			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -3813,7 +3813,7 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsTLSCURRItemInfo();
-			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -3972,7 +3972,7 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
-			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -4075,7 +4075,7 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
-			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -4164,7 +4164,7 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsOLSFONDItemInfo();
-			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -4300,7 +4300,7 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsOLSCURRItemInfo();
-			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -4419,7 +4419,7 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsTLSFONDItemInfo();
-			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -4499,7 +4499,7 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsTLSCURRItemInfo();
-			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -4628,7 +4628,7 @@ public:
 		int giaItemInfoIndex = 0;
 		do {
 			giaItemInfo = GetFreeAstsSecurityDefinitionGroupInstrAttribItemInfo();
-			_mm_prefetch(giaItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(giaItemInfo, 0, _MM_HINT_T0);
 			info->GroupInstrAttrib[giaItemInfoIndex] = giaItemInfo;
 			giaItemInfoIndex++;
 		}
@@ -4661,7 +4661,7 @@ public:
 		int msgItemInfoIndex = 0;
 		do {
 			msgItemInfo = GetFreeAstsSecurityDefinitionMarketSegmentGrpItemInfo();
-			_mm_prefetch(msgItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(msgItemInfo, 0, _MM_HINT_T0);
 			info->MarketSegmentGrp[msgItemInfoIndex] = msgItemInfo;
 			msgItemInfoIndex++;
 		}
@@ -4683,7 +4683,7 @@ public:
 			int tsrgItemInfoIndex = 0;
 			do {
 				tsrgItemInfo = GetFreeAstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
-				_mm_prefetch(tsrgItemInfo, _MM_HINT_T0);
+				__builtin_prefetch(tsrgItemInfo, 0, _MM_HINT_T0);
 				msgItemInfo->TradingSessionRulesGrp[tsrgItemInfoIndex] = tsrgItemInfo;
 				tsrgItemInfoIndex++;
 			}
@@ -5303,7 +5303,7 @@ public:
 		int mdeItemInfoIndex = 0;
 		do {
 			mdeItemInfo = GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo();
-			_mm_prefetch(mdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(mdeItemInfo, 0, _MM_HINT_T0);
 			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
 			mdeItemInfoIndex++;
 		}
@@ -5397,7 +5397,7 @@ public:
 		int mdeItemInfoIndex = 0;
 		do {
 			mdeItemInfo = GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo();
-			_mm_prefetch(mdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(mdeItemInfo, 0, _MM_HINT_T0);
 			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
 			mdeItemInfoIndex++;
 		}
@@ -5492,7 +5492,7 @@ public:
 		int mdftItemInfoIndex = 0;
 		do {
 			mdftItemInfo = GetFreeFortsSecurityDefinitionMDFeedTypesItemInfo();
-			_mm_prefetch(mdftItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(mdftItemInfo, 0, _MM_HINT_T0);
 			info->MDFeedTypes[mdftItemInfoIndex] = mdftItemInfo;
 			mdftItemInfoIndex++;
 		}
@@ -5523,7 +5523,7 @@ public:
 		int uItemInfoIndex = 0;
 		do {
 			uItemInfo = GetFreeFortsSecurityDefinitionUnderlyingsItemInfo();
-			_mm_prefetch(uItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(uItemInfo, 0, _MM_HINT_T0);
 			info->Underlyings[uItemInfoIndex] = uItemInfo;
 			uItemInfoIndex++;
 		}
@@ -5574,7 +5574,7 @@ public:
 		int ilItemInfoIndex = 0;
 		do {
 			ilItemInfo = GetFreeFortsSecurityDefinitionInstrumentLegsItemInfo();
-			_mm_prefetch(ilItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(ilItemInfo, 0, _MM_HINT_T0);
 			info->InstrumentLegs[ilItemInfoIndex] = ilItemInfo;
 			ilItemInfoIndex++;
 		}
@@ -5603,7 +5603,7 @@ public:
 		int iaItemInfoIndex = 0;
 		do {
 			iaItemInfo = GetFreeFortsSecurityDefinitionInstrumentAttributesItemInfo();
-			_mm_prefetch(iaItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(iaItemInfo, 0, _MM_HINT_T0);
 			info->InstrumentAttributes[iaItemInfoIndex] = iaItemInfo;
 			iaItemInfoIndex++;
 		}
@@ -5635,7 +5635,7 @@ public:
 		int egItemInfoIndex = 0;
 		do {
 			egItemInfo = GetFreeFortsSecurityDefinitionEvntGrpItemInfo();
-			_mm_prefetch(egItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(egItemInfo, 0, _MM_HINT_T0);
 			info->EvntGrp[egItemInfoIndex] = egItemInfo;
 			egItemInfoIndex++;
 		}
@@ -5779,7 +5779,7 @@ public:
 		int ntItemInfoIndex = 0;
 		do {
 			ntItemInfo = GetFreeFortsNewsNewsTextItemInfo();
-			_mm_prefetch(ntItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(ntItemInfo, 0, _MM_HINT_T0);
 			info->NewsText[ntItemInfoIndex] = ntItemInfo;
 			ntItemInfoIndex++;
 		}
@@ -5814,7 +5814,7 @@ public:
 		int mdeItemInfoIndex = 0;
 		do {
 			mdeItemInfo = GetFreeFortsOrdersLogMDEntriesItemInfo();
-			_mm_prefetch(mdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(mdeItemInfo, 0, _MM_HINT_T0);
 			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
 			mdeItemInfoIndex++;
 		}
@@ -5898,7 +5898,7 @@ public:
 		int mdeItemInfoIndex = 0;
 		do {
 			mdeItemInfo = GetFreeFortsOrdersBookMDEntriesItemInfo();
-			_mm_prefetch(mdeItemInfo, _MM_HINT_T0);
+			__builtin_prefetch(mdeItemInfo, 0, _MM_HINT_T0);
 			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
 			mdeItemInfoIndex++;
 		}
