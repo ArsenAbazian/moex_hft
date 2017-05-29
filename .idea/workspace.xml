@@ -24,10 +24,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="1. try to use prefetch ... it is just try... most probably i'll roll back it.">
+    <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" afterPath="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tools/Program.cs" afterPath="$PROJECT_DIR$/tools/Program.cs" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -74,8 +73,8 @@
       <file leaf-file-name="FastTypes.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Fast/FastTypes.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="26700">
-              <caret line="1335" column="6" lean-forward="false" selection-start-line="1335" selection-start-column="6" selection-end-line="1335" selection-end-column="6" />
+            <state relative-caret-position="188">
+              <caret line="1392" column="0" lean-forward="false" selection-start-line="1392" selection-start-column="0" selection-end-line="1392" selection-end-column="0" />
               <folding>
                 <marker date="1495964540974" expanded="true" signature="9841:11849" ph="{...}" />
                 <marker date="1495964540974" expanded="true" signature="159373:159464" ph="{...}" />
@@ -102,7 +101,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Settings.h" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Settings.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/Settings.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="100">
@@ -115,7 +114,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FeedConnection.h" pinned="false" current-in-tab="true">
+      <file leaf-file-name="FeedConnection.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Feeds/FeedConnection.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="254">
@@ -152,7 +151,7 @@
         <entry file="file:///usr/lib/llvm-3.8/lib/clang/3.8.0/include/xmmintrin.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="226">
-              <caret line="683" column="30" lean-forward="true" selection-start-line="683" selection-start-column="30" selection-end-line="683" selection-end-column="30" />
+              <caret line="683" column="30" lean-forward="false" selection-start-line="683" selection-start-column="30" selection-end-line="683" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -161,8 +160,8 @@
       <file leaf-file-name="FastProtocolManager.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="529">
-              <caret line="3134" column="30" lean-forward="true" selection-start-line="3134" selection-start-column="30" selection-end-line="3134" selection-end-column="30" />
+            <state relative-caret-position="248">
+              <caret line="1196" column="55" lean-forward="false" selection-start-line="1196" selection-start-column="55" selection-end-line="1196" selection-end-column="55" />
               <folding>
                 <element signature="e#26#54#0" expanded="true" />
               </folding>
@@ -186,8 +185,8 @@
       <file leaf-file-name="FastProtocolTester.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/src/Test/FastProtocolTester.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="398" column="42" lean-forward="false" selection-start-line="398" selection-start-column="42" selection-end-line="398" selection-end-column="42" />
+            <state relative-caret-position="228">
+              <caret line="933" column="31" lean-forward="true" selection-start-line="933" selection-start-column="31" selection-end-line="933" selection-end-column="31" />
               <folding>
                 <marker date="1496078048230" expanded="true" signature="479:600" ph="{...}" />
                 <marker date="1496078048230" expanded="true" signature="645:674" ph="{...}" />
@@ -226,7 +225,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>noin</find>
       <find>Change</find>
       <find>RemoveQuote</find>
       <find>ForceProcessMessage</find>
@@ -256,6 +254,7 @@
       <find>_mm_prefetch</find>
       <find>ApplyIncrementalCore</find>
       <find>ProcessIncremental</find>
+      <find>IncrementalOLRCURR(</find>
     </findStrings>
     <replaceStrings>
       <replace>item1-&gt;TradingSessionIDUint</replace>
@@ -350,8 +349,8 @@
         <option value="$PROJECT_DIR$/source/include/MarketData/OrderBookInfo.h" />
         <option value="$PROJECT_DIR$/source/src/Test/FastProtocolTester.cpp" />
         <option value="$PROJECT_DIR$/source/include/Feeds/FeedConnection.h" />
-        <option value="$PROJECT_DIR$/source/include/Settings.h" />
         <option value="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" />
+        <option value="$PROJECT_DIR$/source/include/Settings.h" />
       </list>
     </option>
   </component>
@@ -1039,14 +1038,7 @@
       <workItem from="1495788067705" duration="12459000" />
       <workItem from="1495868725377" duration="24786000" />
       <workItem from="1496054054360" duration="11509000" />
-      <workItem from="1496074980171" duration="6887000" />
-    </task>
-    <task id="LOCAL-00240" summary="fix bug with mandatory presence and constant operator">
-      <created>1490266018226</created>
-      <option name="number" value="00240" />
-      <option name="presentableId" value="LOCAL-00240" />
-      <option name="project" value="LOCAL" />
-      <updated>1490266018239</updated>
+      <workItem from="1496074980171" duration="8013000" />
     </task>
     <task id="LOCAL-00241" summary="1. Recovering Forts OBR tests">
       <created>1490306277254</created>
@@ -1384,11 +1376,18 @@
       <option name="project" value="LOCAL" />
       <updated>1496080417920</updated>
     </task>
-    <option name="localTasksCounter" value="289" />
+    <task id="LOCAL-00289" summary="1. try to use prefetch ... it is just try... most probably i'll roll back it.">
+      <created>1496082124113</created>
+      <option name="number" value="00289" />
+      <option name="presentableId" value="LOCAL-00289" />
+      <option name="project" value="LOCAL" />
+      <updated>1496082124113</updated>
+    </task>
+    <option name="localTasksCounter" value="290" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2985606000" />
+    <option name="totallyTimeSpent" value="2986732000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1404,7 +1403,7 @@
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36616454" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27659574" sideWeight="0.64520127" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.55082744" sideWeight="0.64520127" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4634703" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.8451537" sideWeight="0.20247678" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5449173" sideWeight="0.5804974" order="9" side_tool="false" content_ui="tabs" />
@@ -1414,7 +1413,7 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.47754136" sideWeight="0.49344978" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.289267" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.235262" sideWeight="0.506993" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33451536" sideWeight="0.7975232" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.213948" sideWeight="0.7975232" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1561,12 +1560,16 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="2808" />
+      <option name="time" value="2810" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
         <watch expression="this-&gt;m_trades-&gt;Count()" language="ObjectiveC" />
         <watch expression="this-&gt;m_trades-&gt;Item(0)-&gt;MDEntryID" language="ObjectiveC" />
+        <watch expression="info-&gt;GroupMDEntriesCount" language="ObjectiveC" />
+        <watch expression="gmdeItemInfoIndex" />
+        <watch expression="info-&gt;GroupMDEntriesCount" />
+        <watch expression="this-&gt;buffer" language="ObjectiveC" />
       </configuration>
     </watches-manager>
   </component>
@@ -2422,17 +2425,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Fast/FastTypes.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="26700">
-          <caret line="1335" column="6" lean-forward="false" selection-start-line="1335" selection-start-column="6" selection-end-line="1335" selection-end-column="6" />
-          <folding>
-            <marker date="1495964540974" expanded="true" signature="9841:11849" ph="{...}" />
-            <marker date="1495964540974" expanded="true" signature="159373:159464" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Test/FastProtocolTester.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-68">
@@ -2444,10 +2436,70 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/lib/llvm-3.8/lib/clang/3.8.0/include/xmmintrin.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="226">
+          <caret line="683" column="30" lean-forward="false" selection-start-line="683" selection-start-column="30" selection-end-line="683" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Feeds/FeedConnection.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="3001" column="43" lean-forward="false" selection-start-line="3001" selection-start-column="43" selection-end-line="3001" selection-end-column="43" />
+          <folding>
+            <element signature="e#10147#10717#0" expanded="false" />
+            <element signature="e#10722#10914#0" expanded="false" />
+            <element signature="e#10956#11330#0" expanded="false" />
+            <element signature="e#11335#11914#0" expanded="false" />
+            <marker date="1496079126654" expanded="false" signature="8389:8715" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="9114:9172" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="24077:25022" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="90130:90181" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="90753:90804" ph="..." />
+            <marker date="1496079126654" expanded="true" signature="92088:92139" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="93671:93722" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="95407:95458" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="95610:95661" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="98690:98740" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="112998:113049" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="113693:113744" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="115001:115052" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="115794:115845" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="116568:116619" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="117590:117641" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="137822:138444" ph="..." />
+            <marker date="1496079126654" expanded="false" signature="180142:180236" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Fast/FastTypes.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="1392" column="0" lean-forward="false" selection-start-line="1392" selection-start-column="0" selection-end-line="1392" selection-end-column="0" />
+          <folding>
+            <marker date="1495964540974" expanded="true" signature="9841:11849" ph="{...}" />
+            <marker date="1495964540974" expanded="true" signature="159373:159464" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="248">
+          <caret line="1196" column="55" lean-forward="false" selection-start-line="1196" selection-start-column="55" selection-end-line="1196" selection-end-column="55" />
+          <folding>
+            <element signature="e#26#54#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/source/src/Test/FastProtocolTester.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="398" column="42" lean-forward="false" selection-start-line="398" selection-start-column="42" selection-end-line="398" selection-end-column="42" />
+        <state relative-caret-position="228">
+          <caret line="933" column="31" lean-forward="true" selection-start-line="933" selection-start-column="31" selection-end-line="933" selection-end-column="31" />
           <folding>
             <marker date="1496078048230" expanded="true" signature="479:600" ph="{...}" />
             <marker date="1496078048230" expanded="true" signature="645:674" ph="{...}" />
@@ -2488,55 +2540,6 @@
           <folding>
             <element signature="e#1310#1527#0" expanded="true" />
             <element signature="e#2316#2386#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/llvm-3.8/lib/clang/3.8.0/include/xmmintrin.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
-          <caret line="683" column="30" lean-forward="true" selection-start-line="683" selection-start-column="30" selection-end-line="683" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="529">
-          <caret line="3134" column="30" lean-forward="true" selection-start-line="3134" selection-start-column="30" selection-end-line="3134" selection-end-column="30" />
-          <folding>
-            <element signature="e#26#54#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Feeds/FeedConnection.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="3001" column="43" lean-forward="false" selection-start-line="3001" selection-start-column="43" selection-end-line="3001" selection-end-column="43" />
-          <folding>
-            <element signature="e#10147#10717#0" expanded="false" />
-            <element signature="e#10722#10914#0" expanded="false" />
-            <element signature="e#10956#11330#0" expanded="false" />
-            <element signature="e#11335#11914#0" expanded="false" />
-            <marker date="1496079126654" expanded="false" signature="8389:8715" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="9114:9172" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="24077:25022" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="90130:90181" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="90753:90804" ph="..." />
-            <marker date="1496079126654" expanded="true" signature="92088:92139" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="93671:93722" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="95407:95458" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="95610:95661" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="98690:98740" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="112998:113049" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="113693:113744" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="115001:115052" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="115794:115845" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="116568:116619" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="117590:117641" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="137822:138444" ph="..." />
-            <marker date="1496079126654" expanded="false" signature="180142:180236" ph="..." />
           </folding>
         </state>
       </provider>

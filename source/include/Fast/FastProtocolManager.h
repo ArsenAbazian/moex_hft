@@ -1191,10 +1191,10 @@ public:
         this->currentPos = buffer;
     }
     inline void SetNewBuffer(BYTE *buffer, int length) {
-		__builtin_prefetch(buffer, 0, _MM_HINT_T0);
-		for(int i = 64; i < length; i+= 64, buffer += 64)
-			__builtin_prefetch(buffer, 0, _MM_HINT_T0);
 		this->buffer = buffer;
+        __builtin_prefetch(buffer, 0, _MM_HINT_T0);
+        for(int i = 64; i < length; i+= 64, buffer += 64)
+            __builtin_prefetch(buffer, 0, _MM_HINT_T0);
         this->bufferLength = length;
         this->ResetBuffer();
     }
