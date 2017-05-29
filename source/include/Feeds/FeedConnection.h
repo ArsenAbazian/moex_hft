@@ -1134,7 +1134,6 @@ protected:
             this->AfterMoveWindow();
         }
         ProcessSecurityStatusMessages_MultipleMessages();
-
     }
 
     inline void ProcessSecurityStatusMessagesForts() {
@@ -1223,6 +1222,8 @@ protected:
     }
 
     inline void ProcessIncrementalMessages() {
+        if(this->m_windowMsgSeqNum > this->m_endMsgSeqNum) // nothing to check
+            return;
         if(this->m_windowMsgSeqNum == this->m_endMsgSeqNum) { // special case - one packet
             FeedConnectionMessageInfo *info = this->Packet(this->m_startMsgSeqNum);
             this->m_startMsgSeqNum++;
@@ -1231,8 +1232,6 @@ protected:
             info->Clear();
             this->AfterMoveWindow();
         } else { // more than one packet
-            if(this->m_windowMsgSeqNum > this->m_endMsgSeqNum) // nothing to check
-                return;
             ProcessIncrementalMessages_MultipleMessages();
         }
     }

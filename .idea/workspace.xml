@@ -117,32 +117,42 @@
       <file leaf-file-name="FeedConnection.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/Feeds/FeedConnection.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="963" column="15" lean-forward="true" selection-start-line="963" selection-start-column="15" selection-end-line="963" selection-end-column="15" />
+            <state relative-caret-position="298">
+              <caret line="2101" column="40" lean-forward="false" selection-start-line="2101" selection-start-column="40" selection-end-line="2101" selection-end-column="40" />
               <folding>
                 <element signature="e#10147#10717#0" expanded="false" />
                 <element signature="e#10722#10914#0" expanded="false" />
                 <element signature="e#10956#11330#0" expanded="false" />
                 <element signature="e#11335#11914#0" expanded="false" />
-                <marker date="1496086059758" expanded="false" signature="8389:8715" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="9114:9172" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="24077:25022" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="90260:90311" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="90883:90934" ph="..." />
-                <marker date="1496086059758" expanded="true" signature="92218:92269" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="93801:93852" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="95537:95588" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="95740:95791" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="98820:98870" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="113128:113179" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="113823:113874" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="115131:115182" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="115924:115975" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="116698:116749" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="117720:117771" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="137952:138574" ph="..." />
-                <marker date="1496086059758" expanded="false" signature="180272:180366" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="8389:8715" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="9114:9172" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="24077:25022" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="90251:90302" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="90874:90925" ph="..." />
+                <marker date="1496086607254" expanded="true" signature="92209:92260" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="93792:93843" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="95528:95579" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="95731:95782" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="98811:98861" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="113119:113170" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="113814:113865" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="115122:115173" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="115915:115966" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="116689:116740" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="117711:117762" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="137943:138565" ph="..." />
+                <marker date="1496086607254" expanded="false" signature="180263:180357" ph="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Stopwatch.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/include/Stopwatch.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="174" column="16" lean-forward="false" selection-start-line="174" selection-start-column="16" selection-end-line="174" selection-end-column="16" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -225,9 +235,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Remove</find>
-      <find>ApplyIncrementalCoreAsts(</find>
-      <find>&lt; 0</find>
       <find>&gt; 0</find>
       <find>result &gt; 0</find>
       <find>result - 1</find>
@@ -255,6 +262,9 @@
       <find>ListenIncremental</find>
       <find>ListenIncremental() {</find>
       <find>no</find>
+      <find>CheckRequestLost</find>
+      <find>ListenSecurityStatus()</find>
+      <find>ProcessIncrementalMessages</find>
     </findStrings>
     <replaceStrings>
       <replace>item1-&gt;TradingSessionIDUint</replace>
@@ -1038,14 +1048,7 @@
       <workItem from="1495788067705" duration="12459000" />
       <workItem from="1495868725377" duration="24786000" />
       <workItem from="1496054054360" duration="11509000" />
-      <workItem from="1496074980171" duration="9128000" />
-    </task>
-    <task id="LOCAL-00242" summary="1. Restored all Forts OBR tests">
-      <created>1490551858148</created>
-      <option name="number" value="00242" />
-      <option name="presentableId" value="LOCAL-00242" />
-      <option name="project" value="LOCAL" />
-      <updated>1490551858149</updated>
+      <workItem from="1496074980171" duration="9635000" />
     </task>
     <task id="LOCAL-00243" summary="1. fixing some bugs with FORTS working cycle...">
       <created>1490650686249</created>
@@ -1383,11 +1386,18 @@
       <option name="project" value="LOCAL" />
       <updated>1496083252558</updated>
     </task>
-    <option name="localTasksCounter" value="291" />
+    <task id="LOCAL-00291" summary="1. try to use prefetch ... it is just try... most probably i'll roll back it.">
+      <created>1496086262015</created>
+      <option name="number" value="00291" />
+      <option name="presentableId" value="LOCAL-00291" />
+      <option name="project" value="LOCAL" />
+      <updated>1496086262015</updated>
+    </task>
+    <option name="localTasksCounter" value="292" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2987847000" />
+    <option name="totallyTimeSpent" value="2988354000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1403,7 +1413,7 @@
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36616454" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.55082744" sideWeight="0.64520127" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26359338" sideWeight="0.64520127" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4634703" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.8451537" sideWeight="0.20247678" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5449173" sideWeight="0.5804974" order="9" side_tool="false" content_ui="tabs" />
@@ -1679,13 +1689,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="223">
           <caret line="79" column="43" lean-forward="true" selection-start-line="79" selection-start-column="43" selection-end-line="79" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Stopwatch.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="14" column="6" lean-forward="true" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
         </state>
       </provider>
     </entry>
@@ -2513,33 +2516,41 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Stopwatch.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="174" column="16" lean-forward="false" selection-start-line="174" selection-start-column="16" selection-end-line="174" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Feeds/FeedConnection.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="963" column="15" lean-forward="true" selection-start-line="963" selection-start-column="15" selection-end-line="963" selection-end-column="15" />
+        <state relative-caret-position="298">
+          <caret line="2101" column="40" lean-forward="false" selection-start-line="2101" selection-start-column="40" selection-end-line="2101" selection-end-column="40" />
           <folding>
             <element signature="e#10147#10717#0" expanded="false" />
             <element signature="e#10722#10914#0" expanded="false" />
             <element signature="e#10956#11330#0" expanded="false" />
             <element signature="e#11335#11914#0" expanded="false" />
-            <marker date="1496086059758" expanded="false" signature="8389:8715" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="9114:9172" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="24077:25022" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="90260:90311" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="90883:90934" ph="..." />
-            <marker date="1496086059758" expanded="true" signature="92218:92269" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="93801:93852" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="95537:95588" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="95740:95791" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="98820:98870" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="113128:113179" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="113823:113874" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="115131:115182" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="115924:115975" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="116698:116749" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="117720:117771" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="137952:138574" ph="..." />
-            <marker date="1496086059758" expanded="false" signature="180272:180366" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="8389:8715" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="9114:9172" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="24077:25022" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="90251:90302" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="90874:90925" ph="..." />
+            <marker date="1496086607254" expanded="true" signature="92209:92260" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="93792:93843" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="95528:95579" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="95731:95782" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="98811:98861" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="113119:113170" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="113814:113865" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="115122:115173" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="115915:115966" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="116689:116740" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="117711:117762" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="137943:138565" ph="..." />
+            <marker date="1496086607254" expanded="false" signature="180263:180357" ph="..." />
           </folding>
         </state>
       </provider>
