@@ -1172,7 +1172,8 @@ protected:
         return true;
     }
 
-    inline void ProcessIncrementalMessages_MultipleMessages() {
+    __attribute__((noinline))
+    void ProcessIncrementalMessages_MultipleMessages() {
         //printf("multiple messages inc s = %d e = %d w = %d\n", this->m_startMsgSeqNum, this->m_endMsgSeqNum, this->m_windowMsgSeqNum);
         int localStart = this->m_startMsgSeqNum - this->m_windowMsgSeqNum;
         int localEnd = this->m_endMsgSeqNum - this->m_windowMsgSeqNum;
@@ -1230,6 +1231,8 @@ protected:
             info->Clear();
             this->AfterMoveWindow();
         } else { // more than one packet
+            if(this->m_windowMsgSeqNum > this->m_endMsgSeqNum) // nothing to check
+                return;
             ProcessIncrementalMessages_MultipleMessages();
         }
     }
