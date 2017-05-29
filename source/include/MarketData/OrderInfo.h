@@ -152,14 +152,20 @@ public:
         return static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
     }
 
+    __attribute__((noinline))
+    void OnQuoteNotFound(T *info) {
+        // such thing could happen because of some packet lost
+        // so please do not return null :)
+        //TODO remove debug
+        info->MDEntryID[info->MDEntryIDLength] = '\0';
+        printf("ERROR: %s entry not found\n", info->MDEntryID);
+        return;
+    }
+
     inline void RemoveQuote(HrPointerListLite<T> *list, T *info) {
         LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, list);
         if(hashItem == 0) {
-            // such thing could happen because of some packet lost
-            // so please do not return null :)
-            //TODO remove debug
-            info->MDEntryID[info->MDEntryIDLength] = '\0';
-            printf("ERROR: %s entry not found\n", info->MDEntryID);
+            this->OnQuoteNotFound(info);
             return;
         }
         HrLinkedPointer<T> *node = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
@@ -180,7 +186,6 @@ public:
     }
 
     inline void ChangeBuyQuote(T *info) {
-        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
         LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, this->m_buyQuoteList);
         if(hashItem != 0) {
             HrLinkedPointer<T> *ptr = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
@@ -196,14 +201,11 @@ public:
             h->m_object = ptr;
             return;
         }
-        //TODO remove debug
-        info->MDEntryID[info->MDEntryIDLength] = '\0';
-        printf("ERROR: %s entry not found\n", info->MDEntryID);
+        this->OnQuoteNotFound(info);
         return;
     }
 
     inline void ChangeSellQuote(T *info) {
-        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Change SellQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
         LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, this->m_sellQuoteList);
         if(hashItem != 0) {
             HrLinkedPointer<T> *ptr = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
@@ -219,9 +221,7 @@ public:
             h->m_object = ptr;
             return;
         }
-        //TODO remove debug
-        info->MDEntryID[info->MDEntryIDLength] = '\0';
-        printf("ERROR: %s entry not found\n", info->MDEntryID);
+        this->OnQuoteNotFound(info);
         return;
     }
 
@@ -245,7 +245,6 @@ public:
     }
 
     inline HrLinkedPointer<T>* AddBuyQuote(T *item) {
-        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Add BuyQuote", item->MDEntryID, item->MDEntryIDLength, &(item->MDEntryPx), &(item->MDEntrySize));
         HrLinkedPointer<T> *ptr = this->InsertBuyQuote(&(item->MDEntryPx));
         item->Used = true;
         ptr->Data(item);
@@ -254,7 +253,6 @@ public:
     }
 
     inline HrLinkedPointer<T>* AddSellQuote(T *item) {
-        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Add SellQuote", item->MDEntryID, item->MDEntryIDLength, &(item->MDEntryPx), &(item->MDEntrySize));
         HrLinkedPointer<T> *ptr = this->InsertSellQuote(&(item->MDEntryPx));
         item->Used = true;
         ptr->Data(item);
@@ -281,7 +279,7 @@ public:
 #endif*/
         if(info->MDEntryType[0] == mdetBuyQuote)
             this->ChangeBuyQuote(info);
-        else if(info->MDEntryType[0] == mdetSellQuote)
+        else
             this->ChangeSellQuote(info);
     }
 
@@ -292,9 +290,7 @@ public:
 #endif*/
         if(info->MDEntryType[0] == MDEntryType::mdetBuyQuote)
             return this->AddBuyQuote(info);
-        else if(info->MDEntryType[0] == MDEntryType::mdetSellQuote)
-            return this->AddSellQuote(info);
-        return 0;
+        return this->AddSellQuote(info);
     }
 
     inline bool IsNextMessage(T *info) {
@@ -306,7 +302,7 @@ public:
             this->m_entryInfo = MDEntryQueue::Pool->NewItem();
     }
 
-    inline void PushMessageToQueue(T *info) {
+    void PushMessageToQueue(T *info) {
         this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
         this->m_entryInfo->AddEntry(info, info->RptSeq);
@@ -331,18 +327,21 @@ public:
         this->DebugCheckHashTable(this->m_sellQuoteList);
     }
 
-    inline bool ProcessIncrementalMessage(T *info) {
-        if(!this->IsNextMessage(info)) {
-            if(this->IsOutdatedMessage(info))
-                return false;
-            this->PushMessageToQueue(info);
+    __attribute__((noinline))
+    bool OnProcessNonActualMessage(T *info) {
+        if(this->IsOutdatedMessage(info))
             return false;
-        }
+        this->PushMessageToQueue(info);
+        return false;
+    }
+
+    inline bool ProcessIncrementalMessage(T *info) {
+        if(!this->IsNextMessage(info))
+            return OnProcessNonActualMessage(info);
         this->m_rptSeq = info->RptSeq;
         this->ForceProcessMessage(info);
-        if(this->HasEntries()) {
+        if(this->HasEntries())
             return this->ProcessQueueMessages();
-        }
         return true;
     }
 
@@ -361,7 +360,8 @@ public:
         this->Add(info);
     }
 
-    inline bool ProcessQueueMessages() {
+    __attribute__((noinline))
+    bool ProcessQueueMessages() {
         if(this->m_entryInfo == 0)
             return true;
         if(!this->m_entryInfo->HasEntries()) {

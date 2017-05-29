@@ -1191,7 +1191,10 @@ public:
         this->currentPos = buffer;
     }
     inline void SetNewBuffer(BYTE *buffer, int length) {
-        this->buffer = buffer;
+        _mm_prefetch(buffer, _MM_HINT_T0);
+		for(int i = 64; i < length; i+= 64)
+			_mm_prefetch(buffer + i, _MM_HINT_T0);
+		this->buffer = buffer;
         this->bufferLength = length;
         this->ResetBuffer();
     }
@@ -2183,8 +2186,9 @@ public:
 	}
 	inline INT32 ReadInt32_Optional() {
         INT32 result = ReadInt32_Mandatory();
-        if (result > 0)
-            return result - 1;
+        result = result - (((UINT32)result) >> 31);
+		//if (result > 0)
+        //    return result - 1;
         return result;
     }
 	inline bool ReadInt32_Optional(INT32 *value) {
@@ -2221,7 +2225,8 @@ public:
 			memory >>= 8;
 			result <<= 7;
 		}
-		*value = result > 0? result - 1: result;
+		*value = result - (((UINT32)result) >> 31);
+		//*value = result > 0? result - 1: result;
 		return true;
 	}
 	inline bool ReadInt32_Optional_Predict1(INT32 *value) {
@@ -2424,8 +2429,9 @@ public:
 	}
     inline INT64 ReadInt64_Optional() {
         INT64 value = ReadInt64_Mandatory();
-        if (value > 0)
-            return value - 1;
+		value = value - (((UINT64)value) >> 63);
+		//if (value > 0)
+        //    return value - 1;
         return value;
     }
     inline UINT64 ReadUInt64_Mandatory() {
@@ -3123,9 +3129,17 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsGenericItemInfo* gmdeItemInfo = NULL;
 
-		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+		int gmdeItemInfoIndex = 0;
+		do {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
-			info->GroupMDEntries[i] = gmdeItemInfo;
+			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
+			gmdeItemInfoIndex++;
+		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
+		gmdeItemInfoIndex = 0;
+		do {
+			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
@@ -3212,7 +3226,9 @@ public:
 				nmap2 |= NULL_MAP_INDEX40;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
+			gmdeItemInfoIndex++;
 		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsGenericInfo = info;
@@ -3228,9 +3244,17 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsGenericItemInfo* gmdeItemInfo = NULL;
 
-		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+		int gmdeItemInfoIndex = 0;
+		do {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
-			info->GroupMDEntries[i] = gmdeItemInfo;
+			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
+			gmdeItemInfoIndex++;
+		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
+		gmdeItemInfoIndex = 0;
+		do {
+			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
@@ -3327,7 +3351,9 @@ public:
 				nmap2 |= NULL_MAP_INDEX45;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
+			gmdeItemInfoIndex++;
 		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsIncrementalGenericInfo = info;
@@ -3359,9 +3385,17 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsOLSFONDItemInfo* gmdeItemInfo = NULL;
 
-		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+		int gmdeItemInfoIndex = 0;
+		do {
 			gmdeItemInfo = GetFreeAstsOLSFONDItemInfo();
-			info->GroupMDEntries[i] = gmdeItemInfo;
+			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
+			gmdeItemInfoIndex++;
+		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
+		gmdeItemInfoIndex = 0;
+		do {
+			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 
 			UINT64 pmap2 = this->ParsePresenceMap2();
 			UINT64 nmap2 = 0;
@@ -3450,7 +3484,9 @@ public:
 			gmdeItemInfo->PresenceMap = pmap2;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsOLSFONDItemInfo = gmdeItemInfo;
+			gmdeItemInfoIndex++;
 		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsOLSFONDInfo = info;
@@ -3480,9 +3516,17 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsOLSCURRItemInfo* gmdeItemInfo = NULL;
 
-		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+		int gmdeItemInfoIndex = 0;
+		do {
 			gmdeItemInfo = GetFreeAstsOLSCURRItemInfo();
-			info->GroupMDEntries[i] = gmdeItemInfo;
+			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
+			gmdeItemInfoIndex++;
+		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
+		gmdeItemInfoIndex = 0;
+		do {
+			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 
 			UINT64 pmap2 = this->ParsePresenceMap2();
 			UINT64 nmap2 = 0;
@@ -3549,7 +3593,9 @@ public:
 			gmdeItemInfo->PresenceMap = pmap2;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsOLSCURRItemInfo = gmdeItemInfo;
+			gmdeItemInfoIndex++;
 		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsOLSCURRInfo = info;
@@ -3581,9 +3627,17 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsTLSFONDItemInfo* gmdeItemInfo = NULL;
 
-		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+		int gmdeItemInfoIndex = 0;
+		do {
 			gmdeItemInfo = GetFreeAstsTLSFONDItemInfo();
-			info->GroupMDEntries[i] = gmdeItemInfo;
+			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
+			gmdeItemInfoIndex++;
+		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
+		gmdeItemInfoIndex = 0;
+		do {
+			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 
 			UINT64 pmap2 = this->ParsePresenceMap3();
 			UINT64 nmap2 = 0;
@@ -3724,7 +3778,9 @@ public:
 			gmdeItemInfo->PresenceMap = pmap2;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsTLSFONDItemInfo = gmdeItemInfo;
+			gmdeItemInfoIndex++;
 		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsTLSFONDInfo = info;
@@ -3754,9 +3810,17 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsTLSCURRItemInfo* gmdeItemInfo = NULL;
 
-		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+		int gmdeItemInfoIndex = 0;
+		do {
 			gmdeItemInfo = GetFreeAstsTLSCURRItemInfo();
-			info->GroupMDEntries[i] = gmdeItemInfo;
+			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
+			gmdeItemInfoIndex++;
+		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
+		gmdeItemInfoIndex = 0;
+		do {
+			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 
 			UINT64 pmap2 = this->ParsePresenceMap3();
 			UINT64 nmap2 = 0;
@@ -3883,7 +3947,9 @@ public:
 			gmdeItemInfo->PresenceMap = pmap2;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsTLSCURRItemInfo = gmdeItemInfo;
+			gmdeItemInfoIndex++;
 		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsTLSCURRInfo = info;
@@ -3903,9 +3969,17 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsGenericItemInfo* gmdeItemInfo = NULL;
 
-		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+		int gmdeItemInfoIndex = 0;
+		do {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
-			info->GroupMDEntries[i] = gmdeItemInfo;
+			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
+			gmdeItemInfoIndex++;
+		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
+		gmdeItemInfoIndex = 0;
+		do {
+			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
@@ -3976,7 +4050,9 @@ public:
 				nmap2 |= NULL_MAP_INDEX32;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
+			gmdeItemInfoIndex++;
 		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsIncrementalMSRFONDInfo = info;
@@ -3996,9 +4072,17 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsGenericItemInfo* gmdeItemInfo = NULL;
 
-		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+		int gmdeItemInfoIndex = 0;
+		do {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
-			info->GroupMDEntries[i] = gmdeItemInfo;
+			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
+			gmdeItemInfoIndex++;
+		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
+		gmdeItemInfoIndex = 0;
+		do {
+			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
@@ -4059,7 +4143,9 @@ public:
 				nmap2 |= NULL_MAP_INDEX27;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
+			gmdeItemInfoIndex++;
 		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsIncrementalMSRCURRInfo = info;
@@ -4075,9 +4161,17 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsOLSFONDItemInfo* gmdeItemInfo = NULL;
 
-		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+		int gmdeItemInfoIndex = 0;
+		do {
 			gmdeItemInfo = GetFreeAstsOLSFONDItemInfo();
-			info->GroupMDEntries[i] = gmdeItemInfo;
+			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
+			gmdeItemInfoIndex++;
+		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
+		gmdeItemInfoIndex = 0;
+		do {
+			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 
 			UINT64 pmap2 = this->ParsePresenceMap2();
 			UINT64 nmap2 = 0;
@@ -4185,7 +4279,9 @@ public:
 			gmdeItemInfo->PresenceMap = pmap2;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsOLSFONDItemInfo = gmdeItemInfo;
+			gmdeItemInfoIndex++;
 		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsIncrementalOLRFONDInfo = info;
@@ -4201,9 +4297,17 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsOLSCURRItemInfo* gmdeItemInfo = NULL;
 
-		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+		int gmdeItemInfoIndex = 0;
+		do {
 			gmdeItemInfo = GetFreeAstsOLSCURRItemInfo();
-			info->GroupMDEntries[i] = gmdeItemInfo;
+			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
+			gmdeItemInfoIndex++;
+		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
+		gmdeItemInfoIndex = 0;
+		do {
+			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 
 			UINT64 pmap2 = this->ParsePresenceMap2();
 			UINT64 nmap2 = 0;
@@ -4294,7 +4398,9 @@ public:
 			gmdeItemInfo->PresenceMap = pmap2;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsOLSCURRItemInfo = gmdeItemInfo;
+			gmdeItemInfoIndex++;
 		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsIncrementalOLRCURRInfo = info;
@@ -4310,9 +4416,17 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsTLSFONDItemInfo* gmdeItemInfo = NULL;
 
-		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+		int gmdeItemInfoIndex = 0;
+		do {
 			gmdeItemInfo = GetFreeAstsTLSFONDItemInfo();
-			info->GroupMDEntries[i] = gmdeItemInfo;
+			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
+			gmdeItemInfoIndex++;
+		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
+		gmdeItemInfoIndex = 0;
+		do {
+			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
@@ -4364,7 +4478,9 @@ public:
 				nmap2 |= NULL_MAP_INDEX22;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsTLSFONDItemInfo = gmdeItemInfo;
+			gmdeItemInfoIndex++;
 		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsIncrementalTLRFONDInfo = info;
@@ -4380,9 +4496,17 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsTLSCURRItemInfo* gmdeItemInfo = NULL;
 
-		for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+		int gmdeItemInfoIndex = 0;
+		do {
 			gmdeItemInfo = GetFreeAstsTLSCURRItemInfo();
-			info->GroupMDEntries[i] = gmdeItemInfo;
+			_mm_prefetch(gmdeItemInfo, _MM_HINT_T0);
+			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
+			gmdeItemInfoIndex++;
+		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
+		gmdeItemInfoIndex = 0;
+		do {
+			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
@@ -4430,7 +4554,9 @@ public:
 				nmap2 |= NULL_MAP_INDEX20;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsTLSCURRItemInfo = gmdeItemInfo;
+			gmdeItemInfoIndex++;
 		}
+		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsIncrementalTLRCURRInfo = info;
@@ -4499,9 +4625,17 @@ public:
 		}
 		AstsSecurityDefinitionGroupInstrAttribItemInfo* giaItemInfo = NULL;
 
-		for(int i = 0; i < info->GroupInstrAttribCount; i++) {
+		int giaItemInfoIndex = 0;
+		do {
 			giaItemInfo = GetFreeAstsSecurityDefinitionGroupInstrAttribItemInfo();
-			info->GroupInstrAttrib[i] = giaItemInfo;
+			_mm_prefetch(giaItemInfo, _MM_HINT_T0);
+			info->GroupInstrAttrib[giaItemInfoIndex] = giaItemInfo;
+			giaItemInfoIndex++;
+		}
+		while(giaItemInfoIndex < info->GroupInstrAttribCount);
+		giaItemInfoIndex = 0;
+		do {
+			giaItemInfo = info->GroupInstrAttrib[giaItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			giaItemInfo->InstrAttribType = ReadInt32_Mandatory();
@@ -4511,7 +4645,9 @@ public:
 				ReadByteVector_Optional(giaItemInfo->InstrAttribValue, &(giaItemInfo->InstrAttribValueLength), 128);
 			giaItemInfo->NullMap = nmap2;
 			this->m_prevastsSecurityDefinitionGroupInstrAttribItemInfo = giaItemInfo;
+			giaItemInfoIndex++;
 		}
+		while(giaItemInfoIndex < info->GroupInstrAttribCount);
 
 		if(!ReadString_Optional(info->Currency, &(info->CurrencyLength)))
 			nmap1 |= NULL_MAP_INDEX19;
@@ -4522,9 +4658,17 @@ public:
 		}
 		AstsSecurityDefinitionMarketSegmentGrpItemInfo* msgItemInfo = NULL;
 
-		for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
+		int msgItemInfoIndex = 0;
+		do {
 			msgItemInfo = GetFreeAstsSecurityDefinitionMarketSegmentGrpItemInfo();
-			info->MarketSegmentGrp[i] = msgItemInfo;
+			_mm_prefetch(msgItemInfo, _MM_HINT_T0);
+			info->MarketSegmentGrp[msgItemInfoIndex] = msgItemInfo;
+			msgItemInfoIndex++;
+		}
+		while(msgItemInfoIndex < info->MarketSegmentGrpCount);
+		msgItemInfoIndex = 0;
+		do {
+			msgItemInfo = info->MarketSegmentGrp[msgItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			if(!ReadDecimal_Optional(&(msgItemInfo->RoundLot)))
@@ -4536,9 +4680,17 @@ public:
 			}
 			AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* tsrgItemInfo = NULL;
 
-			for(int i = 0; i < msgItemInfo->TradingSessionRulesGrpCount; i++) {
+			int tsrgItemInfoIndex = 0;
+			do {
 				tsrgItemInfo = GetFreeAstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
-				msgItemInfo->TradingSessionRulesGrp[i] = tsrgItemInfo;
+				_mm_prefetch(tsrgItemInfo, _MM_HINT_T0);
+				msgItemInfo->TradingSessionRulesGrp[tsrgItemInfoIndex] = tsrgItemInfo;
+				tsrgItemInfoIndex++;
+			}
+			while(tsrgItemInfoIndex < msgItemInfo->TradingSessionRulesGrpCount);
+			tsrgItemInfoIndex = 0;
+			do {
+				tsrgItemInfo = msgItemInfo->TradingSessionRulesGrp[tsrgItemInfoIndex];
 				UINT64 nmap3 = 0;
 
 				ReadString_Mandatory_Fixed4(tsrgItemInfo->TradingSessionID);
@@ -4550,11 +4702,15 @@ public:
 					nmap3 |= NULL_MAP_INDEX2;
 				tsrgItemInfo->NullMap = nmap3;
 				this->m_prevastsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo = tsrgItemInfo;
+				tsrgItemInfoIndex++;
 			}
+			while(tsrgItemInfoIndex < msgItemInfo->TradingSessionRulesGrpCount);
 
 			msgItemInfo->NullMap = nmap2;
 			this->m_prevastsSecurityDefinitionMarketSegmentGrpItemInfo = msgItemInfo;
+			msgItemInfoIndex++;
 		}
+		while(msgItemInfoIndex < info->MarketSegmentGrpCount);
 
 		if(!ReadString_Optional(info->SettlCurrency, &(info->SettlCurrencyLength)))
 			nmap1 |= NULL_MAP_INDEX21;
@@ -5144,9 +5300,17 @@ public:
 		info->MDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		FortsDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
 
-		for(int i = 0; i < info->MDEntriesCount; i++) {
+		int mdeItemInfoIndex = 0;
+		do {
 			mdeItemInfo = GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo();
-			info->MDEntries[i] = mdeItemInfo;
+			_mm_prefetch(mdeItemInfo, _MM_HINT_T0);
+			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
+			mdeItemInfoIndex++;
+		}
+		while(mdeItemInfoIndex < info->MDEntriesCount);
+		mdeItemInfoIndex = 0;
+		do {
+			mdeItemInfo = info->MDEntries[mdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			mdeItemInfo->MDUpdateAction = ReadUInt32_Mandatory();
@@ -5199,7 +5363,9 @@ public:
 				nmap2 |= NULL_MAP_INDEX17;
 			mdeItemInfo->NullMap = nmap2;
 			this->m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo = mdeItemInfo;
+			mdeItemInfoIndex++;
 		}
+		while(mdeItemInfoIndex < info->MDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevfortsDefaultIncrementalRefreshMessageInfo = info;
@@ -5228,9 +5394,17 @@ public:
 		info->MDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		FortsDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
 
-		for(int i = 0; i < info->MDEntriesCount; i++) {
+		int mdeItemInfoIndex = 0;
+		do {
 			mdeItemInfo = GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo();
-			info->MDEntries[i] = mdeItemInfo;
+			_mm_prefetch(mdeItemInfo, _MM_HINT_T0);
+			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
+			mdeItemInfoIndex++;
+		}
+		while(mdeItemInfoIndex < info->MDEntriesCount);
+		mdeItemInfoIndex = 0;
+		do {
+			mdeItemInfo = info->MDEntries[mdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			ReadString_Mandatory(mdeItemInfo->MDEntryType, &(mdeItemInfo->MDEntryTypeLength));
@@ -5267,7 +5441,9 @@ public:
 				nmap2 |= NULL_MAP_INDEX12;
 			mdeItemInfo->NullMap = nmap2;
 			this->m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo = mdeItemInfo;
+			mdeItemInfoIndex++;
 		}
+		while(mdeItemInfoIndex < info->MDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevfortsDefaultSnapshotMessageInfo = info;
@@ -5313,9 +5489,17 @@ public:
 		info->MDFeedTypesCount = ReadUInt32_Mandatory_Predict12();
 		FortsSecurityDefinitionMDFeedTypesItemInfo* mdftItemInfo = NULL;
 
-		for(int i = 0; i < info->MDFeedTypesCount; i++) {
+		int mdftItemInfoIndex = 0;
+		do {
 			mdftItemInfo = GetFreeFortsSecurityDefinitionMDFeedTypesItemInfo();
-			info->MDFeedTypes[i] = mdftItemInfo;
+			_mm_prefetch(mdftItemInfo, _MM_HINT_T0);
+			info->MDFeedTypes[mdftItemInfoIndex] = mdftItemInfo;
+			mdftItemInfoIndex++;
+		}
+		while(mdftItemInfoIndex < info->MDFeedTypesCount);
+		mdftItemInfoIndex = 0;
+		do {
+			mdftItemInfo = info->MDFeedTypes[mdftItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			ReadString_Mandatory(mdftItemInfo->MDFeedType, &(mdftItemInfo->MDFeedTypeLength));
@@ -5325,7 +5509,9 @@ public:
 				nmap2 |= NULL_MAP_INDEX1;
 			mdftItemInfo->NullMap = nmap2;
 			this->m_prevfortsSecurityDefinitionMDFeedTypesItemInfo = mdftItemInfo;
+			mdftItemInfoIndex++;
 		}
+		while(mdftItemInfoIndex < info->MDFeedTypesCount);
 
 
 		if(!ReadUInt32_Optional_Predict12((UINT32*)&(info->UnderlyingsCount))) {
@@ -5334,9 +5520,17 @@ public:
 		}
 		FortsSecurityDefinitionUnderlyingsItemInfo* uItemInfo = NULL;
 
-		for(int i = 0; i < info->UnderlyingsCount; i++) {
+		int uItemInfoIndex = 0;
+		do {
 			uItemInfo = GetFreeFortsSecurityDefinitionUnderlyingsItemInfo();
-			info->Underlyings[i] = uItemInfo;
+			_mm_prefetch(uItemInfo, _MM_HINT_T0);
+			info->Underlyings[uItemInfoIndex] = uItemInfo;
+			uItemInfoIndex++;
+		}
+		while(uItemInfoIndex < info->UnderlyingsCount);
+		uItemInfoIndex = 0;
+		do {
+			uItemInfo = info->Underlyings[uItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			ReadString_Mandatory(uItemInfo->UnderlyingSymbol, &(uItemInfo->UnderlyingSymbolLength));
@@ -5346,7 +5540,9 @@ public:
 				uItemInfo->UnderlyingSecurityID = ReadUInt64_Optional();
 			uItemInfo->NullMap = nmap2;
 			this->m_prevfortsSecurityDefinitionUnderlyingsItemInfo = uItemInfo;
+			uItemInfoIndex++;
 		}
+		while(uItemInfoIndex < info->UnderlyingsCount);
 
 		if(!ReadDecimal_Optional(&(info->HighLimitPx)))
 			nmap1 |= NULL_MAP_INDEX13;
@@ -5375,9 +5571,17 @@ public:
 		}
 		FortsSecurityDefinitionInstrumentLegsItemInfo* ilItemInfo = NULL;
 
-		for(int i = 0; i < info->InstrumentLegsCount; i++) {
+		int ilItemInfoIndex = 0;
+		do {
 			ilItemInfo = GetFreeFortsSecurityDefinitionInstrumentLegsItemInfo();
-			info->InstrumentLegs[i] = ilItemInfo;
+			_mm_prefetch(ilItemInfo, _MM_HINT_T0);
+			info->InstrumentLegs[ilItemInfoIndex] = ilItemInfo;
+			ilItemInfoIndex++;
+		}
+		while(ilItemInfoIndex < info->InstrumentLegsCount);
+		ilItemInfoIndex = 0;
+		do {
+			ilItemInfo = info->InstrumentLegs[ilItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			ReadString_Mandatory(ilItemInfo->LegSymbol, &(ilItemInfo->LegSymbolLength));
@@ -5385,7 +5589,9 @@ public:
 			ReadDecimal_Mandatory(&(ilItemInfo->LegRatioQty));
 			ilItemInfo->NullMap = nmap2;
 			this->m_prevfortsSecurityDefinitionInstrumentLegsItemInfo = ilItemInfo;
+			ilItemInfoIndex++;
 		}
+		while(ilItemInfoIndex < info->InstrumentLegsCount);
 
 
 		if(!ReadUInt32_Optional_Predict12((UINT32*)&(info->InstrumentAttributesCount))) {
@@ -5394,16 +5600,26 @@ public:
 		}
 		FortsSecurityDefinitionInstrumentAttributesItemInfo* iaItemInfo = NULL;
 
-		for(int i = 0; i < info->InstrumentAttributesCount; i++) {
+		int iaItemInfoIndex = 0;
+		do {
 			iaItemInfo = GetFreeFortsSecurityDefinitionInstrumentAttributesItemInfo();
-			info->InstrumentAttributes[i] = iaItemInfo;
+			_mm_prefetch(iaItemInfo, _MM_HINT_T0);
+			info->InstrumentAttributes[iaItemInfoIndex] = iaItemInfo;
+			iaItemInfoIndex++;
+		}
+		while(iaItemInfoIndex < info->InstrumentAttributesCount);
+		iaItemInfoIndex = 0;
+		do {
+			iaItemInfo = info->InstrumentAttributes[iaItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			iaItemInfo->InstrAttribType = ReadInt32_Mandatory();
 			ReadString_Mandatory(iaItemInfo->InstrAttribValue, &(iaItemInfo->InstrAttribValueLength));
 			iaItemInfo->NullMap = nmap2;
 			this->m_prevfortsSecurityDefinitionInstrumentAttributesItemInfo = iaItemInfo;
+			iaItemInfoIndex++;
 		}
+		while(iaItemInfoIndex < info->InstrumentAttributesCount);
 
 		if(!ReadDecimal_Optional(&(info->UnderlyingQty)))
 			nmap1 |= NULL_MAP_INDEX25;
@@ -5416,9 +5632,17 @@ public:
 		}
 		FortsSecurityDefinitionEvntGrpItemInfo* egItemInfo = NULL;
 
-		for(int i = 0; i < info->EvntGrpCount; i++) {
+		int egItemInfoIndex = 0;
+		do {
 			egItemInfo = GetFreeFortsSecurityDefinitionEvntGrpItemInfo();
-			info->EvntGrp[i] = egItemInfo;
+			_mm_prefetch(egItemInfo, _MM_HINT_T0);
+			info->EvntGrp[egItemInfoIndex] = egItemInfo;
+			egItemInfoIndex++;
+		}
+		while(egItemInfoIndex < info->EvntGrpCount);
+		egItemInfoIndex = 0;
+		do {
+			egItemInfo = info->EvntGrp[egItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			egItemInfo->EventType = ReadInt32_Mandatory();
@@ -5426,7 +5650,9 @@ public:
 			egItemInfo->EventTime = ReadUInt64_Mandatory();
 			egItemInfo->NullMap = nmap2;
 			this->m_prevfortsSecurityDefinitionEvntGrpItemInfo = egItemInfo;
+			egItemInfoIndex++;
 		}
+		while(egItemInfoIndex < info->EvntGrpCount);
 
 		if(!ReadUInt32_Optional(&(info->MaturityDate)))
 			nmap1 |= NULL_MAP_INDEX28;
@@ -5550,15 +5776,25 @@ public:
 		info->NewsTextCount = ReadUInt32_Mandatory_Predict12();
 		FortsNewsNewsTextItemInfo* ntItemInfo = NULL;
 
-		for(int i = 0; i < info->NewsTextCount; i++) {
+		int ntItemInfoIndex = 0;
+		do {
 			ntItemInfo = GetFreeFortsNewsNewsTextItemInfo();
-			info->NewsText[i] = ntItemInfo;
+			_mm_prefetch(ntItemInfo, _MM_HINT_T0);
+			info->NewsText[ntItemInfoIndex] = ntItemInfo;
+			ntItemInfoIndex++;
+		}
+		while(ntItemInfoIndex < info->NewsTextCount);
+		ntItemInfoIndex = 0;
+		do {
+			ntItemInfo = info->NewsText[ntItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			ReadByteVector_Mandatory(ntItemInfo->Text, &(ntItemInfo->TextLength), 128);
 			ntItemInfo->NullMap = nmap2;
 			this->m_prevfortsNewsNewsTextItemInfo = ntItemInfo;
+			ntItemInfoIndex++;
 		}
+		while(ntItemInfoIndex < info->NewsTextCount);
 
 		info->NullMap = nmap1;
 		this->m_prevfortsNewsInfo = info;
@@ -5575,9 +5811,17 @@ public:
 		info->MDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		FortsOrdersLogMDEntriesItemInfo* mdeItemInfo = NULL;
 
-		for(int i = 0; i < info->MDEntriesCount; i++) {
+		int mdeItemInfoIndex = 0;
+		do {
 			mdeItemInfo = GetFreeFortsOrdersLogMDEntriesItemInfo();
-			info->MDEntries[i] = mdeItemInfo;
+			_mm_prefetch(mdeItemInfo, _MM_HINT_T0);
+			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
+			mdeItemInfoIndex++;
+		}
+		while(mdeItemInfoIndex < info->MDEntriesCount);
+		mdeItemInfoIndex = 0;
+		do {
+			mdeItemInfo = info->MDEntries[mdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			mdeItemInfo->MDUpdateAction = ReadUInt32_Mandatory();
@@ -5623,7 +5867,9 @@ public:
 				mdeItemInfo->Revision = ReadUInt64_Optional();
 			mdeItemInfo->NullMap = nmap2;
 			this->m_prevfortsOrdersLogMDEntriesItemInfo = mdeItemInfo;
+			mdeItemInfoIndex++;
 		}
+		while(mdeItemInfoIndex < info->MDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevfortsOrdersLogInfo = info;
@@ -5649,9 +5895,17 @@ public:
 		info->MDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		FortsOrdersBookMDEntriesItemInfo* mdeItemInfo = NULL;
 
-		for(int i = 0; i < info->MDEntriesCount; i++) {
+		int mdeItemInfoIndex = 0;
+		do {
 			mdeItemInfo = GetFreeFortsOrdersBookMDEntriesItemInfo();
-			info->MDEntries[i] = mdeItemInfo;
+			_mm_prefetch(mdeItemInfo, _MM_HINT_T0);
+			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
+			mdeItemInfoIndex++;
+		}
+		while(mdeItemInfoIndex < info->MDEntriesCount);
+		mdeItemInfoIndex = 0;
+		do {
+			mdeItemInfo = info->MDEntries[mdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			ReadString_Mandatory(mdeItemInfo->MDEntryType, &(mdeItemInfo->MDEntryTypeLength));
@@ -5678,7 +5932,9 @@ public:
 				mdeItemInfo->MDFlags = ReadInt64_Optional();
 			mdeItemInfo->NullMap = nmap2;
 			this->m_prevfortsOrdersBookMDEntriesItemInfo = mdeItemInfo;
+			mdeItemInfoIndex++;
 		}
+		while(mdeItemInfoIndex < info->MDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevfortsOrdersBookInfo = info;

@@ -178,13 +178,19 @@ public:
         this->FreePointer(hashItem);
     }
 
+    __attribute__((noinline))
+    void OnQuoteNotFound(T *info) {
+        // such thing could happen because of some packet lost
+        // so please do not return null :)
+        //TODO remove debug
+        printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
+        return;
+    }
+
     inline void RemoveQuote(HrPointerListLite<T> *list, T *info) {
         LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, list);
         if(hashItem == 0) {
-            // such thing could happen because of some packet lost
-            // so please do not return null :)
-            //TODO remove debug
-            printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
+            this->OnQuoteNotFound(info);
             return;
         }
         HrLinkedPointer<T> *node = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
@@ -195,12 +201,12 @@ public:
     }
 
     inline void RemoveBuyQuote(T *info) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove BuyQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
+        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove BuyQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
         RemoveQuote(this->m_buyQuoteList, info);
     }
 
     inline void RemoveSellQuote(T *info) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove SellQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
+        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove SellQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
         RemoveQuote(this->m_sellQuoteList, info);
     }
 
@@ -222,11 +228,7 @@ public:
             h->m_intId = info->MDEntryID;
             return;
         }
-        //TODO remove debug
-        printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
-        info->Used = true;
-        ptr = InsertBuyQuote(&(info->MDEntryPx));
-        hashItem = AddPointer(ptr, info, this->m_buyQuoteList);
+        this->OnQuoteNotFound(info);
     }
 
     inline void ChangeSellQuote(T *info) {
@@ -246,11 +248,7 @@ public:
             h->m_intId = info->MDEntryID;
             return;
         }
-        //TODO remove debug
-        printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
-        info->Used = true;
-        ptr = InsertSellQuote(&(info->MDEntryPx));
-        hashItem = AddPointer(ptr, info, this->m_sellQuoteList);
+        this->OnQuoteNotFound(info);
     }
 
     inline HrLinkedPointer<T>* AddBuyQuote(T *item) {
@@ -314,7 +312,8 @@ public:
             this->m_entryInfo = MDEntryQueue::Pool->NewItem();
     }
 
-    inline void PushMessageToQueue(T *info) {
+    __attribute__((noinline))
+    void PushMessageToQueue(T *info) {
         this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
         this->m_entryInfo->AddEntry(info, info->RptSeq);
@@ -324,10 +323,10 @@ public:
     inline void ForceProcessMessage(T *info) {
         if(info->MDUpdateAction == mduaAdd)
             this->Add(info);
-        else if(info->MDUpdateAction == mduaChange)
-            this->Change(info);
-        else
+        else if(info->MDUpdateAction == mduaDelete)
             this->Remove(info);
+        else
+            this->Change(info);
     }
 
     inline bool IsOutdatedMessage(T *info) {
@@ -363,7 +362,8 @@ public:
         this->Add(info);
     }
 
-    inline bool ProcessQueueMessages() {
+    __attribute__((noinline))
+    bool ProcessQueueMessages() {
         if(this->m_entryInfo == 0)
             return true;
         if(!this->m_entryInfo->HasEntries()) {

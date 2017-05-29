@@ -714,24 +714,6 @@ public:
         if(newStart != n) {
             newStart->Connect5(n);
         }
-
-        /*
-        HrLinkedPointer<T> *n = node->Next5();
-        if (n != newStart) {
-            newStart->Connect5(n);
-            n = node->Next4();
-            if (n != newStart) {
-                newStart->Connect4(n);
-                n = node->Next3();
-                if (n != newStart) {
-                    newStart->Connect3(n);
-                    n = node->Next2();
-                    if (n != newStart)
-                        newStart->Connect2(n);
-                }
-            }
-        }
-        */
     }
 
     inline void RemoveLastLevels(HrLinkedPointer<T> *node) {

@@ -119,7 +119,8 @@ public:
             this->m_entryInfo = MDEntryQueue::Pool->NewItem();
     }
 
-    inline void PushMessageToQueue(T *info) {
+    __attribute__((noinline))
+    void PushMessageToQueue(T *info) {
         this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
         this->m_entryInfo->AddEntry(info, info->RptSeq);
@@ -161,7 +162,8 @@ public:
         this->ForceProcessMessage(info);
     }
 
-    inline bool ProcessQueueMessages() {
+    __attribute__((noinline))
+    bool ProcessQueueMessages() {
         if(this->m_entryInfo == 0)
             return true;
         if(!this->m_entryInfo->HasEntries()) {

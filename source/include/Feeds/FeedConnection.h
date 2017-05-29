@@ -248,7 +248,7 @@ protected:
     }
 
     inline int TryGetSecurityDefinitionTotNumReportsAsts(unsigned char *buffer) {
-        this->m_fastProtocolManager->SetNewBuffer(buffer + 4, 1500);
+        this->m_fastProtocolManager->SetNewBuffer(buffer + 4);
         this->m_fastProtocolManager->DecodeAstsHeader();
         if(this->m_fastProtocolManager->TemplateId() != FeedTemplateId::fmcSecurityDefinition)
             return 0;
@@ -256,7 +256,7 @@ protected:
     }
 
     inline int TryGetSecurityDefinitionTotNumReportsForts(unsigned char *buffer) {
-        this->m_fastProtocolManager->SetNewBuffer(buffer + 4, 1500);
+        this->m_fastProtocolManager->SetNewBuffer(buffer + 4);
         this->m_fastProtocolManager->DecodeFortsHeader();
         if(this->m_fastProtocolManager->TemplateId() != FeedTemplateId::fortsSecurityDefinition)
             return 0;
@@ -298,6 +298,7 @@ protected:
             this->m_endMsgSeqNum = msgSeqNum;
 
         info->m_address = buffer;
+        info->m_size = size;
         info->m_requested = true;
         return true;
     }
@@ -320,6 +321,7 @@ protected:
             this->m_startMsgSeqNum = msgSeqNum;
 
         info->m_address = buffer;
+        info->m_size = size;
         info->m_requested = true;
         return true;
     }
@@ -376,6 +378,7 @@ protected:
         }
 
         info->m_address = this->m_recvBufferCurrentPos + 4;
+        info->m_size = size;
         this->NextRecv(size);
         return true;
     }
@@ -388,6 +391,7 @@ protected:
 
         FeedConnectionMessageInfo *info = this->Packet(msgSeqNum);
         info->m_address = this->m_recvBufferCurrentPos + 4;
+        info->m_size = size;
         this->NextRecv(size);
 
         this->StartListenSnapshot();
@@ -410,6 +414,7 @@ protected:
         if(this->m_endMsgSeqNum < msgSeqNum)
             this->m_endMsgSeqNum = msgSeqNum;
         info->m_address = this->m_recvBufferCurrentPos + 4;
+        info->m_size = size;
         this->NextRecv(size);
         return true;
     }
@@ -419,6 +424,7 @@ protected:
             int localMsgSeqNum = msgSeqNum - this->m_windowMsgSeqNum;
             FeedConnectionMessageInfo *info = this->m_packets[localMsgSeqNum];
             info->m_address = this->m_recvBufferCurrentPos + 4;
+            info->m_size = size;
             this->NextRecv(size);
             return true;
         }
@@ -452,6 +458,7 @@ protected:
         //    this->m_startMsgSeqNum = msgSeqNum;
 
         info->m_address = this->m_recvBufferCurrentPos + 4;
+        info->m_size = size;
         this->NextRecv(size);
         return true;
     }
@@ -467,6 +474,7 @@ protected:
             }
             FeedConnectionMessageInfo *info = this->m_packets[msgSeqNum - this->m_windowMsgSeqNum];
             info->m_address = this->m_recvBufferCurrentPos + 4;
+            info->m_size = size;
             this->NextRecv(size);
             return true;
         }
@@ -485,6 +493,7 @@ protected:
             int localMsgSeqNum = msgSeqNum - this->m_windowMsgSeqNum;
             FeedConnectionMessageInfo *info = this->m_packets[localMsgSeqNum];
             info->m_address = this->m_recvBufferCurrentPos + 4;
+            info->m_size = size;
             this->NextRecv(size);
             return true;
         }
@@ -1657,7 +1666,7 @@ protected:
 
     inline void ProcessTradingSessionStatusForts() {
         FeedConnectionMessageInfo *info = this->m_packets[this->m_startMsgSeqNum];
-        this->m_fastProtocolManager->SetNewBuffer(info->m_address);
+        this->m_fastProtocolManager->SetNewBuffer(info->m_address, info->m_size);
         FortsTradingSessionStatusInfo *sinfo = this->m_fastProtocolManager->DecodeFortsTradingSessionStatus();
         this->m_incremental->OnTradingSessionStatusForts(sinfo);
     }
@@ -2781,7 +2790,8 @@ protected:
         ProgramStatistics::Current->Inc(Counters::cFondOlr);
         ProgramStatistics::Total->Inc(Counters::cFondOlr);
 #endif
-        for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+        this->OnIncrementalRefresh_OLR_FOND(info->GroupMDEntries[0]);
+        for(int i = 1; i < info->GroupMDEntriesCount; i++) {
             this->OnIncrementalRefresh_OLR_FOND(info->GroupMDEntries[i]);
         }
         info->ReleaseUnusedChildren();
@@ -2792,7 +2802,8 @@ protected:
         ProgramStatistics::Current->Inc(Counters::cCurrOlr);
         ProgramStatistics::Total->Inc(Counters::cCurrOlr);
 #endif
-        for(int i = 0; i < info->GroupMDEntriesCount; i++)
+        this->OnIncrementalRefresh_OLR_CURR(info->GroupMDEntries[0]);
+        for(int i = 1; i < info->GroupMDEntriesCount; i++)
             this->OnIncrementalRefresh_OLR_CURR(info->GroupMDEntries[i]);
         info->ReleaseUnusedChildren();
     }
@@ -2802,7 +2813,8 @@ protected:
         ProgramStatistics::Current->Inc(Counters::cFondTlr);
         ProgramStatistics::Total->Inc(Counters::cFondTlr);
 #endif
-        for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+        this->OnIncrementalRefresh_TLR_FOND(info->GroupMDEntries[0]);
+        for(int i = 1; i < info->GroupMDEntriesCount; i++) {
             this->OnIncrementalRefresh_TLR_FOND(info->GroupMDEntries[i]);
         }
         info->ReleaseUnusedChildren();
@@ -2813,7 +2825,8 @@ protected:
         ProgramStatistics::Current->Inc(Counters::cCurrTlr);
         ProgramStatistics::Total->Inc(Counters::cCurrTlr);
 #endif
-        for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+        this->OnIncrementalRefresh_TLR_CURR(info->GroupMDEntries[0]);
+        for(int i = 1; i < info->GroupMDEntriesCount; i++) {
             this->OnIncrementalRefresh_TLR_CURR(info->GroupMDEntries[i]);
         }
         info->ReleaseUnusedChildren();
@@ -2824,7 +2837,8 @@ protected:
         ProgramStatistics::Current->Inc(Counters::cFondMsr);
         ProgramStatistics::Total->Inc(Counters::cFondMsr);
 #endif
-        for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+        this->OnIncrementalRefresh_MSR_FOND(info->GroupMDEntries[0]);
+        for(int i = 1; i < info->GroupMDEntriesCount; i++) {
             this->OnIncrementalRefresh_MSR_FOND(info->GroupMDEntries[i]);
         }
         info->ReleaseUnusedChildren();
@@ -2835,7 +2849,8 @@ protected:
         ProgramStatistics::Current->Inc(Counters::cCurrMsr);
         ProgramStatistics::Total->Inc(Counters::cCurrMsr);
 #endif
-        for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+        this->OnIncrementalRefresh_MSR_CURR(info->GroupMDEntries[0]);
+        for(int i = 1; i < info->GroupMDEntriesCount; i++) {
             this->OnIncrementalRefresh_MSR_CURR(info->GroupMDEntries[i]);
         }
         info->ReleaseUnusedChildren();
@@ -2984,7 +2999,7 @@ protected:
     }
     inline void ProcessIncrementalAsts(FeedConnectionMessageInfo *info) {
         info->m_processed = true;
-        this->m_fastProtocolManager->SetNewBuffer(info->m_address);
+        this->m_fastProtocolManager->SetNewBuffer(info->m_address, info->m_size);
         this->ApplyIncrementalCoreAsts();
     }
     inline void CheckUpdateFortsIncrementalParams(int messageIndex) {
@@ -3009,7 +3024,7 @@ protected:
 
     inline bool ProcessIncrementalForts(FeedConnectionMessageInfo *info, int messageIndex) {
         info->m_processed = true;
-        this->m_fastProtocolManager->SetNewBuffer(info->m_address);
+        this->m_fastProtocolManager->SetNewBuffer(info->m_address, info->m_size);
         this->m_fastProtocolManager->DecodeForts();
 
         int prevFortsRouteFirst = this->m_fortsIncrementalRouteFirst;
@@ -3027,7 +3042,7 @@ protected:
             return;  // TODO - take this message into account, becasue it determines feed alive
         }
 
-        this->m_fastProtocolManager->SetNewBuffer(buffer);
+        this->m_fastProtocolManager->SetNewBuffer(buffer, info->m_size);
 
         // there is no need to check
         this->m_fastProtocolManager->DecodeForts();
@@ -3053,7 +3068,7 @@ protected:
         info->m_processed = true;
         if(this->ShouldSkipMessageAsts(buffer))
             return true;
-        this->m_fastProtocolManager->SetNewBuffer(buffer);
+        this->m_fastProtocolManager->SetNewBuffer(buffer, info->m_size);
         UINT32 templateId = this->m_fastProtocolManager->ParseHeaderFast();
         if(templateId == AstsPackedTemplateId::AstsSecurityStatusInfo)
             return this->ProcessSecurityStatus(this->m_fastProtocolManager->DecodeAstsSecurityStatus());

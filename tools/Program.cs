@@ -2762,6 +2762,7 @@ namespace prebuild {
 			string itemInfo = GetIemInfoPrefix(value) + "ItemInfo";
 			WriteLine("");
 			string methodName = HasOptionalPresence(value)? "ReadUInt32_Optional_Predict12": "ReadUInt32_Mandatory_Predict12";
+			string count = objectValueName + "->" + Name (value) + "Count";
 			if (ShouldWriteNullCheckCode (value)) {
 				WriteLine (tabString + "if(!" + methodName + "((UINT32*)&(" + objectValueName + "->" + Name (value) + "Count))) {");
 				WriteLine (tabString + "\t" + objectValueName + "->" + Name (value) + "Count = 0;");
@@ -2772,10 +2773,18 @@ namespace prebuild {
 			}
 			WriteLine(tabString + info.Name + "* " + itemInfo + " = NULL;");
 			WriteLine("");
-			WriteLine(tabString + "for(int i = 0; i < " + objectValueName + "->" + Name(value) + "Count; i++) {");
+			string i = itemInfo + "Index";
+			WriteLine (tabString + "int " + i + " = 0;");
+			WriteLine (tabString + "do {");
 			WriteLine(tabString + "\t" + itemInfo + " = " + info.GetFreeMethodName + "();");
-			WriteLine(tabString + "\t" + objectValueName + "->" + Name(value) + "[i] = " + itemInfo + ";");
-
+			WriteLine (tabString + "\t_mm_prefetch(" + itemInfo + ", _MM_HINT_T0);");
+			WriteLine(tabString + "\t" + objectValueName + "->" + Name(value) + "[" + i + "] = " + itemInfo + ";");
+			WriteLine (tabString + "\t" + i + "++;");
+			WriteLine (tabString + "}");
+			WriteLine(tabString + "while(" + i + " < " + count + ");");
+			WriteLine (tabString + i + " = 0;");
+			WriteLine (tabString + "do {");
+			WriteLine(tabString + "\t" + itemInfo + " = " + objectValueName + "->" + Name(value) + "[" + i + "];");
 			LevelCount++;
 			if(GetMaxPresenceBitCount(value) > 0) {
 				WriteLine("");
@@ -2795,7 +2804,9 @@ namespace prebuild {
 			WriteLine (tabString + "\t" + itemInfo + "->NullMap = nmap" + LevelCount + ";");
 			LevelCount--;
 			WriteLine(tabString + "\tthis->" + info.PrevValueName + " = " + itemInfo + ";");
+			WriteLine (tabString + "\t" + i + "++;");
 			WriteLine(tabString + "}");
+			WriteLine(tabString + "while(" + i + " < " + count + ");");
 			WriteLine("");
 		}
 

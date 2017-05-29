@@ -385,10 +385,19 @@ void FastProtocolTester::TestPerformance() {
     UINT64 *timens = new UINT64[311];
     for (int i = 0; i < 311; i++) {
         packets[i] = DebugInfoManager::Default->StringToBinary(olr_curr[i], sizes + i);
+        printf("packet %d size = %d\n", i, sizes[i]);
         timens[i] = 0;
     }
 
     FastProtocolManager *manager = new FastProtocolManager();
+    for(int i = 0; i < 311; i++) {
+        manager->SetNewBuffer(packets[i], sizes[i]);
+        manager->SkipMsgSeqNumber();
+        manager->ParseHeaderFast();
+        AstsIncrementalOLRCURRInfo *info = manager->DecodeAstsIncrementalOLRCURR();
+        info->Clear();
+        printf("packet %d itemCount = %d\n", i, info->GroupMDEntriesCount);
+    }
 
     Stopwatch *w = new Stopwatch();
 
@@ -410,7 +419,7 @@ void FastProtocolTester::TestPerformance() {
             timens[i] = 0;
         }
     }
-    getchar();
+    //sgetchar();
 }
 
 void FastProtocolTester::TestMessages() {
