@@ -3133,7 +3133,8 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
-			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(AstsGenericItemInfo); i += 64)
+				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -3248,7 +3249,8 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
-			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(AstsGenericItemInfo); i += 64)
+				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -3389,7 +3391,8 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsOLSFONDItemInfo();
-			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(AstsOLSFONDItemInfo); i += 64)
+				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -3520,7 +3523,8 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsOLSCURRItemInfo();
-			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(AstsOLSCURRItemInfo); i += 64)
+				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -3631,7 +3635,8 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsTLSFONDItemInfo();
-			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(AstsTLSFONDItemInfo); i += 64)
+				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -3814,7 +3819,8 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsTLSCURRItemInfo();
-			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(AstsTLSCURRItemInfo); i += 64)
+				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -3973,7 +3979,8 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
-			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(AstsGenericItemInfo); i += 64)
+				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -4076,7 +4083,8 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
-			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(AstsGenericItemInfo); i += 64)
+				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -4165,7 +4173,8 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsOLSFONDItemInfo();
-			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(AstsOLSFONDItemInfo); i += 64)
+				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -4301,7 +4310,8 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsOLSCURRItemInfo();
-			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(AstsOLSCURRItemInfo); i += 64)
+				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -4420,7 +4430,8 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsTLSFONDItemInfo();
-			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(AstsTLSFONDItemInfo); i += 64)
+				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -4500,7 +4511,8 @@ public:
 		int gmdeItemInfoIndex = 0;
 		do {
 			gmdeItemInfo = GetFreeAstsTLSCURRItemInfo();
-			__builtin_prefetch(gmdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(AstsTLSCURRItemInfo); i += 64)
+				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
 			gmdeItemInfoIndex++;
 		}
@@ -4629,7 +4641,8 @@ public:
 		int giaItemInfoIndex = 0;
 		do {
 			giaItemInfo = GetFreeAstsSecurityDefinitionGroupInstrAttribItemInfo();
-			__builtin_prefetch(giaItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(AstsSecurityDefinitionGroupInstrAttribItemInfo); i += 64)
+				__builtin_prefetch(((char*)giaItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupInstrAttrib[giaItemInfoIndex] = giaItemInfo;
 			giaItemInfoIndex++;
 		}
@@ -4662,7 +4675,8 @@ public:
 		int msgItemInfoIndex = 0;
 		do {
 			msgItemInfo = GetFreeAstsSecurityDefinitionMarketSegmentGrpItemInfo();
-			__builtin_prefetch(msgItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(AstsSecurityDefinitionMarketSegmentGrpItemInfo); i += 64)
+				__builtin_prefetch(((char*)msgItemInfo) + i, 0, _MM_HINT_T0);
 			info->MarketSegmentGrp[msgItemInfoIndex] = msgItemInfo;
 			msgItemInfoIndex++;
 		}
@@ -4684,7 +4698,8 @@ public:
 			int tsrgItemInfoIndex = 0;
 			do {
 				tsrgItemInfo = GetFreeAstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
-				__builtin_prefetch(tsrgItemInfo, 0, _MM_HINT_T0);
+				for(int i = 0; i < sizeof(AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo); i += 64)
+					__builtin_prefetch(((char*)tsrgItemInfo) + i, 0, _MM_HINT_T0);
 				msgItemInfo->TradingSessionRulesGrp[tsrgItemInfoIndex] = tsrgItemInfo;
 				tsrgItemInfoIndex++;
 			}
@@ -5304,7 +5319,8 @@ public:
 		int mdeItemInfoIndex = 0;
 		do {
 			mdeItemInfo = GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo();
-			__builtin_prefetch(mdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(FortsDefaultSnapshotMessageMDEntriesItemInfo); i += 64)
+				__builtin_prefetch(((char*)mdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
 			mdeItemInfoIndex++;
 		}
@@ -5398,7 +5414,8 @@ public:
 		int mdeItemInfoIndex = 0;
 		do {
 			mdeItemInfo = GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo();
-			__builtin_prefetch(mdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(FortsDefaultSnapshotMessageMDEntriesItemInfo); i += 64)
+				__builtin_prefetch(((char*)mdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
 			mdeItemInfoIndex++;
 		}
@@ -5493,7 +5510,8 @@ public:
 		int mdftItemInfoIndex = 0;
 		do {
 			mdftItemInfo = GetFreeFortsSecurityDefinitionMDFeedTypesItemInfo();
-			__builtin_prefetch(mdftItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(FortsSecurityDefinitionMDFeedTypesItemInfo); i += 64)
+				__builtin_prefetch(((char*)mdftItemInfo) + i, 0, _MM_HINT_T0);
 			info->MDFeedTypes[mdftItemInfoIndex] = mdftItemInfo;
 			mdftItemInfoIndex++;
 		}
@@ -5524,7 +5542,8 @@ public:
 		int uItemInfoIndex = 0;
 		do {
 			uItemInfo = GetFreeFortsSecurityDefinitionUnderlyingsItemInfo();
-			__builtin_prefetch(uItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(FortsSecurityDefinitionUnderlyingsItemInfo); i += 64)
+				__builtin_prefetch(((char*)uItemInfo) + i, 0, _MM_HINT_T0);
 			info->Underlyings[uItemInfoIndex] = uItemInfo;
 			uItemInfoIndex++;
 		}
@@ -5575,7 +5594,8 @@ public:
 		int ilItemInfoIndex = 0;
 		do {
 			ilItemInfo = GetFreeFortsSecurityDefinitionInstrumentLegsItemInfo();
-			__builtin_prefetch(ilItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(FortsSecurityDefinitionInstrumentLegsItemInfo); i += 64)
+				__builtin_prefetch(((char*)ilItemInfo) + i, 0, _MM_HINT_T0);
 			info->InstrumentLegs[ilItemInfoIndex] = ilItemInfo;
 			ilItemInfoIndex++;
 		}
@@ -5604,7 +5624,8 @@ public:
 		int iaItemInfoIndex = 0;
 		do {
 			iaItemInfo = GetFreeFortsSecurityDefinitionInstrumentAttributesItemInfo();
-			__builtin_prefetch(iaItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(FortsSecurityDefinitionInstrumentAttributesItemInfo); i += 64)
+				__builtin_prefetch(((char*)iaItemInfo) + i, 0, _MM_HINT_T0);
 			info->InstrumentAttributes[iaItemInfoIndex] = iaItemInfo;
 			iaItemInfoIndex++;
 		}
@@ -5636,7 +5657,8 @@ public:
 		int egItemInfoIndex = 0;
 		do {
 			egItemInfo = GetFreeFortsSecurityDefinitionEvntGrpItemInfo();
-			__builtin_prefetch(egItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(FortsSecurityDefinitionEvntGrpItemInfo); i += 64)
+				__builtin_prefetch(((char*)egItemInfo) + i, 0, _MM_HINT_T0);
 			info->EvntGrp[egItemInfoIndex] = egItemInfo;
 			egItemInfoIndex++;
 		}
@@ -5780,7 +5802,8 @@ public:
 		int ntItemInfoIndex = 0;
 		do {
 			ntItemInfo = GetFreeFortsNewsNewsTextItemInfo();
-			__builtin_prefetch(ntItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(FortsNewsNewsTextItemInfo); i += 64)
+				__builtin_prefetch(((char*)ntItemInfo) + i, 0, _MM_HINT_T0);
 			info->NewsText[ntItemInfoIndex] = ntItemInfo;
 			ntItemInfoIndex++;
 		}
@@ -5815,7 +5838,8 @@ public:
 		int mdeItemInfoIndex = 0;
 		do {
 			mdeItemInfo = GetFreeFortsOrdersLogMDEntriesItemInfo();
-			__builtin_prefetch(mdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(FortsOrdersLogMDEntriesItemInfo); i += 64)
+				__builtin_prefetch(((char*)mdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
 			mdeItemInfoIndex++;
 		}
@@ -5899,7 +5923,8 @@ public:
 		int mdeItemInfoIndex = 0;
 		do {
 			mdeItemInfo = GetFreeFortsOrdersBookMDEntriesItemInfo();
-			__builtin_prefetch(mdeItemInfo, 0, _MM_HINT_T0);
+			for(int i = 0; i < sizeof(FortsOrdersBookMDEntriesItemInfo); i += 64)
+				__builtin_prefetch(((char*)mdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
 			mdeItemInfoIndex++;
 		}

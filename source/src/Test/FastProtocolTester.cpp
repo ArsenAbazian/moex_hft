@@ -382,10 +382,11 @@ void FastProtocolTester::TestPerformance() {
 
     unsigned char **packets = new unsigned char *[311];
     int *sizes = new int[311];
+    int *counts = new int[311];
     UINT64 *timens = new UINT64[311];
     for (int i = 0; i < 311; i++) {
         packets[i] = DebugInfoManager::Default->StringToBinary(olr_curr[i], sizes + i);
-        printf("packet %d size = %d\n", i, sizes[i]);
+        //printf("packet %d size = %d\n", i, sizes[i]);
         timens[i] = 0;
     }
 
@@ -395,31 +396,26 @@ void FastProtocolTester::TestPerformance() {
         manager->SkipMsgSeqNumber();
         manager->ParseHeaderFast();
         AstsIncrementalOLRCURRInfo *info = manager->DecodeAstsIncrementalOLRCURR();
+        counts[i] = info->GroupMDEntriesCount;
         info->Clear();
-        printf("packet %d itemCount = %d\n", i, info->GroupMDEntriesCount);
+        //printf("packet %d itemCount = %d\n", i, info->GroupMDEntriesCount);
     }
 
     Stopwatch *w = new Stopwatch();
 
-    for(int j = 0; j < 100; j++) {
-        for (int i = 0; i < 1000; i++) {
-            for (int msg = 0; msg < 10; msg++) {
-                w->StartPrecise(1);
-                manager->SetNewBuffer(packets[msg], sizes[msg]);
-                manager->SkipMsgSeqNumber();
-                manager->ParseHeaderFast();
-                AstsIncrementalOLRCURRInfo *info = manager->DecodeAstsIncrementalOLRCURR();
-                info->Clear();
-                UINT64 ns = w->ElapsedNanosecondsSlowPrecise(1);
-                timens[msg] += ns;
-            }
-        }
-        for (int i = 0; i < 10; i++) {
-            printf("time for %d = %" PRIu64 " ns\n", i, timens[i] / 1000);
-            timens[i] = 0;
-        }
+    for (int msg = 0; msg < 311; msg++) {
+        w->StartPrecise(1);
+        manager->SetNewBuffer(packets[msg], sizes[msg]);
+        manager->SkipMsgSeqNumber();
+        manager->ParseHeaderFast();
+        AstsIncrementalOLRCURRInfo *info = manager->DecodeAstsIncrementalOLRCURR();
+        UINT64 ns = w->ElapsedNanosecondsSlowPrecise(1);
+        timens[msg] = ns;
     }
-    //sgetchar();
+    for (int i = 0; i < 311; i++) {
+        printf("%d size = %d count = %d time = %" PRIu64 " ns\n", i, sizes[i], counts[i], timens[i]);
+    }
+    getchar();
 }
 
 void FastProtocolTester::TestMessages() {

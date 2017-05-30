@@ -2773,15 +2773,18 @@ namespace prebuild {
 			}
 			WriteLine(tabString + info.Name + "* " + itemInfo + " = NULL;");
 			WriteLine("");
+
 			string i = itemInfo + "Index";
 			WriteLine (tabString + "int " + i + " = 0;");
 			WriteLine (tabString + "do {");
-			WriteLine(tabString + "\t" + itemInfo + " = " + info.GetFreeMethodName + "();");
-			WriteLine (tabString + "\t__builtin_prefetch(" + itemInfo + ", 0, _MM_HINT_T0);");
-			WriteLine(tabString + "\t" + objectValueName + "->" + Name(value) + "[" + i + "] = " + itemInfo + ";");
+			WriteLine (tabString + "\t" + itemInfo + " = " + info.GetFreeMethodName + "();");
+			WriteLine (tabString + "\tfor(int i = 0; i < sizeof(" + info.Name + "); i += 64)");
+			WriteLine (tabString + "\t\t__builtin_prefetch(((char*)" + itemInfo + ") + i, 0, _MM_HINT_T0);");
+			WriteLine (tabString + "\t" + objectValueName + "->" + Name(value) + "[" + i + "] = " + itemInfo + ";");
 			WriteLine (tabString + "\t" + i + "++;");
 			WriteLine (tabString + "}");
-			WriteLine(tabString + "while(" + i + " < " + count + ");");
+			WriteLine (tabString + "while(" + i + " < " + count + ");");
+
 			WriteLine (tabString + i + " = 0;");
 			WriteLine (tabString + "do {");
 			WriteLine(tabString + "\t" + itemInfo + " = " + objectValueName + "->" + Name(value) + "[" + i + "];");
