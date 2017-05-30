@@ -3010,6 +3010,31 @@ public:
         return ReadString_Optional(str, lengthAddress);
     }
 
+    inline bool ReadString_Optional_Max16(char *str, int *lengthAddress) {
+        UINT64 memory = *((UINT64*)this->currentPos);
+        UINT64 memory2 = *((UINT64*)this->currentPos + 8);
+        int length = 0;
+        if ((memory & 0xffff) == 0x8000) {
+            *lengthAddress = 0;
+            this->currentPos += 2;
+            return false;
+        }
+
+        unsigned long long int count = _tzcnt_u64(memory & 0x8080808080808080);
+        unsigned long long int count2 = _tzcnt_u64(memory2 & 0x8080808080808080);
+        int length;
+        *((UINT64*)str) = memory & 0x7f7f7f7f7f7f7f7f;
+        *((UINT64*)(str + 8)) = memory2 & 0x7f7f7f7f7f7f7f7f;
+        if(count == 64) {
+            length = 8 + (count2 + 1) >> 3;
+        }
+        else {
+            length = (count + 1) >> 3;
+        }
+        *lengthAddress = length;
+        return true;
+    }
+
     inline bool ReadString_Optional(char *str, int *lengthAddress) {
         UINT64 memory = *((UINT64*)this->currentPos);
         int length = 0;
