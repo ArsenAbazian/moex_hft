@@ -33,7 +33,7 @@
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
-		<string name="Symbol" id="55" aligned="16"></string>
+		<string name="Symbol" id="55" aligned="16" predict="Max16"></string>
 		<uInt32 name="LastMsgSeqNumProcessed" id="369" presence="optional"></uInt32>
 		<int32 name="RptSeq" id="83"></int32>
 		<uInt32 name="LastFragment" id="893" presence="optional"></uInt32>
@@ -45,7 +45,7 @@
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
 			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"></string>
-			<string name="MDEntryID" id="278" presence="optional" predict="67Other"></string>
+			<string name="MDEntryID" id="278" presence="optional" predict="Max8"></string>
 			<uInt32 name="MDEntryDate" id="272" presence="optional"></uInt32>
 			<uInt32 name="MDEntryTime" id="273" presence="optional"></uInt32>
 			<uInt32 name="OrigTime" id="9412" presence="optional"></uInt32>
@@ -100,7 +100,7 @@
 			<length name="NoMDEntries" id="268"/>
 			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"></uInt32>
 			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"></string>
-			<string name="MDEntryID" id="278" presence="optional" predict="67Other"></string>
+			<string name="MDEntryID" id="278" presence="optional" predict="Max8"></string>
 			<int32 name="RptSeq" id="83" presence="optional"></int32>
 			<uInt32 name="MDEntryDate" id="272" presence="optional"></uInt32>
 			<uInt32 name="OrigTime" id="9412" presence="optional"></uInt32>
@@ -109,7 +109,7 @@
 			<uInt32 name="MDEntryTime" id="273" presence="optional"></uInt32>
 			<uInt32 name="EffectiveTime" id="5902" presence="optional"></uInt32>
 			<uInt32 name="StartTime" id="9820" presence="optional"></uInt32>
-			<string name="Symbol" id="55" aligned="16" presence="optional"></string>
+			<string name="Symbol" id="55" aligned="16" predict="Max16" presence="optional"></string>
 			<decimal name="MDEntryPx" id="270" presence="optional"></decimal>
 			<decimal name="MDEntrySize" id="271" presence="optional"></decimal>
 			<string name="QuoteCondition" id="276" presence="optional"></string>
@@ -162,13 +162,13 @@
 		<uInt32 name="RouteFirst" id="7944" presence="optional"></uInt32>
 		<int32 name="TradSesStatus" id="340" presence="optional"></int32>
 		<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
-		<string name="Symbol" id="55" aligned="16"></string>
+		<string name="Symbol" id="55" aligned="16" predict="Max16"></string>
 		<int32 name="MDSecurityTradingStatus" id="1682" presence="optional"></int32>
     	<uInt32 name="AuctionIndicator" id="5509" presence="optional"></uInt32>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
 			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"><copy/></string>
-			<string name="MDEntryID" id="278" presence="optional" predict="67Other"></string>
+			<string name="MDEntryID" id="278" presence="optional" predict="Max8"></string>
  			<uInt32 name="MDEntryDate" id="272" presence="optional"><copy/></uInt32>
 			<uInt32 name="MDEntryTime" id="273" presence="optional"><copy/></uInt32>
 			<uInt32 name="OrigTime" id="9412" presence="optional"><copy/></uInt32>
@@ -196,12 +196,12 @@
 		<uInt32 name="RouteFirst" id="7944" presence="optional"></uInt32>
 		<int32 name="TradSesStatus" id="340" presence="optional"></int32>
 		<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
-		<string name="Symbol" id="55" aligned="16"></string>
+		<string name="Symbol" id="55" aligned="16" predict="Max16"></string>
 		<int32 name="MDSecurityTradingStatus" id="1682" presence="optional"></int32>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
 			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"><copy/></string>
-			<string name="MDEntryID" id="278" presence="optional" predict="67Other"></string>
+			<string name="MDEntryID" id="278" presence="optional" predict="Max8"></string>
 			<uInt32 name="MDEntryDate" id="272" presence="optional"><copy/></uInt32>
 			<uInt32 name="MDEntryTime" id="273" presence="optional"><copy/></uInt32>
 			<uInt32 name="OrigTime" id="9412" presence="optional"><copy/></uInt32>
@@ -227,13 +227,13 @@
 		<uInt32 name="RouteFirst" id="7944" presence="optional"></uInt32>
 		<int32 name="TradSesStatus" id="340" presence="optional"></int32>
 		<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
-		<string name="Symbol" id="55" aligned="16"></string>
+		<string name="Symbol" id="55" aligned="16" predict="Max16"></string>
 		<int32 name="MDSecurityTradingStatus" id="1682" presence="optional"></int32>
 		<uInt32 name="AuctionIndicator" id="5509" presence="optional"></uInt32>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
 			<string name="MDEntryType" id="269" fixed_size="1"></string>
-			<string name="MDEntryID" id="278" presence="optional" predict="67Other"></string>
+			<string name="MDEntryID" id="278" presence="optional" predict="Max8"></string>
 			<uInt32 name="MDEntryDate" id="272" presence="optional"><copy/></uInt32>
 			<uInt32 name="MDEntryTime" id="273" presence="optional"><copy/></uInt32>
 			<uInt32 name="OrigTime" id="9412" presence="optional"><copy/></uInt32>
@@ -269,12 +269,12 @@
 		<uInt32 name="RouteFirst" id="7944" presence="optional"></uInt32>
 		<int32 name="TradSesStatus" id="340" presence="optional"></int32>
 		<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
-		<string name="Symbol" id="55" aligned="16"></string>
+		<string name="Symbol" id="55" aligned="16" predict="Max16"></string>
 		<int32 name="MDSecurityTradingStatus" id="1682" presence="optional"></int32>
 		<sequence name="GroupMDEntries">
 			<length name="NoMDEntries" id="268"/>
 			<string name="MDEntryType" id="269" fixed_size="1"></string>
-			<string name="MDEntryID" id="278" presence="optional" predict="67Other"></string>
+			<string name="MDEntryID" id="278" presence="optional" predict="Max8"></string>
 			<uInt32 name="MDEntryDate" id="272" presence="optional"><copy/></uInt32>
 			<uInt32 name="MDEntryTime" id="273" presence="optional"><copy/></uInt32>
 			<uInt32 name="OrigTime" id="9412" presence="optional"><copy/></uInt32>
@@ -309,8 +309,8 @@
 			<length name="NoMDEntries" id="268"/>
 			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"></uInt32>
 			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"></string>
-			<string name="MDEntryID" id="278" presence="optional" predict="67Other"></string>
-			<string name="Symbol" id="55" aligned="16" presence="optional"></string>
+			<string name="MDEntryID" id="278" presence="optional" predict="Max8"></string>
+			<string name="Symbol" id="55" aligned="16" predict="Max16" presence="optional"></string>
 			<int32 name="RptSeq" id="83" presence="optional"></int32>
 			<decimal name="MDEntryPx" id="270" presence="optional"></decimal>
 			<decimal name="MDEntrySize" id="271" presence="optional"></decimal>
@@ -356,8 +356,8 @@
 			<length name="NoMDEntries" id="268"/>
 			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"></uInt32>
 			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"></string>
-			<string name="MDEntryID" id="278" presence="optional" predict="67Other"></string>
-			<string name="Symbol" id="55" aligned="16" presence="optional"></string>
+			<string name="MDEntryID" id="278" presence="optional" predict="Max8"></string>
+			<string name="Symbol" id="55" aligned="16" predict="Max16" presence="optional"></string>
 			<int32 name="RptSeq" id="83" presence="optional"></int32>
             <decimal name="MDEntryPx" id="270" presence="optional"></decimal>
 			<decimal name="MDEntrySize" id="271" presence="optional"></decimal>
@@ -398,8 +398,8 @@
 			<length name="NoMDEntries" id="268"/>
 			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"></uInt32>
 			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"><copy/></string>
-			<string name="MDEntryID" id="278" presence="optional" predict="67Other"></string>
-			<string name="Symbol" id="55" aligned="16" presence="optional"><copy/></string>
+			<string name="MDEntryID" id="278" presence="optional" predict="Max8"></string>
+			<string name="Symbol" id="55" aligned="16" predict="Max16" presence="optional"><copy/></string>
 			<int32 name="RptSeq" id="83" presence="optional"></int32>
 			<uInt32 name="MDEntryDate" id="272" presence="optional"><copy/></uInt32>
 			<uInt32 name="MDEntryTime" id="273" presence="optional"><copy/></uInt32>
@@ -427,8 +427,8 @@
 			<length name="NoMDEntries" id="268"/>
 			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"><copy/></uInt32>
 			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"><copy/></string>
-			<string name="MDEntryID" id="278" presence="optional" predict="67Other"></string>
-			<string name="Symbol" id="55" aligned="16" presence="optional"><copy/></string>
+			<string name="MDEntryID" id="278" presence="optional" predict="Max8"></string>
+			<string name="Symbol" id="55" aligned="16" predict="Max16" presence="optional"><copy/></string>
 			<int32 name="RptSeq" id="83" presence="optional"></int32>
  			<uInt32 name="MDEntryDate" id="272" presence="optional"><copy/></uInt32>
 			<uInt32 name="MDEntryTime" id="273" presence="optional"><copy/></uInt32>
@@ -454,8 +454,8 @@
 			<length name="NoMDEntries" id="268"/>
 			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"></uInt32>
 			<string name="MDEntryType" id="269" fixed_size="1"></string>
-			<string name="MDEntryID" id="278" presence="optional" predict="67Other"></string>
-			<string name="Symbol" id="55" aligned="16" presence="optional"></string>
+			<string name="MDEntryID" id="278" presence="optional" predict="Max8"></string>
+			<string name="Symbol" id="55" aligned="16" predict="Max16" presence="optional"></string>
 			<int32 name="RptSeq" id="83" presence="optional"></int32>
 			<uInt32 name="MDEntryDate" id="272" presence="optional"></uInt32>
 			<uInt32 name="MDEntryTime" id="273" presence="optional"></uInt32>
@@ -492,8 +492,8 @@
 			<length name="NoMDEntries" id="268"/>
 			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"></uInt32>
 			<string name="MDEntryType" id="269" fixed_size="1"></string>
-			<string name="MDEntryID" id="278" presence="optional" predict="67Other"></string>
-			<string name="Symbol" id="55" aligned="16" presence="optional"></string>
+			<string name="MDEntryID" id="278" presence="optional" predict="Max8"></string>
+			<string name="Symbol" id="55" aligned="16" predict="Max16" presence="optional"></string>
 			<int32 name="RptSeq" id="83" presence="optional"></int32>
 			<uInt32 name="MDEntryDate" id="272" presence="optional"></uInt32>
 			<uInt32 name="MDEntryTime" id="273" presence="optional"></uInt32>
@@ -526,7 +526,7 @@
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
 		<string name="MessageEncoding" id="347"><default value="UTF-8"/></string>
 		<int32 name="TotNumReports" id="911" presence="optional"></int32>
-		<string name="Symbol" id="55" aligned="16" presence="optional"></string>
+		<string name="Symbol" id="55" aligned="16" predict="Max16" presence="optional"></string>
         <byteVector name="SecurityID" id="48" presence="optional"></byteVector>
 		<byteVector name="SecurityIDSource" id="22" presence="optional"></byteVector>
 		<int32 name="Product" id="460" presence="optional"></int32>
@@ -588,7 +588,7 @@
 		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
-		<string name="Symbol" id="55" aligned="16"></string>
+		<string name="Symbol" id="55" aligned="16" predict="Max16"></string>
 		<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"></string>
 		<string name="TradingSessionSubID" id="625" presence="optional" predict="12"></string>
 		<int32 name="SecurityTradingStatus" id="326" presence="optional"></int32>

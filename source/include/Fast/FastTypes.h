@@ -334,8 +334,8 @@ public:
 class AstsGenericItemInfo{
 public:
 	char							MDEntryType[4];			// id=269  presence=optional  fixed_size=1   offset = 0 order =  0
-	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other   offset = 4 order =  0
-	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other   offset = 8 order =  0
+	int								MDEntryIDLength;			// id=278  presence=optional  predict=Max8   offset = 4 order =  0
+	char							MDEntryID[16];			// id=278  presence=optional  predict=Max8   offset = 8 order =  0
 	UINT32							MDEntryDate;			// id=272  presence=optional   offset = 24 order =  0
 	UINT32							MDEntryTime;			// id=273  presence=optional   offset = 28 order =  0
 	UINT32							OrigTime;			// id=9412  presence=optional   offset = 32 order =  0
@@ -388,8 +388,8 @@ public:
 	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12   offset = 448 order =  0
 	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1   offset = 452 order =  0
 	INT32							RptSeq;			// id=83  presence=optional   offset = 456 order =  0
-	int								SymbolLength;			// id=55  aligned=16  presence=optional   offset = 460 order =  0
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional   offset = 464 order =  0
+	int								SymbolLength;			// id=55  aligned=16  predict=Max16  presence=optional   offset = 460 order =  0
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  predict=Max16  presence=optional   offset = 464 order =  0
 	Decimal							NetChgPrevDay;			// id=451  presence=optional   offset = 480 order =  0
 	union {
 		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 496 order =  0
@@ -427,9 +427,9 @@ public:
 		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 0 order =  0
 		UINT32		TradingSessionIDUint;
 	};
-	int								SymbolLength;			// id=55  aligned=16   offset = 4 order =  0
+	int								SymbolLength;			// id=55  aligned=16  predict=Max16   offset = 4 order =  0
 	char							PaddingBytes0[8];
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16   offset = 16 order =  0
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  predict=Max16   offset = 16 order =  0
 	UINT32							LastMsgSeqNumProcessed;			// id=369  presence=optional   offset = 32 order =  0
 	INT32							RptSeq;			// id=83   offset = 36 order =  0
 	UINT32							LastFragment;			// id=893  presence=optional   offset = 40 order =  0
@@ -479,8 +479,8 @@ public:
 class AstsOLSFONDItemInfo{
 public:
 	char							MDEntryType[4];			// id=269  presence=optional  fixed_size=1    copy offset = 0 order =  0
-	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other   offset = 4 order =  0
-	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other   offset = 8 order =  0
+	int								MDEntryIDLength;			// id=278  presence=optional  predict=Max8   offset = 4 order =  0
+	char							MDEntryID[16];			// id=278  presence=optional  predict=Max8   offset = 8 order =  0
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy offset = 24 order =  0
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy offset = 28 order =  0
 	UINT32							OrigTime;			// id=9412  presence=optional    copy offset = 32 order =  0
@@ -496,9 +496,9 @@ public:
 	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy offset = 120 order =  0
 	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy offset = 124 order =  0
 	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1   offset = 128 order =  0
-	int								SymbolLength;			// id=55  aligned=16  presence=optional    copy offset = 132 order =  0
+	int								SymbolLength;			// id=55  aligned=16  predict=Max16  presence=optional    copy offset = 132 order =  0
 	char							PaddingBytes2[8];
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional    copy offset = 144 order =  0
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  predict=Max16  presence=optional    copy offset = 144 order =  0
 	INT32							RptSeq;			// id=83  presence=optional   offset = 160 order =  0
 	union {
 		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional    copy offset = 164 order =  0
@@ -540,9 +540,9 @@ public:
 		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 20 order =  0
 		UINT32		TradingSessionIDUint;
 	};
-	int								SymbolLength;			// id=55  aligned=16   offset = 24 order =  0
+	int								SymbolLength;			// id=55  aligned=16  predict=Max16   offset = 24 order =  0
 	char							PaddingBytes0[4];
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16   offset = 32 order =  0
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  predict=Max16   offset = 32 order =  0
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional   offset = 48 order =  0
 	UINT32							AuctionIndicator;			// id=5509  presence=optional   offset = 52 order =  0
 	int								GroupMDEntriesCount;//		 offset = 56 order =  0
@@ -585,8 +585,8 @@ public:
 class AstsOLSCURRItemInfo{
 public:
 	char							MDEntryType[4];			// id=269  presence=optional  fixed_size=1    copy offset = 0 order =  0
-	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other   offset = 4 order =  0
-	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other   offset = 8 order =  0
+	int								MDEntryIDLength;			// id=278  presence=optional  predict=Max8   offset = 4 order =  0
+	char							MDEntryID[16];			// id=278  presence=optional  predict=Max8   offset = 8 order =  0
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy offset = 24 order =  0
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy offset = 28 order =  0
 	UINT32							OrigTime;			// id=9412  presence=optional    copy offset = 32 order =  0
@@ -597,9 +597,9 @@ public:
 	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy offset = 76 order =  0
 	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy offset = 80 order =  0
 	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1    copy offset = 84 order =  0
-	int								SymbolLength;			// id=55  aligned=16  presence=optional    copy offset = 88 order =  0
+	int								SymbolLength;			// id=55  aligned=16  predict=Max16  presence=optional    copy offset = 88 order =  0
 	char							PaddingBytes1[4];
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional    copy offset = 96 order =  0
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  predict=Max16  presence=optional    copy offset = 96 order =  0
 	INT32							RptSeq;			// id=83  presence=optional   offset = 112 order =  0
 	union {
 		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional    copy offset = 116 order =  0
@@ -641,9 +641,9 @@ public:
 		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 20 order =  0
 		UINT32		TradingSessionIDUint;
 	};
-	int								SymbolLength;			// id=55  aligned=16   offset = 24 order =  0
+	int								SymbolLength;			// id=55  aligned=16  predict=Max16   offset = 24 order =  0
 	char							PaddingBytes0[4];
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16   offset = 32 order =  0
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  predict=Max16   offset = 32 order =  0
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional   offset = 48 order =  0
 	int								GroupMDEntriesCount;//		 offset = 52 order =  0
 	AstsOLSCURRItemInfo* GroupMDEntries[256];//		 offset = 56 order =  0
@@ -684,8 +684,8 @@ public:
 class AstsTLSFONDItemInfo{
 public:
 	char							MDEntryType[4];			// id=269  fixed_size=1   offset = 0 order =  0
-	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other   offset = 4 order =  0
-	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other   offset = 8 order =  0
+	int								MDEntryIDLength;			// id=278  presence=optional  predict=Max8   offset = 4 order =  0
+	char							MDEntryID[16];			// id=278  presence=optional  predict=Max8   offset = 8 order =  0
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy offset = 24 order =  0
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy offset = 28 order =  0
 	UINT32							OrigTime;			// id=9412  presence=optional    copy offset = 32 order =  0
@@ -711,9 +711,9 @@ public:
 	int								RefOrderIDLength;			// id=1080  presence=optional    copy offset = 220 order =  0
 	char							RefOrderID[16];			// id=1080  presence=optional    copy offset = 224 order =  0
 	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1   offset = 240 order =  0
-	int								SymbolLength;			// id=55  aligned=16  presence=optional   offset = 244 order =  0
+	int								SymbolLength;			// id=55  aligned=16  predict=Max16  presence=optional   offset = 244 order =  0
 	char							PaddingBytes2[8];
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional   offset = 256 order =  0
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  predict=Max16  presence=optional   offset = 256 order =  0
 	INT32							RptSeq;			// id=83  presence=optional   offset = 272 order =  0
 	union {
 		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 276 order =  0
@@ -755,9 +755,9 @@ public:
 		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 20 order =  0
 		UINT32		TradingSessionIDUint;
 	};
-	int								SymbolLength;			// id=55  aligned=16   offset = 24 order =  0
+	int								SymbolLength;			// id=55  aligned=16  predict=Max16   offset = 24 order =  0
 	char							PaddingBytes0[4];
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16   offset = 32 order =  0
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  predict=Max16   offset = 32 order =  0
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional   offset = 48 order =  0
 	UINT32							AuctionIndicator;			// id=5509  presence=optional   offset = 52 order =  0
 	int								GroupMDEntriesCount;//		 offset = 56 order =  0
@@ -800,8 +800,8 @@ public:
 class AstsTLSCURRItemInfo{
 public:
 	char							MDEntryType[4];			// id=269  fixed_size=1   offset = 0 order =  0
-	int								MDEntryIDLength;			// id=278  presence=optional  predict=67Other   offset = 4 order =  0
-	char							MDEntryID[16];			// id=278  presence=optional  predict=67Other   offset = 8 order =  0
+	int								MDEntryIDLength;			// id=278  presence=optional  predict=Max8   offset = 4 order =  0
+	char							MDEntryID[16];			// id=278  presence=optional  predict=Max8   offset = 8 order =  0
 	UINT32							MDEntryDate;			// id=272  presence=optional    copy offset = 24 order =  0
 	UINT32							MDEntryTime;			// id=273  presence=optional    copy offset = 28 order =  0
 	UINT32							OrigTime;			// id=9412  presence=optional    copy offset = 32 order =  0
@@ -825,9 +825,9 @@ public:
 	int								RefOrderIDLength;			// id=1080  presence=optional    copy offset = 188 order =  0
 	char							RefOrderID[16];			// id=1080  presence=optional    copy offset = 192 order =  0
 	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1   offset = 208 order =  0
-	int								SymbolLength;			// id=55  aligned=16  presence=optional   offset = 212 order =  0
+	int								SymbolLength;			// id=55  aligned=16  predict=Max16  presence=optional   offset = 212 order =  0
 	char							PaddingBytes2[8];
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional   offset = 224 order =  0
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  predict=Max16  presence=optional   offset = 224 order =  0
 	INT32							RptSeq;			// id=83  presence=optional   offset = 240 order =  0
 	union {
 		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 244 order =  0
@@ -869,9 +869,9 @@ public:
 		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 20 order =  0
 		UINT32		TradingSessionIDUint;
 	};
-	int								SymbolLength;			// id=55  aligned=16   offset = 24 order =  0
+	int								SymbolLength;			// id=55  aligned=16  predict=Max16   offset = 24 order =  0
 	char							PaddingBytes0[4];
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16   offset = 32 order =  0
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  predict=Max16   offset = 32 order =  0
 	INT32							MDSecurityTradingStatus;			// id=1682  presence=optional   offset = 48 order =  0
 	int								GroupMDEntriesCount;//		 offset = 52 order =  0
 	AstsTLSCURRItemInfo* GroupMDEntries[256];//		 offset = 56 order =  0
@@ -1017,9 +1017,9 @@ public:
 	int								MessageEncodingLength;			// id=347    default offset = 0 order =  0
 	char							MessageEncoding[16];			// id=347    default offset = 4 order =  0
 	INT32							TotNumReports;			// id=911  presence=optional   offset = 20 order =  0
-	int								SymbolLength;			// id=55  aligned=16  presence=optional   offset = 24 order =  0
+	int								SymbolLength;			// id=55  aligned=16  predict=Max16  presence=optional   offset = 24 order =  0
 	char							PaddingBytes0[4];
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  presence=optional   offset = 32 order =  0
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  predict=Max16  presence=optional   offset = 32 order =  0
 	int								SecurityIDLength;			// id=48  presence=optional   offset = 48 order =  0
 	unsigned char							SecurityID[128];			// id=48  presence=optional   offset = 52
 	int								SecurityIDSourceLength;			// id=22  presence=optional   offset = 68 order =  0
@@ -1119,9 +1119,9 @@ public:
 
 class AstsSecurityStatusInfo{
 public:
-	int								SymbolLength;			// id=55  aligned=16   offset = 0 order =  0
+	int								SymbolLength;			// id=55  aligned=16  predict=Max16   offset = 0 order =  0
 	char							PaddingBytes0[12];
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16   offset = 16 order =  0
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  predict=Max16   offset = 16 order =  0
 	union {
 		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 32 order =  0
 		UINT32		TradingSessionIDUint;

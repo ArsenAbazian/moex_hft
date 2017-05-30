@@ -2878,71 +2878,13 @@ public:
     }
 
 	inline void SkipToNextField() {
-		UINT64 memory = *((UINT64*)this->currentPos) & 0x8080808080808080;
-
-		unsigned long long int count = _tzcnt_u64(memory);
-        while(count == 64) {
-			this->currentPos += 8;
-			memory = *((UINT64*)this->currentPos) & 0x8080808080808080;
-			count = _tzcnt_u64(memory);
-		}
-		this->currentPos += (count + 1) >> 3;
-		return;
+		UINT64 memory = *((UINT64*)this->currentPos);
+		UINT64 memory2 = *((UINT64*)(this->currentPos + 8));
+		unsigned long long int count = _tzcnt_u64(memory & 0x8080808080808080);
+		unsigned long long int count2 = _tzcnt_u64(memory2 & 0x8080808080808080);
+		int length = ((count + 1) >> 3) + (((count2 + 1) >> 3) & (0 - (count >> 6)));
+		this->currentPos += length;
 	}
-
-    inline void SkipToNextFieldSlow() {
-        UINT64 memory = *((UINT64*)this->currentPos);
-        while (true) {
-            if ((memory & 0x8080808080808080) != 0) {
-                if ((memory & 0x0000000080808080) != 0) {
-                    if ((memory & 0x8080) != 0) {
-                        if ((memory & 0x80) != 0) {
-                            this->currentPos++;
-                            break;
-                        }
-                        else {
-                            this->currentPos += 2;
-                            break;
-                        }
-                    }
-                    else {
-                        if ((memory & 0x800000) != 0) {
-                            this->currentPos += 3;
-                            break;
-                        }
-                        else {
-                            this->currentPos += 4;
-                            break;
-                        }
-                    }
-                }
-                else {
-                    if ((memory & 0x0000808000000000) != 0) {
-                        if ((memory & 0x0000008000000000) != 0) {
-                            this->currentPos += 5;
-                            break;
-                        }
-                        else {
-                            this->currentPos += 6;
-                            break;
-                        }
-                    }
-                    else {
-                        if ((memory & 0x0080000000000000) != 0) {
-                            this->currentPos += 7;
-                            break;
-                        }
-                        else {
-                            this->currentPos += 8;
-                            break;
-                        }
-                    }
-                }
-            }
-            this->currentPos += 8;
-            memory = *((UINT64*)this->currentPos);
-        }
-    }
 
 	inline bool ReadString_Optional_Fixed1(char *str) {
 		UINT64 memory = *((UINT64*)this->currentPos);
@@ -2988,50 +2930,36 @@ public:
 		}
 	}
 
-    inline bool ReadString_Optional_Predict67Other(char *str, int *lengthAddress) {
+    inline bool ReadString_Optional_PredictMax8(char *str, int *lengthAddress) {
         UINT64 memory = *((UINT64*)this->currentPos);
         if ((memory & 0xffff) == 0x8000) {
             *lengthAddress = 0;
             this->currentPos += 2;
             return false;
         }
-        if((memory & 0x808080808080) == 0x800000000000) { // 6 bytes
-            *((UINT64*)str) = memory & 0x7fffffffffff;
-            this->currentPos += 6;
-            *lengthAddress = 6;
-            return true;
-        }
-        if((memory & 0x80808080808080) == 0x80000000000000) { // 7 bytes
-            *((UINT64*)str) = memory & 0x7fffffffffffff;
-            this->currentPos += 7;
-            *lengthAddress = 7;
-            return true;
-        }
-        return ReadString_Optional(str, lengthAddress);
+        unsigned long long int count = _tzcnt_u64(memory & 0x8080808080808080);
+        *((UINT64*)str) = memory & 0x7f7f7f7f7f7f7f7f;
+        int length = (count + 1) >> 3;
+        *lengthAddress = length;
+        this->currentPos += length;
+        return true;
     }
 
-    inline bool ReadString_Optional_Max16(char *str, int *lengthAddress) {
+    inline bool ReadString_Optional_PredictMax16(char *str, int *lengthAddress) {
         UINT64 memory = *((UINT64*)this->currentPos);
-        UINT64 memory2 = *((UINT64*)this->currentPos + 8);
-        int length = 0;
+        UINT64 memory2 = *((UINT64*)(this->currentPos + 8));
         if ((memory & 0xffff) == 0x8000) {
             *lengthAddress = 0;
             this->currentPos += 2;
             return false;
         }
-
         unsigned long long int count = _tzcnt_u64(memory & 0x8080808080808080);
         unsigned long long int count2 = _tzcnt_u64(memory2 & 0x8080808080808080);
-        int length;
         *((UINT64*)str) = memory & 0x7f7f7f7f7f7f7f7f;
         *((UINT64*)(str + 8)) = memory2 & 0x7f7f7f7f7f7f7f7f;
-        if(count == 64) {
-            length = 8 + (count2 + 1) >> 3;
-        }
-        else {
-            length = (count + 1) >> 3;
-        }
+        int length = ((count + 1) >> 3) + (((count2 + 1) >> 3) & (0 - (count >> 6)));
         *lengthAddress = length;
+        this->currentPos += length;
         return true;
     }
 
@@ -3080,6 +3008,24 @@ public:
 		*((UINT32*)str) = memory & 0x7fffffff;
 		this->currentPos += 4;
 	}
+
+    inline void ReadString_Mandatory_PredictMax16(char *str, int *lengthAddress) {
+        UINT64 memory = *((UINT64*)this->currentPos);
+        UINT64 memory2 = *((UINT64*)(this->currentPos + 8));
+        if ((memory & 0xff) == 0x80) {
+            *lengthAddress = 0;
+            this->currentPos ++;
+            return;
+        }
+        unsigned long long int count = _tzcnt_u64(memory & 0x8080808080808080);
+        unsigned long long int count2 = _tzcnt_u64(memory2 & 0x8080808080808080);
+        *((UINT64*)str) = memory & 0x7f7f7f7f7f7f7f7f;
+        *((UINT64*)(str + 8)) = memory2 & 0x7f7f7f7f7f7f7f7f;
+        int length = ((count + 1) >> 3) + (((count2 + 1) >> 3) & (0 - (count >> 6)));
+        *lengthAddress = length;
+        this->currentPos += length;
+        return;
+    }
 
 	inline void ReadString_Mandatory(char *str, int *lengthAddress) {
         UINT64 memory = *((UINT64*)this->currentPos);
@@ -3152,6 +3098,21 @@ public:
 		return value;
 	}
 
+	/*
+	inline UINT64 ParsePresenceMap2() {
+		UINT32 value = *((UINT32*)this->currentPos);
+        unsigned long long int count = _tzcnt_u32(value & 0x80808080);
+        this->currentPos += (count + 1) >> 3;
+        return value & 0x7f7f;
+	}
+
+	inline UINT64 ParsePresenceMap3() {
+        UINT32 value = *((UINT32*)this->currentPos);
+        unsigned long long int count = _tzcnt_u32(value & 0x80808080);
+        this->currentPos += (count + 1) >> 3;
+        return value & 0x7f7f7f;
+	}
+	*/
 	inline UINT64 ParsePresenceMap2() {
 		UINT32 value = *((UINT32*)this->currentPos);
 		if((value & 0x80) != 0) {
@@ -3428,7 +3389,7 @@ public:
 		SkipToNextField(); // SendingTime
 		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
 			nmap1 |= NULL_MAP_INDEX0;
-		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
 		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
 			nmap1 |= NULL_MAP_INDEX1;
 		info->RptSeq = ReadInt32_Mandatory();
@@ -3464,7 +3425,7 @@ public:
 
 			if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
 				nmap2 |= NULL_MAP_INDEX0;
-			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX1;
 			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
 				nmap2 |= NULL_MAP_INDEX2;
@@ -3582,7 +3543,7 @@ public:
 				nmap2 |= NULL_MAP_INDEX0;
 			if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
 				nmap2 |= NULL_MAP_INDEX1;
-			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX2;
 			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
 				nmap2 |= NULL_MAP_INDEX3;
@@ -3600,7 +3561,7 @@ public:
 				nmap2 |= NULL_MAP_INDEX9;
 			if(!ReadUInt32_Optional(&(gmdeItemInfo->StartTime)))
 				nmap2 |= NULL_MAP_INDEX10;
-			if(!ReadString_Optional(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
+			if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
 				nmap2 |= NULL_MAP_INDEX11;
 			if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
 				nmap2 |= NULL_MAP_INDEX12;
@@ -3697,7 +3658,7 @@ public:
 			nmap1 |= NULL_MAP_INDEX3;
 		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
 			nmap1 |= NULL_MAP_INDEX4;
-		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
 		if(!ReadInt32_Optional(&(info->MDSecurityTradingStatus)))
 			nmap1 |= NULL_MAP_INDEX5;
 		if(!ReadUInt32_Optional(&(info->AuctionIndicator)))
@@ -3729,7 +3690,7 @@ public:
 			else {
 				this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryType);
 			}
-			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX1;
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX1)) {
 				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
@@ -3831,7 +3792,7 @@ public:
 			nmap1 |= NULL_MAP_INDEX3;
 		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
 			nmap1 |= NULL_MAP_INDEX4;
-		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
 		if(!ReadInt32_Optional(&(info->MDSecurityTradingStatus)))
 			nmap1 |= NULL_MAP_INDEX5;
 
@@ -3861,7 +3822,7 @@ public:
 			else {
 				this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryType);
 			}
-			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX1;
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX1)) {
 				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
@@ -3941,7 +3902,7 @@ public:
 			nmap1 |= NULL_MAP_INDEX3;
 		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
 			nmap1 |= NULL_MAP_INDEX4;
-		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
 		if(!ReadInt32_Optional(&(info->MDSecurityTradingStatus)))
 			nmap1 |= NULL_MAP_INDEX5;
 		if(!ReadUInt32_Optional(&(info->AuctionIndicator)))
@@ -3967,7 +3928,7 @@ public:
 			UINT64 nmap2 = 0;
 
 			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType);
-			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX0;
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX0)) {
 				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
@@ -4127,7 +4088,7 @@ public:
 			nmap1 |= NULL_MAP_INDEX3;
 		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
 			nmap1 |= NULL_MAP_INDEX4;
-		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
 		if(!ReadInt32_Optional(&(info->MDSecurityTradingStatus)))
 			nmap1 |= NULL_MAP_INDEX5;
 
@@ -4151,7 +4112,7 @@ public:
 			UINT64 nmap2 = 0;
 
 			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType);
-			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX0;
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX0)) {
 				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
@@ -4312,9 +4273,9 @@ public:
 				nmap2 |= NULL_MAP_INDEX0;
 			if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
 				nmap2 |= NULL_MAP_INDEX1;
-			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX2;
-			if(!ReadString_Optional(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
+			if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
 				nmap2 |= NULL_MAP_INDEX3;
 			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
 				nmap2 |= NULL_MAP_INDEX4;
@@ -4416,9 +4377,9 @@ public:
 				nmap2 |= NULL_MAP_INDEX0;
 			if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
 				nmap2 |= NULL_MAP_INDEX1;
-			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX2;
-			if(!ReadString_Optional(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
+			if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
 				nmap2 |= NULL_MAP_INDEX3;
 			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
 				nmap2 |= NULL_MAP_INDEX4;
@@ -4513,10 +4474,10 @@ public:
 			else {
 				this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryType);
 			}
-			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX2;
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX1)) {
-				if(!ReadString_Optional(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
+				if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
 					nmap2 |= NULL_MAP_INDEX3;
 			}
 			else {
@@ -4655,10 +4616,10 @@ public:
 			else {
 				this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryType);
 			}
-			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX2;
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX2)) {
-				if(!ReadString_Optional(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
+				if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
 					nmap2 |= NULL_MAP_INDEX3;
 			}
 			else {
@@ -4762,9 +4723,9 @@ public:
 			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
 				nmap2 |= NULL_MAP_INDEX0;
 			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType);
-			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX1;
-			if(!ReadString_Optional(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
+			if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
 				nmap2 |= NULL_MAP_INDEX2;
 			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
 				nmap2 |= NULL_MAP_INDEX3;
@@ -4843,9 +4804,9 @@ public:
 			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
 				nmap2 |= NULL_MAP_INDEX0;
 			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType);
-			if(!ReadString_Optional_Predict67Other(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
 				nmap2 |= NULL_MAP_INDEX1;
-			if(!ReadString_Optional(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
+			if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
 				nmap2 |= NULL_MAP_INDEX2;
 			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
 				nmap2 |= NULL_MAP_INDEX3;
@@ -4901,7 +4862,7 @@ public:
 		SkipToNextField(); // SendingTime
 		if(!ReadInt32_Optional(&(info->TotNumReports)))
 			nmap1 |= NULL_MAP_INDEX0;
-		if(!ReadString_Optional(info->Symbol, &(info->SymbolLength)))
+		if(!ReadString_Optional_PredictMax16(info->Symbol, &(info->SymbolLength)))
 			nmap1 |= NULL_MAP_INDEX1;
 		if(CheckProcessNullByteVector())
 			nmap1 |= NULL_MAP_INDEX2;
@@ -5098,7 +5059,7 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
 		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
 			nmap1 |= NULL_MAP_INDEX0;
 		if(!ReadString_Optional_Predict12(info->TradingSessionSubID, &(info->TradingSessionSubIDLength)))
@@ -5145,7 +5106,7 @@ public:
 		SkipToNextField(); // SendingTime
 		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
 			nmap1 |= NULL_MAP_INDEX0;
-		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
 		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
 			nmap1 |= NULL_MAP_INDEX1;
 		info->RptSeq = ReadInt32_Mandatory();
@@ -5174,7 +5135,7 @@ public:
 		SkipToNextField(); // TradSesStatus
 		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
 			nmap1 |= NULL_MAP_INDEX4;
-		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
 		info->NullMap = nmap1;
 		return info;
 	}
@@ -5196,7 +5157,7 @@ public:
 		SkipToNextField(); // TradSesStatus
 		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
 			nmap1 |= NULL_MAP_INDEX4;
-		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
 		info->NullMap = nmap1;
 		return info;
 	}
@@ -5218,7 +5179,7 @@ public:
 		SkipToNextField(); // TradSesStatus
 		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
 			nmap1 |= NULL_MAP_INDEX4;
-		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
 		info->NullMap = nmap1;
 		return info;
 	}
@@ -5240,7 +5201,7 @@ public:
 		SkipToNextField(); // TradSesStatus
 		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
 			nmap1 |= NULL_MAP_INDEX4;
-		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
+		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
 		info->NullMap = nmap1;
 		return info;
 	}

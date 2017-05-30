@@ -398,7 +398,7 @@ void FastProtocolTester::TestPerformance() {
         AstsIncrementalOLRCURRInfo *info = manager->DecodeAstsIncrementalOLRCURR();
         counts[i] = info->GroupMDEntriesCount;
         info->Clear();
-        //printf("packet %d itemCount = %d\n", i, info->GroupMDEntriesCount);
+        printf("packet %d itemCount = %d  mask = %" PRIu64 "\n", i, info->GroupMDEntriesCount, info->GroupMDEntries[0]->PresenceMap);
     }
 
     Stopwatch *w = new Stopwatch();
