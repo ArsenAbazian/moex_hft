@@ -1,5 +1,6 @@
 #pragma once
 #pragma once
+#pragma once
 #include "../Fix/FixTypes.h"
 #include "FastTypes.h"
 #include <stdio.h>
@@ -2186,7 +2187,7 @@ public:
 	}
 	inline INT32 ReadInt32_Optional() {
         INT32 result = ReadInt32_Mandatory();
-        result = result - (((UINT32)result) >> 31);
+        result = result + ((((UINT32)result) >> 31) - 1);
 		//if (result > 0)
         //    return result - 1;
         return result;
@@ -2225,7 +2226,7 @@ public:
 			memory >>= 8;
 			result <<= 7;
 		}
-		*value = result - (((UINT32)result) >> 31);
+		*value = result + ((((UINT32)result) >> 31) - 1);
 		//*value = result > 0? result - 1: result;
 		return true;
 	}
@@ -2429,7 +2430,7 @@ public:
 	}
     inline INT64 ReadInt64_Optional() {
         INT64 value = ReadInt64_Mandatory();
-		value = value - (((UINT64)value) >> 63);
+		value = value + ((((UINT64)value) >> 63) - 1);
 		//if (value > 0)
         //    return value - 1;
         return value;

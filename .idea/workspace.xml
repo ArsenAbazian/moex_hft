@@ -26,7 +26,7 @@
   <component name="ChangeListManager">
     <list default="true" id="32604c03-98a8-42cf-80f6-771ec2ce84cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Feeds/FeedConnection.h" afterPath="$PROJECT_DIR$/source/include/Feeds/FeedConnection.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" afterPath="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" />
     </list>
     <ignored path="hft_robot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -114,11 +114,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FeedConnection.h" pinned="false" current-in-tab="true">
+      <file leaf-file-name="FeedConnection.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/include/Feeds/FeedConnection.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="298">
-              <caret line="2101" column="40" lean-forward="false" selection-start-line="2101" selection-start-column="40" selection-end-line="2101" selection-end-column="40" />
+            <state relative-caret-position="-2">
+              <caret line="2086" column="106" lean-forward="false" selection-start-line="2086" selection-start-column="106" selection-end-line="2086" selection-end-column="106" />
               <folding>
                 <element signature="e#10147#10717#0" expanded="false" />
                 <element signature="e#10722#10914#0" expanded="false" />
@@ -167,13 +167,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FastProtocolManager.h" pinned="false" current-in-tab="false">
+      <file leaf-file-name="FastProtocolManager.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="248">
-              <caret line="1196" column="55" lean-forward="false" selection-start-line="1196" selection-start-column="55" selection-end-line="1196" selection-end-column="55" />
+            <state relative-caret-position="197">
+              <caret line="2432" column="47" lean-forward="false" selection-start-line="2432" selection-start-column="47" selection-end-line="2432" selection-end-column="47" />
               <folding>
-                <element signature="e#26#54#0" expanded="true" />
+                <element signature="e#39#67#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -235,8 +235,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>&gt; 0</find>
-      <find>result &gt; 0</find>
       <find>result - 1</find>
       <find>ReadInt64_Optional</find>
       <find>value - 1</find>
@@ -265,6 +263,8 @@
       <find>CheckRequestLost</find>
       <find>ListenSecurityStatus()</find>
       <find>ProcessIncrementalMessages</find>
+      <find>&gt;&gt; 31</find>
+      <find>&gt;&gt; 63</find>
     </findStrings>
     <replaceStrings>
       <replace>item1-&gt;TradingSessionIDUint</replace>
@@ -358,9 +358,9 @@
         <option value="$PROJECT_DIR$/source/include/MarketData/OrderInfo.h" />
         <option value="$PROJECT_DIR$/source/include/MarketData/OrderBookInfo.h" />
         <option value="$PROJECT_DIR$/source/src/Test/FastProtocolTester.cpp" />
-        <option value="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" />
         <option value="$PROJECT_DIR$/source/include/Settings.h" />
         <option value="$PROJECT_DIR$/source/include/Feeds/FeedConnection.h" />
+        <option value="$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h" />
       </list>
     </option>
   </component>
@@ -1048,14 +1048,7 @@
       <workItem from="1495788067705" duration="12459000" />
       <workItem from="1495868725377" duration="24786000" />
       <workItem from="1496054054360" duration="11509000" />
-      <workItem from="1496074980171" duration="9635000" />
-    </task>
-    <task id="LOCAL-00243" summary="1. fixing some bugs with FORTS working cycle...">
-      <created>1490650686249</created>
-      <option name="number" value="00243" />
-      <option name="presentableId" value="LOCAL-00243" />
-      <option name="project" value="LOCAL" />
-      <updated>1490650686253</updated>
+      <workItem from="1496074980171" duration="11106000" />
     </task>
     <task id="LOCAL-00244" summary="2. fixing some bugs with FORTS working cycle...">
       <created>1490695407090</created>
@@ -1393,11 +1386,18 @@
       <option name="project" value="LOCAL" />
       <updated>1496086262015</updated>
     </task>
-    <option name="localTasksCounter" value="292" />
+    <task id="LOCAL-00292" summary="1. try to use prefetch ... it is just try... most probably i'll roll back it.">
+      <created>1496086759455</created>
+      <option name="number" value="00292" />
+      <option name="presentableId" value="LOCAL-00292" />
+      <option name="project" value="LOCAL" />
+      <updated>1496086759455</updated>
+    </task>
+    <option name="localTasksCounter" value="293" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2988354000" />
+    <option name="totallyTimeSpent" value="2989825000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1413,7 +1413,7 @@
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36616454" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26359338" sideWeight="0.64520127" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26950353" sideWeight="0.64520127" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4634703" sideWeight="0.4384817" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.8451537" sideWeight="0.20247678" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5449173" sideWeight="0.5804974" order="9" side_tool="false" content_ui="tabs" />
@@ -1546,7 +1546,7 @@
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <condition expression="info-&gt;EvntGrpCount &gt; 10" language="ObjectiveC" />
           <url>file://$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h</url>
-          <line>5020</line>
+          <line>5021</line>
           <option name="timeStamp" value="2126" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
@@ -2458,16 +2458,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
-          <caret line="1196" column="55" lean-forward="false" selection-start-line="1196" selection-start-column="55" selection-end-line="1196" selection-end-column="55" />
-          <folding>
-            <element signature="e#26#54#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/src/Test/FastProtocolTester.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="228">
@@ -2526,8 +2516,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/include/Feeds/FeedConnection.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="2101" column="40" lean-forward="false" selection-start-line="2101" selection-start-column="40" selection-end-line="2101" selection-end-column="40" />
+        <state relative-caret-position="-2">
+          <caret line="2086" column="106" lean-forward="false" selection-start-line="2086" selection-start-column="106" selection-end-line="2086" selection-end-column="106" />
           <folding>
             <element signature="e#10147#10717#0" expanded="false" />
             <element signature="e#10722#10914#0" expanded="false" />
@@ -2551,6 +2541,16 @@
             <marker date="1496086607254" expanded="false" signature="117711:117762" ph="..." />
             <marker date="1496086607254" expanded="false" signature="137943:138565" ph="..." />
             <marker date="1496086607254" expanded="false" signature="180263:180357" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/include/Fast/FastProtocolManager.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="2432" column="47" lean-forward="false" selection-start-line="2432" selection-start-column="47" selection-end-line="2432" selection-end-column="47" />
+          <folding>
+            <element signature="e#39#67#0" expanded="true" />
           </folding>
         </state>
       </provider>
