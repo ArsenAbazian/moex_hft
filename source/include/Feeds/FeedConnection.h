@@ -540,11 +540,11 @@ protected:
 
     inline bool ProcessServerIncremental(WinSockManager *socketManager) {
         if(!socketManager->ShouldRecv())
-            return true;
+            return false;
         unsigned char *current = this->m_recvBufferCurrentPos;
         if(!socketManager->RecvUDP(current)) {
             OnFailProcessSocketManager(socketManager);
-            return true;
+            return false;
         }
         return ProcessServerCoreIncremental(socketManager->RecvSize(), *((UINT*)current));
     }
@@ -553,22 +553,22 @@ protected:
 
     inline bool ProcessServerSecurityStatusAsts(WinSockManager *socketManager) {
         if(!socketManager->ShouldRecv())
-            return true;
+            return false;
         unsigned char *current = this->m_recvBufferCurrentPos;
         if(!socketManager->RecvUDP(current)) {
             OnFailProcessSocketManager(socketManager);
-            return true;
+            return false;
         }
         return ProcessServerCoreSecurityStatusAsts(socketManager->RecvSize(), *((UINT64*)current));
     }
 
     inline bool ProcessServerSecurityStatusForts(WinSockManager *socketManager) {
         if(!socketManager->ShouldRecv())
-            return true;
+            return false;
         unsigned char *current = this->m_recvBufferCurrentPos;
         if(!socketManager->RecvUDP(current)) {
             OnFailProcessSocketManager(socketManager);
-            return true;
+            return false;
         }
         return ProcessServerCoreSecurityStatusForts(socketManager->RecvSize(), *((UINT64*)current));
     }
