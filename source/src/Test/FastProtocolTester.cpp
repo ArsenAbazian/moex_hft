@@ -403,14 +403,18 @@ void FastProtocolTester::TestPerformance() {
 
     Stopwatch *w = new Stopwatch();
 
+    manager->PrefetchAstsIncrementalOLRCURRInfo();
     for (int msg = 0; msg < 311; msg++) {
         w->StartPrecise(1);
         manager->SetNewBuffer(packets[msg], sizes[msg]);
+        if(msg < 310)
+            manager->Prefetch(packets[msg+1], sizes[msg+1]);
         manager->SkipMsgSeqNumber();
         manager->ParseHeaderFast();
         AstsIncrementalOLRCURRInfo *info = manager->DecodeAstsIncrementalOLRCURR();
         UINT64 ns = w->ElapsedNanosecondsSlowPrecise(1);
         timens[msg] = ns;
+        manager->PrefetchAstsOLSCURRItemInfo();
     }
     for (int i = 0; i < 311; i++) {
         printf("%d size = %d count = %d time = %" PRIu64 " ns\n", i, sizes[i], counts[i], timens[i]);

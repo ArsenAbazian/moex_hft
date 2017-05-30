@@ -970,6 +970,20 @@ namespace prebuild {
 				WriteLine("\t}");
 				WriteLine("");
 			}
+
+			foreach (StructureInfo str in Structures) {
+				WriteLine("\tinline void " + str.PrefetchMethodName + "() {");
+				if (!str.AllowCache) {
+					WriteLine ("\t\t" + str.Name + " *item = " + "this->" + str.ValueName + "->Start()->Data();");
+				} else {
+					WriteLine ("\t\t" + str.Name + " *item = " + "this->" + str.CachedValueName + ";");
+				}
+				WriteLine ("\t\tfor(int i = 0; i < sizeof(" + str.Name + "); i+= 64)");
+				WriteLine ("\t\t\t__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);");
+				WriteLine("\t}");
+				WriteLine("");
+			}
+
 			WriteLine("private:");
 		}
 
@@ -1055,6 +1069,10 @@ namespace prebuild {
 
 			public string Suffix {
 				get { return IsSequence ? "ItemInfo" : "Info"; }
+			}
+
+			public string PrefetchMethodName { 
+				get { return "Prefetch" + Prefix + NameCore + Suffix; }
 			}
 
 			public string GetFreeMethodName {

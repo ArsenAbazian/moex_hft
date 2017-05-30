@@ -527,6 +527,138 @@ public:
 		return this->m_fortsDefaultIncrementalRefreshMessage;
 	}
 
+	inline void PrefetchFortsDefaultSnapshotMessageMDEntriesItemInfo() {
+		FortsDefaultSnapshotMessageMDEntriesItemInfo *item = this->m_fortsDefaultSnapshotMessageMDEntriesItems->Start()->Data();
+		for(int i = 0; i < sizeof(FortsDefaultSnapshotMessageMDEntriesItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsDefaultSnapshotMessageInfo() {
+		FortsDefaultSnapshotMessageInfo *item = this->m_fortsDefaultSnapshotMessage->Start()->Data();
+		for(int i = 0; i < sizeof(FortsDefaultSnapshotMessageInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsSecurityDefinitionMDFeedTypesItemInfo() {
+		FortsSecurityDefinitionMDFeedTypesItemInfo *item = this->m_fortsSecurityDefinitionMDFeedTypesItems->Start()->Data();
+		for(int i = 0; i < sizeof(FortsSecurityDefinitionMDFeedTypesItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsSecurityDefinitionUnderlyingsItemInfo() {
+		FortsSecurityDefinitionUnderlyingsItemInfo *item = this->m_fortsSecurityDefinitionUnderlyingsItems->Start()->Data();
+		for(int i = 0; i < sizeof(FortsSecurityDefinitionUnderlyingsItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsSecurityDefinitionInstrumentLegsItemInfo() {
+		FortsSecurityDefinitionInstrumentLegsItemInfo *item = this->m_fortsSecurityDefinitionInstrumentLegsItems->Start()->Data();
+		for(int i = 0; i < sizeof(FortsSecurityDefinitionInstrumentLegsItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsSecurityDefinitionInstrumentAttributesItemInfo() {
+		FortsSecurityDefinitionInstrumentAttributesItemInfo *item = this->m_fortsSecurityDefinitionInstrumentAttributesItems->Start()->Data();
+		for(int i = 0; i < sizeof(FortsSecurityDefinitionInstrumentAttributesItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsSecurityDefinitionEvntGrpItemInfo() {
+		FortsSecurityDefinitionEvntGrpItemInfo *item = this->m_fortsSecurityDefinitionEvntGrpItems->Start()->Data();
+		for(int i = 0; i < sizeof(FortsSecurityDefinitionEvntGrpItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsSecurityDefinitionInfo() {
+		FortsSecurityDefinitionInfo *item = this->m_fortsSecurityDefinition->Start()->Data();
+		for(int i = 0; i < sizeof(FortsSecurityDefinitionInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsSecurityDefinitionUpdateReportInfo() {
+		FortsSecurityDefinitionUpdateReportInfo *item = this->m_fortsSecurityDefinitionUpdateReport->Start()->Data();
+		for(int i = 0; i < sizeof(FortsSecurityDefinitionUpdateReportInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsSecurityStatusInfo() {
+		FortsSecurityStatusInfo *item = this->m_fortsSecurityStatus->Start()->Data();
+		for(int i = 0; i < sizeof(FortsSecurityStatusInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsHeartbeatInfo() {
+		FortsHeartbeatInfo *item = this->m_fortsHeartbeat->Start()->Data();
+		for(int i = 0; i < sizeof(FortsHeartbeatInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsSequenceResetInfo() {
+		FortsSequenceResetInfo *item = this->m_fortsSequenceReset->Start()->Data();
+		for(int i = 0; i < sizeof(FortsSequenceResetInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsTradingSessionStatusInfo() {
+		FortsTradingSessionStatusInfo *item = this->m_fortsTradingSessionStatus->Start()->Data();
+		for(int i = 0; i < sizeof(FortsTradingSessionStatusInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsNewsNewsTextItemInfo() {
+		FortsNewsNewsTextItemInfo *item = this->m_fortsNewsNewsTextItems->Start()->Data();
+		for(int i = 0; i < sizeof(FortsNewsNewsTextItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsNewsInfo() {
+		FortsNewsInfo *item = this->m_fortsNews->Start()->Data();
+		for(int i = 0; i < sizeof(FortsNewsInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsOrdersLogMDEntriesItemInfo() {
+		FortsOrdersLogMDEntriesItemInfo *item = this->m_fortsOrdersLogMDEntriesItems->Start()->Data();
+		for(int i = 0; i < sizeof(FortsOrdersLogMDEntriesItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsOrdersLogInfo() {
+		FortsOrdersLogInfo *item = this->m_fortsOrdersLog->Start()->Data();
+		for(int i = 0; i < sizeof(FortsOrdersLogInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsOrdersBookMDEntriesItemInfo() {
+		FortsOrdersBookMDEntriesItemInfo *item = this->m_fortsOrdersBookMDEntriesItems->Start()->Data();
+		for(int i = 0; i < sizeof(FortsOrdersBookMDEntriesItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsOrdersBookInfo() {
+		FortsOrdersBookInfo *item = this->m_fortsOrdersBook->Start()->Data();
+		for(int i = 0; i < sizeof(FortsOrdersBookInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsLogonInfo() {
+		FortsLogonInfo *item = this->m_fortsLogon->Start()->Data();
+		for(int i = 0; i < sizeof(FortsLogonInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsLogoutInfo() {
+		FortsLogoutInfo *item = this->m_fortsLogout->Start()->Data();
+		for(int i = 0; i < sizeof(FortsLogoutInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchFortsDefaultIncrementalRefreshMessageInfo() {
+		FortsDefaultIncrementalRefreshMessageInfo *item = this->m_fortsDefaultIncrementalRefreshMessage->Start()->Data();
+		for(int i = 0; i < sizeof(FortsDefaultIncrementalRefreshMessageInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
 private:
 	void ReleaseFortsDefaultSnapshotMessageMDEntriesItemInfo() {
 		static_cast<FortsDefaultSnapshotMessageMDEntriesItemInfo*>(this->LastDecodeInfo())->ReleaseUnused();
@@ -928,6 +1060,162 @@ public:
 		return this->m_astsIncrementalTLRCURR;
 	}
 
+	inline void PrefetchAstsLogonInfo() {
+		AstsLogonInfo *item = this->m_astsLogon->Start()->Data();
+		for(int i = 0; i < sizeof(AstsLogonInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsLogoutInfo() {
+		AstsLogoutInfo *item = this->m_astsLogout->Start()->Data();
+		for(int i = 0; i < sizeof(AstsLogoutInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsGenericItemInfo() {
+		AstsGenericItemInfo *item = this->m_astsGenericItems->Start()->Data();
+		for(int i = 0; i < sizeof(AstsGenericItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsGenericInfo() {
+		AstsGenericInfo *item = this->m_astsGeneric->Start()->Data();
+		for(int i = 0; i < sizeof(AstsGenericInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsOLSFONDItemInfo() {
+		AstsOLSFONDItemInfo *item = this->m_astsOLSFONDItems->Start()->Data();
+		for(int i = 0; i < sizeof(AstsOLSFONDItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsOLSFONDInfo() {
+		AstsOLSFONDInfo *item = this->m_astsOLSFOND->Start()->Data();
+		for(int i = 0; i < sizeof(AstsOLSFONDInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsOLSCURRItemInfo() {
+		AstsOLSCURRItemInfo *item = this->m_astsOLSCURRItems->Start()->Data();
+		for(int i = 0; i < sizeof(AstsOLSCURRItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsOLSCURRInfo() {
+		AstsOLSCURRInfo *item = this->m_astsOLSCURR->Start()->Data();
+		for(int i = 0; i < sizeof(AstsOLSCURRInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsTLSFONDItemInfo() {
+		AstsTLSFONDItemInfo *item = this->m_astsTLSFONDItems->Start()->Data();
+		for(int i = 0; i < sizeof(AstsTLSFONDItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsTLSFONDInfo() {
+		AstsTLSFONDInfo *item = this->m_astsTLSFOND->Start()->Data();
+		for(int i = 0; i < sizeof(AstsTLSFONDInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsTLSCURRItemInfo() {
+		AstsTLSCURRItemInfo *item = this->m_astsTLSCURRItems->Start()->Data();
+		for(int i = 0; i < sizeof(AstsTLSCURRItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsTLSCURRInfo() {
+		AstsTLSCURRInfo *item = this->m_astsTLSCURR->Start()->Data();
+		for(int i = 0; i < sizeof(AstsTLSCURRInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsSecurityDefinitionGroupInstrAttribItemInfo() {
+		AstsSecurityDefinitionGroupInstrAttribItemInfo *item = this->m_astsSecurityDefinitionGroupInstrAttribItems->Start()->Data();
+		for(int i = 0; i < sizeof(AstsSecurityDefinitionGroupInstrAttribItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() {
+		AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item = this->m_astsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItems->Start()->Data();
+		for(int i = 0; i < sizeof(AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsSecurityDefinitionMarketSegmentGrpItemInfo() {
+		AstsSecurityDefinitionMarketSegmentGrpItemInfo *item = this->m_astsSecurityDefinitionMarketSegmentGrpItems->Start()->Data();
+		for(int i = 0; i < sizeof(AstsSecurityDefinitionMarketSegmentGrpItemInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsSecurityDefinitionInfo() {
+		AstsSecurityDefinitionInfo *item = this->m_astsSecurityDefinition->Start()->Data();
+		for(int i = 0; i < sizeof(AstsSecurityDefinitionInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsSecurityStatusInfo() {
+		AstsSecurityStatusInfo *item = this->m_cachedastsSecurityStatusInfo;
+		for(int i = 0; i < sizeof(AstsSecurityStatusInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsTradingSessionStatusInfo() {
+		AstsTradingSessionStatusInfo *item = this->m_cachedastsTradingSessionStatusInfo;
+		for(int i = 0; i < sizeof(AstsTradingSessionStatusInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsHeartbeatInfo() {
+		AstsHeartbeatInfo *item = this->m_cachedastsHeartbeatInfo;
+		for(int i = 0; i < sizeof(AstsHeartbeatInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsIncrementalGenericInfo() {
+		AstsIncrementalGenericInfo *item = this->m_astsIncrementalGeneric->Start()->Data();
+		for(int i = 0; i < sizeof(AstsIncrementalGenericInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsIncrementalMSRFONDInfo() {
+		AstsIncrementalMSRFONDInfo *item = this->m_astsIncrementalMSRFOND->Start()->Data();
+		for(int i = 0; i < sizeof(AstsIncrementalMSRFONDInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsIncrementalMSRCURRInfo() {
+		AstsIncrementalMSRCURRInfo *item = this->m_astsIncrementalMSRCURR->Start()->Data();
+		for(int i = 0; i < sizeof(AstsIncrementalMSRCURRInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsIncrementalOLRFONDInfo() {
+		AstsIncrementalOLRFONDInfo *item = this->m_cachedastsIncrementalOLRFONDInfo;
+		for(int i = 0; i < sizeof(AstsIncrementalOLRFONDInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsIncrementalOLRCURRInfo() {
+		AstsIncrementalOLRCURRInfo *item = this->m_cachedastsIncrementalOLRCURRInfo;
+		for(int i = 0; i < sizeof(AstsIncrementalOLRCURRInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsIncrementalTLRFONDInfo() {
+		AstsIncrementalTLRFONDInfo *item = this->m_cachedastsIncrementalTLRFONDInfo;
+		for(int i = 0; i < sizeof(AstsIncrementalTLRFONDInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
+	inline void PrefetchAstsIncrementalTLRCURRInfo() {
+		AstsIncrementalTLRCURRInfo *item = this->m_cachedastsIncrementalTLRCURRInfo;
+		for(int i = 0; i < sizeof(AstsIncrementalTLRCURRInfo); i+= 64)
+			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
+	}
+
 private:
 	void ReleaseAstsLogonInfo() {
 		static_cast<AstsLogonInfo*>(this->LastDecodeInfo())->ReleaseUnused();
@@ -1198,6 +1486,11 @@ public:
             __builtin_prefetch(buffer, 0, _MM_HINT_T0);
         this->bufferLength = length;
         this->ResetBuffer();
+    }
+    inline void Prefetch(BYTE *buffer, int length) {
+        __builtin_prefetch(buffer, 0, _MM_HINT_T0);
+        for(int i = 64; i < length; i+= 64, buffer += 64)
+            __builtin_prefetch(buffer, 0, _MM_HINT_T0);
     }
     inline void ClearBuffer() { memset(this->buffer, 0, this->bufferLength); }
 
