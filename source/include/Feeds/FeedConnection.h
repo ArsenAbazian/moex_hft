@@ -377,6 +377,7 @@ protected:
                 return false;
         }
 
+        printf("%s \"%s\"\n", this->m_idName, DebugInfoManager::Default->BinaryToString(this->m_recvBufferCurrentPos, size));
         info->m_address = this->m_recvBufferCurrentPos + 4;
         info->m_size = size;
         this->NextRecv(size);
@@ -398,7 +399,7 @@ protected:
     }
     __attribute__((noinline))
     bool OnProcessServerCoreIncrementalNonNextItem(int size, int msgSeqNum) {
-        printf("non next    item inc %d s = %d e = %d w = %d\n", msgSeqNum, this->m_startMsgSeqNum, this->m_endMsgSeqNum, this->m_windowMsgSeqNum);
+        //printf("non next    item inc %d s = %d e = %d w = %d\n", msgSeqNum, this->m_startMsgSeqNum, this->m_endMsgSeqNum, this->m_windowMsgSeqNum);
         int localMsgSeqNum = msgSeqNum - this->m_windowMsgSeqNum;
         if(localMsgSeqNum < 0) // out of window
             return true;
@@ -415,6 +416,7 @@ protected:
             this->m_endMsgSeqNum = msgSeqNum;
         info->m_address = this->m_recvBufferCurrentPos + 4;
         info->m_size = size;
+        printf("%s \"%s\"\n", this->m_idName, DebugInfoManager::Default->BinaryToString(this->m_recvBufferCurrentPos, size));
         this->NextRecv(size);
         return true;
     }
@@ -425,6 +427,7 @@ protected:
             FeedConnectionMessageInfo *info = this->m_packets[localMsgSeqNum];
             info->m_address = this->m_recvBufferCurrentPos + 4;
             info->m_size = size;
+            printf("%s \"%s\"\n", this->m_idName, DebugInfoManager::Default->BinaryToString(this->m_recvBufferCurrentPos, size));
             this->NextRecv(size);
             return true;
         }
