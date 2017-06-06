@@ -99,9 +99,17 @@ private:
 	AutoAllocatePointerList<AstsIncrementalOLRCURRInfo>	*m_astsIncrementalOLRCURR;
 	AutoAllocatePointerList<AstsIncrementalTLRFONDInfo>	*m_astsIncrementalTLRFOND;
 	AutoAllocatePointerList<AstsIncrementalTLRCURRInfo>	*m_astsIncrementalTLRCURR;
+	AstsGenericInfo	*m_cachedastsGenericInfo;
+	AstsOLSFONDInfo	*m_cachedastsOLSFONDInfo;
+	AstsOLSCURRInfo	*m_cachedastsOLSCURRInfo;
+	AstsTLSFONDInfo	*m_cachedastsTLSFONDInfo;
+	AstsTLSCURRInfo	*m_cachedastsTLSCURRInfo;
 	AstsSecurityStatusInfo	*m_cachedastsSecurityStatusInfo;
 	AstsTradingSessionStatusInfo	*m_cachedastsTradingSessionStatusInfo;
 	AstsHeartbeatInfo	*m_cachedastsHeartbeatInfo;
+	AstsIncrementalGenericInfo	*m_cachedastsIncrementalGenericInfo;
+	AstsIncrementalMSRFONDInfo	*m_cachedastsIncrementalMSRFONDInfo;
+	AstsIncrementalMSRCURRInfo	*m_cachedastsIncrementalMSRCURRInfo;
 	AstsIncrementalOLRFONDInfo	*m_cachedastsIncrementalOLRFONDInfo;
 	AstsIncrementalOLRCURRInfo	*m_cachedastsIncrementalOLRCURRInfo;
 	AstsIncrementalTLRFONDInfo	*m_cachedastsIncrementalTLRFONDInfo;
@@ -160,65 +168,47 @@ private:
 		this->m_astsIncrementalOLRCURR = this->m_astsAllocationInfo->GetAstsIncrementalOLRCURRInfoPool();
 		this->m_astsIncrementalTLRFOND = this->m_astsAllocationInfo->GetAstsIncrementalTLRFONDInfoPool();
 		this->m_astsIncrementalTLRCURR = this->m_astsAllocationInfo->GetAstsIncrementalTLRCURRInfoPool();
+		this->m_cachedastsGenericInfo = this->m_astsGeneric->NewItemUnsafe();
+		this->m_cachedastsOLSFONDInfo = this->m_astsOLSFOND->NewItemUnsafe();
+		this->m_cachedastsOLSCURRInfo = this->m_astsOLSCURR->NewItemUnsafe();
+		this->m_cachedastsTLSFONDInfo = this->m_astsTLSFOND->NewItemUnsafe();
+		this->m_cachedastsTLSCURRInfo = this->m_astsTLSCURR->NewItemUnsafe();
 		this->m_cachedastsSecurityStatusInfo = this->m_astsSecurityStatus->NewItemUnsafe();
 		this->m_cachedastsTradingSessionStatusInfo = this->m_astsTradingSessionStatus->NewItemUnsafe();
 		this->m_cachedastsHeartbeatInfo = this->m_astsHeartbeat->NewItemUnsafe();
+		this->m_cachedastsIncrementalGenericInfo = this->m_astsIncrementalGeneric->NewItemUnsafe();
+		this->m_cachedastsIncrementalMSRFONDInfo = this->m_astsIncrementalMSRFOND->NewItemUnsafe();
+		this->m_cachedastsIncrementalMSRCURRInfo = this->m_astsIncrementalMSRCURR->NewItemUnsafe();
 		this->m_cachedastsIncrementalOLRFONDInfo = this->m_astsIncrementalOLRFOND->NewItemUnsafe();
 		this->m_cachedastsIncrementalOLRCURRInfo = this->m_astsIncrementalOLRCURR->NewItemUnsafe();
 		this->m_cachedastsIncrementalTLRFONDInfo = this->m_astsIncrementalTLRFOND->NewItemUnsafe();
 		this->m_cachedastsIncrementalTLRCURRInfo = this->m_astsIncrementalTLRCURR->NewItemUnsafe();
 		this->m_prevastsLogonInfo = this->GetFreeAstsLogonInfo();
-		this->m_prevastsLogonInfo->Used = true;
 		this->m_prevastsLogoutInfo = this->GetFreeAstsLogoutInfo();
-		this->m_prevastsLogoutInfo->Used = true;
 		this->m_prevastsGenericItemInfo = this->GetFreeAstsGenericItemInfo();
-		this->m_prevastsGenericItemInfo->Used = true;
 		this->m_prevastsGenericInfo = this->GetFreeAstsGenericInfo();
-		this->m_prevastsGenericInfo->Used = true;
 		this->m_prevastsOLSFONDItemInfo = this->GetFreeAstsOLSFONDItemInfo();
-		this->m_prevastsOLSFONDItemInfo->Used = true;
 		this->m_prevastsOLSFONDInfo = this->GetFreeAstsOLSFONDInfo();
-		this->m_prevastsOLSFONDInfo->Used = true;
 		this->m_prevastsOLSCURRItemInfo = this->GetFreeAstsOLSCURRItemInfo();
-		this->m_prevastsOLSCURRItemInfo->Used = true;
 		this->m_prevastsOLSCURRInfo = this->GetFreeAstsOLSCURRInfo();
-		this->m_prevastsOLSCURRInfo->Used = true;
 		this->m_prevastsTLSFONDItemInfo = this->GetFreeAstsTLSFONDItemInfo();
-		this->m_prevastsTLSFONDItemInfo->Used = true;
 		this->m_prevastsTLSFONDInfo = this->GetFreeAstsTLSFONDInfo();
-		this->m_prevastsTLSFONDInfo->Used = true;
 		this->m_prevastsTLSCURRItemInfo = this->GetFreeAstsTLSCURRItemInfo();
-		this->m_prevastsTLSCURRItemInfo->Used = true;
 		this->m_prevastsTLSCURRInfo = this->GetFreeAstsTLSCURRInfo();
-		this->m_prevastsTLSCURRInfo->Used = true;
 		this->m_prevastsSecurityDefinitionGroupInstrAttribItemInfo = this->GetFreeAstsSecurityDefinitionGroupInstrAttribItemInfo();
-		this->m_prevastsSecurityDefinitionGroupInstrAttribItemInfo->Used = true;
 		this->m_prevastsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo = this->GetFreeAstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
-		this->m_prevastsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo->Used = true;
 		this->m_prevastsSecurityDefinitionMarketSegmentGrpItemInfo = this->GetFreeAstsSecurityDefinitionMarketSegmentGrpItemInfo();
-		this->m_prevastsSecurityDefinitionMarketSegmentGrpItemInfo->Used = true;
 		this->m_prevastsSecurityDefinitionInfo = this->GetFreeAstsSecurityDefinitionInfo();
-		this->m_prevastsSecurityDefinitionInfo->Used = true;
 		this->m_prevastsSecurityStatusInfo = this->GetFreeAstsSecurityStatusInfo();
-		this->m_prevastsSecurityStatusInfo->Used = true;
 		this->m_prevastsTradingSessionStatusInfo = this->GetFreeAstsTradingSessionStatusInfo();
-		this->m_prevastsTradingSessionStatusInfo->Used = true;
 		this->m_prevastsHeartbeatInfo = this->GetFreeAstsHeartbeatInfo();
-		this->m_prevastsHeartbeatInfo->Used = true;
 		this->m_prevastsIncrementalGenericInfo = this->GetFreeAstsIncrementalGenericInfo();
-		this->m_prevastsIncrementalGenericInfo->Used = true;
 		this->m_prevastsIncrementalMSRFONDInfo = this->GetFreeAstsIncrementalMSRFONDInfo();
-		this->m_prevastsIncrementalMSRFONDInfo->Used = true;
 		this->m_prevastsIncrementalMSRCURRInfo = this->GetFreeAstsIncrementalMSRCURRInfo();
-		this->m_prevastsIncrementalMSRCURRInfo->Used = true;
 		this->m_prevastsIncrementalOLRFONDInfo = this->GetFreeAstsIncrementalOLRFONDInfo();
-		this->m_prevastsIncrementalOLRFONDInfo->Used = true;
 		this->m_prevastsIncrementalOLRCURRInfo = this->GetFreeAstsIncrementalOLRCURRInfo();
-		this->m_prevastsIncrementalOLRCURRInfo->Used = true;
 		this->m_prevastsIncrementalTLRFONDInfo = this->GetFreeAstsIncrementalTLRFONDInfo();
-		this->m_prevastsIncrementalTLRFONDInfo->Used = true;
 		this->m_prevastsIncrementalTLRCURRInfo = this->GetFreeAstsIncrementalTLRCURRInfo();
-		this->m_prevastsIncrementalTLRCURRInfo->Used = true;
 	}
 
 #pragma endregion
@@ -293,49 +283,27 @@ private:
 		this->m_fortsLogout = this->m_fortsAllocationInfo->GetFortsLogoutInfoPool();
 		this->m_fortsDefaultIncrementalRefreshMessage = this->m_fortsAllocationInfo->GetFortsDefaultIncrementalRefreshMessageInfoPool();
 		this->m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo = this->GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo();
-		this->m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo->Used = true;
 		this->m_prevfortsDefaultSnapshotMessageInfo = this->GetFreeFortsDefaultSnapshotMessageInfo();
-		this->m_prevfortsDefaultSnapshotMessageInfo->Used = true;
 		this->m_prevfortsSecurityDefinitionMDFeedTypesItemInfo = this->GetFreeFortsSecurityDefinitionMDFeedTypesItemInfo();
-		this->m_prevfortsSecurityDefinitionMDFeedTypesItemInfo->Used = true;
 		this->m_prevfortsSecurityDefinitionUnderlyingsItemInfo = this->GetFreeFortsSecurityDefinitionUnderlyingsItemInfo();
-		this->m_prevfortsSecurityDefinitionUnderlyingsItemInfo->Used = true;
 		this->m_prevfortsSecurityDefinitionInstrumentLegsItemInfo = this->GetFreeFortsSecurityDefinitionInstrumentLegsItemInfo();
-		this->m_prevfortsSecurityDefinitionInstrumentLegsItemInfo->Used = true;
 		this->m_prevfortsSecurityDefinitionInstrumentAttributesItemInfo = this->GetFreeFortsSecurityDefinitionInstrumentAttributesItemInfo();
-		this->m_prevfortsSecurityDefinitionInstrumentAttributesItemInfo->Used = true;
 		this->m_prevfortsSecurityDefinitionEvntGrpItemInfo = this->GetFreeFortsSecurityDefinitionEvntGrpItemInfo();
-		this->m_prevfortsSecurityDefinitionEvntGrpItemInfo->Used = true;
 		this->m_prevfortsSecurityDefinitionInfo = this->GetFreeFortsSecurityDefinitionInfo();
-		this->m_prevfortsSecurityDefinitionInfo->Used = true;
 		this->m_prevfortsSecurityDefinitionUpdateReportInfo = this->GetFreeFortsSecurityDefinitionUpdateReportInfo();
-		this->m_prevfortsSecurityDefinitionUpdateReportInfo->Used = true;
 		this->m_prevfortsSecurityStatusInfo = this->GetFreeFortsSecurityStatusInfo();
-		this->m_prevfortsSecurityStatusInfo->Used = true;
 		this->m_prevfortsHeartbeatInfo = this->GetFreeFortsHeartbeatInfo();
-		this->m_prevfortsHeartbeatInfo->Used = true;
 		this->m_prevfortsSequenceResetInfo = this->GetFreeFortsSequenceResetInfo();
-		this->m_prevfortsSequenceResetInfo->Used = true;
 		this->m_prevfortsTradingSessionStatusInfo = this->GetFreeFortsTradingSessionStatusInfo();
-		this->m_prevfortsTradingSessionStatusInfo->Used = true;
 		this->m_prevfortsNewsNewsTextItemInfo = this->GetFreeFortsNewsNewsTextItemInfo();
-		this->m_prevfortsNewsNewsTextItemInfo->Used = true;
 		this->m_prevfortsNewsInfo = this->GetFreeFortsNewsInfo();
-		this->m_prevfortsNewsInfo->Used = true;
 		this->m_prevfortsOrdersLogMDEntriesItemInfo = this->GetFreeFortsOrdersLogMDEntriesItemInfo();
-		this->m_prevfortsOrdersLogMDEntriesItemInfo->Used = true;
 		this->m_prevfortsOrdersLogInfo = this->GetFreeFortsOrdersLogInfo();
-		this->m_prevfortsOrdersLogInfo->Used = true;
 		this->m_prevfortsOrdersBookMDEntriesItemInfo = this->GetFreeFortsOrdersBookMDEntriesItemInfo();
-		this->m_prevfortsOrdersBookMDEntriesItemInfo->Used = true;
 		this->m_prevfortsOrdersBookInfo = this->GetFreeFortsOrdersBookInfo();
-		this->m_prevfortsOrdersBookInfo->Used = true;
 		this->m_prevfortsLogonInfo = this->GetFreeFortsLogonInfo();
-		this->m_prevfortsLogonInfo->Used = true;
 		this->m_prevfortsLogoutInfo = this->GetFreeFortsLogoutInfo();
-		this->m_prevfortsLogoutInfo->Used = true;
 		this->m_prevfortsDefaultIncrementalRefreshMessageInfo = this->GetFreeFortsDefaultIncrementalRefreshMessageInfo();
-		this->m_prevfortsDefaultIncrementalRefreshMessageInfo->Used = true;
 	}
 
 #pragma endregion
@@ -877,7 +845,7 @@ public:
 	}
 
 	inline AstsGenericInfo* GetFreeAstsGenericInfo() {
-		return this->m_astsGeneric->NewItemUnsafe();
+		return this->m_cachedastsGenericInfo;
 	}
 
 	inline AutoAllocatePointerList<AstsGenericInfo>* GetAstsGenericInfoPool() {
@@ -893,7 +861,7 @@ public:
 	}
 
 	inline AstsOLSFONDInfo* GetFreeAstsOLSFONDInfo() {
-		return this->m_astsOLSFOND->NewItemUnsafe();
+		return this->m_cachedastsOLSFONDInfo;
 	}
 
 	inline AutoAllocatePointerList<AstsOLSFONDInfo>* GetAstsOLSFONDInfoPool() {
@@ -909,7 +877,7 @@ public:
 	}
 
 	inline AstsOLSCURRInfo* GetFreeAstsOLSCURRInfo() {
-		return this->m_astsOLSCURR->NewItemUnsafe();
+		return this->m_cachedastsOLSCURRInfo;
 	}
 
 	inline AutoAllocatePointerList<AstsOLSCURRInfo>* GetAstsOLSCURRInfoPool() {
@@ -925,7 +893,7 @@ public:
 	}
 
 	inline AstsTLSFONDInfo* GetFreeAstsTLSFONDInfo() {
-		return this->m_astsTLSFOND->NewItemUnsafe();
+		return this->m_cachedastsTLSFONDInfo;
 	}
 
 	inline AutoAllocatePointerList<AstsTLSFONDInfo>* GetAstsTLSFONDInfoPool() {
@@ -941,7 +909,7 @@ public:
 	}
 
 	inline AstsTLSCURRInfo* GetFreeAstsTLSCURRInfo() {
-		return this->m_astsTLSCURR->NewItemUnsafe();
+		return this->m_cachedastsTLSCURRInfo;
 	}
 
 	inline AutoAllocatePointerList<AstsTLSCURRInfo>* GetAstsTLSCURRInfoPool() {
@@ -1005,7 +973,7 @@ public:
 	}
 
 	inline AstsIncrementalGenericInfo* GetFreeAstsIncrementalGenericInfo() {
-		return this->m_astsIncrementalGeneric->NewItemUnsafe();
+		return this->m_cachedastsIncrementalGenericInfo;
 	}
 
 	inline AutoAllocatePointerList<AstsIncrementalGenericInfo>* GetAstsIncrementalGenericInfoPool() {
@@ -1013,7 +981,7 @@ public:
 	}
 
 	inline AstsIncrementalMSRFONDInfo* GetFreeAstsIncrementalMSRFONDInfo() {
-		return this->m_astsIncrementalMSRFOND->NewItemUnsafe();
+		return this->m_cachedastsIncrementalMSRFONDInfo;
 	}
 
 	inline AutoAllocatePointerList<AstsIncrementalMSRFONDInfo>* GetAstsIncrementalMSRFONDInfoPool() {
@@ -1021,7 +989,7 @@ public:
 	}
 
 	inline AstsIncrementalMSRCURRInfo* GetFreeAstsIncrementalMSRCURRInfo() {
-		return this->m_astsIncrementalMSRCURR->NewItemUnsafe();
+		return this->m_cachedastsIncrementalMSRCURRInfo;
 	}
 
 	inline AutoAllocatePointerList<AstsIncrementalMSRCURRInfo>* GetAstsIncrementalMSRCURRInfoPool() {
@@ -1079,7 +1047,7 @@ public:
 	}
 
 	inline void PrefetchAstsGenericInfo() {
-		AstsGenericInfo *item = this->m_astsGeneric->Start()->Data();
+		AstsGenericInfo *item = this->m_cachedastsGenericInfo;
 		for(int i = 0; i < sizeof(AstsGenericInfo); i+= 64)
 			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
 	}
@@ -1091,7 +1059,7 @@ public:
 	}
 
 	inline void PrefetchAstsOLSFONDInfo() {
-		AstsOLSFONDInfo *item = this->m_astsOLSFOND->Start()->Data();
+		AstsOLSFONDInfo *item = this->m_cachedastsOLSFONDInfo;
 		for(int i = 0; i < sizeof(AstsOLSFONDInfo); i+= 64)
 			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
 	}
@@ -1103,7 +1071,7 @@ public:
 	}
 
 	inline void PrefetchAstsOLSCURRInfo() {
-		AstsOLSCURRInfo *item = this->m_astsOLSCURR->Start()->Data();
+		AstsOLSCURRInfo *item = this->m_cachedastsOLSCURRInfo;
 		for(int i = 0; i < sizeof(AstsOLSCURRInfo); i+= 64)
 			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
 	}
@@ -1115,7 +1083,7 @@ public:
 	}
 
 	inline void PrefetchAstsTLSFONDInfo() {
-		AstsTLSFONDInfo *item = this->m_astsTLSFOND->Start()->Data();
+		AstsTLSFONDInfo *item = this->m_cachedastsTLSFONDInfo;
 		for(int i = 0; i < sizeof(AstsTLSFONDInfo); i+= 64)
 			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
 	}
@@ -1127,7 +1095,7 @@ public:
 	}
 
 	inline void PrefetchAstsTLSCURRInfo() {
-		AstsTLSCURRInfo *item = this->m_astsTLSCURR->Start()->Data();
+		AstsTLSCURRInfo *item = this->m_cachedastsTLSCURRInfo;
 		for(int i = 0; i < sizeof(AstsTLSCURRInfo); i+= 64)
 			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
 	}
@@ -1175,19 +1143,19 @@ public:
 	}
 
 	inline void PrefetchAstsIncrementalGenericInfo() {
-		AstsIncrementalGenericInfo *item = this->m_astsIncrementalGeneric->Start()->Data();
+		AstsIncrementalGenericInfo *item = this->m_cachedastsIncrementalGenericInfo;
 		for(int i = 0; i < sizeof(AstsIncrementalGenericInfo); i+= 64)
 			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
 	}
 
 	inline void PrefetchAstsIncrementalMSRFONDInfo() {
-		AstsIncrementalMSRFONDInfo *item = this->m_astsIncrementalMSRFOND->Start()->Data();
+		AstsIncrementalMSRFONDInfo *item = this->m_cachedastsIncrementalMSRFONDInfo;
 		for(int i = 0; i < sizeof(AstsIncrementalMSRFONDInfo); i+= 64)
 			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
 	}
 
 	inline void PrefetchAstsIncrementalMSRCURRInfo() {
-		AstsIncrementalMSRCURRInfo *item = this->m_astsIncrementalMSRCURR->Start()->Data();
+		AstsIncrementalMSRCURRInfo *item = this->m_cachedastsIncrementalMSRCURRInfo;
 		for(int i = 0; i < sizeof(AstsIncrementalMSRCURRInfo); i+= 64)
 			__builtin_prefetch(((char*)item) + i, 0, _MM_HINT_T0);
 	}
@@ -2857,6 +2825,15 @@ public:
 		*((UINT32*)dst) = *((UINT32*)src);
 	}
 
+	inline void CopyString_Predict12(char *dst, char *src) {
+		*((UINT32*)dst) = *((UINT32*)src);
+	}
+
+	inline void CopyString_PredictMax16(char *dst, char *src) {
+		*((UINT64*)dst) = *((UINT64*)src);
+		*((UINT64*)(dst + 8)) = *((UINT64*)(src + 8));
+	}
+
     inline void CopyString(char *dst, char *src, int count) {
 		while(count >= 8) {
             *((UINT64*)dst) = *((UINT64*)src);
@@ -3409,17 +3386,13 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsGenericItemInfo* gmdeItemInfo = NULL;
 
-		int gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
 			for(int i = 0; i < sizeof(AstsGenericItemInfo); i += 64)
 				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
-		gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -3443,7 +3416,7 @@ public:
 				nmap2 |= NULL_MAP_INDEX8;
 			if(!ReadString_Optional(gmdeItemInfo->OpenCloseSettlFlag, &(gmdeItemInfo->OpenCloseSettlFlagLength)))
 				nmap2 |= NULL_MAP_INDEX9;
-			if(!ReadString_Optional(gmdeItemInfo->OrdType, &(gmdeItemInfo->OrdTypeLength)))
+			if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrdType))
 				nmap2 |= NULL_MAP_INDEX10;
 			if(!ReadUInt32_Optional(&(gmdeItemInfo->EffectiveTime)))
 				nmap2 |= NULL_MAP_INDEX11;
@@ -3507,9 +3480,7 @@ public:
 				nmap2 |= NULL_MAP_INDEX40;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsGenericInfo = info;
@@ -3525,17 +3496,13 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsGenericItemInfo* gmdeItemInfo = NULL;
 
-		int gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
 			for(int i = 0; i < sizeof(AstsGenericItemInfo); i += 64)
 				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
-		gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -3573,7 +3540,7 @@ public:
 				nmap2 |= NULL_MAP_INDEX15;
 			if(!ReadString_Optional(gmdeItemInfo->OpenCloseSettlFlag, &(gmdeItemInfo->OpenCloseSettlFlagLength)))
 				nmap2 |= NULL_MAP_INDEX16;
-			if(!ReadString_Optional(gmdeItemInfo->OrdType, &(gmdeItemInfo->OrdTypeLength)))
+			if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrdType))
 				nmap2 |= NULL_MAP_INDEX17;
 			if(!ReadDecimal_Optional(&(gmdeItemInfo->NetChgPrevDay)))
 				nmap2 |= NULL_MAP_INDEX18;
@@ -3633,9 +3600,7 @@ public:
 				nmap2 |= NULL_MAP_INDEX45;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsIncrementalGenericInfo = info;
@@ -3667,17 +3632,13 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsOLSFONDItemInfo* gmdeItemInfo = NULL;
 
-		int gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = GetFreeAstsOLSFONDItemInfo();
 			for(int i = 0; i < sizeof(AstsOLSFONDItemInfo); i += 64)
 				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
-		gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 
 			UINT64 pmap2 = this->ParsePresenceMap2();
@@ -3742,12 +3703,11 @@ public:
 				this->CopyString_Fixed1(gmdeItemInfo->OrderStatus, m_prevastsOLSFONDItemInfo->OrderStatus);
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX8)) {
-				if(!ReadString_Optional(gmdeItemInfo->OrdType, &(gmdeItemInfo->OrdTypeLength)))
+				if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrdType))
 					nmap2 |= NULL_MAP_INDEX9;
 			}
 			else {
-				this->CopyString(gmdeItemInfo->OrdType, m_prevastsOLSFONDItemInfo->OrdType, m_prevastsOLSFONDItemInfo->OrdTypeLength);
-				gmdeItemInfo->OrdTypeLength = this->m_prevastsOLSFONDItemInfo->OrdTypeLength;
+				this->CopyString_Fixed1(gmdeItemInfo->OrdType, m_prevastsOLSFONDItemInfo->OrdType);
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX9)) {
 				if(!ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume)))
@@ -3761,15 +3721,13 @@ public:
 					nmap2 |= NULL_MAP_INDEX11;
 			}
 			else {
-				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSFONDItemInfo->TradingSessionSubID, m_prevastsOLSFONDItemInfo->TradingSessionSubIDLength);
+				this->CopyString_Predict12(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSFONDItemInfo->TradingSessionSubID);
 				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevastsOLSFONDItemInfo->TradingSessionSubIDLength;
 			}
 			gmdeItemInfo->PresenceMap = pmap2;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsOLSFONDItemInfo = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsOLSFONDInfo = info;
@@ -3799,17 +3757,13 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsOLSCURRItemInfo* gmdeItemInfo = NULL;
 
-		int gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = GetFreeAstsOLSCURRItemInfo();
 			for(int i = 0; i < sizeof(AstsOLSCURRItemInfo); i += 64)
 				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
-		gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 
 			UINT64 pmap2 = this->ParsePresenceMap2();
@@ -3871,15 +3825,13 @@ public:
 					nmap2 |= NULL_MAP_INDEX8;
 			}
 			else {
-				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSCURRItemInfo->TradingSessionSubID, m_prevastsOLSCURRItemInfo->TradingSessionSubIDLength);
+				this->CopyString_Predict12(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSCURRItemInfo->TradingSessionSubID);
 				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevastsOLSCURRItemInfo->TradingSessionSubIDLength;
 			}
 			gmdeItemInfo->PresenceMap = pmap2;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsOLSCURRItemInfo = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsOLSCURRInfo = info;
@@ -3911,17 +3863,13 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsTLSFONDItemInfo* gmdeItemInfo = NULL;
 
-		int gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = GetFreeAstsTLSFONDItemInfo();
 			for(int i = 0; i < sizeof(AstsTLSFONDItemInfo); i += 64)
 				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
-		gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 
 			UINT64 pmap2 = this->ParsePresenceMap3();
@@ -4049,7 +3997,7 @@ public:
 					nmap2 |= NULL_MAP_INDEX17;
 			}
 			else {
-				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevastsTLSFONDItemInfo->TradingSessionSubID, m_prevastsTLSFONDItemInfo->TradingSessionSubIDLength);
+				this->CopyString_Predict12(gmdeItemInfo->TradingSessionSubID, m_prevastsTLSFONDItemInfo->TradingSessionSubID);
 				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevastsTLSFONDItemInfo->TradingSessionSubIDLength;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX17)) {
@@ -4063,9 +4011,7 @@ public:
 			gmdeItemInfo->PresenceMap = pmap2;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsTLSFONDItemInfo = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsTLSFONDInfo = info;
@@ -4095,17 +4041,13 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsTLSCURRItemInfo* gmdeItemInfo = NULL;
 
-		int gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = GetFreeAstsTLSCURRItemInfo();
 			for(int i = 0; i < sizeof(AstsTLSCURRItemInfo); i += 64)
 				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
-		gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 
 			UINT64 pmap2 = this->ParsePresenceMap3();
@@ -4219,7 +4161,7 @@ public:
 					nmap2 |= NULL_MAP_INDEX15;
 			}
 			else {
-				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevastsTLSCURRItemInfo->TradingSessionSubID, m_prevastsTLSCURRItemInfo->TradingSessionSubIDLength);
+				this->CopyString_Predict12(gmdeItemInfo->TradingSessionSubID, m_prevastsTLSCURRItemInfo->TradingSessionSubID);
 				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevastsTLSCURRItemInfo->TradingSessionSubIDLength;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX15)) {
@@ -4233,9 +4175,7 @@ public:
 			gmdeItemInfo->PresenceMap = pmap2;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsTLSCURRItemInfo = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsTLSCURRInfo = info;
@@ -4255,17 +4195,13 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsGenericItemInfo* gmdeItemInfo = NULL;
 
-		int gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
 			for(int i = 0; i < sizeof(AstsGenericItemInfo); i += 64)
 				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
-		gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -4337,9 +4273,7 @@ public:
 				nmap2 |= NULL_MAP_INDEX32;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsIncrementalMSRFONDInfo = info;
@@ -4359,17 +4293,13 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsGenericItemInfo* gmdeItemInfo = NULL;
 
-		int gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = GetFreeAstsGenericItemInfo();
 			for(int i = 0; i < sizeof(AstsGenericItemInfo); i += 64)
 				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
-		gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -4431,9 +4361,7 @@ public:
 				nmap2 |= NULL_MAP_INDEX27;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsIncrementalMSRCURRInfo = info;
@@ -4449,128 +4377,134 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsOLSFONDItemInfo* gmdeItemInfo = NULL;
 
-		int gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = GetFreeAstsOLSFONDItemInfo();
 			for(int i = 0; i < sizeof(AstsOLSFONDItemInfo); i += 64)
 				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
-		gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 
 			UINT64 pmap2 = this->ParsePresenceMap2();
 			UINT64 nmap2 = 0;
 
-			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
-				nmap2 |= NULL_MAP_INDEX0;
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX0)) {
-				if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
-					nmap2 |= NULL_MAP_INDEX1;
+			if(pmap2 != 0) {
+				if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
+					nmap2 |= NULL_MAP_INDEX0;
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX0)) {
+					if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
+						nmap2 |= NULL_MAP_INDEX1;
+				}
+				else {
+					this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryType);
+				}
+				if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+					nmap2 |= NULL_MAP_INDEX2;
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX1)) {
+					if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
+						nmap2 |= NULL_MAP_INDEX3;
+				}
+				else {
+					this->CopyString_PredictMax16(gmdeItemInfo->Symbol, m_prevastsOLSFONDItemInfo->Symbol);
+					gmdeItemInfo->SymbolLength = this->m_prevastsOLSFONDItemInfo->SymbolLength;
+				}
+				if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
+					nmap2 |= NULL_MAP_INDEX4;
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX2)) {
+					if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
+						nmap2 |= NULL_MAP_INDEX5;
+				}
+				else {
+					gmdeItemInfo->MDEntryDate = this->m_prevastsOLSFONDItemInfo->MDEntryDate;
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX3)) {
+					if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
+						nmap2 |= NULL_MAP_INDEX6;
+				}
+				else {
+					gmdeItemInfo->MDEntryTime = this->m_prevastsOLSFONDItemInfo->MDEntryTime;
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX4)) {
+					if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
+						nmap2 |= NULL_MAP_INDEX7;
+				}
+				else {
+					gmdeItemInfo->OrigTime = this->m_prevastsOLSFONDItemInfo->OrigTime;
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX5)) {
+					if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
+						nmap2 |= NULL_MAP_INDEX8;
+				}
+				else {
+					gmdeItemInfo->MDEntryPx = this->m_prevastsOLSFONDItemInfo->MDEntryPx;
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX6)) {
+					if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
+						nmap2 |= NULL_MAP_INDEX9;
+				}
+				else {
+					gmdeItemInfo->MDEntrySize = this->m_prevastsOLSFONDItemInfo->MDEntrySize;
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX7)) {
+					if(!ReadDecimal_Optional(&(gmdeItemInfo->Yield)))
+						nmap2 |= NULL_MAP_INDEX10;
+				}
+				else {
+					gmdeItemInfo->Yield = this->m_prevastsOLSFONDItemInfo->Yield;
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX8)) {
+					if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus))
+						nmap2 |= NULL_MAP_INDEX11;
+				}
+				else {
+					this->CopyString_Fixed1(gmdeItemInfo->OrderStatus, m_prevastsOLSFONDItemInfo->OrderStatus);
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX9)) {
+					if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrdType))
+						nmap2 |= NULL_MAP_INDEX12;
+				}
+				else {
+					this->CopyString_Fixed1(gmdeItemInfo->OrdType, m_prevastsOLSFONDItemInfo->OrdType);
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX10)) {
+					if(!ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume)))
+						nmap2 |= NULL_MAP_INDEX13;
+				}
+				else {
+					gmdeItemInfo->TotalVolume = this->m_prevastsOLSFONDItemInfo->TotalVolume;
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX11)) {
+					if(!ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID))
+						nmap2 |= NULL_MAP_INDEX14;
+				}
+				else {
+					gmdeItemInfo->TradingSessionIDUint = this->m_prevastsOLSFONDItemInfo->TradingSessionIDUint;
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX12)) {
+					if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
+						nmap2 |= NULL_MAP_INDEX15;
+				}
+				else {
+					this->CopyString_Predict12(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSFONDItemInfo->TradingSessionSubID);
+					gmdeItemInfo->TradingSessionSubIDLength = this->m_prevastsOLSFONDItemInfo->TradingSessionSubIDLength;
+				}
+				gmdeItemInfo->PresenceMap = pmap2;
+				gmdeItemInfo->NullMap = nmap2;
 			}
 			else {
-				this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryType);
+				gmdeItemInfo->Assign(this->m_prevastsOLSFONDItemInfo);
+				if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
+					nmap2 |= NULL_MAP_INDEX0;
+				if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+					nmap2 |= NULL_MAP_INDEX2;
+				if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
+					nmap2 |= NULL_MAP_INDEX4;
+				gmdeItemInfo->PresenceMap = pmap2;
+				gmdeItemInfo->NullMap = this->m_prevastsOLSFONDItemInfo->NullMap;
 			}
-			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-				nmap2 |= NULL_MAP_INDEX2;
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX1)) {
-				if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
-					nmap2 |= NULL_MAP_INDEX3;
-			}
-			else {
-				this->CopyString(gmdeItemInfo->Symbol, m_prevastsOLSFONDItemInfo->Symbol, m_prevastsOLSFONDItemInfo->SymbolLength);
-				gmdeItemInfo->SymbolLength = this->m_prevastsOLSFONDItemInfo->SymbolLength;
-			}
-			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
-				nmap2 |= NULL_MAP_INDEX4;
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX2)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
-					nmap2 |= NULL_MAP_INDEX5;
-			}
-			else {
-				gmdeItemInfo->MDEntryDate = this->m_prevastsOLSFONDItemInfo->MDEntryDate;
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX3)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
-					nmap2 |= NULL_MAP_INDEX6;
-			}
-			else {
-				gmdeItemInfo->MDEntryTime = this->m_prevastsOLSFONDItemInfo->MDEntryTime;
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX4)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
-					nmap2 |= NULL_MAP_INDEX7;
-			}
-			else {
-				gmdeItemInfo->OrigTime = this->m_prevastsOLSFONDItemInfo->OrigTime;
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX5)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
-					nmap2 |= NULL_MAP_INDEX8;
-			}
-			else {
-				gmdeItemInfo->MDEntryPx = this->m_prevastsOLSFONDItemInfo->MDEntryPx;
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX6)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
-					nmap2 |= NULL_MAP_INDEX9;
-			}
-			else {
-				gmdeItemInfo->MDEntrySize = this->m_prevastsOLSFONDItemInfo->MDEntrySize;
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX7)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->Yield)))
-					nmap2 |= NULL_MAP_INDEX10;
-			}
-			else {
-				gmdeItemInfo->Yield = this->m_prevastsOLSFONDItemInfo->Yield;
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX8)) {
-				if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus))
-					nmap2 |= NULL_MAP_INDEX11;
-			}
-			else {
-				this->CopyString_Fixed1(gmdeItemInfo->OrderStatus, m_prevastsOLSFONDItemInfo->OrderStatus);
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX9)) {
-				if(!ReadString_Optional(gmdeItemInfo->OrdType, &(gmdeItemInfo->OrdTypeLength)))
-					nmap2 |= NULL_MAP_INDEX12;
-			}
-			else {
-				this->CopyString(gmdeItemInfo->OrdType, m_prevastsOLSFONDItemInfo->OrdType, m_prevastsOLSFONDItemInfo->OrdTypeLength);
-				gmdeItemInfo->OrdTypeLength = this->m_prevastsOLSFONDItemInfo->OrdTypeLength;
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX10)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume)))
-					nmap2 |= NULL_MAP_INDEX13;
-			}
-			else {
-				gmdeItemInfo->TotalVolume = this->m_prevastsOLSFONDItemInfo->TotalVolume;
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX11)) {
-				if(!ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID))
-					nmap2 |= NULL_MAP_INDEX14;
-			}
-			else {
-				gmdeItemInfo->TradingSessionIDUint = this->m_prevastsOLSFONDItemInfo->TradingSessionIDUint;
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX12)) {
-				if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
-					nmap2 |= NULL_MAP_INDEX15;
-			}
-			else {
-				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSFONDItemInfo->TradingSessionSubID, m_prevastsOLSFONDItemInfo->TradingSessionSubIDLength);
-				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevastsOLSFONDItemInfo->TradingSessionSubIDLength;
-			}
-			gmdeItemInfo->PresenceMap = pmap2;
-			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsOLSFONDItemInfo = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsIncrementalOLRFONDInfo = info;
@@ -4586,111 +4520,116 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsOLSCURRItemInfo* gmdeItemInfo = NULL;
 
-		int gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = GetFreeAstsOLSCURRItemInfo();
 			for(int i = 0; i < sizeof(AstsOLSCURRItemInfo); i += 64)
 				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
-		gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 
 			UINT64 pmap2 = this->ParsePresenceMap2();
 			UINT64 nmap2 = 0;
 
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX0)) {
-				if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
-					nmap2 |= NULL_MAP_INDEX0;
+			if(pmap2 != 0) {
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX0)) {
+					if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
+						nmap2 |= NULL_MAP_INDEX0;
+				}
+				else {
+					gmdeItemInfo->MDUpdateAction = this->m_prevastsOLSCURRItemInfo->MDUpdateAction;
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX1)) {
+					if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
+						nmap2 |= NULL_MAP_INDEX1;
+				}
+				else {
+					this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryType);
+				}
+				if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+					nmap2 |= NULL_MAP_INDEX2;
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX2)) {
+					if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
+						nmap2 |= NULL_MAP_INDEX3;
+				}
+				else {
+					this->CopyString_PredictMax16(gmdeItemInfo->Symbol, m_prevastsOLSCURRItemInfo->Symbol);
+					gmdeItemInfo->SymbolLength = this->m_prevastsOLSCURRItemInfo->SymbolLength;
+				}
+				if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
+					nmap2 |= NULL_MAP_INDEX4;
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX3)) {
+					if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
+						nmap2 |= NULL_MAP_INDEX5;
+				}
+				else {
+					gmdeItemInfo->MDEntryDate = this->m_prevastsOLSCURRItemInfo->MDEntryDate;
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX4)) {
+					if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
+						nmap2 |= NULL_MAP_INDEX6;
+				}
+				else {
+					gmdeItemInfo->MDEntryTime = this->m_prevastsOLSCURRItemInfo->MDEntryTime;
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX5)) {
+					if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
+						nmap2 |= NULL_MAP_INDEX7;
+				}
+				else {
+					gmdeItemInfo->OrigTime = this->m_prevastsOLSCURRItemInfo->OrigTime;
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX6)) {
+					if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
+						nmap2 |= NULL_MAP_INDEX8;
+				}
+				else {
+					gmdeItemInfo->MDEntryPx = this->m_prevastsOLSCURRItemInfo->MDEntryPx;
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX7)) {
+					if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
+						nmap2 |= NULL_MAP_INDEX9;
+				}
+				else {
+					gmdeItemInfo->MDEntrySize = this->m_prevastsOLSCURRItemInfo->MDEntrySize;
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX8)) {
+					if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus))
+						nmap2 |= NULL_MAP_INDEX10;
+				}
+				else {
+					this->CopyString_Fixed1(gmdeItemInfo->OrderStatus, m_prevastsOLSCURRItemInfo->OrderStatus);
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX9)) {
+					if(!ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID))
+						nmap2 |= NULL_MAP_INDEX11;
+				}
+				else {
+					gmdeItemInfo->TradingSessionIDUint = this->m_prevastsOLSCURRItemInfo->TradingSessionIDUint;
+				}
+				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX10)) {
+					if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
+						nmap2 |= NULL_MAP_INDEX12;
+				}
+				else {
+					this->CopyString_Predict12(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSCURRItemInfo->TradingSessionSubID);
+					gmdeItemInfo->TradingSessionSubIDLength = this->m_prevastsOLSCURRItemInfo->TradingSessionSubIDLength;
+				}
+				gmdeItemInfo->PresenceMap = pmap2;
+				gmdeItemInfo->NullMap = nmap2;
 			}
 			else {
-				gmdeItemInfo->MDUpdateAction = this->m_prevastsOLSCURRItemInfo->MDUpdateAction;
+				gmdeItemInfo->Assign(this->m_prevastsOLSCURRItemInfo);
+				if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
+					nmap2 |= NULL_MAP_INDEX2;
+				if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
+					nmap2 |= NULL_MAP_INDEX4;
+				gmdeItemInfo->PresenceMap = pmap2;
+				gmdeItemInfo->NullMap = this->m_prevastsOLSCURRItemInfo->NullMap;
 			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX1)) {
-				if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
-					nmap2 |= NULL_MAP_INDEX1;
-			}
-			else {
-				this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryType);
-			}
-			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-				nmap2 |= NULL_MAP_INDEX2;
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX2)) {
-				if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
-					nmap2 |= NULL_MAP_INDEX3;
-			}
-			else {
-				this->CopyString(gmdeItemInfo->Symbol, m_prevastsOLSCURRItemInfo->Symbol, m_prevastsOLSCURRItemInfo->SymbolLength);
-				gmdeItemInfo->SymbolLength = this->m_prevastsOLSCURRItemInfo->SymbolLength;
-			}
-			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
-				nmap2 |= NULL_MAP_INDEX4;
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX3)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
-					nmap2 |= NULL_MAP_INDEX5;
-			}
-			else {
-				gmdeItemInfo->MDEntryDate = this->m_prevastsOLSCURRItemInfo->MDEntryDate;
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX4)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
-					nmap2 |= NULL_MAP_INDEX6;
-			}
-			else {
-				gmdeItemInfo->MDEntryTime = this->m_prevastsOLSCURRItemInfo->MDEntryTime;
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX5)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
-					nmap2 |= NULL_MAP_INDEX7;
-			}
-			else {
-				gmdeItemInfo->OrigTime = this->m_prevastsOLSCURRItemInfo->OrigTime;
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX6)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
-					nmap2 |= NULL_MAP_INDEX8;
-			}
-			else {
-				gmdeItemInfo->MDEntryPx = this->m_prevastsOLSCURRItemInfo->MDEntryPx;
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX7)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
-					nmap2 |= NULL_MAP_INDEX9;
-			}
-			else {
-				gmdeItemInfo->MDEntrySize = this->m_prevastsOLSCURRItemInfo->MDEntrySize;
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX8)) {
-				if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus))
-					nmap2 |= NULL_MAP_INDEX10;
-			}
-			else {
-				this->CopyString_Fixed1(gmdeItemInfo->OrderStatus, m_prevastsOLSCURRItemInfo->OrderStatus);
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX9)) {
-				if(!ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID))
-					nmap2 |= NULL_MAP_INDEX11;
-			}
-			else {
-				gmdeItemInfo->TradingSessionIDUint = this->m_prevastsOLSCURRItemInfo->TradingSessionIDUint;
-			}
-			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX10)) {
-				if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
-					nmap2 |= NULL_MAP_INDEX12;
-			}
-			else {
-				this->CopyString(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSCURRItemInfo->TradingSessionSubID, m_prevastsOLSCURRItemInfo->TradingSessionSubIDLength);
-				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevastsOLSCURRItemInfo->TradingSessionSubIDLength;
-			}
-			gmdeItemInfo->PresenceMap = pmap2;
-			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsOLSCURRItemInfo = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsIncrementalOLRCURRInfo = info;
@@ -4706,17 +4645,13 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsTLSFONDItemInfo* gmdeItemInfo = NULL;
 
-		int gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = GetFreeAstsTLSFONDItemInfo();
 			for(int i = 0; i < sizeof(AstsTLSFONDItemInfo); i += 64)
 				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
-		gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -4769,9 +4704,7 @@ public:
 				nmap2 |= NULL_MAP_INDEX22;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsTLSFONDItemInfo = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsIncrementalTLRFONDInfo = info;
@@ -4787,17 +4720,13 @@ public:
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsTLSCURRItemInfo* gmdeItemInfo = NULL;
 
-		int gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = GetFreeAstsTLSCURRItemInfo();
 			for(int i = 0; i < sizeof(AstsTLSCURRItemInfo); i += 64)
 				__builtin_prefetch(((char*)gmdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupMDEntries[gmdeItemInfoIndex] = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
-		gmdeItemInfoIndex = 0;
-		do {
+		for(int gmdeItemInfoIndex = 0; gmdeItemInfoIndex < info->GroupMDEntriesCount; gmdeItemInfoIndex++) {
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -4846,9 +4775,7 @@ public:
 				nmap2 |= NULL_MAP_INDEX20;
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsTLSCURRItemInfo = gmdeItemInfo;
-			gmdeItemInfoIndex++;
 		}
-		while(gmdeItemInfoIndex < info->GroupMDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevastsIncrementalTLRCURRInfo = info;
@@ -4917,17 +4844,13 @@ public:
 		}
 		AstsSecurityDefinitionGroupInstrAttribItemInfo* giaItemInfo = NULL;
 
-		int giaItemInfoIndex = 0;
-		do {
+		for(int giaItemInfoIndex = 0; giaItemInfoIndex < info->GroupInstrAttribCount; giaItemInfoIndex++) {
 			giaItemInfo = GetFreeAstsSecurityDefinitionGroupInstrAttribItemInfo();
 			for(int i = 0; i < sizeof(AstsSecurityDefinitionGroupInstrAttribItemInfo); i += 64)
 				__builtin_prefetch(((char*)giaItemInfo) + i, 0, _MM_HINT_T0);
 			info->GroupInstrAttrib[giaItemInfoIndex] = giaItemInfo;
-			giaItemInfoIndex++;
 		}
-		while(giaItemInfoIndex < info->GroupInstrAttribCount);
-		giaItemInfoIndex = 0;
-		do {
+		for(int giaItemInfoIndex = 0; giaItemInfoIndex < info->GroupInstrAttribCount; giaItemInfoIndex++) {
 			giaItemInfo = info->GroupInstrAttrib[giaItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -4938,9 +4861,7 @@ public:
 				ReadByteVector_Optional(giaItemInfo->InstrAttribValue, &(giaItemInfo->InstrAttribValueLength), 128);
 			giaItemInfo->NullMap = nmap2;
 			this->m_prevastsSecurityDefinitionGroupInstrAttribItemInfo = giaItemInfo;
-			giaItemInfoIndex++;
 		}
-		while(giaItemInfoIndex < info->GroupInstrAttribCount);
 
 		if(!ReadString_Optional(info->Currency, &(info->CurrencyLength)))
 			nmap1 |= NULL_MAP_INDEX19;
@@ -4951,17 +4872,13 @@ public:
 		}
 		AstsSecurityDefinitionMarketSegmentGrpItemInfo* msgItemInfo = NULL;
 
-		int msgItemInfoIndex = 0;
-		do {
+		for(int msgItemInfoIndex = 0; msgItemInfoIndex < info->MarketSegmentGrpCount; msgItemInfoIndex++) {
 			msgItemInfo = GetFreeAstsSecurityDefinitionMarketSegmentGrpItemInfo();
 			for(int i = 0; i < sizeof(AstsSecurityDefinitionMarketSegmentGrpItemInfo); i += 64)
 				__builtin_prefetch(((char*)msgItemInfo) + i, 0, _MM_HINT_T0);
 			info->MarketSegmentGrp[msgItemInfoIndex] = msgItemInfo;
-			msgItemInfoIndex++;
 		}
-		while(msgItemInfoIndex < info->MarketSegmentGrpCount);
-		msgItemInfoIndex = 0;
-		do {
+		for(int msgItemInfoIndex = 0; msgItemInfoIndex < info->MarketSegmentGrpCount; msgItemInfoIndex++) {
 			msgItemInfo = info->MarketSegmentGrp[msgItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -4974,17 +4891,13 @@ public:
 			}
 			AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo* tsrgItemInfo = NULL;
 
-			int tsrgItemInfoIndex = 0;
-			do {
+			for(int tsrgItemInfoIndex = 0; tsrgItemInfoIndex < msgItemInfo->TradingSessionRulesGrpCount; tsrgItemInfoIndex++) {
 				tsrgItemInfo = GetFreeAstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo();
 				for(int i = 0; i < sizeof(AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo); i += 64)
 					__builtin_prefetch(((char*)tsrgItemInfo) + i, 0, _MM_HINT_T0);
 				msgItemInfo->TradingSessionRulesGrp[tsrgItemInfoIndex] = tsrgItemInfo;
-				tsrgItemInfoIndex++;
 			}
-			while(tsrgItemInfoIndex < msgItemInfo->TradingSessionRulesGrpCount);
-			tsrgItemInfoIndex = 0;
-			do {
+			for(int tsrgItemInfoIndex = 0; tsrgItemInfoIndex < msgItemInfo->TradingSessionRulesGrpCount; tsrgItemInfoIndex++) {
 				tsrgItemInfo = msgItemInfo->TradingSessionRulesGrp[tsrgItemInfoIndex];
 				UINT64 nmap3 = 0;
 
@@ -4997,15 +4910,11 @@ public:
 					nmap3 |= NULL_MAP_INDEX2;
 				tsrgItemInfo->NullMap = nmap3;
 				this->m_prevastsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo = tsrgItemInfo;
-				tsrgItemInfoIndex++;
 			}
-			while(tsrgItemInfoIndex < msgItemInfo->TradingSessionRulesGrpCount);
 
 			msgItemInfo->NullMap = nmap2;
 			this->m_prevastsSecurityDefinitionMarketSegmentGrpItemInfo = msgItemInfo;
-			msgItemInfoIndex++;
 		}
-		while(msgItemInfoIndex < info->MarketSegmentGrpCount);
 
 		if(!ReadString_Optional(info->SettlCurrency, &(info->SettlCurrencyLength)))
 			nmap1 |= NULL_MAP_INDEX21;
@@ -5595,17 +5504,13 @@ public:
 		info->MDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		FortsDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
 
-		int mdeItemInfoIndex = 0;
-		do {
+		for(int mdeItemInfoIndex = 0; mdeItemInfoIndex < info->MDEntriesCount; mdeItemInfoIndex++) {
 			mdeItemInfo = GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo();
 			for(int i = 0; i < sizeof(FortsDefaultSnapshotMessageMDEntriesItemInfo); i += 64)
 				__builtin_prefetch(((char*)mdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
-			mdeItemInfoIndex++;
 		}
-		while(mdeItemInfoIndex < info->MDEntriesCount);
-		mdeItemInfoIndex = 0;
-		do {
+		for(int mdeItemInfoIndex = 0; mdeItemInfoIndex < info->MDEntriesCount; mdeItemInfoIndex++) {
 			mdeItemInfo = info->MDEntries[mdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -5659,9 +5564,7 @@ public:
 				nmap2 |= NULL_MAP_INDEX17;
 			mdeItemInfo->NullMap = nmap2;
 			this->m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo = mdeItemInfo;
-			mdeItemInfoIndex++;
 		}
-		while(mdeItemInfoIndex < info->MDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevfortsDefaultIncrementalRefreshMessageInfo = info;
@@ -5690,17 +5593,13 @@ public:
 		info->MDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		FortsDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
 
-		int mdeItemInfoIndex = 0;
-		do {
+		for(int mdeItemInfoIndex = 0; mdeItemInfoIndex < info->MDEntriesCount; mdeItemInfoIndex++) {
 			mdeItemInfo = GetFreeFortsDefaultSnapshotMessageMDEntriesItemInfo();
 			for(int i = 0; i < sizeof(FortsDefaultSnapshotMessageMDEntriesItemInfo); i += 64)
 				__builtin_prefetch(((char*)mdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
-			mdeItemInfoIndex++;
 		}
-		while(mdeItemInfoIndex < info->MDEntriesCount);
-		mdeItemInfoIndex = 0;
-		do {
+		for(int mdeItemInfoIndex = 0; mdeItemInfoIndex < info->MDEntriesCount; mdeItemInfoIndex++) {
 			mdeItemInfo = info->MDEntries[mdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -5738,9 +5637,7 @@ public:
 				nmap2 |= NULL_MAP_INDEX12;
 			mdeItemInfo->NullMap = nmap2;
 			this->m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo = mdeItemInfo;
-			mdeItemInfoIndex++;
 		}
-		while(mdeItemInfoIndex < info->MDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevfortsDefaultSnapshotMessageInfo = info;
@@ -5786,17 +5683,13 @@ public:
 		info->MDFeedTypesCount = ReadUInt32_Mandatory_Predict12();
 		FortsSecurityDefinitionMDFeedTypesItemInfo* mdftItemInfo = NULL;
 
-		int mdftItemInfoIndex = 0;
-		do {
+		for(int mdftItemInfoIndex = 0; mdftItemInfoIndex < info->MDFeedTypesCount; mdftItemInfoIndex++) {
 			mdftItemInfo = GetFreeFortsSecurityDefinitionMDFeedTypesItemInfo();
 			for(int i = 0; i < sizeof(FortsSecurityDefinitionMDFeedTypesItemInfo); i += 64)
 				__builtin_prefetch(((char*)mdftItemInfo) + i, 0, _MM_HINT_T0);
 			info->MDFeedTypes[mdftItemInfoIndex] = mdftItemInfo;
-			mdftItemInfoIndex++;
 		}
-		while(mdftItemInfoIndex < info->MDFeedTypesCount);
-		mdftItemInfoIndex = 0;
-		do {
+		for(int mdftItemInfoIndex = 0; mdftItemInfoIndex < info->MDFeedTypesCount; mdftItemInfoIndex++) {
 			mdftItemInfo = info->MDFeedTypes[mdftItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -5807,9 +5700,7 @@ public:
 				nmap2 |= NULL_MAP_INDEX1;
 			mdftItemInfo->NullMap = nmap2;
 			this->m_prevfortsSecurityDefinitionMDFeedTypesItemInfo = mdftItemInfo;
-			mdftItemInfoIndex++;
 		}
-		while(mdftItemInfoIndex < info->MDFeedTypesCount);
 
 
 		if(!ReadUInt32_Optional_Predict12((UINT32*)&(info->UnderlyingsCount))) {
@@ -5818,17 +5709,13 @@ public:
 		}
 		FortsSecurityDefinitionUnderlyingsItemInfo* uItemInfo = NULL;
 
-		int uItemInfoIndex = 0;
-		do {
+		for(int uItemInfoIndex = 0; uItemInfoIndex < info->UnderlyingsCount; uItemInfoIndex++) {
 			uItemInfo = GetFreeFortsSecurityDefinitionUnderlyingsItemInfo();
 			for(int i = 0; i < sizeof(FortsSecurityDefinitionUnderlyingsItemInfo); i += 64)
 				__builtin_prefetch(((char*)uItemInfo) + i, 0, _MM_HINT_T0);
 			info->Underlyings[uItemInfoIndex] = uItemInfo;
-			uItemInfoIndex++;
 		}
-		while(uItemInfoIndex < info->UnderlyingsCount);
-		uItemInfoIndex = 0;
-		do {
+		for(int uItemInfoIndex = 0; uItemInfoIndex < info->UnderlyingsCount; uItemInfoIndex++) {
 			uItemInfo = info->Underlyings[uItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -5839,9 +5726,7 @@ public:
 				uItemInfo->UnderlyingSecurityID = ReadUInt64_Optional();
 			uItemInfo->NullMap = nmap2;
 			this->m_prevfortsSecurityDefinitionUnderlyingsItemInfo = uItemInfo;
-			uItemInfoIndex++;
 		}
-		while(uItemInfoIndex < info->UnderlyingsCount);
 
 		if(!ReadDecimal_Optional(&(info->HighLimitPx)))
 			nmap1 |= NULL_MAP_INDEX13;
@@ -5870,17 +5755,13 @@ public:
 		}
 		FortsSecurityDefinitionInstrumentLegsItemInfo* ilItemInfo = NULL;
 
-		int ilItemInfoIndex = 0;
-		do {
+		for(int ilItemInfoIndex = 0; ilItemInfoIndex < info->InstrumentLegsCount; ilItemInfoIndex++) {
 			ilItemInfo = GetFreeFortsSecurityDefinitionInstrumentLegsItemInfo();
 			for(int i = 0; i < sizeof(FortsSecurityDefinitionInstrumentLegsItemInfo); i += 64)
 				__builtin_prefetch(((char*)ilItemInfo) + i, 0, _MM_HINT_T0);
 			info->InstrumentLegs[ilItemInfoIndex] = ilItemInfo;
-			ilItemInfoIndex++;
 		}
-		while(ilItemInfoIndex < info->InstrumentLegsCount);
-		ilItemInfoIndex = 0;
-		do {
+		for(int ilItemInfoIndex = 0; ilItemInfoIndex < info->InstrumentLegsCount; ilItemInfoIndex++) {
 			ilItemInfo = info->InstrumentLegs[ilItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -5889,9 +5770,7 @@ public:
 			ReadDecimal_Mandatory(&(ilItemInfo->LegRatioQty));
 			ilItemInfo->NullMap = nmap2;
 			this->m_prevfortsSecurityDefinitionInstrumentLegsItemInfo = ilItemInfo;
-			ilItemInfoIndex++;
 		}
-		while(ilItemInfoIndex < info->InstrumentLegsCount);
 
 
 		if(!ReadUInt32_Optional_Predict12((UINT32*)&(info->InstrumentAttributesCount))) {
@@ -5900,17 +5779,13 @@ public:
 		}
 		FortsSecurityDefinitionInstrumentAttributesItemInfo* iaItemInfo = NULL;
 
-		int iaItemInfoIndex = 0;
-		do {
+		for(int iaItemInfoIndex = 0; iaItemInfoIndex < info->InstrumentAttributesCount; iaItemInfoIndex++) {
 			iaItemInfo = GetFreeFortsSecurityDefinitionInstrumentAttributesItemInfo();
 			for(int i = 0; i < sizeof(FortsSecurityDefinitionInstrumentAttributesItemInfo); i += 64)
 				__builtin_prefetch(((char*)iaItemInfo) + i, 0, _MM_HINT_T0);
 			info->InstrumentAttributes[iaItemInfoIndex] = iaItemInfo;
-			iaItemInfoIndex++;
 		}
-		while(iaItemInfoIndex < info->InstrumentAttributesCount);
-		iaItemInfoIndex = 0;
-		do {
+		for(int iaItemInfoIndex = 0; iaItemInfoIndex < info->InstrumentAttributesCount; iaItemInfoIndex++) {
 			iaItemInfo = info->InstrumentAttributes[iaItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -5918,9 +5793,7 @@ public:
 			ReadString_Mandatory(iaItemInfo->InstrAttribValue, &(iaItemInfo->InstrAttribValueLength));
 			iaItemInfo->NullMap = nmap2;
 			this->m_prevfortsSecurityDefinitionInstrumentAttributesItemInfo = iaItemInfo;
-			iaItemInfoIndex++;
 		}
-		while(iaItemInfoIndex < info->InstrumentAttributesCount);
 
 		if(!ReadDecimal_Optional(&(info->UnderlyingQty)))
 			nmap1 |= NULL_MAP_INDEX25;
@@ -5933,17 +5806,13 @@ public:
 		}
 		FortsSecurityDefinitionEvntGrpItemInfo* egItemInfo = NULL;
 
-		int egItemInfoIndex = 0;
-		do {
+		for(int egItemInfoIndex = 0; egItemInfoIndex < info->EvntGrpCount; egItemInfoIndex++) {
 			egItemInfo = GetFreeFortsSecurityDefinitionEvntGrpItemInfo();
 			for(int i = 0; i < sizeof(FortsSecurityDefinitionEvntGrpItemInfo); i += 64)
 				__builtin_prefetch(((char*)egItemInfo) + i, 0, _MM_HINT_T0);
 			info->EvntGrp[egItemInfoIndex] = egItemInfo;
-			egItemInfoIndex++;
 		}
-		while(egItemInfoIndex < info->EvntGrpCount);
-		egItemInfoIndex = 0;
-		do {
+		for(int egItemInfoIndex = 0; egItemInfoIndex < info->EvntGrpCount; egItemInfoIndex++) {
 			egItemInfo = info->EvntGrp[egItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -5952,9 +5821,7 @@ public:
 			egItemInfo->EventTime = ReadUInt64_Mandatory();
 			egItemInfo->NullMap = nmap2;
 			this->m_prevfortsSecurityDefinitionEvntGrpItemInfo = egItemInfo;
-			egItemInfoIndex++;
 		}
-		while(egItemInfoIndex < info->EvntGrpCount);
 
 		if(!ReadUInt32_Optional(&(info->MaturityDate)))
 			nmap1 |= NULL_MAP_INDEX28;
@@ -6078,26 +5945,20 @@ public:
 		info->NewsTextCount = ReadUInt32_Mandatory_Predict12();
 		FortsNewsNewsTextItemInfo* ntItemInfo = NULL;
 
-		int ntItemInfoIndex = 0;
-		do {
+		for(int ntItemInfoIndex = 0; ntItemInfoIndex < info->NewsTextCount; ntItemInfoIndex++) {
 			ntItemInfo = GetFreeFortsNewsNewsTextItemInfo();
 			for(int i = 0; i < sizeof(FortsNewsNewsTextItemInfo); i += 64)
 				__builtin_prefetch(((char*)ntItemInfo) + i, 0, _MM_HINT_T0);
 			info->NewsText[ntItemInfoIndex] = ntItemInfo;
-			ntItemInfoIndex++;
 		}
-		while(ntItemInfoIndex < info->NewsTextCount);
-		ntItemInfoIndex = 0;
-		do {
+		for(int ntItemInfoIndex = 0; ntItemInfoIndex < info->NewsTextCount; ntItemInfoIndex++) {
 			ntItemInfo = info->NewsText[ntItemInfoIndex];
 			UINT64 nmap2 = 0;
 
 			ReadByteVector_Mandatory(ntItemInfo->Text, &(ntItemInfo->TextLength), 128);
 			ntItemInfo->NullMap = nmap2;
 			this->m_prevfortsNewsNewsTextItemInfo = ntItemInfo;
-			ntItemInfoIndex++;
 		}
-		while(ntItemInfoIndex < info->NewsTextCount);
 
 		info->NullMap = nmap1;
 		this->m_prevfortsNewsInfo = info;
@@ -6114,17 +5975,13 @@ public:
 		info->MDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		FortsOrdersLogMDEntriesItemInfo* mdeItemInfo = NULL;
 
-		int mdeItemInfoIndex = 0;
-		do {
+		for(int mdeItemInfoIndex = 0; mdeItemInfoIndex < info->MDEntriesCount; mdeItemInfoIndex++) {
 			mdeItemInfo = GetFreeFortsOrdersLogMDEntriesItemInfo();
 			for(int i = 0; i < sizeof(FortsOrdersLogMDEntriesItemInfo); i += 64)
 				__builtin_prefetch(((char*)mdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
-			mdeItemInfoIndex++;
 		}
-		while(mdeItemInfoIndex < info->MDEntriesCount);
-		mdeItemInfoIndex = 0;
-		do {
+		for(int mdeItemInfoIndex = 0; mdeItemInfoIndex < info->MDEntriesCount; mdeItemInfoIndex++) {
 			mdeItemInfo = info->MDEntries[mdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -6171,9 +6028,7 @@ public:
 				mdeItemInfo->Revision = ReadUInt64_Optional();
 			mdeItemInfo->NullMap = nmap2;
 			this->m_prevfortsOrdersLogMDEntriesItemInfo = mdeItemInfo;
-			mdeItemInfoIndex++;
 		}
-		while(mdeItemInfoIndex < info->MDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevfortsOrdersLogInfo = info;
@@ -6199,17 +6054,13 @@ public:
 		info->MDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		FortsOrdersBookMDEntriesItemInfo* mdeItemInfo = NULL;
 
-		int mdeItemInfoIndex = 0;
-		do {
+		for(int mdeItemInfoIndex = 0; mdeItemInfoIndex < info->MDEntriesCount; mdeItemInfoIndex++) {
 			mdeItemInfo = GetFreeFortsOrdersBookMDEntriesItemInfo();
 			for(int i = 0; i < sizeof(FortsOrdersBookMDEntriesItemInfo); i += 64)
 				__builtin_prefetch(((char*)mdeItemInfo) + i, 0, _MM_HINT_T0);
 			info->MDEntries[mdeItemInfoIndex] = mdeItemInfo;
-			mdeItemInfoIndex++;
 		}
-		while(mdeItemInfoIndex < info->MDEntriesCount);
-		mdeItemInfoIndex = 0;
-		do {
+		for(int mdeItemInfoIndex = 0; mdeItemInfoIndex < info->MDEntriesCount; mdeItemInfoIndex++) {
 			mdeItemInfo = info->MDEntries[mdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
@@ -6237,9 +6088,7 @@ public:
 				mdeItemInfo->MDFlags = ReadInt64_Optional();
 			mdeItemInfo->NullMap = nmap2;
 			this->m_prevfortsOrdersBookMDEntriesItemInfo = mdeItemInfo;
-			mdeItemInfoIndex++;
 		}
-		while(mdeItemInfoIndex < info->MDEntriesCount);
 
 		info->NullMap = nmap1;
 		this->m_prevfortsOrdersBookInfo = info;

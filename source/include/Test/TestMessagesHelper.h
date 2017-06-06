@@ -19,7 +19,7 @@ class SocketMessageInfo {
 public:
     WinSockManager      *m_manager;
     int                 m_bufferLength;
-    unsigned char       m_buffer[512];
+    unsigned char       m_buffer[1600];
     bool                m_canRecv;
     char                m_paddingBytes[3];
 };

@@ -198,6 +198,7 @@ public:
         data->Clear();
         list->Remove(node);
         this->FreePointer(hashItem);
+        info->Clear();
     }
 
     inline void RemoveBuyQuote(T *info) {
@@ -220,7 +221,6 @@ public:
             this->m_buyQuoteList->Remove(ptr);
             ptr->Data()->Clear();
 
-            info->Used = true;
             ptr = InsertBuyQuote(&(info->MDEntryPx));
             ptr->Data(info);
             HashTableItemInfo *h = hashItem->Data();
@@ -240,7 +240,6 @@ public:
             this->m_sellQuoteList->Remove(ptr);
             ptr->Data()->Clear();
 
-            info->Used = true;
             ptr = InsertSellQuote(&(info->MDEntryPx));
             ptr->Data(info);
             HashTableItemInfo *h = hashItem->Data();
@@ -253,7 +252,6 @@ public:
 
     inline HrLinkedPointer<T>* AddBuyQuote(T *item) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add BuyQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
-        item->Used = true;
         HrLinkedPointer<T> *ptr = InsertBuyQuote(&(item->MDEntryPx));
         AddPointer(ptr, item, this->m_buyQuoteList);
         ptr->Data(item);
@@ -262,7 +260,6 @@ public:
 
     inline HrLinkedPointer<T>* AddSellQuote(T *item) {
         DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add SellQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
-        item->Used = true;
         HrLinkedPointer<T> *ptr = InsertSellQuote(&(item->MDEntryPx));
         AddPointer(ptr, item, this->m_sellQuoteList);
         ptr->Data(item);
@@ -317,7 +314,6 @@ public:
         this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
         this->m_entryInfo->AddEntry(info, info->RptSeq);
-        info->Used = true;
     }
 
     inline void ForceProcessMessage(T *info) {

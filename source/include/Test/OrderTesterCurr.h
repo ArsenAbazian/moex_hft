@@ -94,16 +94,11 @@ public:
         AstsOLSCURRItemInfo *item3 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "ses1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
         AstsOLSCURRItemInfo *item4 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "ses1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
-        if(item4->Used)
-            throw;
-
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item1;
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
-        if(!item1->Used)
-            throw;
         if(this->incCurr->OrderCurr()->UsedItemCount() != 1)
             throw;
         if(this->incCurr->OrderCurr()->SymbolsCount() != 1)
@@ -285,8 +280,6 @@ public:
         info->GroupMDEntries[0] = this->m_helper->CreateOLRCurrItemInfo("symbol1", "ses1", 25, -3, 1, 2, mduaDelete, mdetBuyQuote, "444444", 5);
 
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
-        if(item4->Used)
-            throw;
         if(item4->Allocator->Count() != 0)
             throw;
 
@@ -375,7 +368,7 @@ public:
         if(!StringIdComparer::Equal(obi2->BuyQuotes()->Item(3)->MDEntryID, 6, "333333", 6))
             throw;
 
-        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "ses1", 24, -3, 1, 3, mduaChange, mdetBuyQuote, "222222", 5);
+        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "ses1", 4, -2, 1, 3, mduaChange, mdetBuyQuote, "222222", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
@@ -384,9 +377,7 @@ public:
         int beforeChangeCount = item5->Allocator->Count();
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
-        if(item2->Used || item2->Allocator->Count() != beforeChangeCount - 1)
-            throw;
-        if(!item5->Used)
+        if(item2->Allocator->Count() != beforeChangeCount - 1)
             throw;
 
         OrderInfo<AstsOLSCURRItemInfo> *obi = this->incCurr->OrderCurr()->GetItem("symbol1", "ses1");
@@ -400,23 +391,16 @@ public:
             throw;
         if(obi->BuyQuotes()->Count() != 4)
             throw;
-        if(!StringIdComparer::Equal(qt1->MDEntryID, 6, "111111", 6))
+        if(!StringIdComparer::Equal(qt1->MDEntryID, 6, "222222", 6))
             throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 6, "444444", 6))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 6, "111111", 6))
             throw;
-        if(!StringIdComparer::Equal(qt3->MDEntryID, 6, "222222", 6))
+        if(!StringIdComparer::Equal(qt3->MDEntryID, 6, "444444", 6))
             throw;
         if(!StringIdComparer::Equal(qt4->MDEntryID, 6, "333333", 6))
             throw;
 
-        if(qt1->MDEntryPx.Mantissa != item1->MDEntryPx.Mantissa)
-            throw;
-        if(qt1->MDEntryPx.Exponent != item1->MDEntryPx.Exponent)
-            throw;
-
-        if(qt2->MDEntryPx.Mantissa != item4->MDEntryPx.Mantissa)
-            throw;
-        if(qt2->MDEntryPx.Exponent != item4->MDEntryPx.Exponent)
+        if(qt1->MDEntrySize.Exponent != item5->MDEntrySize.Exponent)
             throw;
     }
 
@@ -440,8 +424,6 @@ public:
         this->incCurr->OnIncrementalRefresh_OLR_CURR(info);
 
         this->incCurr->OrderCurr()->Clear();
-        if(item1->Used || item2->Used || item3->Used || item4->Used)
-            throw;
         if(item1->Allocator->Count() != 0 ||
            item2->Allocator->Count() != 0 ||
            item3->Allocator->Count() != 0 ||
@@ -791,7 +773,7 @@ public:
         if(!StringIdComparer::Equal(obi2->SellQuotes()->Item(3)->MDEntryID, 6, "222222", 6))
             throw;
 
-        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "ses1", 24, -3, 1, 3, mduaChange, mdetSellQuote, "222222", 5);
+        AstsOLSCURRItemInfo *item5 = this->m_helper->CreateOLRCurrItemInfo("symbol1", "ses1", 4, -2, 1, 3, mduaChange, mdetSellQuote, "222222", 5);
 
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item5;
@@ -811,21 +793,14 @@ public:
             throw;
         if(!StringIdComparer::Equal(qt1->MDEntryID, 6, "333333", 6))
             throw;
-        if(!StringIdComparer::Equal(qt2->MDEntryID, 6, "222222", 6))
+        if(!StringIdComparer::Equal(qt2->MDEntryID, 6, "444444", 6))
             throw;
-        if(!StringIdComparer::Equal(qt3->MDEntryID, 6, "444444", 6))
+        if(!StringIdComparer::Equal(qt3->MDEntryID, 6, "111111", 6))
             throw;
-        if(!StringIdComparer::Equal(qt4->MDEntryID, 6, "111111", 6))
-            throw;
-
-        if(qt1->MDEntryPx.Mantissa != item3->MDEntryPx.Mantissa)
-            throw;
-        if(qt1->MDEntryPx.Exponent != item3->MDEntryPx.Exponent)
+        if(!StringIdComparer::Equal(qt4->MDEntryID, 6, "222222", 6))
             throw;
 
-        if(qt2->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
-            throw;
-        if(qt2->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
+        if(qt4->MDEntrySize.Exponent != item5->MDEntrySize.Exponent)
             throw;
     }
 
@@ -3351,10 +3326,10 @@ public:
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_4() {
         AstsOLSCURRItemInfo *info = this->m_helper->CreateOLSCurrItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "111111");
         int count = info->Allocator->Count();
-        info->Used = false;
-        info->ReleaseUnused();
-        if(info->Allocator->Count() != count - 1)
-            throw;
+        //info->Used = false;
+        //info->ReleaseUnused();
+        //if(info->Allocator->Count() != count - 1)
+        //    throw;
     }
 
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_5() {

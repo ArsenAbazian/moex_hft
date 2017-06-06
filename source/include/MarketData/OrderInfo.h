@@ -128,6 +128,9 @@ public:
         this->m_shouldProcessSnapshot = false;
         this->m_snapshotProcessedCount = 0;
     }
+    inline HrLinkedPointer<T>* RemovePointer(T *info, HrPointerListLite<T> *list) {
+        return static_cast<HrLinkedPointer<T>*>(HashTable::Default->RemovePointer(list, info->MDEntryID, info->MDEntryIDLength));
+    }
     inline LinkedPointer<HashTableItemInfo>* GetPointer(T *info, HrPointerListLite<T> *list) {
         return HashTable::Default->GetPointer(list, info->MDEntryID, info->MDEntryIDLength);
     }
@@ -163,16 +166,14 @@ public:
     }
 
     inline void RemoveQuote(HrPointerListLite<T> *list, T *info) {
-        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, list);
-        if(hashItem == 0) {
+        HrLinkedPointer<T> *node = this->RemovePointer(info, list);
+        if(node == 0) {
             this->OnQuoteNotFound(info);
             return;
         }
-        HrLinkedPointer<T> *node = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
-        T *data = node->Data();
-        data->Clear();
+        node->Data()->Clear();
         list->Remove(node);
-        this->FreePointer(hashItem);
+        info->Clear();
     }
 
     inline void RemoveBuyQuote(T *info) {
@@ -190,15 +191,8 @@ public:
         if(hashItem != 0) {
             HrLinkedPointer<T> *ptr = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
             T *data = ptr->Data();
-            this->m_buyQuoteList->Remove(ptr);
             data->Clear();
-
-            info->Used = true;
-            ptr = InsertBuyQuote(&(info->MDEntryPx));
             ptr->Data(info);
-
-            HashTableItemInfo *h = hashItem->Data();
-            h->m_object = ptr;
             return;
         }
         this->OnQuoteNotFound(info);
@@ -210,15 +204,8 @@ public:
         if(hashItem != 0) {
             HrLinkedPointer<T> *ptr = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
             T *data = ptr->Data();
-            this->m_sellQuoteList->Remove(ptr);
             data->Clear();
-
-            info->Used = true;
-            ptr = InsertSellQuote(&(info->MDEntryPx));
             ptr->Data(info);
-
-            HashTableItemInfo *h = hashItem->Data();
-            h->m_object = ptr;
             return;
         }
         this->OnQuoteNotFound(info);
@@ -246,7 +233,6 @@ public:
 
     inline HrLinkedPointer<T>* AddBuyQuote(T *item) {
         HrLinkedPointer<T> *ptr = this->InsertBuyQuote(&(item->MDEntryPx));
-        item->Used = true;
         ptr->Data(item);
         AddPointer(ptr, item, this->m_buyQuoteList);
         return ptr;
@@ -254,7 +240,6 @@ public:
 
     inline HrLinkedPointer<T>* AddSellQuote(T *item) {
         HrLinkedPointer<T> *ptr = this->InsertSellQuote(&(item->MDEntryPx));
-        item->Used = true;
         ptr->Data(item);
         AddPointer(ptr, item, this->m_sellQuoteList);
         return ptr;
@@ -306,10 +291,10 @@ public:
         this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
         this->m_entryInfo->AddEntry(info, info->RptSeq);
-        info->Used = true;
     }
 
     inline void ForceProcessMessage(T *info) {
+        //printf("op =  %d\n", info->MDUpdateAction);
         if(info->MDUpdateAction == MDUpdateAction::mduaAdd)
             this->Add(info);
         else if(info->MDUpdateAction == MDUpdateAction::mduaDelete)
@@ -331,6 +316,7 @@ public:
     bool OnProcessNonActualMessage(T *info) {
         if(this->IsOutdatedMessage(info))
             return false;
+        //printf("current = %d   info = %d\n", this->m_rptSeq, info->RptSeq);
         this->PushMessageToQueue(info);
         return false;
     }

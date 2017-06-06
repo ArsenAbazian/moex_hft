@@ -23,7 +23,7 @@ public:
     }
     int GetPacketsCount() {
 #ifdef TEST
-        return 100;
+        return 2000;
 #else
         return 50000;
 #endif

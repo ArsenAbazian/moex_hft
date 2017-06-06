@@ -1475,7 +1475,6 @@ public:
         this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
         this->m_entryInfo->AddEntry(info, info->RptSeq);
-        info->Used = true;
     }
 
     inline void ForceProcessMessage(T *info) {

@@ -110,16 +110,11 @@ public:
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item3 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 2, -2, 100, mduaAdd, mdetBuyQuote, 333333, 3);
         FortsDefaultSnapshotMessageMDEntriesItemInfo *item4 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 25, -3, 100, mduaAdd, mdetBuyQuote, 444444, 4);
 
-        if(item4->Used)
-            throw;
-
         info->MDEntriesCount = 1;
         info->MDEntries[0] = item1;
 
         this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
 
-        if(!item1->Used)
-            throw;
         if(this->incForts->OrderBookForts()->UsedItemCount() != 1)
             throw;
         if(this->incForts->OrderBookForts()->SymbolsCount() != 1)
@@ -389,10 +384,6 @@ public:
 
         this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
 
-        if(item2->Used || item2->Allocator->Count() != 0)
-            throw;
-        if(!item5->Used)
-            throw;
         if(item5->Allocator->Count() != 1)
             throw;
 
@@ -447,8 +438,6 @@ public:
         this->incForts->OnIncrementalRefresh_FORTS_OBR(info);
 
         this->incForts->OrderBookForts()->Clear();
-        if(item1->Used || item2->Used || item3->Used || item4->Used)
-            throw;
         if(item1->Allocator->Count() != 0 ||
            item2->Allocator->Count() != 0 ||
            item3->Allocator->Count() != 0 ||
@@ -3467,10 +3456,10 @@ public:
         FortsDefaultSnapshotMessageMDEntriesItemInfo *info = this->m_helper->CreateFortsOBSItemInfo(1, 1, 10, MDEntryType::mdetBuyQuote, 111111);
         if(info->Allocator->Count() != 1)
             throw;
-        info->Used = false;
-        info->ReleaseUnused();
-        if(info->Allocator->Count() != 0)
-            throw;
+        //info->Used = false;
+        //info->ReleaseUnused();
+        //if(info->Allocator->Count() != 0)
+        //    throw;
         // such situation should not be happened
         //info->ReleaseUnused();
         //if(info->Allocator->Count() != 0)

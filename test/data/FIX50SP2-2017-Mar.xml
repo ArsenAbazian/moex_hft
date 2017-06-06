@@ -25,7 +25,7 @@
 		<string name="Text" id="58" presence="optional"></string>
 	</template>
 	<!-- Market Data - Snapshot/Full Refresh Generic-->
-	<template name="W-Generic" id="2103" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
+	<template name="W-Generic" id="2103" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
 		<string name="MessageType" id="35" remove="true"><constant value="W" /></string>
 		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
 		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
@@ -54,7 +54,7 @@
 			<string name="QuoteCondition" id="276" presence="optional"></string>
 			<string name="TradeCondition" id="277" presence="optional"></string>
 			<string name="OpenCloseSettlFlag" id="286" presence="optional"></string>
-			<string name="OrdType" id="40" presence="optional"></string>
+			<string name="OrdType" id="40" fixed_size="1" presence="optional"></string>
 			<uInt32 name="EffectiveTime" id="5902" presence="optional"></uInt32>
 			<uInt32 name="StartTime" id="9820" presence="optional"></uInt32>
 			<decimal name="AccruedInterestAmt" id="5384" presence="optional"></decimal>
@@ -89,7 +89,7 @@
 	</template>
 
 	<!-- Market Data - Incremental Refresh Generic-->
-	<template name="X-Generic" id="2104" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
+	<template name="X-Generic" id="2104" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
 		<string name="MessageType" id="35" remove="true"><constant value="X" /></string>
 		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
 		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
@@ -115,7 +115,7 @@
 			<string name="QuoteCondition" id="276" presence="optional"></string>
 			<string name="TradeCondition" id="277" presence="optional"></string>
 			<string name="OpenCloseSettlFlag" id="286" presence="optional"></string>
-			<string name="OrdType" id="40" presence="optional"></string>
+			<string name="OrdType" id="40" fixed_size="1"  presence="optional"></string>
 			<decimal name="NetChgPrevDay" id="451" presence="optional"></decimal>
 			<decimal name="AccruedInterestAmt" id="5384" presence="optional"></decimal>
 			<decimal name="ChgFromWAPrice" id="5510" presence="optional"></decimal>
@@ -149,7 +149,7 @@
 
 
 	<!-- Market Data - Snapshot/Full Refresh OLS FOND -->
-	<template name="W-OLS-FOND" id="2510" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
+	<template name="W-OLS-FOND" id="2510" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
 		<string name="MessageType" id="35" remove="true"><constant value="W" /></string>
 		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
 		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
@@ -176,14 +176,14 @@
 			<decimal name="MDEntrySize" id="271" presence="optional"><copy/></decimal>
 			<decimal name="Yield" id="236" presence="optional"><copy/></decimal>
 			<string name="OrderStatus" id="10505" presence="optional" fixed_size="1"><copy/></string>
-			<string name="OrdType" id="40" presence="optional"><copy/></string>
+			<string name="OrdType" id="40" fixed_size="1"  presence="optional"><copy/></string>
 			<decimal name="TotalVolume" id="5791" presence="optional"><copy/></decimal>
 			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"><copy/></string>
 		</sequence>
 	</template>
 
 		<!-- Market Data - Snapshot/Full Refresh OLS CURR -->
-	<template name="W-OLS-CURR" id="3600" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
+	<template name="W-OLS-CURR" id="3600" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
 		<string name="MessageType" id="35" remove="true"><constant value="W" /></string>
 		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
 		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
@@ -214,7 +214,7 @@
 
 
 	<!-- Market Data - Snapshot/Full Refresh TLS FOND-->
-	<template name="W-TLS-FOND" id="2511" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
+	<template name="W-TLS-FOND" id="2511" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
 		<string name="MessageType" id="35" remove="true"><constant value="W" /></string>
 		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
 		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
@@ -256,7 +256,7 @@
 	</template>
 
 	<!-- Market Data - Snapshot/Full Refresh TLS CURR-->
-	<template name="W-TLS-CURR" id="3601" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
+	<template name="W-TLS-CURR" id="3601" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
 		<string name="MessageType" id="35" remove="true"><constant value="W" /></string>
 		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
 		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
@@ -297,7 +297,7 @@
 
 
 	<!-- Market Data - Incremental Refresh MSR FOND-->
-	<template name="X-MSR-FOND" id="2523" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
+	<template name="X-MSR-FOND" id="2523" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
 		<string name="MessageType" id="35" remove="true"><constant value="X" /></string>
 		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
 		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
@@ -344,7 +344,7 @@
 	</template>
 
 	<!-- Market Data - Incremental Refresh MSR CURR-->
-	<template name="X-MSR-CURR" id="3613" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1">
+	<template name="X-MSR-CURR" id="3613" xmlns="http://www.fixprotocol.org/ns/fast/td/1.1" cache="true">
 		<string name="MessageType" id="35" remove="true"><constant value="X" /></string>
 		<string name="ApplVerID" id="1128" remove="true"><constant value="9"/></string>
 		<string name="BeginString" id="8" remove="true"><constant value="FIXT.1.1"/></string>
@@ -394,7 +394,7 @@
 		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
-		<sequence name="GroupMDEntries">
+		<sequence name="GroupMDEntries" process_empty_pmap="true">
 			<length name="NoMDEntries" id="268"/>
 			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"></uInt32>
 			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"><copy/></string>
@@ -408,7 +408,7 @@
 			<decimal name="MDEntrySize" id="271" presence="optional"><copy/></decimal>
 			<decimal name="Yield" id="236" presence="optional"><copy/></decimal>
 			<string name="OrderStatus" id="10505" presence="optional" fixed_size="1"><copy/></string>
-			<string name="OrdType" id="40" presence="optional"><copy/></string>
+			<string name="OrdType" id="40" fixed_size="1"  presence="optional"><copy/></string>
 			<decimal name="TotalVolume" id="5791" presence="optional"><copy/></decimal>
 			<string name="TradingSessionID" id="336" fixed_size="4" union="uint32" size="4" presence="optional"><copy/></string>
 			<string name="TradingSessionSubID" id="625" presence="optional" predict="12"><copy/></string>
@@ -423,7 +423,7 @@
 		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
-		<sequence name="GroupMDEntries">
+		<sequence name="GroupMDEntries" process_empty_pmap="true">
 			<length name="NoMDEntries" id="268"/>
 			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"><copy/></uInt32>
 			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"><copy/></string>

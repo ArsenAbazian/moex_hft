@@ -249,7 +249,7 @@ public:
         this->m_poolTail->Next(node);
         this->m_poolTail = node;
         this->m_count--;
-#ifdef TEST
+#ifdef TEST_LIST
         if(this->m_count < 0)
             throw;
 #endif
@@ -434,7 +434,7 @@ public:
         this->m_poolTail->Next(start);
         this->m_poolTail = node;
         this->m_poolTail->Next(0);
-#ifdef  TEST
+#ifdef  TEST_LIST
         if(this->m_autoAllocate) {
             HrLinkedPointer<T> *ptr = this->m_poolHead;
             while (ptr != 0) {
@@ -807,7 +807,7 @@ public:
         }
         this->m_count--;
         this->m_pool->Push(node);
-#ifdef TEST
+#ifdef TEST_LIST
         if(this->m_count < 0)
             throw;
 #endif

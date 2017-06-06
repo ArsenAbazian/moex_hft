@@ -3,7 +3,10 @@
 #include <cstdint>
 
 #define ROBOT_WORK_ANYWAY
-//#define TEST
+#define TEST
+#ifdef TEST
+#define TEST_LIST
+#endif
 
 #define null 0
 #define BYTE unsigned char

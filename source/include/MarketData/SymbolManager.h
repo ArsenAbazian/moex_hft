@@ -10,6 +10,11 @@
 #include "../Lib/StringIdComparer.h"
 #include <memory.h>
 
+typedef enum _SymbolHashType {
+    Last4Chars,      // for FOND
+    TwoAfterTwo,     // for CURR
+}SymbolHashType;
+
 class SymbolInfo {
     static const int m_textSize = 16;
 public:
@@ -47,8 +52,10 @@ class SymbolManager {
     LinkedPointer<SymbolInfo>   **m_bucketList;
     SymbolInfo                  **m_bucketList2;
     PointerList<SymbolInfo>      *m_pool;
+    SymbolHashType              m_hashType;
 
     int                         m_capacity;
+    int                         m_paddingBytes;
     unsigned short              m_count;
     short                       m_freeIndex;
 
@@ -110,13 +117,16 @@ class SymbolManager {
         }
     }
     inline SymbolInfo* FindSymbol(LinkedPointer<SymbolInfo> *start, const char *symbol, int length) {
+        int count = 0;
         while(true) {
             SymbolInfo *s = start->Data();
-            if(StringIdComparer::EqualFast(s->m_text, s->m_length, symbol, length))
+            if(StringIdComparer::EqualFast(s->m_text, s->m_length, symbol, length)) {
                 return s;
+            }
             if(!start->HasNext())
                 return 0;
             start = start->Next();
+            count++;
         }
     }
     inline void AppendSymbol(LinkedPointer<SymbolInfo> *current, LinkedPointer<SymbolInfo> *next) {
@@ -125,19 +135,13 @@ class SymbolManager {
         this->m_count++;
     }
     void AssignPointersToSymbols() {
-        //LinkedPointer<SymbolInfo> *ptr = this->m_pool->PoolStart();
-        //while(true) {
-        //    ptr->Data()->m_pointer = ptr;
-        //    if(ptr == this->m_pool->PoolEnd())
-        //        break;
-        //    ptr = ptr->Next();
-        //}
     }
 public:
-    SymbolManager(int capacity) {
+    SymbolManager(int capacity, SymbolHashType hashType) {
         this->m_capacity = capacity;
         this->m_count = 0;
         this->m_freeIndex = -1;
+        this->m_hashType = hashType;
 
         this->m_pool = new PointerList<SymbolInfo>(capacity + 10);
         this->m_pool->AllocData();
@@ -147,10 +151,14 @@ public:
             this->m_bucketList[i] = 0;
         this->m_bucketList2 = 0;
     }
-    SymbolManager(int capacity, bool useUint64Hash) {
+    SymbolManager(int capacity) : SymbolManager(capacity, SymbolHashType::Last4Chars) {
+
+    }
+    SymbolManager(int capacity, bool useUint64Hash, SymbolHashType hashType) {
         this->m_capacity = capacity;
         this->m_count = 0;
         this->m_freeIndex = -1;
+        this->m_hashType = hashType;
 
         this->m_pool = new PointerList<SymbolInfo>(capacity + 10);
         this->m_pool->AllocData();
@@ -158,6 +166,9 @@ public:
         this->m_bucketList = 0;
         this->m_bucketList2 = new SymbolInfo*[BucketList2Count];
         memset(this->m_bucketList2, 0, sizeof(SymbolInfo*) * BucketList2Count);
+    }
+    SymbolManager(int capacity, bool useUint64Hash) : SymbolManager(capacity, useUint64Hash, SymbolHashType::Last4Chars) {
+
     }
     ~SymbolManager() {
         delete this->m_pool;
@@ -173,7 +184,7 @@ public:
         return this->m_count;
     }
     inline int BucketListCount() { return StringHash::HashArrayItemsCount; }
-    inline int CalcBucketCollisitonCount(int index) {
+    int CalcBucketCollisitonCount(int index) {
         LinkedPointer<SymbolInfo> *ptr = this->m_bucketList[index];
         if(ptr == 0) return 0;
         int count = 1;
@@ -181,6 +192,14 @@ public:
             count++; ptr = ptr->Next();
         }
         return count;
+    }
+    int CalcMaxBucketCollisionCount() {
+        int res = 0;
+        for(int i = 0; i < StringHash::HashArrayItemsCount; i++) {
+            int count = CalcBucketCollisitonCount(i);
+            if(count > res) res = count;
+        }
+        return res;
     }
     inline int GetSymbolIndex(const char *symbol, bool *wasNewlyAdded) {
         return GetSymbolIndex(symbol, strlen(symbol), wasNewlyAdded);
@@ -237,13 +256,18 @@ public:
         }
         return info;
     }
+    inline int GetHash(const char *symbol, int length) {
+        if(this->m_hashType == SymbolHashType::Last4Chars)
+            return StringHash::GetHash(symbol, length);
+        return StringHash::GetHash2(symbol, length);
+    }
     inline SymbolInfo* GetSymbol(const char *symbol, int length) {
-        int hash = StringHash::GetHash(symbol, length);
+        int hash = this->GetHash(symbol, length);
         LinkedPointer<SymbolInfo> *bucket = GetBucket(hash);
         return FindSymbol(bucket, symbol, length);
     }
     inline SymbolInfo* GetSymbol(const char *symbol, int length, bool *wasNewlyAdded) {
-        int hash = StringHash::GetHash(symbol, length);
+        int hash = this->GetHash(symbol, length);
         LinkedPointer<SymbolInfo> *bucket = GetBucket(hash);
         if(bucket == 0) {
             *wasNewlyAdded = true;

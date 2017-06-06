@@ -15,7 +15,7 @@ public:
         this->SetId(FeedConnectionId::fcidIdfCurr);
         this->m_fastProtocolManager = new FastProtocolManager();
         this->AllocateFastObjects();
-        InitializeSecurityDefinition();
+        InitializeSecurityDefinition(SymbolHashType::TwoAfterTwo);
         InitializePackets(this->GetPacketsCount());
         DebugInfoManager::Default->PrintMemoryInfo("FeedConnection_CURR_IDF");
     }

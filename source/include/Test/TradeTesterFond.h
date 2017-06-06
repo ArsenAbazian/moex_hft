@@ -107,16 +107,11 @@ public:
         AstsTLSFONDItemInfo *item3 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 2, -2, 1, 2, mduaAdd, mdetBuyQuote, "333333", 3);
         AstsTLSFONDItemInfo *item4 = this->m_helper->CreateTLRFondItemInfo("symbol1", "ses1", 25, -3, 1, 2, mduaAdd, mdetBuyQuote, "444444", 4);
 
-        if(item4->Used)
-            throw;
-
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item1;
 
         this->incFond->OnIncrementalRefresh_TLR_FOND(info);
 
-        if(!item1->Used)
-            throw;
         if(this->incFond->TradeFond()->UsedItemCount() != 1)
             throw;
         if(this->incFond->TradeFond()->SymbolsCount() != 1)
@@ -281,8 +276,6 @@ public:
         this->incFond->OnIncrementalRefresh_TLR_FOND(info);
 
         this->incFond->TradeFond()->Clear();
-        if(item1->Used || item2->Used || item3->Used || item4->Used)
-            throw;
         if(item1->Allocator->Count() != 0 ||
            item2->Allocator->Count() != 0 ||
            item3->Allocator->Count() != 0 ||
@@ -2758,10 +2751,10 @@ public:
         AstsTLSFONDItemInfo *info = this->m_helper->CreateTLSFondItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "111111");
         if(info->Allocator->Count() != 1)
             throw;
-        info->Used = false;
-        info->ReleaseUnused();
-        if(info->Allocator->Count() != 0)
-            throw;
+        //info->Used = false;
+        //info->ReleaseUnused();
+        //if(info->Allocator->Count() != 0)
+        //    throw;
     }
 
     void TestInfoAndItemInfoUsageAndAllocationFond_Inc_5() {

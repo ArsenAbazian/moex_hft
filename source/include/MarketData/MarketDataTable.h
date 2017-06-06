@@ -16,10 +16,11 @@ template <template<typename ITEMINFO> class TABLEITEM, typename INFO, typename I
     MarketSymbolInfo<TABLEITEM<ITEMINFO>>       **m_symbols;
     int                                         m_symbolsCount;
     int                                         m_symbolsMaxCount;
-    TABLEITEM<ITEMINFO>                         *m_snapshotItem;
-    MarketSymbolInfo<TABLEITEM<ITEMINFO>>       *m_snapshotSymbol;
     int                                         *m_ownerQueueItemsCount;
     int                                         *m_ownerSymbolsToRecvSnapshot;
+    TABLEITEM<ITEMINFO>                         *m_cachedItem;
+    TABLEITEM<ITEMINFO>                         *m_snapshotItem;
+    MarketSymbolInfo<TABLEITEM<ITEMINFO>>       *m_snapshotSymbol;
     bool                                        *m_ownerTableInSnapshotMode;
     int                                         m_snapshotItemRptSeq;
     int                                         m_queueItemsCount;
@@ -138,6 +139,17 @@ public:
             return false;
         return true;
     }
+    __attribute_noinline__
+    void OnCheckClearSnapshotModeAfterIncremental(TABLEITEM<ITEMINFO> *tableItem) {
+        MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = tableItem->SymbolInfo();
+        bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
+        tableItem->DecSessionsToRecvSnapshotCount();
+        if (!allItemsRecvSnapshot && smb->AllSessionsRecvSnapshot())
+            this->DecSymbolsToRecvSnapshotCount();
+    }
+    inline bool ProcessIncremental(ITEMINFO *info) {
+        return this->ProcessIncremental(info, this->m_cachedItem);
+    }
     inline bool ProcessIncremental(ITEMINFO *info, TABLEITEM<ITEMINFO> *tableItem) {
         bool prevHasEntries = tableItem->HasEntries();
         bool res = tableItem->ProcessIncrementalMessage(info);
@@ -153,13 +165,8 @@ public:
                 this->m_queueItemsCount--;
                 *(this->m_ownerQueueItemsCount) = this->m_queueItemsCount;
             }
-            if(tableItem->ShouldProcessSnapshot()) {
-                MarketSymbolInfo<TABLEITEM<ITEMINFO>> *smb = tableItem->SymbolInfo();
-                bool allItemsRecvSnapshot = smb->AllSessionsRecvSnapshot();
-                tableItem->DecSessionsToRecvSnapshotCount();
-                if (!allItemsRecvSnapshot && smb->AllSessionsRecvSnapshot())
-                    this->DecSymbolsToRecvSnapshotCount();
-            }
+            if(tableItem->ShouldProcessSnapshot())
+                OnCheckClearSnapshotModeAfterIncremental(tableItem);
         }
         return res;
     }
@@ -168,9 +175,10 @@ public:
         TABLEITEM<ITEMINFO> *tableItem = GetItemByIndex(index);
         return ProcessIncremental(info, tableItem);
     }
+    inline TABLEITEM<ITEMINFO>* CachedItem() const { return this->m_cachedItem; }
     inline bool ProcessIncremental(ITEMINFO *info, int index, UINT32 sessionId) {
-        TABLEITEM<ITEMINFO> *tableItem = GetItem(index, sessionId);
-        return ProcessIncremental(info, tableItem);
+        this->m_cachedItem = GetItem(index, sessionId);
+        return ProcessIncremental(info, this->m_cachedItem);
     }
     inline bool ShouldProcessSnapshot(INFO *info) {
         if(!this->m_snapshotItem->HasEntries())

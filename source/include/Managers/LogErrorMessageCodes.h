@@ -130,7 +130,8 @@ public:
     LogMessageProvider();
     ~LogMessageProvider();
 
-    inline const char* Message(int message) const { return this->m_logMessageText[message]; }
+    inline const char** Messages() const { return this->m_logMessageText; }
+	inline const char* Message(int message) const { return this->m_logMessageText[message]; }
     int RegisterText(const char *text);
 };
 

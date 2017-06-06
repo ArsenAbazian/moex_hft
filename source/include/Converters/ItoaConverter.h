@@ -313,18 +313,7 @@ public:
                 data >>= 8;
             }
             return result;
-        }/*
-        else if(count == 7) {
-            UINT64 data = *((UINT64*)buffer) & 0xffffffffffffff;
-            data -= 0x30303030303030;
-            int result = 0;
-
-            for(int i = 0; i < 7; i++) {
-                result = (result << 3) + (result << 1) + ((unsigned char) data);
-                data >>= 8;
-            }
-            return result;
-        }*/
+        }
         return FromStringFastUnsigned(buffer, count);
     }
     inline int FromStringFastUnsigned(const char *buffer, int count) {

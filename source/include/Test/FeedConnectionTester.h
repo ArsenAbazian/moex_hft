@@ -23,17 +23,11 @@
 #include "FortsOrderBookTester.h"
 #include "HashTableTester.h"
 
-class TestFeedMessage{
+class TestFeedMessage {
 public:
-    AutoAllocatePointerList<TestFeedMessage>    *Allocator;
-    LinkedPointer<TestFeedMessage>              *Pointer;
-    bool                                        Used;
-    char                                        Type[10];
-    int                                         TemplateId;
-    int                                         Count;
-
-    unsigned char                               Bytes[1700];
-    char                                        Text[1700];
+    FeedConnectionId                            m_feedId;
+    int                                         m_size;
+    unsigned char                               *m_bytes;
 };
 
 class FeedConnectionTester {
@@ -899,6 +893,96 @@ public:
         printf("stopwatch elapsed fast = %d\n", ms);
     }
 
+    PointerList<TestFeedMessage>* LoadOlrCurrMessages(const char *name) {
+        PointerList<TestFeedMessage> *messages = new PointerList<TestFeedMessage>(2000);
+        FILE *fp = fopen(name, "r");
+        char feedIdBuffer[3];
+        char buffer[5000];
+        if(fp == 0)
+            throw;
+        while(!feof(fp)) {
+            TestFeedMessage *m = new TestFeedMessage();
+
+            fread(feedIdBuffer, 1, 3, fp);
+            m->m_feedId = feedIdBuffer[2] == 'S'? FeedConnectionId::fcidOlsCurr: FeedConnectionId::fcidOlrCurr;
+
+            fread(buffer, 1, 1, fp);
+            fread(buffer, 1, 1, fp);
+            if(buffer[0] == '"') {
+                for(int index = 0; ;index++) {
+                    fread(buffer + index, 1, 1, fp);
+                    if(buffer[index] == '"') {
+                        buffer[index] = '\0';
+                        m->m_bytes = DebugInfoManager::Default->StringToBinary(buffer, &(m->m_size));
+                        messages->Add(m);
+                        break;
+                    }
+                }
+            }
+            fread(buffer, 1, 1, fp); // skip 0xa
+        }
+        fclose(fp);
+        return messages;
+    }
+
+    void TestOlrPerformance() {
+        RobotSettings::Default->MarketDataMaxSymbolsCount = 300;
+        FeedConnection  *idfCurr = new FeedConnection_CURR_IDF("IDF", "Full Refresh", 'S',
+                                                               FeedConnectionProtocol::UDP_IP,
+                                                               "10.50.129.200", "239.192.113.3", 9113,
+                                                               "10.50.129.200", "239.192.113.131", 9313);
+        FeedConnection  *olrCurr = new FeedConnection_CURR_OLR("OLR", "Refresh Incremental", 'I',
+                                                               FeedConnectionProtocol::UDP_IP,
+                                                               "10.50.129.200", "239.192.113.3", 9113,
+                                                               "10.50.129.200", "239.192.113.131", 9313);
+        FeedConnection  *olsCurr = new FeedConnection_CURR_OLS("OLS", "Full Refresh", 'I',
+                                                               FeedConnectionProtocol::UDP_IP,
+                                                               "10.50.129.200", "239.192.113.3", 9113,
+                                                               "10.50.129.200", "239.192.113.131", 9313);
+
+        idfCurr->ChannelName("CURR");
+        idfCurr->AddConnectionToRecvSymbol(olrCurr);
+        olrCurr->SetSnapshot(olsCurr);
+        olrCurr->SetSecurityDefinition(idfCurr);
+        olsCurr->SetSecurityDefinition(idfCurr);
+
+        idfCurr->AllowSaveSecurityDefinitions(true);
+        idfCurr->LoadSecurityDefinitions();
+        idfCurr->GenerateSecurityDefinitions();
+        int collision = idfCurr->GetSymbolManager()->CalcMaxBucketCollisionCount();
+        printf("max collision count = %d\n", collision);
+
+        PointerList<TestFeedMessage> *messages = LoadOlrCurrMessages("olr_ols.txt");
+        olrCurr->FastManager()->GetAstsOLSCURRItemInfoPool()->Append(32000);
+
+        olrCurr->Start();
+
+        LinkedPointer<TestFeedMessage> *msg = messages->Start();
+        const int start_olr_msg = 1275;
+        const int problem_msg = 1721;
+        const int problem_msg2 = 1797;
+        Stopwatch *w = new Stopwatch();
+        for(int i = 0; i < messages->Count(); i++, msg = msg->Next()) {
+            if(msg->Data()->m_feedId == FeedConnectionId::fcidOlrCurr)
+                this->m_helper->SetRecvFor(olrCurr->socketAManager, msg->Data()->m_bytes, msg->Data()->m_size);
+            else
+                this->m_helper->SetRecvFor(olsCurr->socketAManager, msg->Data()->m_bytes, msg->Data()->m_size);
+            if(i >= start_olr_msg) {
+                w->StartPrecise(0);
+            }
+            olrCurr->ListenIncremental();
+            if(i >= start_olr_msg) {
+                time_t elapsed = w->ElapsedNanosecondsSlowPrecise(0);
+                printf("%d elapsed = %" PRIu64 "\n", i, elapsed);
+            }
+
+            if(olsCurr->State() != FeedConnectionState::fcsSuspend)
+                olsCurr->ListenSnapshot();
+        }
+
+        RobotSettings::Default->MarketDataMaxSymbolsCount = 10;
+    }
+
     void Test() {
         RobotSettings::Default->MarketDataMaxSymbolsCount = 10;
         RobotSettings::Default->MarketDataMaxSessionsCount = 32;
@@ -906,6 +990,7 @@ public:
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
 
         //TestStopwatchPerformance();
+        //TestOlrPerformance();
         PointerListTester *pt = new PointerListTester();
         pt->Test();
         delete pt;
@@ -913,6 +998,22 @@ public:
         SymbolManagerTester *ht = new SymbolManagerTester();
         ht->Test();
         delete ht;
+
+        OrderTesterCurr *otCurr = new OrderTesterCurr();
+        otCurr->Test();
+        delete otCurr;
+
+        OrderTesterFond *otFond = new OrderTesterFond();
+        otFond->Test();
+        delete otFond;
+
+        SecurityDefinitionTester *ids = new SecurityDefinitionTester();
+        ids->Test();
+        delete ids;
+
+        SecurityStatusTester *ist = new SecurityStatusTester();
+        ist->Test();
+        delete ist;
 
         TradeTesterCurr *ttCurr = new TradeTesterCurr();
         ttCurr->Test();
@@ -925,22 +1026,6 @@ public:
         OrderBookTesterForts *fob = new OrderBookTesterForts();
         fob->Test();
         delete fob;
-
-        SecurityDefinitionTester *ids = new SecurityDefinitionTester();
-        ids->Test();
-        delete ids;
-
-        SecurityStatusTester *ist = new SecurityStatusTester();
-        ist->Test();
-        delete ist;
-
-        OrderTesterCurr *otCurr = new OrderTesterCurr();
-        otCurr->Test();
-        delete otCurr;
-
-        OrderTesterFond *otFond = new OrderTesterFond();
-        otFond->Test();
-        delete otFond;
 
         HashTableTester *htt = new HashTableTester();
         htt->Test();

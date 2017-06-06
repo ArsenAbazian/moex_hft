@@ -18,6 +18,8 @@
 #include "../Settings.h"
 #include "../Lib/AutoAllocatePointerList.h"
 #include "../Fix/FixTypes.h"
+#include <immintrin.h>
+#include <x86intrin.h>
 
 typedef enum _MDUpdateAction {
     mduaAdd = 0,
@@ -276,20 +278,24 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsLogonInfo>							*Pointer;
 	AutoAllocatePointerList<AstsLogonInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[15];
 
 	AstsLogonInfo() {
 		memset(this, 0, sizeof(AstsLogonInfo));
 	}
 	~AstsLogonInfo() { }
+	inline void Assign(AstsLogonInfo *item) {
+		// size = 192
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 12; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -310,20 +316,25 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsLogoutInfo>							*Pointer;
 	AutoAllocatePointerList<AstsLogoutInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[7];
+	char							PaddingBytes1[8];
 
 	AstsLogoutInfo() {
 		memset(this, 0, sizeof(AstsLogoutInfo));
 	}
 	~AstsLogoutInfo() { }
+	inline void Assign(AstsLogoutInfo *item) {
+		// size = 568
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 36; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -348,17 +359,17 @@ public:
 	char							TradeCondition[16];			// id=277  presence=optional   offset = 96 order =  0
 	int								OpenCloseSettlFlagLength;			// id=286  presence=optional   offset = 112 order =  0
 	char							OpenCloseSettlFlag[4];			// id=286  presence=optional   offset = 116 order =  0
-	int								OrdTypeLength;			// id=40  presence=optional   offset = 120 order =  0
-	char							OrdType[4];			// id=40  presence=optional   offset = 124 order =  0
-	UINT32							EffectiveTime;			// id=5902  presence=optional   offset = 128 order =  0
-	UINT32							StartTime;			// id=9820  presence=optional   offset = 132 order =  0
+	char							OrdType[4];			// id=40  fixed_size=1  presence=optional   offset = 120 order =  0
+	UINT32							EffectiveTime;			// id=5902  presence=optional   offset = 124 order =  0
+	UINT32							StartTime;			// id=9820  presence=optional   offset = 128 order =  0
+	char							PaddingBytes1[4];
 	Decimal							AccruedInterestAmt;			// id=5384  presence=optional   offset = 136 order =  0
 	Decimal							ChgFromWAPrice;			// id=5510  presence=optional   offset = 152 order =  0
 	Decimal							ChgOpenInterest;			// id=5511  presence=optional   offset = 168 order =  0
 	Decimal							BidMarketSize;			// id=5292  presence=optional   offset = 184 order =  0
 	Decimal							AskMarketSize;			// id=5293  presence=optional   offset = 200 order =  0
 	INT32							TotalNumOfTrades;			// id=6139  presence=optional   offset = 216 order =  0
-	char							PaddingBytes1[4];
+	char							PaddingBytes2[4];
 	Decimal							TradeValue;			// id=6143  presence=optional   offset = 224 order =  0
 	Decimal							Yield;			// id=236  presence=optional   offset = 240 order =  0
 	Decimal							TotalVolume;			// id=5791  presence=optional   offset = 256 order =  0
@@ -377,7 +388,7 @@ public:
 	UINT32							VolumeIndicator;			// id=7017  presence=optional   offset = 356 order =  0
 	Decimal							Price;			// id=44  presence=optional   offset = 360 order =  0
 	INT32							PriceType;			// id=423  presence=optional   offset = 376 order =  0
-	char							PaddingBytes2[4];
+	char							PaddingBytes3[4];
 	Decimal							NominalValue;			// id=9280  presence=optional   offset = 384 order =  0
 	Decimal							RepoToPx;			// id=5677  presence=optional   offset = 400 order =  0
 	Decimal							BuyBackPx;			// id=5558  presence=optional   offset = 416 order =  0
@@ -395,25 +406,30 @@ public:
 		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional   offset = 496 order =  0
 		UINT32		TradingSessionIDUint;
 	};
-	char							PaddingBytes3[4];
+	char							PaddingBytes4[4];
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsGenericItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsGenericItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes4[7];
+	char							PaddingBytes5[8];
 
 	AstsGenericItemInfo() {
 		memset(this, 0, sizeof(AstsGenericItemInfo));
 	}
 	~AstsGenericItemInfo() { }
+	inline void Assign(AstsGenericItemInfo *item) {
+		// size = 504
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 32; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -449,24 +465,28 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsGenericInfo>							*Pointer;
 	AutoAllocatePointerList<AstsGenericInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes4[7];
+	char							PaddingBytes4[8];
 
 	AstsGenericInfo() {
 		memset(this, 0, sizeof(AstsGenericInfo));
 	}
 	~AstsGenericInfo() { }
+	inline void Assign(AstsGenericInfo *item) {
+	int								GroupMDEntriesCount;//		 offset = 80 order =  0
+		// size = 2152
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 135; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
-		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -489,39 +509,41 @@ public:
 	Decimal							MDEntrySize;			// id=271  presence=optional    copy offset = 56 order =  0
 	Decimal							Yield;			// id=236  presence=optional    copy offset = 72 order =  0
 	char							OrderStatus[4];			// id=10505  presence=optional  fixed_size=1    copy offset = 88 order =  0
-	int								OrdTypeLength;			// id=40  presence=optional    copy offset = 92 order =  0
-	char							OrdType[4];			// id=40  presence=optional    copy offset = 96 order =  0
-	char							PaddingBytes1[4];
-	Decimal							TotalVolume;			// id=5791  presence=optional    copy offset = 104 order =  0
-	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy offset = 120 order =  0
-	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy offset = 124 order =  0
-	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1   offset = 128 order =  0
-	int								SymbolLength;			// id=55  aligned=16  predict=Max16  presence=optional    copy offset = 132 order =  0
-	char							PaddingBytes2[8];
-	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  predict=Max16  presence=optional    copy offset = 144 order =  0
-	INT32							RptSeq;			// id=83  presence=optional   offset = 160 order =  0
+	char							OrdType[4];			// id=40  fixed_size=1  presence=optional    copy offset = 92 order =  0
+	Decimal							TotalVolume;			// id=5791  presence=optional    copy offset = 96 order =  0
+	int								TradingSessionSubIDLength;			// id=625  presence=optional  predict=12    copy offset = 112 order =  0
+	char							TradingSessionSubID[4];			// id=625  presence=optional  predict=12    copy offset = 116 order =  0
+	UINT32							MDUpdateAction;			// id=279  presence=optional  fixed_size=1   offset = 120 order =  0
+	int								SymbolLength;			// id=55  aligned=16  predict=Max16  presence=optional    copy offset = 124 order =  0
+	char							Symbol[16] __attribute__((aligned(16)));			// id=55  aligned=16  predict=Max16  presence=optional    copy offset = 128 order =  0
+	INT32							RptSeq;			// id=83  presence=optional   offset = 144 order =  0
 	union {
-		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional    copy offset = 164 order =  0
+		char		TradingSessionID[4];			// id=336  fixed_size=4  union=uint32  size=4  presence=optional    copy offset = 148 order =  0
 		UINT32		TradingSessionIDUint;
 	};
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsOLSFONDItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsOLSFONDItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes3[7];
+	char							PaddingBytes1[8];
 
 	AstsOLSFONDItemInfo() {
 		memset(this, 0, sizeof(AstsOLSFONDItemInfo));
 	}
 	~AstsOLSFONDItemInfo() { }
+	inline void Assign(AstsOLSFONDItemInfo *item) {
+		// size = 152
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 10; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -555,24 +577,27 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsOLSFONDInfo>							*Pointer;
 	AutoAllocatePointerList<AstsOLSFONDInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes3[15];
 
 	AstsOLSFONDInfo() {
 		memset(this, 0, sizeof(AstsOLSFONDInfo));
 	}
 	~AstsOLSFONDInfo() { }
+	inline void Assign(AstsOLSFONDInfo *item) {
+	int								GroupMDEntriesCount;//		 offset = 56 order =  0
+		// size = 2128
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 133; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
-		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -609,20 +634,25 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsOLSCURRItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsOLSCURRItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes2[7];
+	char							PaddingBytes2[8];
 
 	AstsOLSCURRItemInfo() {
 		memset(this, 0, sizeof(AstsOLSCURRItemInfo));
 	}
 	~AstsOLSCURRItemInfo() { }
+	inline void Assign(AstsOLSCURRItemInfo *item) {
+		// size = 120
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 8; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -654,24 +684,28 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsOLSCURRInfo>							*Pointer;
 	AutoAllocatePointerList<AstsOLSCURRInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes2[7];
+	char							PaddingBytes2[8];
 
 	AstsOLSCURRInfo() {
 		memset(this, 0, sizeof(AstsOLSCURRInfo));
 	}
 	~AstsOLSCURRInfo() { }
+	inline void Assign(AstsOLSCURRInfo *item) {
+	int								GroupMDEntriesCount;//		 offset = 52 order =  0
+		// size = 2120
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 133; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
-		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -723,20 +757,25 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsTLSFONDItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsTLSFONDItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes3[7];
+	char							PaddingBytes3[8];
 
 	AstsTLSFONDItemInfo() {
 		memset(this, 0, sizeof(AstsTLSFONDItemInfo));
 	}
 	~AstsTLSFONDItemInfo() { }
+	inline void Assign(AstsTLSFONDItemInfo *item) {
+		// size = 280
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 18; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -770,24 +809,27 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsTLSFONDInfo>							*Pointer;
 	AutoAllocatePointerList<AstsTLSFONDInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes3[15];
 
 	AstsTLSFONDInfo() {
 		memset(this, 0, sizeof(AstsTLSFONDInfo));
 	}
 	~AstsTLSFONDInfo() { }
+	inline void Assign(AstsTLSFONDInfo *item) {
+	int								GroupMDEntriesCount;//		 offset = 56 order =  0
+		// size = 2128
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 133; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
-		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -837,20 +879,25 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsTLSCURRItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsTLSCURRItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes3[7];
+	char							PaddingBytes3[8];
 
 	AstsTLSCURRItemInfo() {
 		memset(this, 0, sizeof(AstsTLSCURRItemInfo));
 	}
 	~AstsTLSCURRItemInfo() { }
+	inline void Assign(AstsTLSCURRItemInfo *item) {
+		// size = 248
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 16; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -882,24 +929,28 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsTLSCURRInfo>							*Pointer;
 	AutoAllocatePointerList<AstsTLSCURRInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes2[7];
+	char							PaddingBytes2[8];
 
 	AstsTLSCURRInfo() {
 		memset(this, 0, sizeof(AstsTLSCURRInfo));
 	}
 	~AstsTLSCURRInfo() { }
+	inline void Assign(AstsTLSCURRInfo *item) {
+	int								GroupMDEntriesCount;//		 offset = 52 order =  0
+		// size = 2120
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 133; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
-		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -918,20 +969,25 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsSecurityDefinitionGroupInstrAttribItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsSecurityDefinitionGroupInstrAttribItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes0[7];
+	char							PaddingBytes0[8];
 
 	AstsSecurityDefinitionGroupInstrAttribItemInfo() {
 		memset(this, 0, sizeof(AstsSecurityDefinitionGroupInstrAttribItemInfo));
 	}
 	~AstsSecurityDefinitionGroupInstrAttribItemInfo() { }
+	inline void Assign(AstsSecurityDefinitionGroupInstrAttribItemInfo *item) {
+		// size = 24
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 2; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -954,20 +1010,25 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[7];
+	char							PaddingBytes1[8];
 
 	AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() {
 		memset(this, 0, sizeof(AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo));
 	}
 	~AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo() { }
+	inline void Assign(AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo *item) {
+		// size = 24
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 2; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -985,22 +1046,28 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsSecurityDefinitionMarketSegmentGrpItemInfo>							*Pointer;
 	AutoAllocatePointerList<AstsSecurityDefinitionMarketSegmentGrpItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[7];
+	char							PaddingBytes1[8];
 
 	AstsSecurityDefinitionMarketSegmentGrpItemInfo() {
 		memset(this, 0, sizeof(AstsSecurityDefinitionMarketSegmentGrpItemInfo));
 	}
 	~AstsSecurityDefinitionMarketSegmentGrpItemInfo() { }
+	inline void Assign(AstsSecurityDefinitionMarketSegmentGrpItemInfo *item) {
+	int								TradingSessionRulesGrpCount;//		 offset = 16 order =  0
+		// size = 152
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 10; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->TradingSessionRulesGrpCount; i++)
 			this->TradingSessionRulesGrp[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->TradingSessionRulesGrpCount; i++)
@@ -1048,60 +1115,66 @@ public:
 	unsigned char							QuoteText[128];			// id=9696  presence=optional   offset = 268
 	int								GroupInstrAttribCount;//		 offset = 284 order =  0
 	AstsSecurityDefinitionGroupInstrAttribItemInfo* GroupInstrAttrib[16];			// presence=optional  max_count=16  //		 offset = 288 order =  0
-	int								CurrencyLength;			// id=15  presence=optional   offset = 2336 order =  0
-	char							Currency[4];			// id=15  presence=optional   offset = 2340 order =  0
-	int								MarketSegmentGrpCount;//		 offset = 2344 order =  0
+	int								CurrencyLength;			// id=15  presence=optional   offset = 416 order =  0
+	char							Currency[4];			// id=15  presence=optional   offset = 420 order =  0
+	int								MarketSegmentGrpCount;//		 offset = 424 order =  0
 	char							PaddingBytes3[4];
-	AstsSecurityDefinitionMarketSegmentGrpItemInfo* MarketSegmentGrp[16];			// presence=optional  max_count=16  //		 offset = 2352 order =  0
-	int								SettlCurrencyLength;			// id=120  presence=optional   offset = 4400 order =  0
-	char							SettlCurrency[16];			// id=120  presence=optional   offset = 4404 order =  0
-	INT32							PriceType;			// id=423  presence=optional   offset = 4420 order =  0
-	int								StateSecurityIDLength;			// id=5217  presence=optional   offset = 4424 order =  0
-	char							StateSecurityID[16];			// id=5217  presence=optional   offset = 4428 order =  0
-	int								EncodedShortSecurityDescLength;			// id=5383  presence=optional   offset = 4444 order =  0
-	unsigned char							EncodedShortSecurityDesc[128];			// id=5383  presence=optional   offset = 4448
-	int								MarketCodeLength;			// id=5385  presence=optional   offset = 4464 order =  0
-	unsigned char							MarketCode[128];			// id=5385  presence=optional   offset = 4468
+	AstsSecurityDefinitionMarketSegmentGrpItemInfo* MarketSegmentGrp[16];			// presence=optional  max_count=16  //		 offset = 432 order =  0
+	int								SettlCurrencyLength;			// id=120  presence=optional   offset = 560 order =  0
+	char							SettlCurrency[16];			// id=120  presence=optional   offset = 564 order =  0
+	INT32							PriceType;			// id=423  presence=optional   offset = 580 order =  0
+	int								StateSecurityIDLength;			// id=5217  presence=optional   offset = 584 order =  0
+	char							StateSecurityID[16];			// id=5217  presence=optional   offset = 588 order =  0
+	int								EncodedShortSecurityDescLength;			// id=5383  presence=optional   offset = 604 order =  0
+	unsigned char							EncodedShortSecurityDesc[128];			// id=5383  presence=optional   offset = 608
+	int								MarketCodeLength;			// id=5385  presence=optional   offset = 624 order =  0
+	unsigned char							MarketCode[128];			// id=5385  presence=optional   offset = 628
 	char							PaddingBytes4[4];
-	Decimal							MinPriceIncrement;			// id=969  presence=optional   offset = 4488 order =  0
-	Decimal							MktShareLimit;			// id=5387  presence=optional   offset = 4504 order =  0
-	Decimal							MktShareThreshold;			// id=5388  presence=optional   offset = 4520 order =  0
-	Decimal							MaxOrdersVolume;			// id=5389  presence=optional   offset = 4536 order =  0
-	Decimal							PriceMvmLimit;			// id=5470  presence=optional   offset = 4552 order =  0
-	Decimal							FaceValue;			// id=5508  presence=optional   offset = 4568 order =  0
-	Decimal							BaseSwapPx;			// id=5556  presence=optional   offset = 4584 order =  0
-	Decimal							RepoToPx;			// id=5677  presence=optional   offset = 4600 order =  0
-	Decimal							BuyBackPx;			// id=5558  presence=optional   offset = 4616 order =  0
-	UINT32							BuyBackDate;			// id=5559  presence=optional   offset = 4632 order =  0
+	Decimal							MinPriceIncrement;			// id=969  presence=optional   offset = 648 order =  0
+	Decimal							MktShareLimit;			// id=5387  presence=optional   offset = 664 order =  0
+	Decimal							MktShareThreshold;			// id=5388  presence=optional   offset = 680 order =  0
+	Decimal							MaxOrdersVolume;			// id=5389  presence=optional   offset = 696 order =  0
+	Decimal							PriceMvmLimit;			// id=5470  presence=optional   offset = 712 order =  0
+	Decimal							FaceValue;			// id=5508  presence=optional   offset = 728 order =  0
+	Decimal							BaseSwapPx;			// id=5556  presence=optional   offset = 744 order =  0
+	Decimal							RepoToPx;			// id=5677  presence=optional   offset = 760 order =  0
+	Decimal							BuyBackPx;			// id=5558  presence=optional   offset = 776 order =  0
+	UINT32							BuyBackDate;			// id=5559  presence=optional   offset = 792 order =  0
 	char							PaddingBytes5[4];
-	Decimal							NoSharesIssued;			// id=7595  presence=optional   offset = 4640 order =  0
-	Decimal							HighLimit;			// id=9199  presence=optional   offset = 4656 order =  0
-	Decimal							LowLimit;			// id=9200  presence=optional   offset = 4672 order =  0
-	INT32							NumOfDaysToMaturity;			// id=10508  presence=optional   offset = 4688 order =  0
-	UINT32							MsgSeqNum;			// id=34  skip=true    increment offset = 4692 order =  999
-	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 4696 order =  999
+	Decimal							NoSharesIssued;			// id=7595  presence=optional   offset = 800 order =  0
+	Decimal							HighLimit;			// id=9199  presence=optional   offset = 816 order =  0
+	Decimal							LowLimit;			// id=9200  presence=optional   offset = 832 order =  0
+	INT32							NumOfDaysToMaturity;			// id=10508  presence=optional   offset = 848 order =  0
+	UINT32							MsgSeqNum;			// id=34  skip=true    increment offset = 852 order =  999
+	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 856 order =  999
 	UINT64							PresenceMap;
 	UINT64							NullMap;
 	LinkedPointer<AstsSecurityDefinitionInfo>							*Pointer;
 	AutoAllocatePointerList<AstsSecurityDefinitionInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes6[15];
 
 	AstsSecurityDefinitionInfo() {
 		memset(this, 0, sizeof(AstsSecurityDefinitionInfo));
 	}
 	~AstsSecurityDefinitionInfo() { }
+	inline void Assign(AstsSecurityDefinitionInfo *item) {
+	int								GroupInstrAttribCount;//		 offset = 284 order =  0
+	int								MarketSegmentGrpCount;//		 offset = 424 order =  0
+		// size = 864
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 54; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->GroupInstrAttribCount; i++)
 			this->GroupInstrAttrib[i]->Clear();
 		for(int i = 0; i < this->MarketSegmentGrpCount; i++)
 			this->MarketSegmentGrp[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupInstrAttribCount; i++)
@@ -1136,18 +1209,23 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsSecurityStatusInfo>							*Pointer;
 	AutoAllocatePointerList<AstsSecurityStatusInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[15];
 
 	AstsSecurityStatusInfo() {
 		memset(this, 0, sizeof(AstsSecurityStatusInfo));
 	}
 	~AstsSecurityStatusInfo() { }
+	inline void Assign(AstsSecurityStatusInfo *item) {
+		// size = 64
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 4; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 	}
 	inline void ReleaseUnusedChildren() {
@@ -1169,18 +1247,24 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsTradingSessionStatusInfo>							*Pointer;
 	AutoAllocatePointerList<AstsTradingSessionStatusInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes0[7];
+	char							PaddingBytes0[8];
 
 	AstsTradingSessionStatusInfo() {
 		memset(this, 0, sizeof(AstsTradingSessionStatusInfo));
 	}
 	~AstsTradingSessionStatusInfo() { }
+	inline void Assign(AstsTradingSessionStatusInfo *item) {
+		// size = 536
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 34; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 	}
 	inline void ReleaseUnusedChildren() {
@@ -1196,18 +1280,23 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsHeartbeatInfo>							*Pointer;
 	AutoAllocatePointerList<AstsHeartbeatInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[15];
 
 	AstsHeartbeatInfo() {
 		memset(this, 0, sizeof(AstsHeartbeatInfo));
 	}
 	~AstsHeartbeatInfo() { }
+	inline void Assign(AstsHeartbeatInfo *item) {
+		// size = 16
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 1; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 	}
 	inline void ReleaseUnusedChildren() {
@@ -1226,24 +1315,28 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsIncrementalGenericInfo>							*Pointer;
 	AutoAllocatePointerList<AstsIncrementalGenericInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes2[7];
+	char							PaddingBytes2[8];
 
 	AstsIncrementalGenericInfo() {
 		memset(this, 0, sizeof(AstsIncrementalGenericInfo));
 	}
 	~AstsIncrementalGenericInfo() { }
+	inline void Assign(AstsIncrementalGenericInfo *item) {
+	int								GroupMDEntriesCount;//		 offset = 0 order =  0
+		// size = 2072
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 130; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
-		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1266,24 +1359,27 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsIncrementalMSRFONDInfo>							*Pointer;
 	AutoAllocatePointerList<AstsIncrementalMSRFONDInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes2[15];
 
 	AstsIncrementalMSRFONDInfo() {
 		memset(this, 0, sizeof(AstsIncrementalMSRFONDInfo));
 	}
 	~AstsIncrementalMSRFONDInfo() { }
+	inline void Assign(AstsIncrementalMSRFONDInfo *item) {
+	int								GroupMDEntriesCount;//		 offset = 8 order =  0
+		// size = 2080
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 130; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
-		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1306,24 +1402,27 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsIncrementalMSRCURRInfo>							*Pointer;
 	AutoAllocatePointerList<AstsIncrementalMSRCURRInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes2[15];
 
 	AstsIncrementalMSRCURRInfo() {
 		memset(this, 0, sizeof(AstsIncrementalMSRCURRInfo));
 	}
 	~AstsIncrementalMSRCURRInfo() { }
+	inline void Assign(AstsIncrementalMSRCURRInfo *item) {
+	int								GroupMDEntriesCount;//		 offset = 8 order =  0
+		// size = 2080
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 130; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
-		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
-		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
 	}
@@ -1337,7 +1436,7 @@ class AstsIncrementalOLRFONDInfo{
 public:
 	int								GroupMDEntriesCount;//		 offset = 0 order =  0
 	char							PaddingBytes0[4];
-	AstsOLSFONDItemInfo* GroupMDEntries[256];//		 offset = 8 order =  0
+	AstsOLSFONDItemInfo* GroupMDEntries[256];			// process_empty_pmap=true  //		 offset = 8 order =  0
 	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2056 order =  999
 	char							PaddingBytes1[4];
 	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 2064 order =  999
@@ -1345,20 +1444,27 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsIncrementalOLRFONDInfo>							*Pointer;
 	AutoAllocatePointerList<AstsIncrementalOLRFONDInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes2[7];
+	char							PaddingBytes2[8];
 
 	AstsIncrementalOLRFONDInfo() {
 		memset(this, 0, sizeof(AstsIncrementalOLRFONDInfo));
 	}
 	~AstsIncrementalOLRFONDInfo() { }
+	inline void Assign(AstsIncrementalOLRFONDInfo *item) {
+	int								GroupMDEntriesCount;//		 offset = 0 order =  0
+		// size = 2072
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 130; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
@@ -1373,7 +1479,7 @@ class AstsIncrementalOLRCURRInfo{
 public:
 	int								GroupMDEntriesCount;//		 offset = 0 order =  0
 	char							PaddingBytes0[4];
-	AstsOLSCURRItemInfo* GroupMDEntries[256];//		 offset = 8 order =  0
+	AstsOLSCURRItemInfo* GroupMDEntries[256];			// process_empty_pmap=true  //		 offset = 8 order =  0
 	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2056 order =  999
 	char							PaddingBytes1[4];
 	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 2064 order =  999
@@ -1381,20 +1487,27 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsIncrementalOLRCURRInfo>							*Pointer;
 	AutoAllocatePointerList<AstsIncrementalOLRCURRInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes2[7];
+	char							PaddingBytes2[8];
 
 	AstsIncrementalOLRCURRInfo() {
 		memset(this, 0, sizeof(AstsIncrementalOLRCURRInfo));
 	}
 	~AstsIncrementalOLRCURRInfo() { }
+	inline void Assign(AstsIncrementalOLRCURRInfo *item) {
+	int								GroupMDEntriesCount;//		 offset = 0 order =  0
+		// size = 2072
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 130; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
@@ -1417,20 +1530,27 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsIncrementalTLRFONDInfo>							*Pointer;
 	AutoAllocatePointerList<AstsIncrementalTLRFONDInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes2[7];
+	char							PaddingBytes2[8];
 
 	AstsIncrementalTLRFONDInfo() {
 		memset(this, 0, sizeof(AstsIncrementalTLRFONDInfo));
 	}
 	~AstsIncrementalTLRFONDInfo() { }
+	inline void Assign(AstsIncrementalTLRFONDInfo *item) {
+	int								GroupMDEntriesCount;//		 offset = 0 order =  0
+		// size = 2072
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 130; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
@@ -1453,20 +1573,27 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<AstsIncrementalTLRCURRInfo>							*Pointer;
 	AutoAllocatePointerList<AstsIncrementalTLRCURRInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes2[7];
+	char							PaddingBytes2[8];
 
 	AstsIncrementalTLRCURRInfo() {
 		memset(this, 0, sizeof(AstsIncrementalTLRCURRInfo));
 	}
 	~AstsIncrementalTLRCURRInfo() { }
+	inline void Assign(AstsIncrementalTLRCURRInfo *item) {
+	int								GroupMDEntriesCount;//		 offset = 0 order =  0
+		// size = 2072
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 130; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		for(int i = 0; i < this->GroupMDEntriesCount; i++)
 			this->GroupMDEntries[i]->ReleaseUnused();
@@ -2492,20 +2619,25 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsDefaultSnapshotMessageMDEntriesItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes4[7];
+	char							PaddingBytes4[8];
 
 	FortsDefaultSnapshotMessageMDEntriesItemInfo() {
 		memset(this, 0, sizeof(FortsDefaultSnapshotMessageMDEntriesItemInfo));
 	}
 	~FortsDefaultSnapshotMessageMDEntriesItemInfo() { }
+	inline void Assign(FortsDefaultSnapshotMessageMDEntriesItemInfo *item) {
+		// size = 200
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 13; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -2539,22 +2671,27 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsDefaultSnapshotMessageInfo>							*Pointer;
 	AutoAllocatePointerList<FortsDefaultSnapshotMessageInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes0[15];
 
 	FortsDefaultSnapshotMessageInfo() {
 		memset(this, 0, sizeof(FortsDefaultSnapshotMessageInfo));
 	}
 	~FortsDefaultSnapshotMessageInfo() { }
+	inline void Assign(FortsDefaultSnapshotMessageInfo *item) {
+	int								MDEntriesCount;//		 offset = 68 order =  0
+		// size = 2208
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 138; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)
@@ -2577,20 +2714,24 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityDefinitionMDFeedTypesItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityDefinitionMDFeedTypesItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[15];
 
 	FortsSecurityDefinitionMDFeedTypesItemInfo() {
 		memset(this, 0, sizeof(FortsSecurityDefinitionMDFeedTypesItemInfo));
 	}
 	~FortsSecurityDefinitionMDFeedTypesItemInfo() { }
+	inline void Assign(FortsSecurityDefinitionMDFeedTypesItemInfo *item) {
+		// size = 32
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 2; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -2608,20 +2749,24 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityDefinitionUnderlyingsItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityDefinitionUnderlyingsItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[15];
 
 	FortsSecurityDefinitionUnderlyingsItemInfo() {
 		memset(this, 0, sizeof(FortsSecurityDefinitionUnderlyingsItemInfo));
 	}
 	~FortsSecurityDefinitionUnderlyingsItemInfo() { }
+	inline void Assign(FortsSecurityDefinitionUnderlyingsItemInfo *item) {
+		// size = 32
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 2; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -2640,20 +2785,24 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityDefinitionInstrumentLegsItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityDefinitionInstrumentLegsItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[15];
 
 	FortsSecurityDefinitionInstrumentLegsItemInfo() {
 		memset(this, 0, sizeof(FortsSecurityDefinitionInstrumentLegsItemInfo));
 	}
 	~FortsSecurityDefinitionInstrumentLegsItemInfo() { }
+	inline void Assign(FortsSecurityDefinitionInstrumentLegsItemInfo *item) {
+		// size = 48
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 3; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -2670,20 +2819,25 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityDefinitionInstrumentAttributesItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityDefinitionInstrumentAttributesItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes0[7];
+	char							PaddingBytes0[8];
 
 	FortsSecurityDefinitionInstrumentAttributesItemInfo() {
 		memset(this, 0, sizeof(FortsSecurityDefinitionInstrumentAttributesItemInfo));
 	}
 	~FortsSecurityDefinitionInstrumentAttributesItemInfo() { }
+	inline void Assign(FortsSecurityDefinitionInstrumentAttributesItemInfo *item) {
+		// size = 24
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 2; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -2700,20 +2854,24 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityDefinitionEvntGrpItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityDefinitionEvntGrpItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes0[15];
 
 	FortsSecurityDefinitionEvntGrpItemInfo() {
 		memset(this, 0, sizeof(FortsSecurityDefinitionEvntGrpItemInfo));
 	}
 	~FortsSecurityDefinitionEvntGrpItemInfo() { }
+	inline void Assign(FortsSecurityDefinitionEvntGrpItemInfo *item) {
+		// size = 16
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 1; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -2796,16 +2954,27 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityDefinitionInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityDefinitionInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes8[15];
 
 	FortsSecurityDefinitionInfo() {
 		memset(this, 0, sizeof(FortsSecurityDefinitionInfo));
 	}
 	~FortsSecurityDefinitionInfo() { }
+	inline void Assign(FortsSecurityDefinitionInfo *item) {
+	int								MDFeedTypesCount;//		 offset = 256 order =  0
+	int								UnderlyingsCount;//		 offset = 2312 order =  0
+	int								InstrumentLegsCount;//		 offset = 4536 order =  0
+	int								InstrumentAttributesCount;//		 offset = 6592 order =  0
+	int								EvntGrpCount;//		 offset = 8684 order =  0
+		// size = 10832
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 677; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->MDFeedTypesCount; i++)
 			this->MDFeedTypes[i]->Clear();
 		for(int i = 0; i < this->UnderlyingsCount; i++)
@@ -2818,8 +2987,6 @@ public:
 			this->EvntGrp[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDFeedTypesCount; i++)
@@ -2867,20 +3034,25 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityDefinitionUpdateReportInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityDefinitionUpdateReportInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[7];
+	char							PaddingBytes1[8];
 
 	FortsSecurityDefinitionUpdateReportInfo() {
 		memset(this, 0, sizeof(FortsSecurityDefinitionUpdateReportInfo));
 	}
 	~FortsSecurityDefinitionUpdateReportInfo() { }
+	inline void Assign(FortsSecurityDefinitionUpdateReportInfo *item) {
+		// size = 152
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 10; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -2913,20 +3085,24 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsSecurityStatusInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSecurityStatusInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[15];
 
 	FortsSecurityStatusInfo() {
 		memset(this, 0, sizeof(FortsSecurityStatusInfo));
 	}
 	~FortsSecurityStatusInfo() { }
+	inline void Assign(FortsSecurityStatusInfo *item) {
+		// size = 208
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 13; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -2948,20 +3124,25 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsHeartbeatInfo>							*Pointer;
 	AutoAllocatePointerList<FortsHeartbeatInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes0[7];
+	char							PaddingBytes0[8];
 
 	FortsHeartbeatInfo() {
 		memset(this, 0, sizeof(FortsHeartbeatInfo));
 	}
 	~FortsHeartbeatInfo() { }
+	inline void Assign(FortsHeartbeatInfo *item) {
+		// size = 88
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 6; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -2985,20 +3166,24 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsSequenceResetInfo>							*Pointer;
 	AutoAllocatePointerList<FortsSequenceResetInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[15];
 
 	FortsSequenceResetInfo() {
 		memset(this, 0, sizeof(FortsSequenceResetInfo));
 	}
 	~FortsSequenceResetInfo() { }
+	inline void Assign(FortsSequenceResetInfo *item) {
+		// size = 96
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 6; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -3032,20 +3217,24 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsTradingSessionStatusInfo>							*Pointer;
 	AutoAllocatePointerList<FortsTradingSessionStatusInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes0[15];
 
 	FortsTradingSessionStatusInfo() {
 		memset(this, 0, sizeof(FortsTradingSessionStatusInfo));
 	}
 	~FortsTradingSessionStatusInfo() { }
+	inline void Assign(FortsTradingSessionStatusInfo *item) {
+		// size = 176
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 11; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -3062,20 +3251,25 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsNewsNewsTextItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsNewsNewsTextItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[7];
+	char							PaddingBytes1[8];
 
 	FortsNewsNewsTextItemInfo() {
 		memset(this, 0, sizeof(FortsNewsNewsTextItemInfo));
 	}
 	~FortsNewsNewsTextItemInfo() { }
+	inline void Assign(FortsNewsNewsTextItemInfo *item) {
+		// size = 520
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 33; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -3112,22 +3306,27 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsNewsInfo>							*Pointer;
 	AutoAllocatePointerList<FortsNewsInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes0[15];
 
 	FortsNewsInfo() {
 		memset(this, 0, sizeof(FortsNewsInfo));
 	}
 	~FortsNewsInfo() { }
+	inline void Assign(FortsNewsInfo *item) {
+	int								NewsTextCount;//		 offset = 116 order =  0
+		// size = 2256
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 141; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->NewsTextCount; i++)
 			this->NewsText[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->NewsTextCount; i++)
@@ -3165,20 +3364,25 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsOrdersLogMDEntriesItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsOrdersLogMDEntriesItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes3[7];
+	char							PaddingBytes3[8];
 
 	FortsOrdersLogMDEntriesItemInfo() {
 		memset(this, 0, sizeof(FortsOrdersLogMDEntriesItemInfo));
 	}
 	~FortsOrdersLogMDEntriesItemInfo() { }
+	inline void Assign(FortsOrdersLogMDEntriesItemInfo *item) {
+		// size = 136
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 9; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -3203,22 +3407,27 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsOrdersLogInfo>							*Pointer;
 	AutoAllocatePointerList<FortsOrdersLogInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes0[15];
 
 	FortsOrdersLogInfo() {
 		memset(this, 0, sizeof(FortsOrdersLogInfo));
 	}
 	~FortsOrdersLogInfo() { }
+	inline void Assign(FortsOrdersLogInfo *item) {
+	int								MDEntriesCount;//		 offset = 4 order =  0
+		// size = 2144
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 134; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)
@@ -3246,20 +3455,25 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsOrdersBookMDEntriesItemInfo>							*Pointer;
 	AutoAllocatePointerList<FortsOrdersBookMDEntriesItemInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[7];
+	char							PaddingBytes1[8];
 
 	FortsOrdersBookMDEntriesItemInfo() {
 		memset(this, 0, sizeof(FortsOrdersBookMDEntriesItemInfo));
 	}
 	~FortsOrdersBookMDEntriesItemInfo() { }
+	inline void Assign(FortsOrdersBookMDEntriesItemInfo *item) {
+		// size = 72
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 5; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -3291,22 +3505,27 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsOrdersBookInfo>							*Pointer;
 	AutoAllocatePointerList<FortsOrdersBookInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[15];
 
 	FortsOrdersBookInfo() {
 		memset(this, 0, sizeof(FortsOrdersBookInfo));
 	}
 	~FortsOrdersBookInfo() { }
+	inline void Assign(FortsOrdersBookInfo *item) {
+	int								MDEntriesCount;//		 offset = 36 order =  0
+		// size = 2176
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 136; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)
@@ -3332,20 +3551,25 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsLogonInfo>							*Pointer;
 	AutoAllocatePointerList<FortsLogonInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes0[7];
+	char							PaddingBytes0[8];
 
 	FortsLogonInfo() {
 		memset(this, 0, sizeof(FortsLogonInfo));
 	}
 	~FortsLogonInfo() { }
+	inline void Assign(FortsLogonInfo *item) {
+		// size = 88
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 6; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -3370,20 +3594,24 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsLogoutInfo>							*Pointer;
 	AutoAllocatePointerList<FortsLogoutInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes1[15];
 
 	FortsLogoutInfo() {
 		memset(this, 0, sizeof(FortsLogoutInfo));
 	}
 	~FortsLogoutInfo() { }
+	inline void Assign(FortsLogoutInfo *item) {
+		// size = 608
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 38; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 	}
@@ -3408,22 +3636,27 @@ public:
 	UINT64							NullMap;
 	LinkedPointer<FortsDefaultIncrementalRefreshMessageInfo>							*Pointer;
 	AutoAllocatePointerList<FortsDefaultIncrementalRefreshMessageInfo>							*Allocator;
-	bool							Used;
-	char							PaddingBytes0[15];
 
 	FortsDefaultIncrementalRefreshMessageInfo() {
 		memset(this, 0, sizeof(FortsDefaultIncrementalRefreshMessageInfo));
 	}
 	~FortsDefaultIncrementalRefreshMessageInfo() { }
+	inline void Assign(FortsDefaultIncrementalRefreshMessageInfo *item) {
+	int								MDEntriesCount;//		 offset = 4 order =  0
+		// size = 2144
+		__m128 *dst = (__m128*)this;
+		__m128 *src = (__m128*)item;
+		for(int i = 0; i < 134; i++, src ++, dst ++) {
+			__m128 t = *src;
+			*(dst) = t;
+		}
+	}
 	inline void Clear() {
 		this->Allocator->FreeItemUnsafe(this->Pointer);
-		this->Used = false;
 		for(int i = 0; i < this->MDEntriesCount; i++)
 			this->MDEntries[i]->Clear();
 	}
 	inline void ReleaseUnused() {
-		if(this->Used)
-			return;
 
 		this->Allocator->FreeItemUnsafe(this->Pointer);
 		for(int i = 0; i < this->MDEntriesCount; i++)

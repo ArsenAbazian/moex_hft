@@ -155,12 +155,6 @@ public:
         if(this->msr->StatisticFond()->Symbol(0)->MaxSessionCount() != 4)
             throw;
 
-        if(!this->olr->OrderFond()->Symbol(0)->SecurityDefinitionAsts()->Used)
-            throw;
-        if(!this->tlr->TradeFond()->Symbol(0)->SecurityDefinitionAsts()->Used)
-            throw;
-        if(!this->msr->StatisticFond()->Symbol(0)->SecurityDefinitionAsts()->Used)
-            throw;
         if(!this->olr->OrderFond()->Symbol(0)->Symbol()->Equal("symbol1"))
             throw;
         if(!this->tlr->TradeFond()->Symbol(0)->Symbol()->Equal("symbol1"))
@@ -169,19 +163,7 @@ public:
             throw;
 
         for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
-            if(!this->olr->OrderFond()->Symbol(0)->SecurityDefinitionAsts()->MarketSegmentGrp[i]->Used)
-                throw;
-            if(!this->tlr->TradeFond()->Symbol(0)->SecurityDefinitionAsts()->MarketSegmentGrp[i]->Used)
-                throw;
-            if(!this->msr->StatisticFond()->Symbol(0)->SecurityDefinitionAsts()->MarketSegmentGrp[i]->Used)
-                throw;
             for(int j = 0; j < info->MarketSegmentGrp[i]->TradingSessionRulesGrpCount; j++) {
-                if(!this->olr->OrderFond()->Symbol(0)->SecurityDefinitionAsts()->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
-                    throw;
-                if(!this->tlr->TradeFond()->Symbol(0)->SecurityDefinitionAsts()->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
-                    throw;
-                if(!this->msr->StatisticFond()->Symbol(0)->SecurityDefinitionAsts()->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
-                    throw;
             }
         }
     }
@@ -200,27 +182,8 @@ public:
         if(this->msr->StatisticFond()->Symbol(symbolIndex)->MaxSessionCount() != 4)
             throw;
 
-        if(!this->olr->OrderFond()->Symbol(symbolIndex)->SecurityDefinitionAsts()->Used)
-            throw;
-        if(!this->tlr->TradeFond()->Symbol(symbolIndex)->SecurityDefinitionAsts()->Used)
-            throw;
-        if(!this->msr->StatisticFond()->Symbol(symbolIndex)->SecurityDefinitionAsts()->Used)
-            throw;
-
         for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
-            if(!this->olr->OrderFond()->Symbol(symbolIndex)->SecurityDefinitionAsts()->MarketSegmentGrp[i]->Used)
-                throw;
-            if(!this->tlr->TradeFond()->Symbol(symbolIndex)->SecurityDefinitionAsts()->MarketSegmentGrp[i]->Used)
-                throw;
-            if(!this->msr->StatisticFond()->Symbol(symbolIndex)->SecurityDefinitionAsts()->MarketSegmentGrp[i]->Used)
-                throw;
             for(int j = 0; j < info->MarketSegmentGrp[i]->TradingSessionRulesGrpCount; j++) {
-                if(!this->olr->OrderFond()->Symbol(symbolIndex)->SecurityDefinitionAsts()->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
-                    throw;
-                if(!this->tlr->TradeFond()->Symbol(symbolIndex)->SecurityDefinitionAsts()->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
-                    throw;
-                if(!this->msr->StatisticFond()->Symbol(symbolIndex)->SecurityDefinitionAsts()->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
-                    throw;
             }
         }
     }
@@ -284,18 +247,12 @@ public:
         this->idf->BeforeProcessSecurityDefinitions();
         if(this->idf->m_symbolsCount != 0)
             throw;
-        if(info->Used)
-            throw;
         if(info->Allocator->Count() != 0)
             throw;
         for(int i = 0; i < info->MarketSegmentGrpCount; i++) {
-            if(info->MarketSegmentGrp[i]->Used)
-                throw;
             if(info->MarketSegmentGrp[i]->Allocator->Count() != 0)
                 throw;
             for(int j = 0; j < info->MarketSegmentGrp[i]->TradingSessionRulesGrpCount; j++) {
-                if(info->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Used)
-                    throw;
                 if(info->MarketSegmentGrp[i]->TradingSessionRulesGrp[j]->Allocator->Count() != 0)
                     throw;
             }
@@ -334,23 +291,6 @@ public:
         if(this->tlr->TradeFond()->Symbol(0)->SecurityDefinitionAsts() != info)
             throw;
         if(this->msr->StatisticFond()->Symbol(0)->SecurityDefinitionAsts() != info)
-            throw;
-
-        if(prev->Used)
-            throw;
-        if(prev->MarketSegmentGrp[0]->Used)
-            throw;
-        if(!prev->MarketSegmentGrp[1]->Used)
-            throw;
-        if(!info->MarketSegmentGrp[0]->Used)
-            throw;
-        if(prev->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Used)
-            throw;
-        if(prev->MarketSegmentGrp[0]->TradingSessionRulesGrp[1]->Used)
-            throw;
-        if(!prev->MarketSegmentGrp[1]->TradingSessionRulesGrp[0]->Used)
-            throw;
-        if(!prev->MarketSegmentGrp[1]->TradingSessionRulesGrp[1]->Used)
             throw;
     }
 

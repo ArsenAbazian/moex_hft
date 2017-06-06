@@ -104,9 +104,6 @@ public:
 
     inline UINT64 ConstrainHash(UINT64 m_id) {
         return m_id & 0x0fffff;
-        //if(m_id >= HashTable::m_itemsCount)
-        //    m_id = m_id % HashTable::m_itemsCount;
-        return m_id;
     }
 
     inline LinkedPointer<HashTableItemInfo>* FindPointer(LinkedPointer<HashTableItemInfo>* start, void *owner, UINT64 id) {
@@ -118,18 +115,43 @@ public:
         }
         return 0;
     }
-     inline LinkedPointer<HashTableItemInfo>* GetPointer(void *owner, const char *stringId, int length) {
+    __attribute_noinline__
+    void* RemovePointer(LinkedPointer<HashTableItemInfo> *start, void *owner, UINT64 hash) {
+        start = start->Next();
+        while(start != 0) {
+            HashTableItemInfo *info = start->Data();
+            if(info->m_owner == owner && info->m_intId == hash) {
+                this->Remove(start);
+                this->m_pool->PushUnsafe(start);
+                this->m_count--;
+                return start->Data()->m_object;
+            }
+            start = start->Next();
+        }
+        return 0;
+    }
+    inline void* RemovePointer(void *owner, const char *stringId, int length) {
+        UINT64 hash = this->CalcHashNoConstrain(stringId, length);
+        UINT64 chash = this->ConstrainHash(hash);
+        LinkedPointer<HashTableItemInfo> *start = this->m_bucket[chash];
+
+        HashTableItemInfo *info = start->Data();
+        if(info->m_owner == owner && info->m_intId == hash) {
+            this->m_bucket[chash] = start->Next();
+            this->m_pool->PushUnsafe(start);
+            this->m_count--;
+            return start->Data()->m_object;
+        }
+        return this->RemovePointer(start, owner, hash);
+    }
+    inline LinkedPointer<HashTableItemInfo>* GetPointer(void *owner, const char *stringId, int length) {
         UINT64 hash = this->CalcHashNoConstrain(stringId, length);
         LinkedPointer<HashTableItemInfo> *start = this->m_bucket[this->ConstrainHash(hash)];
-        if(start == 0)
-            return 0;
         return this->FindPointer(start, owner, hash);
     }
 
     inline LinkedPointer<HashTableItemInfo>* GetPointer(void *owner, UINT64 id) {
         LinkedPointer<HashTableItemInfo> *start = this->m_bucket[this->ConstrainHash(id)];
-        if(start == 0)
-            return 0;
         return this->FindPointer(start, owner, id);
     }
 

@@ -90,16 +90,11 @@ public:
         AstsTLSCURRItemInfo *item3 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 2, -2, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "333333", 3);
         AstsTLSCURRItemInfo *item4 = this->m_helper->CreateTLSCurrItemInfo("symbol1", "ses1", 25, -3, 1, 2, MDUpdateAction::mduaAdd, MDEntryType::mdetBuyQuote, "444444", 4);
 
-        if(item4->Used)
-            throw;
-
         info->GroupMDEntriesCount = 1;
         info->GroupMDEntries[0] = item1;
 
         this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
 
-        if(!item1->Used)
-            throw;
         if(this->incCurr->TradeCurr()->UsedItemCount() != 1)
             throw;
         if(this->incCurr->TradeCurr()->SymbolsCount() != 1)
@@ -264,8 +259,6 @@ public:
         this->incCurr->OnIncrementalRefresh_TLR_CURR(info);
 
         this->incCurr->TradeCurr()->Clear();
-        if(item1->Used || item2->Used || item3->Used || item4->Used)
-            throw;
         if(item1->Allocator->Count() != 0 ||
            item2->Allocator->Count() != 0 ||
            item3->Allocator->Count() != 0 ||
@@ -2725,10 +2718,10 @@ public:
         AstsTLSCURRItemInfo *info = this->m_helper->CreateTLSCurrItemInfo(1, 1, 1, 1, MDEntryType::mdetBuyQuote, "111111");
         if(info->Allocator->Count() != 1)
             throw;
-        info->Used = false;
-        info->ReleaseUnused();
-        if(info->Allocator->Count() != 0)
-            throw;
+        //info->Used = false;
+        //info->ReleaseUnused();
+        //if(info->Allocator->Count() != 0)
+        //    throw;
     }
 
     void TestInfoAndItemInfoUsageAndAllocationCurr_Inc_5() {

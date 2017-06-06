@@ -387,7 +387,7 @@ void FastProtocolManager::PrintAstsGeneric(AstsGenericInfo *info) {
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX9) == 0)
 			PrintString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength, 2);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX10) == 0)
-			PrintString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength, 2);
+			PrintString("OrdType", gmdeItemInfo->OrdType, 1, 2);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX11) == 0)
 			PrintUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime, 2);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX12) == 0)
@@ -501,7 +501,7 @@ void FastProtocolManager::PrintAstsIncrementalGeneric(AstsIncrementalGenericInfo
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX16) == 0)
 			PrintString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength, 2);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX17) == 0)
-			PrintString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength, 2);
+			PrintString("OrdType", gmdeItemInfo->OrdType, 1, 2);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX18) == 0)
 			PrintDecimal("NetChgPrevDay", &(gmdeItemInfo->NetChgPrevDay), 2);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX19) == 0)
@@ -611,7 +611,7 @@ void FastProtocolManager::PrintAstsOLSFOND(AstsOLSFONDInfo *info) {
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX8) == 0)
 			PrintString("OrderStatus", gmdeItemInfo->OrderStatus, 1, 2);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX9) == 0)
-			PrintString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength, 2);
+			PrintString("OrdType", gmdeItemInfo->OrdType, 1, 2);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX10) == 0)
 			PrintDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume), 2);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX11) == 0)
@@ -1011,7 +1011,7 @@ void FastProtocolManager::PrintAstsIncrementalOLRFOND(AstsIncrementalOLRFONDInfo
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX11) == 0)
 			PrintString("OrderStatus", gmdeItemInfo->OrderStatus, 1, 2);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX12) == 0)
-			PrintString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength, 2);
+			PrintString("OrdType", gmdeItemInfo->OrdType, 1, 2);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX13) == 0)
 			PrintDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume), 2);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX14) == 0)
@@ -1438,7 +1438,7 @@ void FastProtocolManager::PrintXmlAstsGeneric(AstsGenericInfo *info) {
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX9) == 0)
 			PrintXmlString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX10) == 0)
-			PrintXmlString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength);
+			PrintXmlString("OrdType", gmdeItemInfo->OrdType, 1);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX11) == 0)
 			PrintXmlUInt32("EffectiveTime", gmdeItemInfo->EffectiveTime);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX12) == 0)
@@ -1552,7 +1552,7 @@ void FastProtocolManager::PrintXmlAstsIncrementalGeneric(AstsIncrementalGenericI
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX16) == 0)
 			PrintXmlString("OpenCloseSettlFlag", gmdeItemInfo->OpenCloseSettlFlag, gmdeItemInfo->OpenCloseSettlFlagLength);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX17) == 0)
-			PrintXmlString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength);
+			PrintXmlString("OrdType", gmdeItemInfo->OrdType, 1);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX18) == 0)
 			PrintXmlDecimal("NetChgPrevDay", &(gmdeItemInfo->NetChgPrevDay));
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX19) == 0)
@@ -1662,7 +1662,7 @@ void FastProtocolManager::PrintXmlAstsOLSFOND(AstsOLSFONDInfo *info) {
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX8) == 0)
 			PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, 1);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX9) == 0)
-			PrintXmlString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength);
+			PrintXmlString("OrdType", gmdeItemInfo->OrdType, 1);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX10) == 0)
 			PrintXmlDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume));
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX11) == 0)
@@ -2062,7 +2062,7 @@ void FastProtocolManager::PrintXmlAstsIncrementalOLRFOND(AstsIncrementalOLRFONDI
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX11) == 0)
 			PrintXmlString("OrderStatus", gmdeItemInfo->OrderStatus, 1);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX12) == 0)
-			PrintXmlString("OrdType", gmdeItemInfo->OrdType, gmdeItemInfo->OrdTypeLength);
+			PrintXmlString("OrdType", gmdeItemInfo->OrdType, 1);
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX13) == 0)
 			PrintXmlDecimal("TotalVolume", &(gmdeItemInfo->TotalVolume));
 		if((gmdeItemInfo->NullMap & NULL_MAP_INDEX14) == 0)
@@ -3454,7 +3454,7 @@ void FastProtocolManager::EncodeAstsGenericInfo(AstsGenericInfo* info) {
 		if(((*gmdeItemInfo)->NullMap & NULL_MAP_INDEX10) != 0)
 			this->WriteNullString();
 		else
-			WriteString_Optional((*gmdeItemInfo)->OrdType, (*gmdeItemInfo)->OrdTypeLength);
+			WriteString_Optional((*gmdeItemInfo)->OrdType, 1);
 		if(((*gmdeItemInfo)->NullMap & NULL_MAP_INDEX11) != 0)
 			this->WriteNull();
 		else
@@ -3674,7 +3674,7 @@ void FastProtocolManager::EncodeAstsOLSFONDInfo(AstsOLSFONDInfo* info) {
 			if(((*gmdeItemInfo)->NullMap & NULL_MAP_INDEX9) != 0)
 				this->WriteNullString();
 			else
-				WriteString_Optional((*gmdeItemInfo)->OrdType, (*gmdeItemInfo)->OrdTypeLength);
+				WriteString_Optional((*gmdeItemInfo)->OrdType, 1);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX9)) {
 			if(((*gmdeItemInfo)->NullMap & NULL_MAP_INDEX10) != 0)
@@ -4405,7 +4405,7 @@ void FastProtocolManager::EncodeAstsIncrementalGenericInfo(AstsIncrementalGeneri
 		if(((*gmdeItemInfo)->NullMap & NULL_MAP_INDEX17) != 0)
 			this->WriteNullString();
 		else
-			WriteString_Optional((*gmdeItemInfo)->OrdType, (*gmdeItemInfo)->OrdTypeLength);
+			WriteString_Optional((*gmdeItemInfo)->OrdType, 1);
 		if(((*gmdeItemInfo)->NullMap & NULL_MAP_INDEX18) != 0)
 			this->WriteNull();
 		else
@@ -4875,7 +4875,7 @@ void FastProtocolManager::EncodeAstsIncrementalOLRFONDInfo(AstsIncrementalOLRFON
 			if(((*gmdeItemInfo)->NullMap & NULL_MAP_INDEX12) != 0)
 				this->WriteNullString();
 			else
-				WriteString_Optional((*gmdeItemInfo)->OrdType, (*gmdeItemInfo)->OrdTypeLength);
+				WriteString_Optional((*gmdeItemInfo)->OrdType, 1);
 			}
 		if(CheckOptionalFieldPresence((*gmdeItemInfo)->PresenceMap, PRESENCE_MAP_INDEX10)) {
 			if(((*gmdeItemInfo)->NullMap & NULL_MAP_INDEX13) != 0)

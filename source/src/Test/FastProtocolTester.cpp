@@ -23,6 +23,7 @@ FastProtocolTester::~FastProtocolTester() {
 }
 
 void FastProtocolTester::TestSkipToNextField() {
+    /*
     unsigned char data[16];
     data[0] = 0xff;
 
@@ -61,7 +62,7 @@ void FastProtocolTester::TestSkipToNextField() {
         time_t mic2 = w->ElapsedNanosecondsSlow();
 
         printf("%d bytes fast = %" PRIu64 " slow = %" PRIu64 "\n", i, mic, mic2);
-    }
+    }*/
 }
 
 void FastProtocolTester::TestPerformance() {

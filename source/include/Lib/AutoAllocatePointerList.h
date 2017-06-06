@@ -40,6 +40,7 @@ template<typename T> class AutoAllocatePointerList {
         prev->Next(next);
         next->Prev(prev);
     }
+#ifdef TEST_LIST
     inline void AddUsed(LinkedPointer<T> *node) {
         this->Connect(this->m_usedTail->Prev(), node);
         this->Connect(node, this->m_usedTail);
@@ -47,6 +48,7 @@ template<typename T> class AutoAllocatePointerList {
     inline void RemoveUsed(LinkedPointer<T> *node) {
         this->Connect(node->Prev(), node->Next());
     }
+#endif
 public:
     AutoAllocatePointerList(int capacity, int additionalCapacity) {
         this->m_count = 0;
@@ -85,7 +87,9 @@ public:
         this->m_count++;
         LinkedPointer<T> *node = this->m_head;
         this->m_head = this->m_head->Next();
+#ifdef TEST_LIST
         this->AddUsed(node);
+#endif
         if(this->m_head == 0)
             this->AppendAdditionalItemsToList();
         return node;
@@ -94,7 +98,9 @@ public:
         this->m_count++;
         LinkedPointer<T> *node = this->m_head;
         this->m_head = this->m_head->Next();
+#ifdef TEST_LIST
         this->AddUsed(node);
+#endif
         if(this->m_head == 0)
             this->AppendAdditionalItemsToList();
         return node;
@@ -117,31 +123,36 @@ public:
     }
 
     inline void FreeItemUnsafe(LinkedPointer<T> *node) {
-#ifdef  TEST
+#ifdef  TEST_LIST
         if(this->Contains(node))
             throw;
 #endif
         this->m_count--;
-        this->m_tail->Next(node);
-        this->m_tail = node;
+
+#ifdef TEST_LIST
         this->RemoveUsed(node);
-        this->m_tail->Next(0);
-#ifdef TEST
+#endif
+        node->Next(this->m_head);
+        this->m_head = node;
+        node->Prev(0);
+#ifdef TEST_LIST
         if(this->m_count < 0)
             throw;
 #endif
     }
     inline void FreeItem(LinkedPointer<T> *node) {
-#ifdef  TEST
+#ifdef  TEST_LIST
         if(this->Contains(node))
             throw;
 #endif
         this->m_count--;
-        this->m_tail->Next(node);
-        this->m_tail = node;
+#ifdef TEST_LIST
         this->RemoveUsed(node);
-        this->m_tail->Next(0);
-#ifdef TEST
+#endif
+        node->Next(this->m_head);
+        this->m_head = node;
+        node->Prev(0);
+#ifdef TEST_LIST
         if(this->m_count < 0)
             throw;
 #endif

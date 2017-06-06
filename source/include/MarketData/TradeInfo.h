@@ -88,7 +88,6 @@ public:
     }
 
     inline LinkedPointer<T>* AddTrade(T *item) {
-        item->Used = true;
         return this->m_trades->Add(item);
     }
 
@@ -124,7 +123,6 @@ public:
         this->ObtainEntriesQueue();
         this->m_entryInfo->StartRptSeq(this->m_rptSeq + 1);
         this->m_entryInfo->AddEntry(info, info->RptSeq);
-        info->Used = true;
     }
 
     inline void ForceProcessMessage(T *info) {

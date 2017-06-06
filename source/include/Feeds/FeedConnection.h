@@ -226,15 +226,18 @@ protected:
             this->m_symbolsForts[i] = new LinkedPointer<FortsSecurityDefinitionInfo>();
         this->m_symbolsCount = 0;
         this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
-        this->m_symbolManager = new SymbolManager(RobotSettings::Default->MarketDataMaxSymbolsCountForts, true);
+        this->m_symbolManager = new SymbolManager(RobotSettings::Default->MarketDataMaxSymbolsCountForts, true, SymbolHashType::Last4Chars);
     }
     void InitializeSecurityDefinition() {
+        InitializeSecurityDefinition(SymbolHashType::Last4Chars);
+    }
+    void InitializeSecurityDefinition(SymbolHashType hashType) {
         this->m_symbols = new LinkedPointer<AstsSecurityDefinitionInfo>*[RobotSettings::Default->MaxSecurityDefinitionCount];
         for(int i = 0; i < RobotSettings::Default->MaxSecurityDefinitionCount; i++)
             this->m_symbols[i] = new LinkedPointer<AstsSecurityDefinitionInfo>();
         this->m_symbolsCount = 0;
         this->m_idfMode = FeedConnectionSecurityDefinitionMode::sdmCollectData;
-        this->m_symbolManager = new SymbolManager(RobotSettings::Default->MarketDataMaxSymbolsCount);
+        this->m_symbolManager = new SymbolManager(RobotSettings::Default->MarketDataMaxSymbolsCount, hashType);
     }
     void DisposeSecurityDefinitionForts() {
         for(int i = 0; i < RobotSettings::Default->MaxSecurityDefinitionCount; i++)
@@ -377,7 +380,7 @@ protected:
                 return false;
         }
 
-        printf("%s \"%s\"\n", this->m_idName, DebugInfoManager::Default->BinaryToString(this->m_recvBufferCurrentPos, size));
+        //printf("%s \"%s\"\n", this->m_idName, DebugInfoManager::Default->BinaryToString(this->m_recvBufferCurrentPos, size));
         info->m_address = this->m_recvBufferCurrentPos + 4;
         info->m_size = size;
         this->NextRecv(size);
@@ -416,7 +419,7 @@ protected:
             this->m_endMsgSeqNum = msgSeqNum;
         info->m_address = this->m_recvBufferCurrentPos + 4;
         info->m_size = size;
-        printf("%s \"%s\"\n", this->m_idName, DebugInfoManager::Default->BinaryToString(this->m_recvBufferCurrentPos, size));
+        //printf("%s \"%s\"\n", this->m_idName, DebugInfoManager::Default->BinaryToString(this->m_recvBufferCurrentPos, size));
         this->NextRecv(size);
         return true;
     }
@@ -427,7 +430,7 @@ protected:
             FeedConnectionMessageInfo *info = this->m_packets[localMsgSeqNum];
             info->m_address = this->m_recvBufferCurrentPos + 4;
             info->m_size = size;
-            printf("%s \"%s\"\n", this->m_idName, DebugInfoManager::Default->BinaryToString(this->m_recvBufferCurrentPos, size));
+            //printf("%s \"%s\"\n", this->m_idName, DebugInfoManager::Default->BinaryToString(this->m_recvBufferCurrentPos, size));
             this->NextRecv(size);
             return true;
         }
@@ -653,8 +656,6 @@ protected:
 #endif
         AstsOLSFONDInfo *info = this->m_fastProtocolManager->DecodeAstsOLSFOND();
         this->m_incremental->OrderFond()->ProcessSnapshot(info);
-        info->Used = false;
-        info->ReleaseUnused();
         return true;
     }
 
@@ -690,8 +691,6 @@ protected:
 #endif
         AstsOLSCURRInfo *info = this->m_fastProtocolManager->DecodeAstsOLSCURR();
         this->m_incremental->OrderCurr()->ProcessSnapshot(info);
-        info->Used = false;
-        info->ReleaseUnused();
         return true;
     }
 
@@ -727,8 +726,6 @@ protected:
 #endif
         AstsTLSFONDInfo *info = this->m_fastProtocolManager->DecodeAstsTLSFOND();
         this->m_incremental->TradeFond()->ProcessSnapshot(info);
-        info->Used = false;
-        info->ReleaseUnused();
         return true;
     }
 
@@ -764,8 +761,6 @@ protected:
 #endif
         AstsTLSCURRInfo *info = this->m_fastProtocolManager->DecodeAstsTLSCURR();
         this->m_incremental->TradeCurr()->ProcessSnapshot(info);
-        info->Used = false;
-        info->ReleaseUnused();
         return true;
     }
 
@@ -801,8 +796,6 @@ protected:
 #endif
         AstsGenericInfo *info = this->m_fastProtocolManager->DecodeAstsGeneric();
         this->m_incremental->StatisticFond()->ProcessSnapshot(info);
-        info->Used = false;
-        info->ReleaseUnused();
         return true;
     }
 
@@ -838,8 +831,6 @@ protected:
 #endif
         AstsGenericInfo *info = this->m_fastProtocolManager->DecodeAstsGeneric();
         this->m_incremental->StatisticCurr()->ProcessSnapshot(info);
-        info->Used = false;
-        info->ReleaseUnused();
         return true;
     }
 
@@ -890,9 +881,6 @@ protected:
         this->PrepareDecodeSnapshotMessageForts(index);
         FortsDefaultSnapshotMessageInfo *info = this->m_fastProtocolManager->DecodeFortsDefaultSnapshotMessage();
         this->m_incremental->OrderBookForts()->ProcessSnapshotForts(info);
-        info->Used = false;
-        info->ReleaseUnused();
-        //printf("%s  apply part for security id = %" PRIu64 "  index = %d\n", this->m_idName, info->SecurityID, index);
         return true;
     }
 
@@ -933,8 +921,6 @@ protected:
         FortsDefaultSnapshotMessageInfo *info = this->m_fastProtocolManager->DecodeFortsDefaultSnapshotMessage();
         //printf("%s  apply part for security id = %" PRIu64 "  index = %d\n", this->m_idName, info->SecurityID, index);
         this->m_incremental->TradeForts()->ProcessSnapshotForts(info);
-        info->Used = false;
-        info->ReleaseUnused();
         return true;
     }
 
@@ -2515,7 +2501,7 @@ public:
         }
         fread(&(this->m_idfMaxMsgSeqNo), sizeof(int), 1, fp);
         for(int i = 1; i <= this->m_idfMaxMsgSeqNo; i++) {
-            unsigned short size = 0;
+            unsigned int size = 0;
             fread(&size, sizeof(int), 1, fp);
             this->m_packets[i]->m_size = size;
             fread(this->m_recvBufferCurrentPos, 1, this->m_packets[i]->m_size, fp);
@@ -2737,9 +2723,21 @@ protected:
         this->m_orderTableFond->ProcessIncremental(info, index, info->TradingSessionIDUint);
     }
 
+    inline void OnIncrementalRefresh_OLR_FOND_Cached(AstsOLSFONDItemInfo *info) {
+        if(info->PresenceMap == 0)
+            this->m_orderTableFond->ProcessIncremental(info);
+        return this->OnIncrementalRefresh_OLR_FOND(info);
+    }
+
     inline void OnIncrementalRefresh_OLR_CURR(AstsOLSCURRItemInfo *info) {
         int index = this->m_symbolManager->GetSymbol(info->Symbol, info->SymbolLength)->m_index;
         this->m_orderTableCurr->ProcessIncremental(info, index, info->TradingSessionIDUint);
+    }
+
+    inline void OnIncrementalRefresh_OLR_CURR_Cached(AstsOLSCURRItemInfo *info) {
+        if(info->PresenceMap == 0)
+            this->m_orderTableCurr->ProcessIncremental(info);
+        return this->OnIncrementalRefresh_OLR_CURR(info);
     }
 
     inline void OnIncrementalRefresh_TLR_FOND(AstsTLSFONDItemInfo *info) {
@@ -2796,10 +2794,15 @@ protected:
         ProgramStatistics::Total->Inc(Counters::cFondOlr);
 #endif
         this->OnIncrementalRefresh_OLR_FOND(info->GroupMDEntries[0]);
-        for(int i = 1; i < info->GroupMDEntriesCount; i++) {
-            this->OnIncrementalRefresh_OLR_FOND(info->GroupMDEntries[i]);
+        if(info->GroupMDEntriesCount == 1)
+            return;
+        this->OnIncrementalRefresh_OLR_FOND(info->GroupMDEntries[1]);
+        if(info->GroupMDEntriesCount == 2)
+            return;
+        for(int i = 2; i < info->GroupMDEntriesCount; i++) {
+            this->OnIncrementalRefresh_OLR_FOND_Cached(info->GroupMDEntries[i]);
         }
-        info->ReleaseUnusedChildren();
+        //info->ReleaseUnusedChildren();
     }
 
     inline void OnIncrementalRefresh_OLR_CURR(AstsIncrementalOLRCURRInfo *info) {
@@ -2808,9 +2811,15 @@ protected:
         ProgramStatistics::Total->Inc(Counters::cCurrOlr);
 #endif
         this->OnIncrementalRefresh_OLR_CURR(info->GroupMDEntries[0]);
-        for(int i = 1; i < info->GroupMDEntriesCount; i++)
-            this->OnIncrementalRefresh_OLR_CURR(info->GroupMDEntries[i]);
-        info->ReleaseUnusedChildren();
+        if(info->GroupMDEntriesCount == 1)
+            return;
+        this->OnIncrementalRefresh_OLR_CURR(info->GroupMDEntries[1]);
+        if(info->GroupMDEntriesCount == 2)
+            return;
+        for(int i = 2; i < info->GroupMDEntriesCount; i++) {
+            this->OnIncrementalRefresh_OLR_CURR_Cached(info->GroupMDEntries[i]);
+        }
+        //info->ReleaseUnusedChildren();
     }
 
     inline void OnIncrementalRefresh_TLR_FOND(AstsIncrementalTLRFONDInfo *info) {
@@ -2822,7 +2831,6 @@ protected:
         for(int i = 1; i < info->GroupMDEntriesCount; i++) {
             this->OnIncrementalRefresh_TLR_FOND(info->GroupMDEntries[i]);
         }
-        info->ReleaseUnusedChildren();
     }
 
     inline void OnIncrementalRefresh_TLR_CURR(AstsIncrementalTLRCURRInfo *info) {
@@ -2834,7 +2842,6 @@ protected:
         for(int i = 1; i < info->GroupMDEntriesCount; i++) {
             this->OnIncrementalRefresh_TLR_CURR(info->GroupMDEntries[i]);
         }
-        info->ReleaseUnusedChildren();
     }
 
     inline void OnIncrementalRefresh_MSR_FOND(AstsIncrementalMSRFONDInfo *info) {
@@ -2846,7 +2853,6 @@ protected:
         for(int i = 1; i < info->GroupMDEntriesCount; i++) {
             this->OnIncrementalRefresh_MSR_FOND(info->GroupMDEntries[i]);
         }
-        info->ReleaseUnusedChildren();
     }
 
     inline void OnIncrementalRefresh_MSR_CURR(AstsIncrementalMSRCURRInfo *info) {
@@ -2858,13 +2864,11 @@ protected:
         for(int i = 1; i < info->GroupMDEntriesCount; i++) {
             this->OnIncrementalRefresh_MSR_CURR(info->GroupMDEntries[i]);
         }
-        info->ReleaseUnusedChildren();
     }
 
     inline void OnTradingSessionStatusForts(FortsTradingSessionStatusInfo *info) {
         if(this->m_fortsTradingSessionStatus != 0)
             this->m_fortsTradingSessionStatus->Clear();
-        info->Used = true;
         this->m_fortsTradingSessionStatus = info;
     }
 
@@ -2876,7 +2880,6 @@ protected:
         for(int i = 0; i < info->MDEntriesCount; i++) {
             this->OnIncrementalRefresh_FORTS_OBR(info->MDEntries[i]);
         }
-        info->ReleaseUnusedChildren();
     }
 
     inline void OnIncrementalRefresh_FORTS_TLR(FortsDefaultIncrementalRefreshMessageInfo *info) {
@@ -2887,7 +2890,6 @@ protected:
         for(int i = 0; i < info->MDEntriesCount; i++) {
             this->OnIncrementalRefresh_FORTS_TLR(info->MDEntries[i]);
         }
-        info->ReleaseUnusedChildren();
     }
 
     inline void OnHearthBeatMessage(AstsHeartbeatInfo *info) {
@@ -3230,6 +3232,7 @@ public:
         }
     }
 
+    __attribute_noinline__
     void AddSymbol(LinkedPointer<AstsSecurityDefinitionInfo> *ptr, int index) {
         AstsSecurityDefinitionInfo *info = ptr->Data();
         if(this->m_orderTableFond != 0) {
@@ -3331,31 +3334,31 @@ public:
     }
 
     inline void AddSecurityDefinitionToList(FortsSecurityDefinitionInfo *info, int index) {
-        info->Used = true;
         this->m_symbolsForts[index]->Data(info);
         this->m_symbolsCount = index + 1;
     }
 
     inline void AddSecurityDefinitionToList(AstsSecurityDefinitionInfo *info, int index) {
-        info->Used = true;
         this->m_symbols[index]->Data(info);
         this->m_symbolsCount = index + 1;
     }
 
     inline void MakeUsed(AstsSecurityDefinitionMarketSegmentGrpItemInfo *m, bool used) {
-        m->Used = used;
-        AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
-        for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
-            (*trading)->Used = used;
-        }
+        //TODO NO NEED
+        //m->Used = used;
+        //AstsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo **trading = m->TradingSessionRulesGrp;
+        //for(int j = 0; j < m->TradingSessionRulesGrpCount; j++, trading++) {
+        //    (*trading)->Used = used;
+        //}
     }
 
     inline void MakeUsed(AstsSecurityDefinitionInfo *info, bool used) {
-        info->Used = used;
+        //TODO NO NEED
+        //info->Used = used;
 
-        AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
-        for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++)
-            MakeUsed(*market, used);
+        //AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
+        //for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++)
+        //   MakeUsed(*market, used);
     }
 
     inline void MergeSecurityDefinition(AstsSecurityDefinitionInfo *parent, AstsSecurityDefinitionInfo *child) {
@@ -3422,7 +3425,6 @@ public:
 
         SymbolInfo *smb = this->m_symbolManager->GetSymbol(info->SecurityID, &wasNewlyAdded);
 
-        info->Used = true;
         if(wasNewlyAdded) {
             this->AddSecurityDefinitionToList(info, smb->m_index);
             printf("add forts security definition %" PRIu64 " symbol = %s index = %d  status = %d\n", info->SecurityID, DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0), smb->m_index, info->SecurityTradingStatus);
@@ -3431,8 +3433,6 @@ public:
             printf("update forts security definition %" PRIu64 " symbol = %s index = %d\n", info->SecurityID, DebugInfoManager::Default->GetString(info->Symbol, info->SymbolLength, 0), smb->m_index);
             this->UpdateSecurityDefinition(info);
         }
-        info->ReleaseUnused();
-
         return true;
     }
 
@@ -3455,8 +3455,6 @@ public:
             this->MergeSecurityDefinition(ptr->Data(), info);
             //printf("merge sec_def %d. sc = %d\n", info->MsgSeqNum, info->MarketSegmentGrp[0]->TradingSessionRulesGrp[0]->Allocator->Count()); // TODO
         }
-        info->ReleaseUnused();
-
         return true;
     }
 
@@ -3650,7 +3648,6 @@ public:
             return;
         AstsSecurityDefinitionInfo *fi = this->m_fastProtocolManager->DecodeAstsSecurityDefinition();
         this->UpdateSecurityDefinition(fi);
-        fi->ReleaseUnused();
     }
 
     inline void UpdateSecurityDefinitionForts(FeedConnectionMessageInfo *info) {
@@ -3660,7 +3657,6 @@ public:
             return;
         FortsSecurityDefinitionInfo *fi = this->m_fastProtocolManager->DecodeFortsSecurityDefinition();
         this->UpdateSecurityDefinition(fi);
-        fi->ReleaseUnused();
     }
 
     inline void UpdateSecurityDefinition(FeedConnectionMessageInfo *info) {
@@ -3687,10 +3683,7 @@ public:
     }
 
     void ReleaseMarketSegmentGroup(AstsSecurityDefinitionMarketSegmentGrpItemInfo *m) {
-        m->Used = false;
-        for(int i = 0; i < m->TradingSessionRulesGrpCount; i++) {
-            m->TradingSessionRulesGrp[i]->Used = false;
-        }
+        m->Clear();
     }
 
     inline void ReplaceMarketSegmentGroupById(AstsSecurityDefinitionInfo *info, AstsSecurityDefinitionMarketSegmentGrpItemInfo *m) {
@@ -3701,7 +3694,6 @@ public:
 
             this->ReleaseMarketSegmentGroup(info->MarketSegmentGrp[i]);
             info->MarketSegmentGrp[i] = m;
-            m->Used = true;
             return;
         }
     }
@@ -3712,7 +3704,6 @@ public:
         int mcCurr = curr->MarketSegmentGrpCount;
         for(int i = 0; i < mcCurr; i++) {
             prev->MarketSegmentGrp[mcPrev + i] = curr->MarketSegmentGrp[i];
-            curr->MarketSegmentGrp[i]->Used = true;
         }
         for(int i = 0; i < mcPrev; i++) {
             curr->MarketSegmentGrp[i] = prev->MarketSegmentGrp[i];
@@ -3722,18 +3713,13 @@ public:
         for(int i = mcPrev; i < count; i++) {
             ReplaceMarketSegmentGroupById(curr, prev->MarketSegmentGrp[i]);
         }
-        curr->Used = true;
-
-        prev->Used = false;
-        prev->ReleaseUnused();
+        prev->Allocator->FreeItem(prev->Pointer);
         ptr->Data(curr);
     }
 
     inline void UpdateSecurityDefinition(LinkedPointer<FortsSecurityDefinitionInfo> *ptr, FortsSecurityDefinitionInfo *curr) {
         FortsSecurityDefinitionInfo *prev = ptr->Data();
-        prev->Used = false;
-        curr->Used = true;
-        prev->ReleaseUnused();
+        prev->Clear();
         ptr->Data(curr);
     }
 

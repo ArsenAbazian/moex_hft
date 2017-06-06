@@ -1221,7 +1221,6 @@ namespace prebuild {
 			}
 			foreach(StructureInfo str in structures) {
 				WriteLine("\t\tthis->" + str.PrevValueName + " = this->" + str.GetFreeMethodName + "();");
-				WriteLine("\t\tthis->" + str.PrevValueName + "->Used = true;");
 			}
 			WriteLine("\t}");
 
@@ -1419,17 +1418,17 @@ namespace prebuild {
 			InitializeSnapshotInfoFields(templatesNode);
 			foreach(SnapshotFieldInfo info in SnapshotInfoFields) {
 				if (info.FieldType.ToLower() == "uint32" || info.FieldType.ToLower() == "int32") {
-					CheckWriteAlignmentBy (offset, 4);
+					CheckWriteAlignmentBy (offset, 4, false);
 					WriteLine ("\t" + info.FieldType + StuctFieldsSpacing + info.FieldName + "; // offset = " + offset.Offset);
 					offset.Offset += 4;
 				} else if (info.FieldType.ToLower() == "int64" || info.FieldType.ToLower() == "uint64") {
-					CheckWriteAlignmentBy (offset, 8);
+					CheckWriteAlignmentBy (offset, 8, false);
 					WriteLine ("\t" + info.FieldType + StuctFieldsSpacing + info.FieldName + "; // offset = " + offset.Offset);
 					offset.Offset += 8;
 				}
 				else if(info.FieldType.ToLower() == "string" ) {
 					if (info.FieldName == "Symbol") {
-						CheckWriteAlignmentBy (offset, 16);
+						CheckWriteAlignmentBy (offset, 16, false);
 						WriteLine ("\t" + "char" + StuctFieldsSpacing + info.FieldName + "[16] __attribute__((aligned(16))); // offset = " + offset.Offset);
 						offset.Offset += 16;
 						WriteLine ("\t" + "int\t" + StuctFieldsSpacing + info.FieldName + "Length; // offset = " + offset.Offset);
@@ -1440,7 +1439,7 @@ namespace prebuild {
 					}
 				}
 			}
-			CheckWriteAlignmentBy (offset, 16);
+			CheckWriteAlignmentBy (offset, 16, false);
 			WriteLine("\t" + Prefix + "SnapshotInfo() {");
 			WriteLine("\t\tmemset(this, 0, sizeof(" + Prefix + "SnapshotInfo));");
 			WriteLine("\t}");
@@ -1976,12 +1975,13 @@ namespace prebuild {
 			public int PaddingIndex { get; set; }
 		}
 
-		void CheckWriteAlignmentBy(StructureFieldOffsetInfo info, int align) {
+		void CheckWriteAlignmentBy(StructureFieldOffsetInfo info, int align, bool onlyCalculate) {
 			if (!IsAligned (info.Offset, align)) {
 				int paddingBytes = CalcPaddingBytes (info.Offset, align);
 				if (paddingBytes == 0)
 					return;
-				WritePaddingBytes (info.PaddingIndex, paddingBytes);
+				if(!onlyCalculate)
+					WritePaddingBytes (info.PaddingIndex, paddingBytes);
 				info.Offset += paddingBytes;
 				info.PaddingIndex++;
 			}
@@ -2000,7 +2000,10 @@ namespace prebuild {
 			return list.Where((f) => (!HasAttribute(f, "remove")) && (f.NodeType != XmlNodeType.Comment)).ToList();
 		}
 
-		private  void WriteStructureFieldsDefinitionCode (StructureInfo info, string parentName) {
+		private  int WriteStructureFieldsDefinitionCode (StructureInfo info, string parentName) {
+			return WriteStructureFieldsDefinitionCode (info, parentName, false);
+		}
+		private  int WriteStructureFieldsDefinitionCode (StructureInfo info, string parentName, bool onlyCalculateSize) {
 			StructureFieldOffsetInfo offset = new StructureFieldOffsetInfo ();
 			offset.Offset = 0;
 
@@ -2008,67 +2011,80 @@ namespace prebuild {
 			sortedFields = RemoveUnusedFields (sortedFields);
 			foreach (XmlNode field in sortedFields) {
 				if (field.Name == "sequence") {
-					CheckWriteAlignmentBy (offset, 4);
+					CheckWriteAlignmentBy (offset, 4, onlyCalculateSize);
 					WriteCount (field, offset.Offset);
 					offset.Offset += 4;
-					CheckWriteAlignmentBy (offset, 8);
-					WriteSequence (field, parentName, offset.Offset);
-					offset.Offset += 8 * 256;
+					CheckWriteAlignmentBy (offset, 8, onlyCalculateSize);
+					if(!onlyCalculateSize)
+						WriteSequence (field, parentName, offset.Offset);
+					offset.Offset += 8 * GetSequenceMaxCount(field);
 				} else if (field.Name == "decimal") {
-					CheckWriteAlignmentBy (offset, 8);
-					WriteDecimalField (field, offset.Offset);
+					CheckWriteAlignmentBy (offset, 8, onlyCalculateSize);
+					if(!onlyCalculateSize)
+						WriteDecimalField (field, offset.Offset);
 					offset.Offset += 8 + 8;
 				} else if (field.Name == "uInt64") {
-					CheckWriteAlignmentBy (offset, 8);
-					WriteUint64Field (field, offset.Offset);
+					CheckWriteAlignmentBy (offset, 8, onlyCalculateSize);
+					if(!onlyCalculateSize)
+						WriteUint64Field (field, offset.Offset);
 					offset.Offset += 8;
 				} else if (field.Name == "int64") {
-					CheckWriteAlignmentBy (offset, 8);
-					WriteInt64Field (field, offset.Offset);
+					CheckWriteAlignmentBy (offset, 8, onlyCalculateSize);
+					if(!onlyCalculateSize)
+						WriteInt64Field (field, offset.Offset);
 					offset.Offset += 8;
 				} else if (field.Name == "uInt32") {
-					CheckWriteAlignmentBy (offset, 4);
-					WriteUint32Field (field, offset.Offset);
+					CheckWriteAlignmentBy (offset, 4, onlyCalculateSize);
+					if(!onlyCalculateSize)
+						WriteUint32Field (field, offset.Offset);
 					offset.Offset += 4;
 				} else if (field.Name == "int32") {
-					CheckWriteAlignmentBy (offset, 4);
-					WriteInt32Field (field, offset.Offset);
+					CheckWriteAlignmentBy (offset, 4, onlyCalculateSize);
+					if(!onlyCalculateSize)
+						WriteInt32Field (field, offset.Offset);
 					offset.Offset += 4;
 				} else if (IsString (field)) {
 					if (!HasAttribute (field, "fixed_size")) {
 						// write size
-						CheckWriteAlignmentBy (offset, 4);
-						WriteLength (field, offset.Offset);
+						CheckWriteAlignmentBy (offset, 4, onlyCalculateSize);
+						if(!onlyCalculateSize)
+							WriteLength (field, offset.Offset);
 						offset.Offset += 4;
 					}
 					if (HasAttribute (field, "aligned"))
-						CheckWriteAlignmentBy (offset, Convert.ToInt32 (field.Attributes ["aligned"].Value));
+						CheckWriteAlignmentBy (offset, Convert.ToInt32 (field.Attributes ["aligned"].Value), onlyCalculateSize);
 					else if(HasAttribute(field, "union"))
-						CheckWriteAlignmentBy (offset, GetUnionSize(field));
-					WriteStringDefinition (field, offset.Offset);
+						CheckWriteAlignmentBy (offset, GetUnionSize(field), onlyCalculateSize);
+					if(!onlyCalculateSize)
+						WriteStringDefinition (field, offset.Offset);
 					offset.Offset += GetMaxStringSize (field);
 				} else if (IsByteVector (field)) {
-					CheckWriteAlignmentBy (offset, 4);
-					WriteLength (field, offset.Offset);
+					CheckWriteAlignmentBy (offset, 4, onlyCalculateSize);
+					if(!onlyCalculateSize)
+						WriteLength (field, offset.Offset);
 					offset.Offset += 4;
-					WriteByteVectorField (field, offset.Offset);
+					if(!onlyCalculateSize)
+						WriteByteVectorField (field, offset.Offset);
 					offset.Offset += GetMaxStringSize (field);
 				}
 			}
-			CheckWriteAlignmentBy (offset, 8);
+			CheckWriteAlignmentBy (offset, 8, onlyCalculateSize);
+			if (onlyCalculateSize)
+				return offset.Offset;
 			WritePresenceMapDefinition();
 			WriteNullMapDefinition();
 			WritePointerCode(info);
 			offset.Offset += 8 + 8 + 8 + 8;
-			WriteLine("\tbool" + StuctFieldsSpacing + "Used;");
-			offset.Offset++;
-			CheckWriteAlignmentBy (offset, 16);
+			CheckWriteAlignmentBy (offset, 16, onlyCalculateSize);
 			WriteLine("");
 			WriteLine("\t" + info.Name + "() {");
 			WriteLine ("\t\tmemset(this, 0, sizeof(" + info.Name + "));");
 			WriteLine("\t}");
 			WriteLine("\t~" + info.Name + "() { }");
+
+			WriteAssignCode(info);
 			WriteClearCode(info);
+			return offset.Offset;
 		}
 
 		private void WriteClearFieldsCode(StructureInfo info) {
@@ -2087,12 +2103,31 @@ namespace prebuild {
 			WriteLine("\t\tthis->" + Name(field) + "Length = 0;");
 		}
 
+		int CalcStructureSize(StructureInfo info) {
+			return WriteStructureFieldsDefinitionCode (info, "", true);
+		}
+
+		private void WriteAssignCode(StructureInfo info) { 
+			WriteLine ("\tinline void Assign(" + info.Name + " *item) {");
+			int size = CalcStructureSize(info);
+			WriteLine ("\t\t// size = " + size);
+			int count = size / 16;
+			if (size % 16 != 0)
+				count++;
+			WriteLine ("\t\t__m128 *dst = (__m128*)this;");
+			WriteLine ("\t\t__m128 *src = (__m128*)item;");
+			WriteLine ("\t\tfor(int i = 0; i < " + count + "; i++, src ++, dst ++) {");
+				WriteLine ("\t\t\t__m128 t = *src;");
+				WriteLine ("\t\t\t*(dst) = t;");
+			WriteLine ("\t\t}");
+			WriteLine("\t}");
+		}
+
 		private void WriteClearCode(StructureInfo info) {
 			WriteLine("\tinline void Clear() {");
 
 			if (!info.AllowCache) {
 				WriteLine ("\t\tthis->Allocator->FreeItemUnsafe(this->Pointer);");
-				WriteLine("\t\tthis->Used = false;");
 			}
 			foreach(XmlNode field in info.Fields) {
 				if(field.Name != "sequence")
@@ -2103,8 +2138,6 @@ namespace prebuild {
 			WriteLine("\t}");			
 
 			WriteLine("\tinline void ReleaseUnused() {");
-			WriteLine("\t\tif(this->Used)");
-			WriteLine("\t\t\treturn;");
 			WriteLine("");
 			if(!info.AllowCache)
 				WriteLine("\t\tthis->Allocator->FreeItemUnsafe(this->Pointer);");
@@ -2208,7 +2241,8 @@ namespace prebuild {
 				attribute.Name == "remove" ||
 				attribute.Name == "aligned" || 
 				attribute.Name == "order" || 
-				attribute.Name == "max_count";
+				attribute.Name == "max_count" || 
+				attribute.Name == "process_empty_pmap";
 		}
 		StructureInfo GetOriginalStruct(XmlNode field) {
 			if(field.ParentNode == null || field.ParentNode.Attributes["name"] == null)
@@ -2347,7 +2381,7 @@ namespace prebuild {
 			WriteLine ("\t\tUINT64 nmap" + LevelCount + " = 0;");
 			WriteLine("");
 			foreach(XmlNode value in template.ChildNodes) {
-				ParseValue(info, value, "info", templateName, "\t\t");
+				ParseValue(info, value, "info", templateName, "\t\t", false);
 			}
 			if(GetMaxPresenceBitCount(template) != 0)
 				WriteCopyPresenceMap("\t\t", "info");
@@ -2487,7 +2521,7 @@ namespace prebuild {
 			StructureInfo info = new StructureInfo() { Node = template, NameCore = templateName }; 
 			info.Prefix = Prefix;
 			foreach(XmlNode value in template.ChildNodes) {
-				ParseValue(info, value, "info", templateName, "\t\t", true, SnapshotInfoFields, parsed);
+				ParseValue(info, value, "info", templateName, "\t\t", true, SnapshotInfoFields, parsed, false);
 				if(parsed.Count == SnapshotInfoFields.Count)
 					break;
 			}
@@ -2771,6 +2805,7 @@ namespace prebuild {
 		}
 
 		private  void ParseSequence (StructureInfo str, XmlNode value, string objectValueName, string parentClassCoreName, string tabString) {
+			bool process_empty_pmap = HasAttribute (value, "process_empty_pmap");
 			StructureInfo info = GetOriginalStruct(value);
 			if(info == null)
 				info = GetStruct(value);
@@ -2793,18 +2828,14 @@ namespace prebuild {
 			WriteLine("");
 
 			string i = itemInfo + "Index";
-			WriteLine (tabString + "int " + i + " = 0;");
-			WriteLine (tabString + "do {");
+			WriteLine (tabString + "for(int " + i + " = 0; " + i + " < " + count + "; " + i + "++) {");
 			WriteLine (tabString + "\t" + itemInfo + " = " + info.GetFreeMethodName + "();");
 			WriteLine (tabString + "\tfor(int i = 0; i < sizeof(" + info.Name + "); i += 64)");
 			WriteLine (tabString + "\t\t__builtin_prefetch(((char*)" + itemInfo + ") + i, 0, _MM_HINT_T0);");
 			WriteLine (tabString + "\t" + objectValueName + "->" + Name(value) + "[" + i + "] = " + itemInfo + ";");
-			WriteLine (tabString + "\t" + i + "++;");
 			WriteLine (tabString + "}");
-			WriteLine (tabString + "while(" + i + " < " + count + ");");
 
-			WriteLine (tabString + i + " = 0;");
-			WriteLine (tabString + "do {");
+			WriteLine (tabString + "for(int " + i + " = 0; " + i + " < " + count + "; " + i + "++) {");
 			WriteLine(tabString + "\t" + itemInfo + " = " + objectValueName + "->" + Name(value) + "[" + i + "];");
 			LevelCount++;
 			if(GetMaxPresenceBitCount(value) > 0) {
@@ -2813,21 +2844,43 @@ namespace prebuild {
 			}
 			WriteLine(tabString + "\tUINT64 nmap" + LevelCount + " = 0;");
 			WriteLine("");
+			if (process_empty_pmap) {
+				WriteLine(tabString + "\tif(pmap" + LevelCount + " != 0) {");
+				tabString += "\t";
+			}
 			foreach(XmlNode node in value.ChildNodes) {
-				if(node.Name == "length")
+				if (node.Name == "length")
 					continue;
-				
-				ParseValue(info, node, itemInfo, parentClassCoreName + Name(value), tabString + "\t");
+				ParseValue(info, node, itemInfo, parentClassCoreName + Name(value), tabString + "\t", false);
 			}
 			if (GetMaxPresenceBitCount (value) > 0) {
 				WriteLine (tabString + "\t" + itemInfo + "->PresenceMap = pmap" + LevelCount + ";");
 			}
 			WriteLine (tabString + "\t" + itemInfo + "->NullMap = nmap" + LevelCount + ";");
-			LevelCount--;
+			if (process_empty_pmap) {
+				WriteLine (tabString + "}");
+				tabString = tabString.Substring (1);
+				WriteLine (tabString + "\telse {");
+				tabString += "\t";
+
+				WriteLine(tabString + "\t" + itemInfo + "->Assign(this->" + info.PrevValueName + ");");
+				foreach(XmlNode node in value.ChildNodes) {
+					if (node.Name == "length")
+						continue;
+					ParseValue(info, node, itemInfo, parentClassCoreName + Name(value), tabString + "\t", true);
+				}
+
+				if (GetMaxPresenceBitCount (value) > 0) {
+					WriteLine (tabString + "\t" + itemInfo + "->PresenceMap = pmap" + LevelCount + ";");
+				}
+				WriteLine (tabString + "\t" + itemInfo + "->NullMap = this->" + info.PrevValueName + "->NullMap;");
+
+				WriteLine (tabString + "}");
+				tabString = tabString.Substring (1);
+			}
 			WriteLine(tabString + "\tthis->" + info.PrevValueName + " = " + itemInfo + ";");
-			WriteLine (tabString + "\t" + i + "++;");
+			LevelCount--;
 			WriteLine(tabString + "}");
-			WriteLine(tabString + "while(" + i + " < " + count + ");");
 			WriteLine("");
 		}
 
@@ -3119,13 +3172,16 @@ namespace prebuild {
 			}
 			else {
 				string method = "CopyString";
+				method = GetMethodName (value, "CopyString"); 
 
 				bool isFixedSize = HasAttribute (value, "fixed_size");
 				if (isFixedSize) {
-					method = GetMethodName (value, "CopyString"); 
 					WriteLine (tabString + "this->" + method + "(" + info + "->" + Name (value) + ", " + str.PrevValueName + "->" + Name (value) + ");");				
 				} else {
-					WriteLine (tabString + "this->" + method + "(" + info + "->" + Name (value) + ", " + str.PrevValueName + "->" + Name (value) + ", " + str.PrevValueName + "->" + Name (value) + "Length" + ");");
+					if(HasAttribute(value, "predict"))
+						WriteLine (tabString + "this->" + method + "(" + info + "->" + Name (value) + ", " + str.PrevValueName + "->" + Name (value) + ");");
+					else 
+						WriteLine (tabString + "this->" + method + "(" + info + "->" + Name (value) + ", " + str.PrevValueName + "->" + Name (value) + ", " + str.PrevValueName + "->" + Name (value) + "Length" + ");");
 					WriteLine (tabString + info + "->" + Name (value) + "Length = this->" + str.PrevValueName + "->" + Name (value) + "Length;");
 				}
 			}
@@ -3144,8 +3200,8 @@ namespace prebuild {
 			return true;
 		}
 
-		private  void ParseValue (StructureInfo str, XmlNode value, string objectValueName, string classCoreName, string tabString) {
-			ParseValue(str, value, objectValueName, classCoreName, tabString, false, null, null);
+		private  void ParseValue (StructureInfo str, XmlNode value, string objectValueName, string classCoreName, string tabString, bool skipOptionalPresence) {
+			ParseValue(str, value, objectValueName, classCoreName, tabString, false, null, null, skipOptionalPresence);
 		}
 
 		private void WriteSkipCode(string tabStrings, string fieldName) {
@@ -3158,7 +3214,7 @@ namespace prebuild {
 			}
 			return false;
 		}
-		private  void ParseValue (StructureInfo str, XmlNode value, string objectValueName, string classCoreName, string tabString, bool skipNonAllowed, List<SnapshotFieldInfo> allowedFields, List<string> parsed) {
+		private  void ParseValue (StructureInfo str, XmlNode value, string objectValueName, string classCoreName, string tabString, bool skipNonAllowed, List<SnapshotFieldInfo> allowedFields, List<string> parsed, bool skipOptionalPresence) {
 			if(value.Name == "length")
 				return;
 
@@ -3173,40 +3229,41 @@ namespace prebuild {
 				}
 				parsed.Add(Name(value));
 			}
-			if(ShouldWriteCheckPresenceMapCode(value)) {
+			if(!skipOptionalPresence && ShouldWriteCheckPresenceMapCode(value)) {
 				string name = HasOptionalPresence(value)? "CheckOptionalFieldPresence": "CheckMandatoryFieldPresence";
 				WriteLine(tabString + "if(" + name + "(pmap" + LevelCount + ", PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(value) + ")) {");
 				tabString += "\t";
 			}
-			if(IsString(value))
-				ParseStringValue(str, value, objectValueName, tabString);
-			else if(value.Name == "uInt32")
-				ParseUint32Value(str, value, objectValueName, tabString);
-			else if(value.Name == "int32")
-				ParseInt32Value(str, value, objectValueName, tabString);
-			else if(value.Name == "uInt64")
-				ParseUint64Value(str, value, objectValueName, tabString);
-			else if(value.Name == "int64")
-				ParseInt64Value(str, value, objectValueName, tabString);
-			else if(value.Name == "decimal")
-				ParseDecimalValue(str, value, objectValueName, tabString);
-			else if(IsByteVector(value))
-				ParseByteVectorValue(str, value, objectValueName, tabString);
-			else if(value.Name == "sequence")
-				ParseSequence(str, value, objectValueName, classCoreName, tabString);
-			else {
-				WriteLine(tabString + "TODO!!!!!!!!");
-				Console.WriteLine("ERROR: found undefined field " + value.Name);
-				throw new NotImplementedException("ERROR: found undefined field " + value.Name);
+			if (!ShouldWriteCheckPresenceMapCode (value) || !skipOptionalPresence) {
+				if (IsString (value))
+					ParseStringValue (str, value, objectValueName, tabString);
+				else if (value.Name == "uInt32")
+					ParseUint32Value (str, value, objectValueName, tabString);
+				else if (value.Name == "int32")
+					ParseInt32Value (str, value, objectValueName, tabString);
+				else if (value.Name == "uInt64")
+					ParseUint64Value (str, value, objectValueName, tabString);
+				else if (value.Name == "int64")
+					ParseInt64Value (str, value, objectValueName, tabString);
+				else if (value.Name == "decimal")
+					ParseDecimalValue (str, value, objectValueName, tabString);
+				else if (IsByteVector (value))
+					ParseByteVectorValue (str, value, objectValueName, tabString);
+				else if (value.Name == "sequence")
+					ParseSequence (str, value, objectValueName, classCoreName, tabString);
+				else {
+					WriteLine (tabString + "TODO!!!!!!!!");
+					Console.WriteLine ("ERROR: found undefined field " + value.Name);
+					throw new NotImplementedException ("ERROR: found undefined field " + value.Name);
+				}
+				if (HasConstantAttribute (value))
+					WriteConstantValueCheckingCode (value, objectValueName, classCoreName, tabString);
 			}
-			if(HasConstantAttribute(value))
-				WriteConstantValueCheckingCode(value, objectValueName, classCoreName, tabString);
-			if(ShouldWriteCheckPresenceMapCode(value)) {
-				tabString = tabString.Substring(1);
-				WriteLine(tabString + "}");
-				WriteLine(tabString + "else {");
+			if(!skipOptionalPresence && ShouldWriteCheckPresenceMapCode(value)) {
+				tabString = tabString.Substring (1);
+				WriteLine (tabString + "}");
+				WriteLine (tabString + "else {");
 				WriteApplyOperatorsCode(str, value, objectValueName, tabString + "\t");
-				//WriteLine(tabString + "\t" + objectValueName + "-> Allow" + Name(value) + " = false;");
 				WriteLine(tabString + "}");
 			}
 		}
