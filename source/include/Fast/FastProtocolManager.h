@@ -2416,18 +2416,11 @@ public:
 		UINT64 memory = *((UINT64 *) (this->currentPos));
 
 		unsigned char valueMasked = memory & 0xff;
-		int addLength = 0;
+		int addLength = (valueMasked == 0x00) || (valueMasked == 0x7f);
+		memory >>= (addLength << 3);
+		UINT32 mask = 0 - ((valueMasked == 0x7f) || ((valueMasked & 0x40) != 0));
+		result = mask & 0xffffff80;
 
-		if(valueMasked == 0x00) { // extended positive integer
-			memory >>= 8;
-			addLength = 1;
-		} else if(valueMasked == 0x7f) { // extended negative integer
-			memory >>= 8;
-			addLength = 1;
-			result = 0xffffff80;
-		} else if((memory & 0x40) != 0) {
-			result = 0xffffff80;
-		}
 		unsigned long long int count = _tzcnt_u64(memory & 0x8080808080808080);
 		count++;
 		count >>= 3;
@@ -2449,8 +2442,6 @@ public:
 	inline INT32 ReadInt32_Optional() {
         INT32 result = ReadInt32_Mandatory();
         result = result + ((((UINT32)result) >> 31) - 1);
-		//if (result > 0)
-        //    return result - 1;
         return result;
     }
 	inline bool ReadInt32_Optional(INT32 *value) {
@@ -2462,18 +2453,11 @@ public:
 		}
 
 		unsigned char valueMasked = memory & 0xff;
-		int addLength = 0;
+		int addLength = (valueMasked == 0x00) || (valueMasked == 0x7f);
+		memory >>= (addLength << 3);
+		UINT32 mask = 0 - ((valueMasked == 0x7f) || ((valueMasked & 0x40) != 0));
+		result = mask & 0xffffff80;
 
-		if(valueMasked == 0x00) { // extended positive integer
-			memory >>= 8;
-			addLength = 1;
-		} else if(valueMasked == 0x7f) { // extended negative integer
-			memory >>= 8;
-			addLength = 1;
-			result = 0xffffff80;
-		} else if((memory & 0x40) != 0) {
-			result = 0xffffff80;
-		}
 		unsigned long long int count = _tzcnt_u64(memory & 0x8080808080808080);
 		count++;
 		count >>= 3;
@@ -2647,23 +2631,17 @@ public:
 		return true;
 	}
 
-    inline INT64 ReadInt64_Mandatory() {
+	__attribute_noinline__
+    INT64 ReadInt64_Mandatory_Full() {
 		INT64 result = 0;
 		__int128 memory = *((__int128 *) (this->currentPos));
 
 		unsigned char valueMasked = memory & 0xff;
-		int addLength = 0;
+		int addLength = (valueMasked == 0x00) || (valueMasked == 0x7f);
+		memory >>= (addLength << 3);
+		UINT64 mask = 0 - ((valueMasked == 0x7f) || ((valueMasked & 0x40) != 0));
+		result = mask & 0xffffffffffffff80;
 
-		if(valueMasked == 0x00) { // extended positive integer
-			memory >>= 8;
-			addLength = 1;
-		} else if(valueMasked == 0x7f) { // extended negative integer
-			memory >>= 8;
-			addLength = 1;
-			result = 0xffffffffffffff80;
-		} else if((memory & 0x40) != 0) {
-			result = 0xffffffffffffff80;
-		}
 		unsigned long long int count = _tzcnt_u64(memory & 0x8080808080808080);
 		if(count == 64) {
 			addLength += 8;
@@ -2689,12 +2667,37 @@ public:
 		}
 		return result;
 	}
+	inline INT64 ReadInt64_Mandatory() {
+		INT64 result = 0;
+		UINT64 memory = *((UINT64*) (this->currentPos));
+
+		unsigned char valueMasked = memory & 0xff;
+		int addLength = (valueMasked == 0x00) || (valueMasked == 0x7f);
+		memory >>= (addLength << 3);
+		UINT64 mask = 0 - ((valueMasked == 0x7f) || ((valueMasked & 0x40) != 0));
+		result = mask & 0xffffffffffffff80;
+
+		unsigned long long int count = _tzcnt_u64(memory & 0x8080808080808080);
+		if(count == 64)
+			return ReadInt64_Mandatory_Full();
+
+		count++;
+		count >>= 3;
+		this->currentPos += addLength + count;
+
+		while(true) {
+			result |= memory & 0x7f;
+			count--;
+			if(count == 0)
+				return result;
+			memory >>= 8;
+			result <<= 7;
+		}
+		return result;
+	}
     inline INT64 ReadInt64_Optional() {
         INT64 value = ReadInt64_Mandatory();
-		value = value + ((((UINT64)value) >> 63) - 1);
-		//if (value > 0)
-        //    return value - 1;
-        return value;
+        return value + ((((UINT64)value) >> 63) - 1);
     }
     inline UINT64 ReadUInt64_Mandatory() {
         UINT64 result = 0;

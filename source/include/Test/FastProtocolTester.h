@@ -45,19 +45,19 @@ public:
     void TestSkipToNextField();
 
     void Test() {
-        TestPerformance();
-
-        TestReadUInt32_Mandatory();
-        TestReadUInt32_Optional();
+        TestReadInt64_Mandatory();
+        TestReadInt64_Optional();
 
         TestReadInt32_Mandatory();
         TestReadInt32_Optional();
 
+        //TestPerformance();
+
+        TestReadUInt32_Mandatory();
+        TestReadUInt32_Optional();
+
         TestReadUInt64_Mandatory();
         TestReadUInt64_Optional();
-
-        TestReadInt64_Mandatory();
-        TestReadInt64_Optional();
 
         TestStringCopy();
         TestReadString_Mandatory();

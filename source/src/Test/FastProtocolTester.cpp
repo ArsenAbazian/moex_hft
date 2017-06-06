@@ -908,15 +908,13 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
     manager->SetNewBuffer(new unsigned char[128], 128);
 
     BYTE buffer[12];
-    for (int i = 1; i < 6; i++) { // extended positive
+    for (int i = 1; i < 5; i++) { // extended positive
         memset(buffer, 0, 12);
         for (int j = 1; j <= i; j++) {
-            buffer[j] = (rand() % 0xff) & 0x7f;
-            if (j == 1) {
-                buffer[j] &= 0x0f;
-                buffer[j] |= 0x40;
-            }
+            buffer[j] = (unsigned char)(rand() & 0x7f);
         }
+        buffer[1] &= 0x0f;
+        buffer[1] |= 0x40;
         buffer[i] |= 0x80;
         manager->CopyToBuffer(buffer, i + 1);
 
@@ -939,12 +937,11 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
     }
 
     for (int i = 0; i < 5; i++) { // positive
-        memset(buffer, 0, 5);
+        memset(buffer, 0, 7);
         for (int j = 0; j <= i; j++) {
-            buffer[j] = (rand() % 0xff) & 0x7f;
-            if (j == 0)
-                buffer[j] &= 0xbf;
+            buffer[j] = (unsigned char)(rand() & 0x7f);
         }
+        buffer[0] &= 0x03;
         buffer[i] |= 0x80;
         manager->CopyToBuffer(buffer, i + 1);
 
@@ -966,14 +963,13 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
             throw;
     }
 
-    for (int i = 1; i < 6; i++) { // extended negative
+    for (int i = 1; i < 5; i++) { // extended negative
         memset(buffer, 0, 6);
         buffer[0] = 0x7f;
         for (int j = 1; j <= i; j++) {
-            buffer[j] = (rand() % 0xff) & 0x7f;
-            if (j == 1)
-                buffer[j] &= 0x0f;
+            buffer[j] = (unsigned char)(rand() & 0x7f);
         }
+        buffer[1] &= 0x03;
         buffer[i] |= 0x80;
         manager->CopyToBuffer(buffer, i + 1);
 
@@ -984,7 +980,7 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
         manager->ResetBuffer();
 
         manager->ClearBuffer();
-        manager->WriteInt64_Mandatory(value);
+        manager->WriteInt32_Mandatory(value);
 
         if (!manager->CheckBuffer(buffer, i + 1))
             throw;
@@ -995,13 +991,12 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
             throw;
     }
 
-    for (int i = 0; i < 5; i++) { // simple negative
+    for (int i = 0; i < 4; i++) { // simple negative
         memset(buffer, 0, 5);
         for (int j = 0; j <= i; j++) {
-            buffer[j] = (rand() % 0xff) & 0x7f;
-            if (j == 0)
-                buffer[j] |= 0x40;
+            buffer[j] = (unsigned char)(rand() & 0x7f);
         }
+        buffer[0] |= 0x40;
         buffer[i] |= 0x80;
         manager->CopyToBuffer(buffer, i + 1);
 
@@ -1012,7 +1007,7 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
         manager->ResetBuffer();
 
         manager->ClearBuffer();
-        manager->WriteInt64_Mandatory(value);
+        manager->WriteInt32_Mandatory(value);
 
         if (!manager->CheckBuffer(buffer, i + 1))
             throw;
@@ -1540,10 +1535,9 @@ void FastProtocolTester::TestReadInt64_Optional() {
     for (int i = 1; i < 10; i++) { // extended positive
         memset(buffer, 0, 12);
         for (int j = 1; j <= i; j++) { 
-            buffer[j] = (rand() % 0xff) & 0x7f;
-            if (j == 1)
-                buffer[j] |= 0x40;
+            buffer[j] = (unsigned char)(rand() & 0x7f);
         }
+        buffer[1] |= 0x40;
         buffer[i] |= 0x80;
         manager->CopyToBuffer(buffer, i + 1);
         
@@ -1566,10 +1560,9 @@ void FastProtocolTester::TestReadInt64_Optional() {
     for (int i = 0; i < 9; i++) { // positive
         memset(buffer, 0, 12);
         for (int j = 0; j <= i; j++) {
-            buffer[j] = (rand() % 0xff) & 0x7f;
-            if (j == 0)
-                buffer[j] &= 0xbf;
+            buffer[j] = (unsigned char)(rand() & 0x7f);
         }
+        buffer[0] &= 0xbf;
         buffer[i] |= 0x80;
         manager->CopyToBuffer(buffer, i + 1);
 
@@ -1593,10 +1586,9 @@ void FastProtocolTester::TestReadInt64_Optional() {
         memset(buffer, 0, 12);
         buffer[0] = 0x7f;
         for (int j = 1; j <= i; j++) {
-            buffer[j] = (rand() % 0xff) & 0x7f;
-            if (j == 1)
-                buffer[j] &= 0xbf;
+            buffer[j] = (unsigned char)(rand() & 0x7f);
         }
+        buffer[1] &= 0xbf;
         buffer[i] |= 0x80;
         manager->CopyToBuffer(buffer, i + 1);
 
@@ -1619,12 +1611,10 @@ void FastProtocolTester::TestReadInt64_Optional() {
     for (int i = 0; i < 9; i++) { // simple negative
         memset(buffer, 0, 12);
         for (int j = 0; j <= i; j++) {
-            buffer[j] = (rand() % 0xff) & 0x7f;
-            if (j == 0) {
-                buffer[j] |= 0x40;
-                buffer[j] &= 0xfe;
-            }
+            buffer[j] = (unsigned char)(rand() & 0x7f);
         }
+        buffer[0] |= 0x40;
+        buffer[0] &= 0xfe;
         buffer[i] |= 0x80;
         manager->CopyToBuffer(buffer, i + 1);
 
@@ -1653,10 +1643,9 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
     for (int i = 1; i < 10; i++) { // extended positive
         memset(buffer, 0, 12);
         for (int j = 1; j <= i; j++) {
-            buffer[j] = (rand() % 0xff) & 0x7f;
-            if (j == 1)
-                buffer[j] |= 0x40;
+            buffer[j] = (unsigned char)(rand() & 0x7f);
         }
+        buffer[1] |= 0x40;
         buffer[i] |= 0x80;
         manager->CopyToBuffer(buffer, i + 1);
 
@@ -1681,10 +1670,9 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
     for (int i = 0; i < 9; i++) { // positive
         memset(buffer, 0, 12);
         for (int j = 0; j <= i; j++) {
-            buffer[j] = (rand() % 0xff) & 0x7f;
-            if (j == 0)
-                buffer[j] &= 0xbf;
+            buffer[j] = (unsigned char)(rand() & 0x7f);
         }
+        buffer[0] &= 0xbf; // exclude 0x40
         buffer[i] |= 0x80;
         manager->CopyToBuffer(buffer, i + 1);
 
@@ -1710,10 +1698,9 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
         memset(buffer, 0, 12);
         buffer[0] = 0x7f;
         for (int j = 1; j <= i; j++) {
-            buffer[j] = (rand() % 0xff) & 0x7f;
-            if (j == 1)
-                buffer[j] &= 0xbf;
+            buffer[j] = (unsigned char)(rand() & 0x7f);
         }
+        buffer[1] &= 0xbf;
         buffer[i] |= 0x80;
         manager->CopyToBuffer(buffer, i + 1);
 
@@ -1738,10 +1725,9 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
     for (int i = 0; i < 9; i++) { // simple negative
         memset(buffer, 0, 12);
         for (int j = 0; j <= i; j++) {
-            buffer[j] = (rand() % 0xff) & 0x7f;
-            if (j == 0)
-                buffer[j] |= 0x40;
+            buffer[j] = (unsigned char)(rand() & 0x7f);
         }
+        buffer[0] |= 0x40;
         buffer[i] |= 0x80;
         manager->CopyToBuffer(buffer, i + 1);
 
