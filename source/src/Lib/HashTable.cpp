@@ -4,4 +4,3 @@
 
 #include "../../include/Lib/HashTable.h"
 
-HashTable* HashTable::Default = 0;

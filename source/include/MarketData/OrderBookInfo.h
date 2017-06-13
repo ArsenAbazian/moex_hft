@@ -18,8 +18,10 @@
 template <typename T> class MarketSymbolInfo;
 
 template <typename T> class OrderBookInfo {
+public:
     static HrPointerList<T>               *m_itemsPool;
-
+    static HashTable<T>                   *m_hashTable;
+private:
     HrPointerListLite<T>                  *m_sellQuoteList;
     HrPointerListLite<T>                  *m_buyQuoteList;
 
@@ -139,43 +141,40 @@ public:
         return this->m_sellQuoteManager->HrInsertBeforeAscending(price);
 #endif
     }
-    inline LinkedPointer<HashTableItemInfo>* GetPointer(T *info, HrPointerListLite<T> *list) {
-        return HashTable::Default->GetPointer(list, info->MDEntryID);
+    inline HrLinkedPointer<T>* GetPointer(T *info, HrPointerListLite<T> *list) {
+        return OrderBookInfo<T>::m_hashTable->GetPointer(list, info->MDEntryID);
     }
-    inline void FreePointer(LinkedPointer<HashTableItemInfo> *hashItem) {
-        HashTable::Default->RemovePointer(hashItem);
+    inline void FreePointer(HrLinkedPointer<T> *ptr) {
+        OrderBookInfo<T>::m_hashTable->RemovePointer(ptr);
     }
     inline void FreePointer(T *data, HrPointerListLite<T> *list) {
-        HashTable::Default->Remove(list, data->MDEntryID);
+        OrderBookInfo<T>::m_hashTable->Remove(list, data->MDEntryID);
     }
-    inline LinkedPointer<HashTableItemInfo>* AddPointer(HrLinkedPointer<T> *ptr, T *info, HrPointerListLite<T> *list) {
-        return HashTable::Default->Add(list, ptr, info->MDEntryID);
+    inline void AddPointer(HrLinkedPointer<T> *ptr, HrPointerListLite<T> *list, T *info) {
+        OrderBookInfo<T>::m_hashTable->Add(ptr, list, info->MDEntryID);
     }
     inline HrLinkedPointer<T>* GetQuote(HrPointerListLite<T> *list, T *info) {
-        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info);
-        if(hashItem == 0) {
-            // such thing could happen because of some packet lost
-            // so please do not return null :)
-            HrLinkedPointer<T> *res = list->Add(info);
-            hashItem = AddPointer(res, list, info);
-            return res;
-        }
-        return static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
+        HrLinkedPointer<T> *ptr = this->GetPointer(info, list);
+        if(ptr != 0)
+            return ptr;
+        // such thing could happen because of some packet lost
+        // so please do not return null :)
+        ptr = list->Add(info);
+        this->AddPointer(ptr, list, info);
+        return ptr;
     }
 
     inline void DebugRemoveQuoteNoClear(HrPointerListLite<T> *list, T *info) {
-        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, list);
-        if(hashItem == 0) {
+        HrLinkedPointer<T> *ptr = this->GetPointer(info, list);
+        if(ptr == 0) {
             // such thing could happen because of some packet lost
             // so please do not return null :)
             //TODO remove debug
             printf("ERROR: %" PRIu64 " entry not found\n", info->MDEntryID);
             return;
         }
-        HrLinkedPointer<T> *node = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
-        T *data = node->Data();
-        list->Remove(node);
-        this->FreePointer(hashItem);
+        list->Remove(ptr);
+        this->FreePointer(ptr);
     }
 
     __attribute__((noinline))
@@ -188,16 +187,14 @@ public:
     }
 
     inline void RemoveQuote(HrPointerListLite<T> *list, T *info) {
-        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, list);
-        if(hashItem == 0) {
+        HrLinkedPointer<T> *ptr = this->GetPointer(info, list);
+        if(ptr == 0) {
             this->OnQuoteNotFound(info);
             return;
         }
-        HrLinkedPointer<T> *node = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
-        T *data = node->Data();
-        data->Clear();
-        list->Remove(node);
-        this->FreePointer(hashItem);
+        ptr->Data()->Clear();
+        list->Remove(ptr);
+        this->FreePointer(ptr);
         info->Clear();
     }
 
@@ -211,59 +208,23 @@ public:
         RemoveQuote(this->m_sellQuoteList, info);
     }
 
-    inline void ChangeBuyQuote(T *info) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Change BuyQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
-
-        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, this->m_buyQuoteList);
-        HrLinkedPointer<T> *ptr;
-        if(hashItem != 0) {
-            ptr = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
-            this->m_buyQuoteList->Remove(ptr);
+    inline void ChangeQuote(HrPointerListLite<T> *list, T *info) {
+        HrLinkedPointer<T> *ptr = this->GetPointer(info, list);
+        if(ptr != 0) {
             ptr->Data()->Clear();
-
-            ptr = InsertBuyQuote(&(info->MDEntryPx));
             ptr->Data(info);
-            HashTableItemInfo *h = hashItem->Data();
-            h->m_object = ptr;
-            h->m_intId = info->MDEntryID;
             return;
         }
         this->OnQuoteNotFound(info);
+        return;
+    }
+
+    inline void ChangeBuyQuote(T *info) {
+        this->ChangeQuote(this->m_buyQuoteList, info);
     }
 
     inline void ChangeSellQuote(T *info) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Change SellQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
-        LinkedPointer<HashTableItemInfo> *hashItem = this->GetPointer(info, this->m_sellQuoteList);
-        HrLinkedPointer<T> *ptr;
-        if(hashItem != 0) {
-            ptr = static_cast<HrLinkedPointer<T>*>(hashItem->Data()->m_object);
-            this->m_sellQuoteList->Remove(ptr);
-            ptr->Data()->Clear();
-
-            ptr = InsertSellQuote(&(info->MDEntryPx));
-            ptr->Data(info);
-            HashTableItemInfo *h = hashItem->Data();
-            h->m_object = ptr;
-            h->m_intId = info->MDEntryID;
-            return;
-        }
-        this->OnQuoteNotFound(info);
-    }
-
-    inline HrLinkedPointer<T>* AddBuyQuote(T *item) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add BuyQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
-        HrLinkedPointer<T> *ptr = InsertBuyQuote(&(item->MDEntryPx));
-        AddPointer(ptr, item, this->m_buyQuoteList);
-        ptr->Data(item);
-        return ptr;
-    }
-
-    inline HrLinkedPointer<T>* AddSellQuote(T *item) {
-        DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Add SellQuote", item->MDEntryID, &(item->MDEntryPx), item->MDEntrySize);
-        HrLinkedPointer<T> *ptr = InsertSellQuote(&(item->MDEntryPx));
-        AddPointer(ptr, item, this->m_sellQuoteList);
-        ptr->Data(item);
-        return ptr;
+        this->ChangeQuote(this->m_sellQuoteList, info);
     }
 
     inline void Remove(T *info) {
@@ -271,10 +232,13 @@ public:
         ProgramStatistics::Current->Inc(Counters::cRemoveObr);
         ProgramStatistics::Total->Inc(Counters::cRemoveObr);
 #endif
-        if(info->MDEntryType[0] == mdetBuyQuote)
-            this->RemoveBuyQuote(info);
-        else if(info->MDEntryType[0] == mdetSellQuote)
-            this->RemoveSellQuote(info);
+        UINT64 buy = info->MDEntryType[0] == mdetBuyQuote;
+        HrPointerListLite<T> *list =
+                (HrPointerListLite<T>*)(
+                        ((0 - buy) & (UINT64)this->m_buyQuoteList) +
+                        ((buy - 1) & (UINT64)this->m_sellQuoteList)
+                );
+        this->RemoveQuote(list, info);
     }
 
     inline void Change(T *info) {
@@ -282,10 +246,13 @@ public:
         ProgramStatistics::Current->Inc(Counters::cChangeObr);
         ProgramStatistics::Total->Inc(Counters::cChangeObr);
 #endif
-        if(info->MDEntryType[0] == mdetBuyQuote)
-            this->ChangeBuyQuote(info);
-        else if(info->MDEntryType[0] == mdetSellQuote)
-            this->ChangeSellQuote(info);
+        UINT64 buy = info->MDEntryType[0] == mdetBuyQuote;
+        HrPointerListLite<T> *list =
+                (HrPointerListLite<T>*)(
+                        ((0 - buy) & (UINT64)this->m_buyQuoteList) +
+                        ((buy - 1) & (UINT64)this->m_sellQuoteList)
+                );
+        this->ChangeQuote(list, info);
     }
 
     inline HrLinkedPointer<T>* Add(T *info) {
@@ -293,11 +260,19 @@ public:
         ProgramStatistics::Current->Inc(Counters::cAddObr);
         ProgramStatistics::Total->Inc(Counters::cAddObr);
 #endif
-        if(info->MDEntryType[0] == mdetBuyQuote)
-            return this->AddBuyQuote(info);
-        else if(info->MDEntryType[0] == mdetSellQuote)
-            return this->AddSellQuote(info);
-        return 0;
+        HrLinkedPointer<T> *ptr;
+        HrPointerListLite<T> *owner;
+        if(info->MDEntryType[0] == mdetBuyQuote) {
+            ptr = InsertBuyQuote(&(info->MDEntryPx));
+            owner = this->m_buyQuoteList;
+        }
+        else {
+            ptr = InsertSellQuote(&(info->MDEntryPx));
+            owner = this->m_sellQuoteList;
+        }
+        AddPointer(ptr, owner, info);
+        ptr->Data(info);
+        return ptr;
     }
 
     inline bool IsNextMessage(T *info) {
@@ -435,6 +410,7 @@ public:
 };
 
 template <typename T> HrPointerList<T>* OrderBookInfo<T>::m_itemsPool = 0;
+template <typename T> HashTable<T>* OrderBookInfo<T>::m_hashTable = 0;
 
 template <typename T> OrderBookInfo<T>::OrderBookInfo() :
         m_sellQuoteManager(0),
@@ -455,8 +431,8 @@ template <typename T> OrderBookInfo<T>::OrderBookInfo() :
     {
     if(OrderBookInfo::m_itemsPool == 0)
         OrderBookInfo::m_itemsPool = new HrPointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
-
-    HashTable::SafeCreateDefault();
+    if(OrderBookInfo::m_hashTable == 0)
+        OrderBookInfo::m_hashTable = new HashTable<T>();
 
     this->m_sellQuoteList = new HrPointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
     this->m_buyQuoteList = new HrPointerListLite<T>(OrderBookInfo<T>::m_itemsPool);

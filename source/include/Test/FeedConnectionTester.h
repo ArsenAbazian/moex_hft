@@ -961,6 +961,7 @@ public:
         const int start_olr_msg = 1275;
         const int problem_msg = 1721;
         const int problem_msg2 = 1797;
+        time_t*  elapsed = new time_t[1000];
         Stopwatch *w = new Stopwatch();
         for(int i = 0; i < messages->Count(); i++, msg = msg->Next()) {
             if(msg->Data()->m_feedId == FeedConnectionId::fcidOlrCurr)
@@ -972,12 +973,14 @@ public:
             }
             olrCurr->ListenIncremental();
             if(i >= start_olr_msg) {
-                time_t elapsed = w->ElapsedNanosecondsSlowPrecise(0);
-                printf("%d elapsed = %" PRIu64 "\n", i, elapsed);
+                elapsed[i - 1275] = w->ElapsedNanosecondsSlowPrecise(0);
             }
 
             if(olsCurr->State() != FeedConnectionState::fcsSuspend)
                 olsCurr->ListenSnapshot();
+        }
+        for(int i = 1275; i < messages->Count(); i++) {
+            printf("%d elapsed = %" PRIu64 "\n", i, elapsed[i-1275]);
         }
 
         RobotSettings::Default->MarketDataMaxSymbolsCount = 10;
@@ -990,7 +993,7 @@ public:
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
 
         //TestStopwatchPerformance();
-        //TestOlrPerformance();
+        TestOlrPerformance();
         PointerListTester *pt = new PointerListTester();
         pt->Test();
         delete pt;
@@ -998,6 +1001,18 @@ public:
         SymbolManagerTester *ht = new SymbolManagerTester();
         ht->Test();
         delete ht;
+
+        HashTableTester *htt = new HashTableTester();
+        htt->Test();
+        delete htt;
+
+        HistoricalReplayTester *hrt = new HistoricalReplayTester();
+        hrt->Test();
+        delete hrt;
+
+        OrderBookTesterForts *fob = new OrderBookTesterForts();
+        fob->Test();
+        delete fob;
 
         OrderTesterCurr *otCurr = new OrderTesterCurr();
         otCurr->Test();
@@ -1022,18 +1037,6 @@ public:
         TradeTesterFond *ttFond = new TradeTesterFond();
         ttFond->Test();
         delete ttFond;
-
-        OrderBookTesterForts *fob = new OrderBookTesterForts();
-        fob->Test();
-        delete fob;
-
-        HashTableTester *htt = new HashTableTester();
-        htt->Test();
-        delete htt;
-
-        HistoricalReplayTester *hrt = new HistoricalReplayTester();
-        hrt->Test();
-        delete hrt;
 
         TestFeedConnectionBase();
 

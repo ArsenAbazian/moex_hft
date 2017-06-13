@@ -20,227 +20,204 @@ class OrderedListManager {
         g_seed = (Stopwatch::Default->ElapsedNanosecondsSlow() & 0xffffffff);
     }
 #pragma region InsertBeforeDescendingCore
-    inline POINTER<DATA>* InsertBeforeDescending1(double value, POINTER<DATA> *node, POINTER<DATA> *end) {
-        while(true) {
-            double valueGreater = (&(node->Data()->MDEntryPx))->Value;
-            if(valueGreater < value) {
-                this->m_LevelIndex = this->CalcLevel();
-                return this->m_list->Insert(node);
-            }
+    inline POINTER<DATA>* InsertBeforeDescending1(double value, POINTER<DATA> *node) {
+        while(node->Value() >= value) {
             node = node->Next();
         }
+        this->m_LevelIndex = this->CalcLevel();
+        return this->m_list->Insert(node);
     }
 
-    inline POINTER<DATA>* InsertBeforeDescending2(double value, POINTER<DATA> *node, POINTER<DATA> *end) {
-        while(true) {
-            double valueGreater = (&(node->Data()->MDEntryPx))->Value;
-            if(valueGreater < value) {
-                POINTER<DATA> *prev2 = node->Prev2();
-                POINTER<DATA> *newNode = InsertBeforeDescending1(value, prev2, node);
-                if(this->m_LevelIndex >= 2)
-                    this->m_list->Insert2(prev2, newNode, node);
-                return newNode;
-            }
+    inline POINTER<DATA>* InsertBeforeDescending2(double value, POINTER<DATA> *node) {
+        while(node->Value() >= value) {
             node = node->Next2();
         }
+        POINTER<DATA> *prev2 = node->Prev2();
+        POINTER<DATA> *newNode = InsertBeforeDescending1(value, prev2);
+        if(this->m_LevelIndex >= 2)
+            this->m_list->Insert2(prev2, newNode, node);
+        return newNode;
     }
 
-    inline POINTER<DATA>* InsertBeforeDescending3(double value, POINTER<DATA> *node, POINTER<DATA> *end) {
-        while(true) {
-            double valueGreater = (&(node->Data()->MDEntryPx))->Value;
-            if(valueGreater < value) {
-                POINTER<DATA> *prev3 = node->Prev3();
-                POINTER<DATA> *newNode = InsertBeforeDescending2(value, prev3, node);
-                if(this->m_LevelIndex >= 3)
-                    this->m_list->Insert3(prev3, newNode, node);
-                return newNode;
-            }
+    inline POINTER<DATA>* InsertBeforeDescending3(double value, POINTER<DATA> *node) {
+        while(node->Value() >= value) {
             node = node->Next3();
         }
+        POINTER<DATA> *prev3 = node->Prev3();
+        POINTER<DATA> *newNode = InsertBeforeDescending2(value, prev3);
+        if(this->m_LevelIndex >= 3)
+            this->m_list->Insert3(prev3, newNode, node);
+        return newNode;
     }
 
-    inline POINTER<DATA>* InsertBeforeDescending4(double value, POINTER<DATA> *node, POINTER<DATA> *end) {
-        while(true) {
-            double valueGreater = (&(node->Data()->MDEntryPx))->Value;
-            if(valueGreater < value) {
-                POINTER<DATA> *prev4 = node->Prev4();
-                POINTER<DATA> *newNode = InsertBeforeDescending3(value, prev4, node);
-                if(this->m_LevelIndex >= 4)
-                    this->m_list->Insert4(prev4, newNode, node);
-                return newNode;
-            }
+    inline POINTER<DATA>* InsertBeforeDescending4(double value, POINTER<DATA> *node) {
+        while(node->Value() >= value) {
             node = node->Next4();
         }
+        POINTER<DATA> *prev4 = node->Prev4();
+        POINTER<DATA> *newNode = InsertBeforeDescending3(value, prev4);
+        if(this->m_LevelIndex >= 4)
+            this->m_list->Insert4(prev4, newNode, node);
+        return newNode;
     }
 
-    inline POINTER<DATA>* InsertBeforeDescending5(double value, POINTER<DATA> *start, POINTER<DATA> *end) {
-        POINTER<DATA> *node = start;
-        POINTER<DATA> *newNode;
-        // no items
-        if (start == 0) {
-            newNode = this->m_list->Add();
+    __attribute_noinline__
+    POINTER<DATA>* OnInsertFirstSecondItemDescending(double value, POINTER<DATA> *start) {
+        if(this->m_list->Count() == 0)
+            return this->m_list->Add();
+        if(start->Value() < value) { // insert before
+            POINTER<DATA> *newNode = this->m_list->Insert(start);
+            newNode->AllConnect(start);
             return newNode;
         }
-        double valueGreater = (&(start->Data()->MDEntryPx))->Value;
-        // add before
-        if(valueGreater < value) {
-            newNode = this->m_list->Insert(start);
-            if(this->m_list->Count() == 2) {
-                // just connect start with end
-                newNode->AllConnect(start);
-                return newNode;
-            }
-            newNode->Connect5(start->Next5());
-            newNode->Connect4(start->Next4());
-            newNode->Connect3(start->Next3());
-            newNode->Connect2(start->Next2());
-            start->AllNext(0);
-            start->AllPrev(0);
-            this->m_list->InsertAfterByLevel(CalcLevel(), newNode, start);
-            return newNode;
-        }
-
-        while (true) {
-            valueGreater = (&(node->Data()->MDEntryPx))->Value;
-            if (valueGreater < value) {
-                POINTER<DATA> *prev5 = node->Prev5();
-                newNode = InsertBeforeDescending4(value, prev5, node);
-                if (this->m_LevelIndex == 5)
-                    this->m_list->Insert5(prev5, newNode, node);
-                return newNode;
-            }
-            if(node == end)
-                break;
-            node = node->Next5();
-        }
-
-        // add after
-        newNode = this->m_list->Add();
-        if(this->m_list->Count() == 2) {
+        else { // insert after
+            POINTER<DATA> *newNode = this->m_list->Add();
             // just connect start with end
             start->AllConnect(newNode);
             return newNode;
         }
-        end->Prev5()->Connect5(newNode);
-        end->Prev4()->Connect4(newNode);
-        end->Prev3()->Connect3(newNode);
-        end->Prev2()->Connect2(newNode);
-        end->AllPrev(0);
-        end->AllNext(0);
-        this->m_list->InsertBeforeByLevel(this->CalcLevel(), end, newNode);
+    }
+
+    inline POINTER<DATA>* InsertBeforeDescending5(double value, POINTER<DATA> *start, POINTER<DATA> *end) {
+        // no items
+        if (this->m_list->Count() < 2)
+            return this->OnInsertFirstSecondItemDescending(value, start);
+
+        POINTER<DATA> *node = start;
+        POINTER<DATA> *newNode;
+
+        // add before
+        if(start->Value() < value) {
+            newNode = this->m_list->Insert(start);
+            newNode->Connect2(start->Next2());
+            newNode->Connect3(start->Next3());
+            newNode->Connect4(start->Next4());
+            newNode->Connect5(start->Next5());
+
+            start->AllZero();
+            this->m_list->InsertAfterByLevel(CalcLevel(), newNode, start);
+            return newNode;
+        }
+        if(end->Value() >= value) {
+            // add after
+            newNode = this->m_list->Add();
+            end->Prev5()->Connect5(newNode);
+            end->Prev4()->Connect4(newNode);
+            end->Prev3()->Connect3(newNode);
+            end->Prev2()->Connect2(newNode);
+            end->AllZero();
+            this->m_list->InsertBeforeByLevel(this->CalcLevel(), end, newNode);
+            return newNode;
+        }
+
+        node = node->Next5();
+        while (node->Value() >= value) {
+            node = node->Next5();
+        }
+        POINTER<DATA> *prev5 = node->Prev5();
+        newNode = InsertBeforeDescending4(value, prev5);
+        if (this->m_LevelIndex == 5)
+            this->m_list->Insert5(prev5, newNode, node);
         return newNode;
     }
 #pragma endregion InsertBeforeDescendingCore
 
 #pragma region InsertBeforeAscendingCore
-    inline POINTER<DATA>* InsertBeforeAscending1(double value, POINTER<DATA> *node, POINTER<DATA> *end) {
-        while(true) {
-            double valueLess = (&(node->Data()->MDEntryPx))->Value;
-            if(valueLess > value) {
-                this->m_LevelIndex = this->CalcLevel();
-                return this->m_list->Insert(node);
-            }
+    inline POINTER<DATA>* InsertBeforeAscending1(double value, POINTER<DATA> *node) {
+        while(node->Value() <= value) {
             node = node->Next();
         }
+        this->m_LevelIndex = this->CalcLevel();
+        return this->m_list->Insert(node);
     }
 
-    inline POINTER<DATA>* InsertBeforeAscending2(double value, POINTER<DATA> *node, POINTER<DATA> *end) {
-        while(true) {
-            double valueLess = (&(node->Data()->MDEntryPx))->Value;
-            if(valueLess > value) {
-                POINTER<DATA> *prev2 = node->Prev2();
-                POINTER<DATA> *newNode = InsertBeforeAscending1(value, prev2, node);
-                if(this->m_LevelIndex >= 2)
-                    this->m_list->Insert2(prev2, newNode, node);
-                return newNode;
-            }
+    inline POINTER<DATA>* InsertBeforeAscending2(double value, POINTER<DATA> *node) {
+        while(node->Value() <= value) {
             node = node->Next2();
         }
+        POINTER<DATA> *prev2 = node->Prev2();
+        POINTER<DATA> *newNode = InsertBeforeAscending1(value, prev2);
+        if(this->m_LevelIndex >= 2)
+            this->m_list->Insert2(prev2, newNode, node);
+        return newNode;
     }
 
-    inline POINTER<DATA>* InsertBeforeAscending3(double value, POINTER<DATA> *node, POINTER<DATA> *end) {
-        while(true) {
-            double valueLess = (&(node->Data()->MDEntryPx))->Value;
-            if(valueLess > value) {
-                POINTER<DATA> *prev3 = node->Prev3();
-                POINTER<DATA> *newNode = InsertBeforeAscending2(value, prev3, node);
-                if(this->m_LevelIndex >= 3)
-                    this->m_list->Insert3(prev3, newNode, node);
-                return newNode;
-            }
+    inline POINTER<DATA>* InsertBeforeAscending3(double value, POINTER<DATA> *node) {
+        while(node->Value() <= value) {
             node = node->Next3();
         }
+        POINTER<DATA> *prev3 = node->Prev3();
+        POINTER<DATA> *newNode = InsertBeforeAscending2(value, prev3);
+        if(this->m_LevelIndex >= 3)
+            this->m_list->Insert3(prev3, newNode, node);
+        return newNode;
     }
 
-    inline POINTER<DATA>* InsertBeforeAscending4(double value, POINTER<DATA> *node, POINTER<DATA> *end) {
-        while(true) {
-            double valueLess = (&(node->Data()->MDEntryPx))->Value;
-            if(valueLess > value) {
-                POINTER<DATA> *prev4 = node->Prev4();
-                POINTER<DATA> *newNode = InsertBeforeAscending3(value, prev4, node);
-                if(this->m_LevelIndex >= 4)
-                    this->m_list->Insert4(prev4, newNode, node);
-                return newNode;
-            }
+    inline POINTER<DATA>* InsertBeforeAscending4(double value, POINTER<DATA> *node) {
+        while(node->Value() <= value) {
             node = node->Next4();
+        }
+        POINTER<DATA> *prev4 = node->Prev4();
+        POINTER<DATA> *newNode = InsertBeforeAscending3(value, prev4);
+        if(this->m_LevelIndex >= 4)
+            this->m_list->Insert4(prev4, newNode, node);
+        return newNode;
+    }
+
+    __attribute_noinline__
+    POINTER<DATA>* OnInsertFirstSecondItemAscending(double value, POINTER<DATA> *start) {
+        if(this->m_list->Count() == 0)
+            return this->m_list->Add();
+        if(start->Value() > value) { // insert before
+            POINTER<DATA> *newNode = this->m_list->Insert(start);
+            newNode->AllConnect(start);
+            return newNode;
+        }
+        else { // insert after
+            POINTER<DATA> *newNode = this->m_list->Add();
+            // just connect start with end
+            start->AllConnect(newNode);
+            return newNode;
         }
     }
 
     inline POINTER<DATA>* InsertBeforeAscending5(double value, POINTER<DATA> *start, POINTER<DATA> *end) {
         POINTER<DATA> *node = start;
         POINTER<DATA> *newNode;
-        // no items
-        if (start == 0) {
-            newNode = this->m_list->Add();
-            return newNode;
-        }
-        double valueLess = (&(start->Data()->MDEntryPx))->Value;
+
+        if(this->m_list->Count() < 2)
+            return this->OnInsertFirstSecondItemAscending(value, start);
         // add before
-        if(valueLess > value) {
+        if(start->Value() > value) {
             newNode = this->m_list->Insert(start);
-            if(this->m_list->Count() == 2) {
-                // just connect start with end
-                newNode->AllConnect(start);
-                return newNode;
-            }
             newNode->Connect5(start->Next5());
             newNode->Connect4(start->Next4());
             newNode->Connect3(start->Next3());
             newNode->Connect2(start->Next2());
-            start->AllNext(0);
-            start->AllPrev(0);
+            start->AllZero();
             this->m_list->InsertAfterByLevel(CalcLevel(), newNode, start);
             return newNode;
         }
-
-        while (true) {
-            valueLess = (&(node->Data()->MDEntryPx))->Value;
-            if (valueLess > value) {
-                POINTER<DATA> *prev5 = node->Prev5();
-                newNode = InsertBeforeAscending4(value, prev5, node);
-                if (this->m_LevelIndex == 5)
-                    this->m_list->Insert5(prev5, newNode, node);
-                return newNode;
-            }
-            if(node == end)
-                break;
-            node = node->Next5();
-        }
-
-        // add after
-        newNode = this->m_list->Add();
-        if(this->m_list->Count() == 2) {
-            // just connect start with end
-            start->AllConnect(newNode);
+        if(end->Value() <= value) {
+            // add after
+            newNode = this->m_list->Add();
+            end->Prev5()->Connect5(newNode);
+            end->Prev4()->Connect4(newNode);
+            end->Prev3()->Connect3(newNode);
+            end->Prev2()->Connect2(newNode);
+            end->AllZero();
+            this->m_list->InsertBeforeByLevel(this->CalcLevel(), end, newNode);
             return newNode;
         }
-        end->Prev5()->Connect5(newNode);
-        end->Prev4()->Connect4(newNode);
-        end->Prev3()->Connect3(newNode);
-        end->Prev2()->Connect2(newNode);
-        end->AllPrev(0);
-        end->AllNext(0);
-        this->m_list->InsertBeforeByLevel(this->CalcLevel(), end, newNode);
+
+        node = node->Next5();
+        while(node->Value() <= value) {
+            node = node->Next5();
+        }
+        POINTER<DATA> *prev5 = node->Prev5();
+        newNode = InsertBeforeAscending4(value, prev5);
+        if(this->m_LevelIndex == 5)
+            this->m_list->Insert5(prev5, newNode, node);
         return newNode;
     }
 #pragma endregion
@@ -277,11 +254,15 @@ public:
 
     inline POINTER<DATA>* HrInsertBeforeDescending(Decimal *price) {
         this->m_LevelIndex = 0;
-        return this->InsertBeforeDescending5(price->Calculate(), this->m_list->Start(), this->m_list->End());
+        POINTER<DATA> *ptr = this->InsertBeforeDescending5(price->Calculate(), this->m_list->Start(), this->m_list->End());
+        ptr->Value(price->Value);
+        return ptr;
     }
     inline POINTER<DATA>* HrInsertBeforeAscending(Decimal *price) {
         this->m_LevelIndex = 0;
-        return this->InsertBeforeAscending5(price->Calculate(), this->m_list->Start(), this->m_list->End());
+        POINTER<DATA> *ptr = this->InsertBeforeAscending5(price->Calculate(), this->m_list->Start(), this->m_list->End());
+        ptr->Value(price->Value);
+        return ptr;
     }
     inline POINTER<DATA>* SimpleInsertBeforeDescending(Decimal *price) {
         double value = price->Calculate();
@@ -289,11 +270,16 @@ public:
         while (node != 0) {
             DATA *quote = node->Data();
             Decimal *val = &(quote->MDEntryPx);
-            if (val->Value < value)
-                return this->m_list->Insert(node);
+            if (val->Value < value) {
+                POINTER<DATA> *ptr = this->m_list->Insert(node);
+                ptr->Value(price->Value);
+                return ptr;
+            }
             node = node->Next();
         }
-        return this->m_list->Add();
+        POINTER<DATA> *ptr = this->m_list->Add();
+        ptr->Value(price->Value);
+        return ptr;
     }
     inline POINTER<DATA>* SimpleInsertBeforeAscending(Decimal *price) {
         double value = price->Calculate();
@@ -301,11 +287,16 @@ public:
         while (node != 0) {
             DATA *quote = node->Data();
             Decimal *val = &(quote->MDEntryPx);
-            if (val->Value > value)
-                return this->m_list->Insert(node);
+            if (val->Value > value) {
+                POINTER<DATA> *ptr = this->m_list->Insert(node);
+                ptr->Value(price->Value);
+                return ptr;
+            }
             node = node->Next();
         }
-        return this->m_list->Add();
+        POINTER<DATA> *ptr = this->m_list->Add();
+        ptr->Value(price->Value);
+        return ptr;
     }
 
     inline int CalcLevel() {

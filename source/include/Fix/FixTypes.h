@@ -409,7 +409,7 @@ typedef struct _FixMarketDataRequestInfo {
 
 class Decimal {
     static INT64 PowOf10[10];
-    static float MulOf10[10];
+    static float MulOf10[19];
     static float DivOf10[10];
 
 public:
@@ -551,10 +551,7 @@ public:
         }
     }
     inline float Calculate() {
-        if(Exponent < 0)
-            Value = ((float)Mantissa) * DivOf10[-Exponent];
-        else
-            Value = ((float)Mantissa) * MulOf10[Exponent];
+        Value = ((float)Mantissa) * MulOf10[9 + Exponent];
         return Value;
     }
     inline float CalculateFunc() {
@@ -565,9 +562,7 @@ public:
         return Value;
     }
     inline float Calculate(INT64 mantissa, INT32 exponent) {
-        if(Exponent < 0)
-            return ((float)mantissa) * DivOf10[-exponent];
-        return ((float)mantissa) * MulOf10[exponent];
+        return ((float)mantissa) * MulOf10[9 + exponent];
     }
     inline INT64 CalculatePositiveInteger() {
         int mul = PowOf10[this->Exponent];

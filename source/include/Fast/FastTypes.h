@@ -1479,7 +1479,7 @@ class AstsIncrementalOLRCURRInfo{
 public:
 	int								GroupMDEntriesCount;//		 offset = 0 order =  0
 	char							PaddingBytes0[4];
-	AstsOLSCURRItemInfo* GroupMDEntries[256];			// process_empty_pmap=true  //		 offset = 8 order =  0
+	AstsOLSCURRItemInfo* GroupMDEntries[256];			// process_empty_pmap=true  pmap1=6263  pmap2=30839  //		 offset = 8 order =  0
 	UINT32							MsgSeqNum;			// id=34  skip=true   offset = 2056 order =  999
 	char							PaddingBytes1[4];
 	UINT64							SendingTime;			// id=52  predict=9  skip=true   offset = 2064 order =  999

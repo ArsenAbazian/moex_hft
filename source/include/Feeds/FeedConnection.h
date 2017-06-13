@@ -2793,16 +2793,9 @@ protected:
         ProgramStatistics::Current->Inc(Counters::cFondOlr);
         ProgramStatistics::Total->Inc(Counters::cFondOlr);
 #endif
-        this->OnIncrementalRefresh_OLR_FOND(info->GroupMDEntries[0]);
-        if(info->GroupMDEntriesCount == 1)
-            return;
-        this->OnIncrementalRefresh_OLR_FOND(info->GroupMDEntries[1]);
-        if(info->GroupMDEntriesCount == 2)
-            return;
-        for(int i = 2; i < info->GroupMDEntriesCount; i++) {
-            this->OnIncrementalRefresh_OLR_FOND_Cached(info->GroupMDEntries[i]);
+        for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+            this->OnIncrementalRefresh_OLR_FOND(info->GroupMDEntries[i]);
         }
-        //info->ReleaseUnusedChildren();
     }
 
     inline void OnIncrementalRefresh_OLR_CURR(AstsIncrementalOLRCURRInfo *info) {
@@ -2810,16 +2803,31 @@ protected:
         ProgramStatistics::Current->Inc(Counters::cCurrOlr);
         ProgramStatistics::Total->Inc(Counters::cCurrOlr);
 #endif
-        this->OnIncrementalRefresh_OLR_CURR(info->GroupMDEntries[0]);
-        if(info->GroupMDEntriesCount == 1)
-            return;
-        this->OnIncrementalRefresh_OLR_CURR(info->GroupMDEntries[1]);
-        if(info->GroupMDEntriesCount == 2)
-            return;
-        for(int i = 2; i < info->GroupMDEntriesCount; i++) {
-            this->OnIncrementalRefresh_OLR_CURR_Cached(info->GroupMDEntries[i]);
+        OrderInfo<AstsOLSCURRItemInfo> *oitem;
+        /*
+        if(info->GroupMDEntriesCount > 3) {
+            for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+                AstsOLSCURRItemInfo *item = info->GroupMDEntries[i];
+                if(item->PresenceMap > 1) {
+                    int index = this->m_symbolManager->GetSymbol(item->Symbol, item->SymbolLength)->m_index;
+                    oitem = this->m_orderTableCurr->GetItem(index, item->TradingSessionIDUint);
+                }
+                if(item->MDUpdateAction != MDUpdateAction::mduaAdd) {
+                    UINT64 hash = HashTable::Default->CalcHash(item->MDEntryID, item->MDEntryIDLength);
+                    LinkedPointer<HashTableItemInfo> *ptr = HashTable::Default->Bucket()[hash];
+                    if(ptr != 0)
+                        __builtin_prefetch(ptr->Data()->m_object, 0, _MM_HINT_T0);
+                }
+            }
+        }*/
+        for(int i = 0; i < info->GroupMDEntriesCount; i++) {
+            AstsOLSCURRItemInfo *item = info->GroupMDEntries[i];
+            //if(item->PresenceMap > 1) {
+                int index = this->m_symbolManager->GetSymbol(item->Symbol, item->SymbolLength)->m_index;
+                oitem = this->m_orderTableCurr->GetItem(index, item->TradingSessionIDUint);
+            //}
+            this->m_orderTableCurr->ProcessIncremental(item, oitem);
         }
-        //info->ReleaseUnusedChildren();
     }
 
     inline void OnIncrementalRefresh_TLR_FOND(AstsIncrementalTLRFONDInfo *info) {

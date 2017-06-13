@@ -39,6 +39,11 @@ public:
         if(next != 0)
             next->m_prev = this;
     }
+    inline void ConnectHash(LinkedPointer<T> *next) {
+        this->m_nextHash = next;
+        if(next != 0)
+            next->m_prevHash = this;
+    }
     inline void ConnectUnsafe(LinkedPointer<T> *next) {
         this->m_next = next;
         next->m_prev = this;

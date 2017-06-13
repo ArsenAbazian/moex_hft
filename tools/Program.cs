@@ -2242,7 +2242,10 @@ namespace prebuild {
 				attribute.Name == "aligned" || 
 				attribute.Name == "order" || 
 				attribute.Name == "max_count" || 
-				attribute.Name == "process_empty_pmap";
+				attribute.Name == "process_empty_pmap" || 
+				attribute.Name == "pmap1" || 
+				attribute.Name == "pmap2" || 
+				attribute.Name == "pmap3";
 		}
 		StructureInfo GetOriginalStruct(XmlNode field) {
 			if(field.ParentNode == null || field.ParentNode.Attributes["name"] == null)
@@ -2381,7 +2384,7 @@ namespace prebuild {
 			WriteLine ("\t\tUINT64 nmap" + LevelCount + " = 0;");
 			WriteLine("");
 			foreach(XmlNode value in template.ChildNodes) {
-				ParseValue(info, value, "info", templateName, "\t\t", false);
+				ParseValue(info, value, "info", templateName, "\t\t", false, false, 0);
 			}
 			if(GetMaxPresenceBitCount(template) != 0)
 				WriteCopyPresenceMap("\t\t", "info");
@@ -2521,7 +2524,7 @@ namespace prebuild {
 			StructureInfo info = new StructureInfo() { Node = template, NameCore = templateName }; 
 			info.Prefix = Prefix;
 			foreach(XmlNode value in template.ChildNodes) {
-				ParseValue(info, value, "info", templateName, "\t\t", true, SnapshotInfoFields, parsed, false);
+				ParseValue(info, value, "info", templateName, "\t\t", true, SnapshotInfoFields, parsed, false, false, 0);
 				if(parsed.Count == SnapshotInfoFields.Count)
 					break;
 			}
@@ -2592,6 +2595,10 @@ namespace prebuild {
 			}
 			WriteLine("\tPrintXmlItemEnd(\"" + info.Name +"\");");
 			WriteLine("}");
+		}
+
+		bool HasAttribute(XmlNode node, string attributeName, string value) {
+			return HasAttribute (node, attributeName) && node.Attributes [attributeName].Value == value;
 		}
 
 		bool HasAttribute (XmlNode node, string attributeName) {
@@ -2804,8 +2811,13 @@ namespace prebuild {
 			return builder.ToString().ToLower();
 		}
 
+		string AttributeValue(XmlNode node, string attr) {
+			return node.Attributes [attr].Value;
+		}
+
 		private  void ParseSequence (StructureInfo str, XmlNode value, string objectValueName, string parentClassCoreName, string tabString) {
-			bool process_empty_pmap = HasAttribute (value, "process_empty_pmap");
+			bool process_empty_pmap = HasAttribute (value, "process_empty_pmap", "true");
+
 			StructureInfo info = GetOriginalStruct(value);
 			if(info == null)
 				info = GetStruct(value);
@@ -2844,19 +2856,41 @@ namespace prebuild {
 			}
 			WriteLine(tabString + "\tUINT64 nmap" + LevelCount + " = 0;");
 			WriteLine("");
+
+			string pmap = "pmap" + LevelCount;
+			string nmap = "nmap" + LevelCount;
 			if (process_empty_pmap) {
-				WriteLine(tabString + "\tif(pmap" + LevelCount + " != 0) {");
+				WriteLine(tabString + "\tif(" + pmap + " != 0) {");
 				tabString += "\t";
 			}
-			foreach(XmlNode node in value.ChildNodes) {
-				if (node.Name == "length")
-					continue;
-				ParseValue(info, node, itemInfo, parentClassCoreName + Name(value), tabString + "\t", false);
+			if (HasAttribute (value, "pmap1")) {
+				WriteLine (tabString + "\tif(" + pmap + " == " + AttributeValue(value, "pmap1") + ") {");
+				foreach(XmlNode node in value.ChildNodes)
+					ParseValue(info, node, itemInfo, parentClassCoreName + Name(value), tabString + "\t\t", false, true, Convert.ToUInt64(AttributeValue(value, "pmap1")));
+				if (GetMaxPresenceBitCount (value) > 0)
+					WriteLine (tabString + "\t\t" + itemInfo + "->PresenceMap = " + pmap + ";");
+				WriteLine (tabString + "\t\t" + itemInfo + "->NullMap = " + nmap + ";");
+				WriteLine (tabString + "\t\tthis->" + info.PrevValueName + " = " + itemInfo + ";");
+				WriteLine (tabString + "\t\tcontinue;");
+				WriteLine (tabString + "\t}");
 			}
-			if (GetMaxPresenceBitCount (value) > 0) {
+			if (HasAttribute (value, "pmap2")) {
+				WriteLine (tabString + "\tif(" + pmap + " == " + AttributeValue(value, "pmap2") + ") {");
+				foreach(XmlNode node in value.ChildNodes)
+					ParseValue(info, node, itemInfo, parentClassCoreName + Name(value), tabString + "\t\t", false, true, Convert.ToUInt64(AttributeValue(value, "pmap2")));
+				if (GetMaxPresenceBitCount (value) > 0)
+					WriteLine (tabString + "\t\t" + itemInfo + "->PresenceMap = " + pmap + ";");
+				WriteLine (tabString + "\t\t" + itemInfo + "->NullMap = " + nmap + ";");
+				WriteLine (tabString + "\t\tthis->" + info.PrevValueName + " = " + itemInfo + ";");
+				WriteLine (tabString + "\t\tcontinue;");
+				WriteLine (tabString + "\t}");
+			}
+			foreach(XmlNode node in value.ChildNodes)
+				ParseValue(info, node, itemInfo, parentClassCoreName + Name(value), tabString + "\t", false, false, 0);
+			if (GetMaxPresenceBitCount (value) > 0)
 				WriteLine (tabString + "\t" + itemInfo + "->PresenceMap = pmap" + LevelCount + ";");
-			}
 			WriteLine (tabString + "\t" + itemInfo + "->NullMap = nmap" + LevelCount + ";");
+
 			if (process_empty_pmap) {
 				WriteLine (tabString + "}");
 				tabString = tabString.Substring (1);
@@ -2864,11 +2898,8 @@ namespace prebuild {
 				tabString += "\t";
 
 				WriteLine(tabString + "\t" + itemInfo + "->Assign(this->" + info.PrevValueName + ");");
-				foreach(XmlNode node in value.ChildNodes) {
-					if (node.Name == "length")
-						continue;
-					ParseValue(info, node, itemInfo, parentClassCoreName + Name(value), tabString + "\t", true);
-				}
+				foreach(XmlNode node in value.ChildNodes)
+					ParseValue(info, node, itemInfo, parentClassCoreName + Name(value), tabString + "\t", true, false, 0);
 
 				if (GetMaxPresenceBitCount (value) > 0) {
 					WriteLine (tabString + "\t" + itemInfo + "->PresenceMap = pmap" + LevelCount + ";");
@@ -2933,8 +2964,9 @@ namespace prebuild {
 		private  void ParseDecimalValue (StructureInfo str, XmlNode value, string info, string tabString) {
 			string methodName = HasOptionalPresence(value)? "ReadDecimal_Optional" : "ReadDecimal_Mandatory";
 			if(ShouldWriteNullCheckCode(value)) {
-				WriteLine(tabString + "if(!" + methodName +"(&(" + info + "->" + Name(value) + ")))");
-				WriteLine(tabString + "\tnmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex(value) + ";");
+				string fullMethodName = methodName +"(&(" + info + "->" + Name(value) + "))";
+				int ni = CalcNullIndex (value);
+				WriteLine(tabString + "nmap" + LevelCount + " |= NULL_MAP_INDEX" + ni + " & (" + fullMethodName + " - 1);");
 				return;
 			}
 			if(ExtendedDecimal(value))
@@ -3004,8 +3036,10 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				string nullIndex = "NULL_MAP_INDEX" + CalcNullIndex (value);
-				WriteLine (tabString + "if(!" + GetMethodName(value, "ReadInt32_Optional") + "(&(" + info + "->" + Name(value) + ")))");
-				WriteLine(tabString + "\tnmap" + LevelCount + " |= " + nullIndex + ";");
+				string fullMethodName = GetMethodName (value, "ReadInt32_Optional") + "(&(" + info + "->" + Name (value) + "))";
+				WriteLine (tabString + "nmap" + LevelCount + " |= " + nullIndex + " & (" + fullMethodName + " - 1);");
+				//WriteLine (tabString + "if(!" + GetMethodName(value, "ReadInt32_Optional") + "(&(" + info + "->" + Name(value) + ")))");
+				//WriteLine(tabString + "\tnmap" + LevelCount + " |= " + nullIndex + ";");
 				return;
 			}
 			if (HasOptionalPresence (value))
@@ -3021,8 +3055,10 @@ namespace prebuild {
 			}
 			if(ShouldWriteNullCheckCode(value)) {
 				string nullIndex = "NULL_MAP_INDEX" + CalcNullIndex (value);
-				WriteLine (tabString + "if(!" + GetMethodName(value, "ReadUInt32_Optional") + "(&(" + info + "->" + Name(value) + ")))");
-				WriteLine(tabString + "\tnmap" + LevelCount + " |= " + nullIndex + ";");
+				string fullMethodName = GetMethodName (value, "ReadUInt32_Optional") + "(&(" + info + "->" + Name (value) + "))";
+				WriteLine (tabString + "nmap" + LevelCount + " |= " + nullIndex + " & (" + fullMethodName + " - 1);");
+				//WriteLine (tabString + "if(!" + GetMethodName(value, "ReadUInt32_Optional") + "(&(" + info + "->" + Name(value) + ")))");
+				//WriteLine(tabString + "\tnmap" + LevelCount + " |= " + nullIndex + ";");
 				return;
 			}
 			if (HasOptionalPresence (value))
@@ -3036,15 +3072,19 @@ namespace prebuild {
 			bool hasFixedSize = HasAttribute (value, "fixed_size");
 			if (hasFixedSize) {
 				if (ShouldWriteNullCheckCode (value)) {
-					WriteLine (tabString + "if(!" + methodName + "(" + info + "->" + Name (value) + "))");
-					WriteLine (tabString + "\tnmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex (value) + ";");
+					string fullMethodName = methodName + "(" + info + "->" + Name (value) + ")";
+					WriteLine (tabString + "nmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex (value) + " & (" + fullMethodName + " - 1);");
+					//WriteLine (tabString + "if(!" + methodName + "(" + info + "->" + Name (value) + "))");
+					//WriteLine (tabString + "\tnmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex (value) + ";");
 					return;
 				}
 				WriteLine (tabString + methodName + "(" + info + "->" + Name (value) + ");");
 			} else {
 				if (ShouldWriteNullCheckCode (value)) {
-					WriteLine (tabString + "if(!" + methodName + "(" + info + "->" + Name (value) + ", &(" + info + "->" + Name (value) + "Length)" + "))");
-					WriteLine (tabString + "\tnmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex (value) + ";");
+					string fullMethodName = methodName + "(" + info + "->" + Name (value) + ", &(" + info + "->" + Name (value) + "Length)" + ")";
+					WriteLine (tabString + "nmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex (value) + " & (" + fullMethodName + " - 1);");
+					//WriteLine (tabString + "if(!" + methodName + "(" + info + "->" + Name (value) + ", &(" + info + "->" + Name (value) + "Length)" + "))");
+					//WriteLine (tabString + "\tnmap" + LevelCount + " |= NULL_MAP_INDEX" + CalcNullIndex (value) + ";");
 					return;
 				}
 				WriteLine (tabString + methodName + "(" + info + "->" + Name (value) + ", &(" + info + "->" + Name (value) + "Length)" + ");");
@@ -3200,8 +3240,8 @@ namespace prebuild {
 			return true;
 		}
 
-		private  void ParseValue (StructureInfo str, XmlNode value, string objectValueName, string classCoreName, string tabString, bool skipOptionalPresence) {
-			ParseValue(str, value, objectValueName, classCoreName, tabString, false, null, null, skipOptionalPresence);
+		private  void ParseValue (StructureInfo str, XmlNode value, string objectValueName, string classCoreName, string tabString, bool skipOptionalPresence, bool useSpecialPresenceMap, ulong presenceMap) {
+			ParseValue(str, value, objectValueName, classCoreName, tabString, false, null, null, skipOptionalPresence, useSpecialPresenceMap, presenceMap);
 		}
 
 		private void WriteSkipCode(string tabStrings, string fieldName) {
@@ -3214,7 +3254,82 @@ namespace prebuild {
 			}
 			return false;
 		}
-		private  void ParseValue (StructureInfo str, XmlNode value, string objectValueName, string classCoreName, string tabString, bool skipNonAllowed, List<SnapshotFieldInfo> allowedFields, List<string> parsed, bool skipOptionalPresence) {
+		bool IsPresenceAllowed(XmlNode value, ulong pmap) {
+			if (!ShouldWriteCheckPresenceMapCode (value))
+				return true;
+			int index = CalcFieldPresenceIndex (value);
+			ulong[] pmapBit = new ulong[] {
+				0x0000000000000040L,
+				0x0000000000000020L,
+				0x0000000000000010L,
+				0x0000000000000008L,
+				0x0000000000000004L,
+				0x0000000000000002L,
+				0x0000000000000001L,
+				0x0000000000004000L,
+				0x0000000000002000L,
+				0x0000000000001000L,
+				0x0000000000000800L,
+				0x0000000000000400L,
+				0x0000000000000200L,
+				0x0000000000000100L,
+				0x0000000000400000L,
+				0x0000000000200000L,
+				0x0000000000100000L,
+				0x0000000000080000L,
+				0x0000000000040000L,
+				0x0000000000020000L,
+				0x0000000000010000L,
+				0x0000000040000000L,
+				0x0000000020000000L,
+				0x0000000010000000L,
+				0x0000000008000000L,
+				0x0000000004000000L,
+				0x0000000002000000L,
+				0x0000000001000000L,
+				0x0000004000000000L,
+				0x0000002000000000L,
+				0x0000001000000000L,
+				0x0000000800000000L,
+				0x0000000400000000L,
+				0x0000000200000000L,
+				0x0000000100000000L,
+				0x0000400000000000L,
+				0x0000200000000000L,
+				0x0000100000000000L,
+				0x0000080000000000L,
+				0x0000040000000000L,
+				0x0000020000000000L,
+				0x0000010000000000L,
+				0x0040000000000000L,
+				0x0020000000000000L,
+				0x0010000000000000L,
+				0x0008000000000000L,
+				0x0004000000000000L,
+				0x0002000000000000L,
+				0x0001000000000000L,
+				0x4000000000000000L,
+				0x2000000000000000L,
+				0x1000000000000000L,
+				0x0800000000000000L,
+				0x0400000000000000L,
+				0x0200000000000000L,
+				0x0100000000000000L
+			};
+			return (pmapBit [index] & pmap) != 0;
+		}
+		private  void ParseValue (StructureInfo str, 
+			XmlNode value, 
+			string objectValueName, 
+			string classCoreName, 
+			string tabString, 
+			bool skipNonAllowed, 
+			List<SnapshotFieldInfo> allowedFields, 
+			List<string> parsed, 
+			bool skipOptionalPresence,
+			bool useSepcialPresenceMap,
+			ulong specialPresenceMap) {
+
 			if(value.Name == "length")
 				return;
 
@@ -3229,12 +3344,26 @@ namespace prebuild {
 				}
 				parsed.Add(Name(value));
 			}
-			if(!skipOptionalPresence && ShouldWriteCheckPresenceMapCode(value)) {
+
+			bool isPresenceAllowed = IsPresenceAllowed (value, specialPresenceMap);
+			bool isOptionalPresence = ShouldWriteCheckPresenceMapCode (value);
+
+			bool writeParseCode = true;
+			if (isOptionalPresence) {
+				if (skipOptionalPresence)
+					writeParseCode = false;
+				else if (useSepcialPresenceMap && !isPresenceAllowed)
+					writeParseCode = false;
+			}
+			bool writePresenceCheck = isOptionalPresence && !skipOptionalPresence && !useSepcialPresenceMap;
+
+			if(writePresenceCheck) {
 				string name = HasOptionalPresence(value)? "CheckOptionalFieldPresence": "CheckMandatoryFieldPresence";
 				WriteLine(tabString + "if(" + name + "(pmap" + LevelCount + ", PRESENCE_MAP_INDEX" + CalcFieldPresenceIndex(value) + ")) {");
 				tabString += "\t";
 			}
-			if (!ShouldWriteCheckPresenceMapCode (value) || !skipOptionalPresence) {
+
+			if (writeParseCode) {
 				if (IsString (value))
 					ParseStringValue (str, value, objectValueName, tabString);
 				else if (value.Name == "uInt32")
@@ -3259,7 +3388,11 @@ namespace prebuild {
 				if (HasConstantAttribute (value))
 					WriteConstantValueCheckingCode (value, objectValueName, classCoreName, tabString);
 			}
-			if(!skipOptionalPresence && ShouldWriteCheckPresenceMapCode(value)) {
+
+			if (useSepcialPresenceMap && !writeParseCode) {
+				WriteApplyOperatorsCode(str, value, objectValueName, tabString);
+			}
+			else if(writePresenceCheck) {
 				tabString = tabString.Substring (1);
 				WriteLine (tabString + "}");
 				WriteLine (tabString + "else {");

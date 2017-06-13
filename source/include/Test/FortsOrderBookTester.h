@@ -376,7 +376,7 @@ public:
         if(obi2->BuyQuotes()->Item(3)->MDEntryID != 333333)
             throw;
 
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item5 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 24, -3, 1000, mduaChange, mdetBuyQuote, 222222, 5);
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *item5 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 4, -2, 1000, mduaChange, mdetBuyQuote, 222222, 5);
 
         info->MDEntriesCount = 1;
         info->MDEntries[0] = item5;
@@ -398,23 +398,18 @@ public:
             throw;
         if(obi->BuyQuotes()->Count() != 4)
             throw;
-        if(qt1->MDEntryID != 111111)
+        if(qt1->MDEntryID != 222222)
             throw;
-        if(qt2->MDEntryID != 444444)
+        if(qt2->MDEntryID != 111111)
             throw;
-        if(qt3->MDEntryID != 222222)
+        if(qt3->MDEntryID != 444444)
             throw;
         if(qt4->MDEntryID != 333333)
             throw;
 
-        if(qt1->MDEntryPx.Mantissa != item1->MDEntryPx.Mantissa)
+        if(qt1->MDEntryPx.Mantissa != item2->MDEntryPx.Mantissa)
             throw;
-        if(qt1->MDEntryPx.Exponent != item1->MDEntryPx.Exponent)
-            throw;
-
-        if(qt3->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
-            throw;
-        if(qt3->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
+        if(qt1->MDEntryPx.Exponent != item2->MDEntryPx.Exponent)
             throw;
     }
 
@@ -787,7 +782,7 @@ public:
         if(obi2->SellQuotes()->Item(1)->MDEntryID != 444444)
             throw;
 
-        FortsDefaultSnapshotMessageMDEntriesItemInfo *item5 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 24, -3, 1000, mduaChange, mdetSellQuote, 222222, 5);
+        FortsDefaultSnapshotMessageMDEntriesItemInfo *item5 = this->m_helper->CreateFortsOBRItemInfo("symbol1", 111111, 4, -2, 1000, mduaChange, mdetSellQuote, 222222, 5);
 
         info->MDEntriesCount = 1;
         info->MDEntries[0] = item5;
@@ -807,21 +802,16 @@ public:
             throw;
         if(qt1->MDEntryID != 333333)
             throw;
-        if(qt2->MDEntryID != 222222)
+        if(qt2->MDEntryID != 444444)
             throw;
-        if(qt3->MDEntryID != 444444)
+        if(qt3->MDEntryID != 111111)
             throw;
-        if(qt4->MDEntryID != 111111)
-            throw;
-
-        if(qt1->MDEntryPx.Mantissa != item3->MDEntryPx.Mantissa)
-            throw;
-        if(qt1->MDEntryPx.Exponent != item3->MDEntryPx.Exponent)
+        if(qt4->MDEntryID != 222222)
             throw;
 
-        if(qt2->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
+        if(qt4->MDEntryPx.Mantissa != item5->MDEntryPx.Mantissa)
             throw;
-        if(qt2->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
+        if(qt4->MDEntryPx.Exponent != item5->MDEntryPx.Exponent)
             throw;
     }
 
@@ -1039,7 +1029,7 @@ public:
         this->idfForts->ClearSecurityDefinitions();
         this->incForts->OrderBookForts()->Clear();
         this->incForts->GetSymbolManager()->Clear();
-        HashTable::Default->Clear();
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo>::m_hashTable->Clear();
     }
 
     void TestTable_AfterClear() {
@@ -3750,7 +3740,7 @@ template <typename T>
             int val = rand() % itemsCount;
             FortsDefaultSnapshotMessageMDEntriesItemInfo *item = CreatePerformanceItem(startMantissa + val * 5);
             items[i] = item;
-            obi->AddBuyQuote(item);
+            obi->Add(item);
             this->TestLevelsDescending(obi->BuyQuotes());
             if(obi->BuyQuotes()->Count() == itemsCount)
                 break;
@@ -3776,7 +3766,7 @@ template <typename T>
             obi->ListMode(ListType::ltSkipList);
             w->Start();
             for (int i = 0; i < count; i++) {
-                HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->AddBuyQuote(item50);
+                HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item50);
                 obi->DebugRemoveQuoteNoClear(obi->BuyQuotes(), ptr->Data());
 
                 if(obi->BuyQuotes()->Count() != itemsCount)
@@ -3791,7 +3781,7 @@ template <typename T>
             obi->ListMode(ListType::ltSimple);
             w->Start();
             for (int i = 0; i < count; i++) {
-                HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->AddBuyQuote(item50);
+                HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *ptr = obi->Add(item50);
                 obi->DebugRemoveQuoteNoClear(obi->BuyQuotes(), ptr->Data());
             }
             UINT64 en2 = w->ElapsedNanosecondsSlow();
@@ -3843,7 +3833,7 @@ template <typename T>
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuote(CreateHrItem(100));
+        item->Add(CreateHrItem(100));
         if(item->BuyQuotes()->Start() == 0)
             throw;
         if(item->BuyQuotes()->Count() != 1)
@@ -3856,8 +3846,8 @@ template <typename T>
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(90));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(90));
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(item->BuyQuotes()->Start()->Data()->MDEntryPx.Mantissa != 100)
@@ -3880,8 +3870,8 @@ template <typename T>
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(110));
         if(item->BuyQuotes()->Count() != 2)
             throw;
         if(item->BuyQuotes()->Start()->Data()->MDEntryPx.Mantissa != 110)
@@ -3904,12 +3894,12 @@ template <typename T>
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(110));
 
         item->SetDebugLevel(3);
 
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(120));
         if(item->BuyQuotes()->Count() != 3)
             throw;
         if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
@@ -3957,12 +3947,12 @@ template <typename T>
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(110));
 
         item->SetDebugLevel(3);
 
-        item->AddBuyQuote(CreateHrItem(90));
+        item->Add(CreateHrItem(90));
         if(item->BuyQuotes()->Count() != 3)
             throw;
         if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 110)
@@ -4334,11 +4324,11 @@ template <typename T>
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(120));
 
         item->SetDebugLevel(1);
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
 
         if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
             throw;
@@ -4396,11 +4386,11 @@ template <typename T>
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(120));
 
         item->SetDebugLevel(2);
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
 
         if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
             throw;
@@ -4458,11 +4448,11 @@ template <typename T>
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(120));
 
         item->SetDebugLevel(3);
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
 
         if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
             throw;
@@ -4520,11 +4510,11 @@ template <typename T>
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(120));
 
         item->SetDebugLevel(4);
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
 
         if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
             throw;
@@ -4582,11 +4572,11 @@ template <typename T>
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
             throw;
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(120));
 
         item->SetDebugLevel(5);
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
 
         if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
             throw;
@@ -4643,7 +4633,7 @@ template <typename T>
     void TestRemoveBuyQuote1() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(100));
+        item->Add(CreateHrItem(100));
         item->RemoveBuyQuote(CreateHrItem(100));
 
         if(item->BuyQuotes()->Count() != 0)
@@ -4685,8 +4675,8 @@ template <typename T>
     void TestRemoveBuyQuote21() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(120));
 
         item->RemoveBuyQuote(CreateHrItem(100));
 
@@ -4703,8 +4693,8 @@ template <typename T>
     void TestRemoveBuyQuote22() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(120));
 
         item->RemoveBuyQuote(CreateHrItem(120));
 
@@ -4721,10 +4711,10 @@ template <typename T>
     void TestRemoveBuyQuote31() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(120));
         item->SetDebugLevel(1);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuote(CreateHrItem(110));
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->Add(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
@@ -4738,10 +4728,10 @@ template <typename T>
     void TestRemoveBuyQuote32() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(120));
         item->SetDebugLevel(2);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuote(CreateHrItem(110));
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->Add(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
@@ -4755,10 +4745,10 @@ template <typename T>
     void TestRemoveBuyQuote33() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(120));
         item->SetDebugLevel(3);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuote(CreateHrItem(110));
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->Add(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
@@ -4772,10 +4762,10 @@ template <typename T>
     void TestRemoveBuyQuote34() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(120));
         item->SetDebugLevel(4);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuote(CreateHrItem(110));
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->Add(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
@@ -4789,10 +4779,10 @@ template <typename T>
     void TestRemoveBuyQuote35() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(100));
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(120));
         item->SetDebugLevel(5);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->AddBuyQuote(CreateHrItem(110));
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->Add(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
@@ -4806,12 +4796,12 @@ template <typename T>
     void TestRemoveBuyQuote411() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(130));
-        item->AddBuyQuote(CreateHrItem(100));
+        item->Add(CreateHrItem(130));
+        item->Add(CreateHrItem(100));
         item->SetDebugLevel(1);
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
         item->SetDebugLevel(1);
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(120));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
@@ -4826,12 +4816,12 @@ template <typename T>
     void TestRemoveBuyQuote412() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(130));
-        item->AddBuyQuote(CreateHrItem(100));
+        item->Add(CreateHrItem(130));
+        item->Add(CreateHrItem(100));
         item->SetDebugLevel(1);
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
         item->SetDebugLevel(1);
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(120));
 
         item->RemoveBuyQuote(CreateHrItem(120));
 
@@ -4958,12 +4948,12 @@ template <typename T>
     void TestRemoveBuyQuote421() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(130));
-        item->AddBuyQuote(CreateHrItem(100));
+        item->Add(CreateHrItem(130));
+        item->Add(CreateHrItem(100));
         item->SetDebugLevel(2);
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
         item->SetDebugLevel(2);
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *");
@@ -4985,12 +4975,12 @@ template <typename T>
     void TestRemoveBuyQuote422() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(130));
-        item->AddBuyQuote(CreateHrItem(100));
+        item->Add(CreateHrItem(130));
+        item->Add(CreateHrItem(100));
         item->SetDebugLevel(2);
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
         item->SetDebugLevel(2);
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *");
@@ -5012,12 +5002,12 @@ template <typename T>
     void TestRemoveBuyQuote431() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(130));
-        item->AddBuyQuote(CreateHrItem(100));
+        item->Add(CreateHrItem(130));
+        item->Add(CreateHrItem(100));
         item->SetDebugLevel(3);
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
         item->SetDebugLevel(3);
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *");
@@ -5039,12 +5029,12 @@ template <typename T>
     void TestRemoveBuyQuote432() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(130));
-        item->AddBuyQuote(CreateHrItem(100));
+        item->Add(CreateHrItem(130));
+        item->Add(CreateHrItem(100));
         item->SetDebugLevel(3);
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
         item->SetDebugLevel(3);
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *");
@@ -5066,12 +5056,12 @@ template <typename T>
     void TestRemoveBuyQuote441() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(130));
-        item->AddBuyQuote(CreateHrItem(100));
+        item->Add(CreateHrItem(130));
+        item->Add(CreateHrItem(100));
         item->SetDebugLevel(4);
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
         item->SetDebugLevel(4);
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *");
@@ -5093,12 +5083,12 @@ template <typename T>
     void TestRemoveBuyQuote442() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(130));
-        item->AddBuyQuote(CreateHrItem(100));
+        item->Add(CreateHrItem(130));
+        item->Add(CreateHrItem(100));
         item->SetDebugLevel(4);
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
         item->SetDebugLevel(4);
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *");
@@ -5120,12 +5110,12 @@ template <typename T>
     void TestRemoveBuyQuote451() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(130));
-        item->AddBuyQuote(CreateHrItem(100));
+        item->Add(CreateHrItem(130));
+        item->Add(CreateHrItem(100));
         item->SetDebugLevel(5);
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
         item->SetDebugLevel(5);
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "****");
@@ -5147,12 +5137,12 @@ template <typename T>
     void TestRemoveBuyQuote452() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
-        item->AddBuyQuote(CreateHrItem(130));
-        item->AddBuyQuote(CreateHrItem(100));
+        item->Add(CreateHrItem(130));
+        item->Add(CreateHrItem(100));
         item->SetDebugLevel(5);
-        item->AddBuyQuote(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
         item->SetDebugLevel(5);
-        item->AddBuyQuote(CreateHrItem(120));
+        item->Add(CreateHrItem(120));
 
         this->AssertPrices(item->BuyQuotes(), 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "****");
@@ -5173,7 +5163,7 @@ template <typename T>
 
     void AddBuyQuote(OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item, int price, int level) {
         item->SetDebugLevel(level);
-        item->AddBuyQuote(CreateHrItem(price));
+        item->Add(CreateHrItem(price));
     }
 
     void TestRemoveBuyQuote511() {

@@ -107,6 +107,7 @@ endforeach(inc_dir)
 add_executable(hft_robot
         source/src/Settings.cpp
         source/src/Stopwatch.cpp
+        source/src/Lib/HashTable.cpp
         ${sources}
         )
 add_dependencies(hft_robot fast_generate)

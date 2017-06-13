@@ -3339,10 +3339,8 @@ public:
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 		info->HeartBtInt = ReadInt32_Mandatory();
-		if(!ReadString_Optional(info->Username, &(info->UsernameLength)))
-			nmap1 |= NULL_MAP_INDEX0;
-		if(!ReadString_Optional(info->Password, &(info->PasswordLength)))
-			nmap1 |= NULL_MAP_INDEX1;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadString_Optional(info->Username, &(info->UsernameLength)) - 1);
+		nmap1 |= NULL_MAP_INDEX1 & (ReadString_Optional(info->Password, &(info->PasswordLength)) - 1);
 		ReadString_Mandatory(info->DefaultApplVerID, &(info->DefaultApplVerIDLength));
 		info->NullMap = nmap1;
 		this->m_prevastsLogonInfo = info;
@@ -3355,8 +3353,7 @@ public:
 		ReadString_Mandatory(info->TargetCompID, &(info->TargetCompIDLength));
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadString_Optional(info->Text, &(info->TextLength)))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadString_Optional(info->Text, &(info->TextLength)) - 1);
 		info->NullMap = nmap1;
 		this->m_prevastsLogoutInfo = info;
 		return info;
@@ -3367,24 +3364,16 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadString_Optional_Fixed4(info->TradingSessionID) - 1);
 		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
-		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
-			nmap1 |= NULL_MAP_INDEX1;
+		nmap1 |= NULL_MAP_INDEX1 & (ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)) - 1);
 		info->RptSeq = ReadInt32_Mandatory();
-		if(!ReadUInt32_Optional(&(info->LastFragment)))
-			nmap1 |= NULL_MAP_INDEX2;
-		if(!ReadUInt32_Optional(&(info->RouteFirst)))
-			nmap1 |= NULL_MAP_INDEX3;
-		if(!ReadInt32_Optional(&(info->TradSesStatus)))
-			nmap1 |= NULL_MAP_INDEX4;
-		if(!ReadInt32_Optional(&(info->MDSecurityTradingStatus)))
-			nmap1 |= NULL_MAP_INDEX5;
-		if(!ReadUInt32_Optional(&(info->AuctionIndicator)))
-			nmap1 |= NULL_MAP_INDEX6;
-		if(!ReadDecimal_Optional(&(info->NetChgPrevDay)))
-			nmap1 |= NULL_MAP_INDEX7;
+		nmap1 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(info->LastFragment)) - 1);
+		nmap1 |= NULL_MAP_INDEX3 & (ReadUInt32_Optional(&(info->RouteFirst)) - 1);
+		nmap1 |= NULL_MAP_INDEX4 & (ReadInt32_Optional(&(info->TradSesStatus)) - 1);
+		nmap1 |= NULL_MAP_INDEX5 & (ReadInt32_Optional(&(info->MDSecurityTradingStatus)) - 1);
+		nmap1 |= NULL_MAP_INDEX6 & (ReadUInt32_Optional(&(info->AuctionIndicator)) - 1);
+		nmap1 |= NULL_MAP_INDEX7 & (ReadDecimal_Optional(&(info->NetChgPrevDay)) - 1);
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsGenericItemInfo* gmdeItemInfo = NULL;
@@ -3399,88 +3388,47 @@ public:
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
-			if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
-				nmap2 |= NULL_MAP_INDEX0;
-			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-				nmap2 |= NULL_MAP_INDEX1;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
-				nmap2 |= NULL_MAP_INDEX2;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
-				nmap2 |= NULL_MAP_INDEX3;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
-				nmap2 |= NULL_MAP_INDEX4;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
-				nmap2 |= NULL_MAP_INDEX5;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
-				nmap2 |= NULL_MAP_INDEX6;
-			if(!ReadString_Optional(gmdeItemInfo->QuoteCondition, &(gmdeItemInfo->QuoteConditionLength)))
-				nmap2 |= NULL_MAP_INDEX7;
-			if(!ReadString_Optional(gmdeItemInfo->TradeCondition, &(gmdeItemInfo->TradeConditionLength)))
-				nmap2 |= NULL_MAP_INDEX8;
-			if(!ReadString_Optional(gmdeItemInfo->OpenCloseSettlFlag, &(gmdeItemInfo->OpenCloseSettlFlagLength)))
-				nmap2 |= NULL_MAP_INDEX9;
-			if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrdType))
-				nmap2 |= NULL_MAP_INDEX10;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->EffectiveTime)))
-				nmap2 |= NULL_MAP_INDEX11;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->StartTime)))
-				nmap2 |= NULL_MAP_INDEX12;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt)))
-				nmap2 |= NULL_MAP_INDEX13;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->ChgFromWAPrice)))
-				nmap2 |= NULL_MAP_INDEX14;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->ChgOpenInterest)))
-				nmap2 |= NULL_MAP_INDEX15;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->BidMarketSize)))
-				nmap2 |= NULL_MAP_INDEX16;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize)))
-				nmap2 |= NULL_MAP_INDEX17;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->TotalNumOfTrades)))
-				nmap2 |= NULL_MAP_INDEX18;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)))
-				nmap2 |= NULL_MAP_INDEX19;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->Yield)))
-				nmap2 |= NULL_MAP_INDEX20;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume)))
-				nmap2 |= NULL_MAP_INDEX21;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->OfferNbOr)))
-				nmap2 |= NULL_MAP_INDEX22;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->BidNbOr)))
-				nmap2 |= NULL_MAP_INDEX23;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->ChgFromSettlmnt)))
-				nmap2 |= NULL_MAP_INDEX24;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
-				nmap2 |= NULL_MAP_INDEX25;
-			if(!ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)))
-				nmap2 |= NULL_MAP_INDEX26;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->SumQtyOfBest)))
-				nmap2 |= NULL_MAP_INDEX27;
-			if(!ReadString_Optional(gmdeItemInfo->OrderSide, &(gmdeItemInfo->OrderSideLength)))
-				nmap2 |= NULL_MAP_INDEX28;
-			if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus))
-				nmap2 |= NULL_MAP_INDEX29;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->MinCurrPx)))
-				nmap2 |= NULL_MAP_INDEX30;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->MinCurrPxChgTime)))
-				nmap2 |= NULL_MAP_INDEX31;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->VolumeIndicator)))
-				nmap2 |= NULL_MAP_INDEX32;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->Price)))
-				nmap2 |= NULL_MAP_INDEX33;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->PriceType)))
-				nmap2 |= NULL_MAP_INDEX34;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->NominalValue)))
-				nmap2 |= NULL_MAP_INDEX35;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx)))
-				nmap2 |= NULL_MAP_INDEX36;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx)))
-				nmap2 |= NULL_MAP_INDEX37;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)))
-				nmap2 |= NULL_MAP_INDEX38;
-			if(!ReadString_Optional(gmdeItemInfo->CXFlag, &(gmdeItemInfo->CXFlagLength)))
-				nmap2 |= NULL_MAP_INDEX39;
-			if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
-				nmap2 |= NULL_MAP_INDEX40;
+			nmap2 |= NULL_MAP_INDEX0 & (ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType) - 1);
+			nmap2 |= NULL_MAP_INDEX1 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX3 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX4 & (ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX5 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX6 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)) - 1);
+			nmap2 |= NULL_MAP_INDEX7 & (ReadString_Optional(gmdeItemInfo->QuoteCondition, &(gmdeItemInfo->QuoteConditionLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX8 & (ReadString_Optional(gmdeItemInfo->TradeCondition, &(gmdeItemInfo->TradeConditionLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX9 & (ReadString_Optional(gmdeItemInfo->OpenCloseSettlFlag, &(gmdeItemInfo->OpenCloseSettlFlagLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX10 & (ReadString_Optional_Fixed1(gmdeItemInfo->OrdType) - 1);
+			nmap2 |= NULL_MAP_INDEX11 & (ReadUInt32_Optional(&(gmdeItemInfo->EffectiveTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX12 & (ReadUInt32_Optional(&(gmdeItemInfo->StartTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX13 & (ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt)) - 1);
+			nmap2 |= NULL_MAP_INDEX14 & (ReadDecimal_Optional(&(gmdeItemInfo->ChgFromWAPrice)) - 1);
+			nmap2 |= NULL_MAP_INDEX15 & (ReadDecimal_Optional(&(gmdeItemInfo->ChgOpenInterest)) - 1);
+			nmap2 |= NULL_MAP_INDEX16 & (ReadDecimal_Optional(&(gmdeItemInfo->BidMarketSize)) - 1);
+			nmap2 |= NULL_MAP_INDEX17 & (ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize)) - 1);
+			nmap2 |= NULL_MAP_INDEX18 & (ReadInt32_Optional(&(gmdeItemInfo->TotalNumOfTrades)) - 1);
+			nmap2 |= NULL_MAP_INDEX19 & (ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)) - 1);
+			nmap2 |= NULL_MAP_INDEX20 & (ReadDecimal_Optional(&(gmdeItemInfo->Yield)) - 1);
+			nmap2 |= NULL_MAP_INDEX21 & (ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume)) - 1);
+			nmap2 |= NULL_MAP_INDEX22 & (ReadInt32_Optional(&(gmdeItemInfo->OfferNbOr)) - 1);
+			nmap2 |= NULL_MAP_INDEX23 & (ReadInt32_Optional(&(gmdeItemInfo->BidNbOr)) - 1);
+			nmap2 |= NULL_MAP_INDEX24 & (ReadDecimal_Optional(&(gmdeItemInfo->ChgFromSettlmnt)) - 1);
+			nmap2 |= NULL_MAP_INDEX25 & (ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX26 & (ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX27 & (ReadInt32_Optional(&(gmdeItemInfo->SumQtyOfBest)) - 1);
+			nmap2 |= NULL_MAP_INDEX28 & (ReadString_Optional(gmdeItemInfo->OrderSide, &(gmdeItemInfo->OrderSideLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX29 & (ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus) - 1);
+			nmap2 |= NULL_MAP_INDEX30 & (ReadDecimal_Optional(&(gmdeItemInfo->MinCurrPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX31 & (ReadUInt32_Optional(&(gmdeItemInfo->MinCurrPxChgTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX32 & (ReadUInt32_Optional(&(gmdeItemInfo->VolumeIndicator)) - 1);
+			nmap2 |= NULL_MAP_INDEX33 & (ReadDecimal_Optional(&(gmdeItemInfo->Price)) - 1);
+			nmap2 |= NULL_MAP_INDEX34 & (ReadInt32_Optional(&(gmdeItemInfo->PriceType)) - 1);
+			nmap2 |= NULL_MAP_INDEX35 & (ReadDecimal_Optional(&(gmdeItemInfo->NominalValue)) - 1);
+			nmap2 |= NULL_MAP_INDEX36 & (ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX37 & (ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX38 & (ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX39 & (ReadString_Optional(gmdeItemInfo->CXFlag, &(gmdeItemInfo->CXFlagLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX40 & (ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)) - 1);
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
 		}
@@ -3509,98 +3457,52 @@ public:
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
-			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
-				nmap2 |= NULL_MAP_INDEX0;
-			if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
-				nmap2 |= NULL_MAP_INDEX1;
-			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-				nmap2 |= NULL_MAP_INDEX2;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
-				nmap2 |= NULL_MAP_INDEX3;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
-				nmap2 |= NULL_MAP_INDEX4;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
-				nmap2 |= NULL_MAP_INDEX5;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
-				nmap2 |= NULL_MAP_INDEX6;
-			if(!ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)))
-				nmap2 |= NULL_MAP_INDEX7;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
-				nmap2 |= NULL_MAP_INDEX8;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->EffectiveTime)))
-				nmap2 |= NULL_MAP_INDEX9;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->StartTime)))
-				nmap2 |= NULL_MAP_INDEX10;
-			if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
-				nmap2 |= NULL_MAP_INDEX11;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
-				nmap2 |= NULL_MAP_INDEX12;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
-				nmap2 |= NULL_MAP_INDEX13;
-			if(!ReadString_Optional(gmdeItemInfo->QuoteCondition, &(gmdeItemInfo->QuoteConditionLength)))
-				nmap2 |= NULL_MAP_INDEX14;
-			if(!ReadString_Optional(gmdeItemInfo->TradeCondition, &(gmdeItemInfo->TradeConditionLength)))
-				nmap2 |= NULL_MAP_INDEX15;
-			if(!ReadString_Optional(gmdeItemInfo->OpenCloseSettlFlag, &(gmdeItemInfo->OpenCloseSettlFlagLength)))
-				nmap2 |= NULL_MAP_INDEX16;
-			if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrdType))
-				nmap2 |= NULL_MAP_INDEX17;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->NetChgPrevDay)))
-				nmap2 |= NULL_MAP_INDEX18;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt)))
-				nmap2 |= NULL_MAP_INDEX19;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->ChgFromWAPrice)))
-				nmap2 |= NULL_MAP_INDEX20;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->ChgOpenInterest)))
-				nmap2 |= NULL_MAP_INDEX21;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->BidMarketSize)))
-				nmap2 |= NULL_MAP_INDEX22;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize)))
-				nmap2 |= NULL_MAP_INDEX23;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->TotalNumOfTrades)))
-				nmap2 |= NULL_MAP_INDEX24;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)))
-				nmap2 |= NULL_MAP_INDEX25;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->Yield)))
-				nmap2 |= NULL_MAP_INDEX26;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume)))
-				nmap2 |= NULL_MAP_INDEX27;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->OfferNbOr)))
-				nmap2 |= NULL_MAP_INDEX28;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->BidNbOr)))
-				nmap2 |= NULL_MAP_INDEX29;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->ChgFromSettlmnt)))
-				nmap2 |= NULL_MAP_INDEX30;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->SumQtyOfBest)))
-				nmap2 |= NULL_MAP_INDEX31;
-			if(!ReadString_Optional(gmdeItemInfo->OrderSide, &(gmdeItemInfo->OrderSideLength)))
-				nmap2 |= NULL_MAP_INDEX32;
-			if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus))
-				nmap2 |= NULL_MAP_INDEX33;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->MinCurrPx)))
-				nmap2 |= NULL_MAP_INDEX34;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->MinCurrPxChgTime)))
-				nmap2 |= NULL_MAP_INDEX35;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->VolumeIndicator)))
-				nmap2 |= NULL_MAP_INDEX36;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->Price)))
-				nmap2 |= NULL_MAP_INDEX37;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->PriceType)))
-				nmap2 |= NULL_MAP_INDEX38;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->NominalValue)))
-				nmap2 |= NULL_MAP_INDEX39;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx)))
-				nmap2 |= NULL_MAP_INDEX40;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx)))
-				nmap2 |= NULL_MAP_INDEX41;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)))
-				nmap2 |= NULL_MAP_INDEX42;
-			if(!ReadString_Optional(gmdeItemInfo->CXFlag, &(gmdeItemInfo->CXFlagLength)))
-				nmap2 |= NULL_MAP_INDEX43;
-			if(!ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID))
-				nmap2 |= NULL_MAP_INDEX44;
-			if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
-				nmap2 |= NULL_MAP_INDEX45;
+			nmap2 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)) - 1);
+			nmap2 |= NULL_MAP_INDEX1 & (ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType) - 1);
+			nmap2 |= NULL_MAP_INDEX2 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX3 & (ReadInt32_Optional(&(gmdeItemInfo->RptSeq)) - 1);
+			nmap2 |= NULL_MAP_INDEX4 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX5 & (ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX6 & (ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX7 & (ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX8 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX9 & (ReadUInt32_Optional(&(gmdeItemInfo->EffectiveTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX10 & (ReadUInt32_Optional(&(gmdeItemInfo->StartTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX11 & (ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX12 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX13 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)) - 1);
+			nmap2 |= NULL_MAP_INDEX14 & (ReadString_Optional(gmdeItemInfo->QuoteCondition, &(gmdeItemInfo->QuoteConditionLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX15 & (ReadString_Optional(gmdeItemInfo->TradeCondition, &(gmdeItemInfo->TradeConditionLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX16 & (ReadString_Optional(gmdeItemInfo->OpenCloseSettlFlag, &(gmdeItemInfo->OpenCloseSettlFlagLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX17 & (ReadString_Optional_Fixed1(gmdeItemInfo->OrdType) - 1);
+			nmap2 |= NULL_MAP_INDEX18 & (ReadDecimal_Optional(&(gmdeItemInfo->NetChgPrevDay)) - 1);
+			nmap2 |= NULL_MAP_INDEX19 & (ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt)) - 1);
+			nmap2 |= NULL_MAP_INDEX20 & (ReadDecimal_Optional(&(gmdeItemInfo->ChgFromWAPrice)) - 1);
+			nmap2 |= NULL_MAP_INDEX21 & (ReadDecimal_Optional(&(gmdeItemInfo->ChgOpenInterest)) - 1);
+			nmap2 |= NULL_MAP_INDEX22 & (ReadDecimal_Optional(&(gmdeItemInfo->BidMarketSize)) - 1);
+			nmap2 |= NULL_MAP_INDEX23 & (ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize)) - 1);
+			nmap2 |= NULL_MAP_INDEX24 & (ReadInt32_Optional(&(gmdeItemInfo->TotalNumOfTrades)) - 1);
+			nmap2 |= NULL_MAP_INDEX25 & (ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)) - 1);
+			nmap2 |= NULL_MAP_INDEX26 & (ReadDecimal_Optional(&(gmdeItemInfo->Yield)) - 1);
+			nmap2 |= NULL_MAP_INDEX27 & (ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume)) - 1);
+			nmap2 |= NULL_MAP_INDEX28 & (ReadInt32_Optional(&(gmdeItemInfo->OfferNbOr)) - 1);
+			nmap2 |= NULL_MAP_INDEX29 & (ReadInt32_Optional(&(gmdeItemInfo->BidNbOr)) - 1);
+			nmap2 |= NULL_MAP_INDEX30 & (ReadDecimal_Optional(&(gmdeItemInfo->ChgFromSettlmnt)) - 1);
+			nmap2 |= NULL_MAP_INDEX31 & (ReadInt32_Optional(&(gmdeItemInfo->SumQtyOfBest)) - 1);
+			nmap2 |= NULL_MAP_INDEX32 & (ReadString_Optional(gmdeItemInfo->OrderSide, &(gmdeItemInfo->OrderSideLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX33 & (ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus) - 1);
+			nmap2 |= NULL_MAP_INDEX34 & (ReadDecimal_Optional(&(gmdeItemInfo->MinCurrPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX35 & (ReadUInt32_Optional(&(gmdeItemInfo->MinCurrPxChgTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX36 & (ReadUInt32_Optional(&(gmdeItemInfo->VolumeIndicator)) - 1);
+			nmap2 |= NULL_MAP_INDEX37 & (ReadDecimal_Optional(&(gmdeItemInfo->Price)) - 1);
+			nmap2 |= NULL_MAP_INDEX38 & (ReadInt32_Optional(&(gmdeItemInfo->PriceType)) - 1);
+			nmap2 |= NULL_MAP_INDEX39 & (ReadDecimal_Optional(&(gmdeItemInfo->NominalValue)) - 1);
+			nmap2 |= NULL_MAP_INDEX40 & (ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX41 & (ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX42 & (ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX43 & (ReadString_Optional(gmdeItemInfo->CXFlag, &(gmdeItemInfo->CXFlagLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX44 & (ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID) - 1);
+			nmap2 |= NULL_MAP_INDEX45 & (ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)) - 1);
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
 		}
@@ -3615,22 +3517,15 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)) - 1);
 		info->RptSeq = ReadInt32_Mandatory();
-		if(!ReadUInt32_Optional(&(info->LastFragment)))
-			nmap1 |= NULL_MAP_INDEX1;
-		if(!ReadUInt32_Optional(&(info->RouteFirst)))
-			nmap1 |= NULL_MAP_INDEX2;
-		if(!ReadInt32_Optional(&(info->TradSesStatus)))
-			nmap1 |= NULL_MAP_INDEX3;
-		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
-			nmap1 |= NULL_MAP_INDEX4;
+		nmap1 |= NULL_MAP_INDEX1 & (ReadUInt32_Optional(&(info->LastFragment)) - 1);
+		nmap1 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(info->RouteFirst)) - 1);
+		nmap1 |= NULL_MAP_INDEX3 & (ReadInt32_Optional(&(info->TradSesStatus)) - 1);
+		nmap1 |= NULL_MAP_INDEX4 & (ReadString_Optional_Fixed4(info->TradingSessionID) - 1);
 		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
-		if(!ReadInt32_Optional(&(info->MDSecurityTradingStatus)))
-			nmap1 |= NULL_MAP_INDEX5;
-		if(!ReadUInt32_Optional(&(info->AuctionIndicator)))
-			nmap1 |= NULL_MAP_INDEX6;
+		nmap1 |= NULL_MAP_INDEX5 & (ReadInt32_Optional(&(info->MDSecurityTradingStatus)) - 1);
+		nmap1 |= NULL_MAP_INDEX6 & (ReadUInt32_Optional(&(info->AuctionIndicator)) - 1);
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsOLSFONDItemInfo* gmdeItemInfo = NULL;
@@ -3648,80 +3543,68 @@ public:
 			UINT64 nmap2 = 0;
 
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX0)) {
-				if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
-					nmap2 |= NULL_MAP_INDEX0;
+				nmap2 |= NULL_MAP_INDEX0 & (ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType) - 1);
 			}
 			else {
 				this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryType);
 			}
-			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-				nmap2 |= NULL_MAP_INDEX1;
+			nmap2 |= NULL_MAP_INDEX1 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX1)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
-					nmap2 |= NULL_MAP_INDEX2;
+				nmap2 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntryDate = this->m_prevastsOLSFONDItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX2)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
-					nmap2 |= NULL_MAP_INDEX3;
+				nmap2 |= NULL_MAP_INDEX3 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntryTime = this->m_prevastsOLSFONDItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX3)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
-					nmap2 |= NULL_MAP_INDEX4;
+				nmap2 |= NULL_MAP_INDEX4 & (ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)) - 1);
 			}
 			else {
 				gmdeItemInfo->OrigTime = this->m_prevastsOLSFONDItemInfo->OrigTime;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX4)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
-					nmap2 |= NULL_MAP_INDEX5;
+				nmap2 |= NULL_MAP_INDEX5 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntryPx = this->m_prevastsOLSFONDItemInfo->MDEntryPx;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX5)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
-					nmap2 |= NULL_MAP_INDEX6;
+				nmap2 |= NULL_MAP_INDEX6 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntrySize = this->m_prevastsOLSFONDItemInfo->MDEntrySize;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX6)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->Yield)))
-					nmap2 |= NULL_MAP_INDEX7;
+				nmap2 |= NULL_MAP_INDEX7 & (ReadDecimal_Optional(&(gmdeItemInfo->Yield)) - 1);
 			}
 			else {
 				gmdeItemInfo->Yield = this->m_prevastsOLSFONDItemInfo->Yield;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX7)) {
-				if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus))
-					nmap2 |= NULL_MAP_INDEX8;
+				nmap2 |= NULL_MAP_INDEX8 & (ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus) - 1);
 			}
 			else {
 				this->CopyString_Fixed1(gmdeItemInfo->OrderStatus, m_prevastsOLSFONDItemInfo->OrderStatus);
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX8)) {
-				if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrdType))
-					nmap2 |= NULL_MAP_INDEX9;
+				nmap2 |= NULL_MAP_INDEX9 & (ReadString_Optional_Fixed1(gmdeItemInfo->OrdType) - 1);
 			}
 			else {
 				this->CopyString_Fixed1(gmdeItemInfo->OrdType, m_prevastsOLSFONDItemInfo->OrdType);
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX9)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume)))
-					nmap2 |= NULL_MAP_INDEX10;
+				nmap2 |= NULL_MAP_INDEX10 & (ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume)) - 1);
 			}
 			else {
 				gmdeItemInfo->TotalVolume = this->m_prevastsOLSFONDItemInfo->TotalVolume;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX10)) {
-				if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
-					nmap2 |= NULL_MAP_INDEX11;
+				nmap2 |= NULL_MAP_INDEX11 & (ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)) - 1);
 			}
 			else {
 				this->CopyString_Predict12(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSFONDItemInfo->TradingSessionSubID);
@@ -3742,20 +3625,14 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)) - 1);
 		info->RptSeq = ReadInt32_Mandatory();
-		if(!ReadUInt32_Optional(&(info->LastFragment)))
-			nmap1 |= NULL_MAP_INDEX1;
-		if(!ReadUInt32_Optional(&(info->RouteFirst)))
-			nmap1 |= NULL_MAP_INDEX2;
-		if(!ReadInt32_Optional(&(info->TradSesStatus)))
-			nmap1 |= NULL_MAP_INDEX3;
-		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
-			nmap1 |= NULL_MAP_INDEX4;
+		nmap1 |= NULL_MAP_INDEX1 & (ReadUInt32_Optional(&(info->LastFragment)) - 1);
+		nmap1 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(info->RouteFirst)) - 1);
+		nmap1 |= NULL_MAP_INDEX3 & (ReadInt32_Optional(&(info->TradSesStatus)) - 1);
+		nmap1 |= NULL_MAP_INDEX4 & (ReadString_Optional_Fixed4(info->TradingSessionID) - 1);
 		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
-		if(!ReadInt32_Optional(&(info->MDSecurityTradingStatus)))
-			nmap1 |= NULL_MAP_INDEX5;
+		nmap1 |= NULL_MAP_INDEX5 & (ReadInt32_Optional(&(info->MDSecurityTradingStatus)) - 1);
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsOLSCURRItemInfo* gmdeItemInfo = NULL;
@@ -3773,59 +3650,50 @@ public:
 			UINT64 nmap2 = 0;
 
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX0)) {
-				if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
-					nmap2 |= NULL_MAP_INDEX0;
+				nmap2 |= NULL_MAP_INDEX0 & (ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType) - 1);
 			}
 			else {
 				this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryType);
 			}
-			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-				nmap2 |= NULL_MAP_INDEX1;
+			nmap2 |= NULL_MAP_INDEX1 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX1)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
-					nmap2 |= NULL_MAP_INDEX2;
+				nmap2 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntryDate = this->m_prevastsOLSCURRItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX2)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
-					nmap2 |= NULL_MAP_INDEX3;
+				nmap2 |= NULL_MAP_INDEX3 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntryTime = this->m_prevastsOLSCURRItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX3)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
-					nmap2 |= NULL_MAP_INDEX4;
+				nmap2 |= NULL_MAP_INDEX4 & (ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)) - 1);
 			}
 			else {
 				gmdeItemInfo->OrigTime = this->m_prevastsOLSCURRItemInfo->OrigTime;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX4)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
-					nmap2 |= NULL_MAP_INDEX5;
+				nmap2 |= NULL_MAP_INDEX5 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntryPx = this->m_prevastsOLSCURRItemInfo->MDEntryPx;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX5)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
-					nmap2 |= NULL_MAP_INDEX6;
+				nmap2 |= NULL_MAP_INDEX6 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntrySize = this->m_prevastsOLSCURRItemInfo->MDEntrySize;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX6)) {
-				if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus))
-					nmap2 |= NULL_MAP_INDEX7;
+				nmap2 |= NULL_MAP_INDEX7 & (ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus) - 1);
 			}
 			else {
 				this->CopyString_Fixed1(gmdeItemInfo->OrderStatus, m_prevastsOLSCURRItemInfo->OrderStatus);
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX7)) {
-				if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
-					nmap2 |= NULL_MAP_INDEX8;
+				nmap2 |= NULL_MAP_INDEX8 & (ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)) - 1);
 			}
 			else {
 				this->CopyString_Predict12(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSCURRItemInfo->TradingSessionSubID);
@@ -3846,22 +3714,15 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)) - 1);
 		info->RptSeq = ReadInt32_Mandatory();
-		if(!ReadUInt32_Optional(&(info->LastFragment)))
-			nmap1 |= NULL_MAP_INDEX1;
-		if(!ReadUInt32_Optional(&(info->RouteFirst)))
-			nmap1 |= NULL_MAP_INDEX2;
-		if(!ReadInt32_Optional(&(info->TradSesStatus)))
-			nmap1 |= NULL_MAP_INDEX3;
-		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
-			nmap1 |= NULL_MAP_INDEX4;
+		nmap1 |= NULL_MAP_INDEX1 & (ReadUInt32_Optional(&(info->LastFragment)) - 1);
+		nmap1 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(info->RouteFirst)) - 1);
+		nmap1 |= NULL_MAP_INDEX3 & (ReadInt32_Optional(&(info->TradSesStatus)) - 1);
+		nmap1 |= NULL_MAP_INDEX4 & (ReadString_Optional_Fixed4(info->TradingSessionID) - 1);
 		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
-		if(!ReadInt32_Optional(&(info->MDSecurityTradingStatus)))
-			nmap1 |= NULL_MAP_INDEX5;
-		if(!ReadUInt32_Optional(&(info->AuctionIndicator)))
-			nmap1 |= NULL_MAP_INDEX6;
+		nmap1 |= NULL_MAP_INDEX5 & (ReadInt32_Optional(&(info->MDSecurityTradingStatus)) - 1);
+		nmap1 |= NULL_MAP_INDEX6 & (ReadUInt32_Optional(&(info->AuctionIndicator)) - 1);
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsTLSFONDItemInfo* gmdeItemInfo = NULL;
@@ -3879,133 +3740,114 @@ public:
 			UINT64 nmap2 = 0;
 
 			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType);
-			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-				nmap2 |= NULL_MAP_INDEX0;
+			nmap2 |= NULL_MAP_INDEX0 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX0)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
-					nmap2 |= NULL_MAP_INDEX1;
+				nmap2 |= NULL_MAP_INDEX1 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntryDate = this->m_prevastsTLSFONDItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX1)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
-					nmap2 |= NULL_MAP_INDEX2;
+				nmap2 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntryTime = this->m_prevastsTLSFONDItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX2)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
-					nmap2 |= NULL_MAP_INDEX3;
+				nmap2 |= NULL_MAP_INDEX3 & (ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)) - 1);
 			}
 			else {
 				gmdeItemInfo->OrigTime = this->m_prevastsTLSFONDItemInfo->OrigTime;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX3)) {
-				if(!ReadString_Optional(gmdeItemInfo->OrderSide, &(gmdeItemInfo->OrderSideLength)))
-					nmap2 |= NULL_MAP_INDEX4;
+				nmap2 |= NULL_MAP_INDEX4 & (ReadString_Optional(gmdeItemInfo->OrderSide, &(gmdeItemInfo->OrderSideLength)) - 1);
 			}
 			else {
 				this->CopyString(gmdeItemInfo->OrderSide, m_prevastsTLSFONDItemInfo->OrderSide, m_prevastsTLSFONDItemInfo->OrderSideLength);
 				gmdeItemInfo->OrderSideLength = this->m_prevastsTLSFONDItemInfo->OrderSideLength;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX4)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
-					nmap2 |= NULL_MAP_INDEX5;
+				nmap2 |= NULL_MAP_INDEX5 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntryPx = this->m_prevastsTLSFONDItemInfo->MDEntryPx;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX5)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
-					nmap2 |= NULL_MAP_INDEX6;
+				nmap2 |= NULL_MAP_INDEX6 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntrySize = this->m_prevastsTLSFONDItemInfo->MDEntrySize;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX6)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt)))
-					nmap2 |= NULL_MAP_INDEX7;
+				nmap2 |= NULL_MAP_INDEX7 & (ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt)) - 1);
 			}
 			else {
 				gmdeItemInfo->AccruedInterestAmt = this->m_prevastsTLSFONDItemInfo->AccruedInterestAmt;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX7)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)))
-					nmap2 |= NULL_MAP_INDEX8;
+				nmap2 |= NULL_MAP_INDEX8 & (ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)) - 1);
 			}
 			else {
 				gmdeItemInfo->TradeValue = this->m_prevastsTLSFONDItemInfo->TradeValue;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX8)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->Yield)))
-					nmap2 |= NULL_MAP_INDEX9;
+				nmap2 |= NULL_MAP_INDEX9 & (ReadDecimal_Optional(&(gmdeItemInfo->Yield)) - 1);
 			}
 			else {
 				gmdeItemInfo->Yield = this->m_prevastsTLSFONDItemInfo->Yield;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX9)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
-					nmap2 |= NULL_MAP_INDEX10;
+				nmap2 |= NULL_MAP_INDEX10 & (ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)) - 1);
 			}
 			else {
 				gmdeItemInfo->SettlDate = this->m_prevastsTLSFONDItemInfo->SettlDate;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX10)) {
-				if(!ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)))
-					nmap2 |= NULL_MAP_INDEX11;
+				nmap2 |= NULL_MAP_INDEX11 & (ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)) - 1);
 			}
 			else {
 				this->CopyString(gmdeItemInfo->SettleType, m_prevastsTLSFONDItemInfo->SettleType, m_prevastsTLSFONDItemInfo->SettleTypeLength);
 				gmdeItemInfo->SettleTypeLength = this->m_prevastsTLSFONDItemInfo->SettleTypeLength;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX11)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->Price)))
-					nmap2 |= NULL_MAP_INDEX12;
+				nmap2 |= NULL_MAP_INDEX12 & (ReadDecimal_Optional(&(gmdeItemInfo->Price)) - 1);
 			}
 			else {
 				gmdeItemInfo->Price = this->m_prevastsTLSFONDItemInfo->Price;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX12)) {
-				if(!ReadInt32_Optional(&(gmdeItemInfo->PriceType)))
-					nmap2 |= NULL_MAP_INDEX13;
+				nmap2 |= NULL_MAP_INDEX13 & (ReadInt32_Optional(&(gmdeItemInfo->PriceType)) - 1);
 			}
 			else {
 				gmdeItemInfo->PriceType = this->m_prevastsTLSFONDItemInfo->PriceType;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX13)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx)))
-					nmap2 |= NULL_MAP_INDEX14;
+				nmap2 |= NULL_MAP_INDEX14 & (ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx)) - 1);
 			}
 			else {
 				gmdeItemInfo->RepoToPx = this->m_prevastsTLSFONDItemInfo->RepoToPx;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX14)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx)))
-					nmap2 |= NULL_MAP_INDEX15;
+				nmap2 |= NULL_MAP_INDEX15 & (ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx)) - 1);
 			}
 			else {
 				gmdeItemInfo->BuyBackPx = this->m_prevastsTLSFONDItemInfo->BuyBackPx;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX15)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)))
-					nmap2 |= NULL_MAP_INDEX16;
+				nmap2 |= NULL_MAP_INDEX16 & (ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)) - 1);
 			}
 			else {
 				gmdeItemInfo->BuyBackDate = this->m_prevastsTLSFONDItemInfo->BuyBackDate;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX16)) {
-				if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
-					nmap2 |= NULL_MAP_INDEX17;
+				nmap2 |= NULL_MAP_INDEX17 & (ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)) - 1);
 			}
 			else {
 				this->CopyString_Predict12(gmdeItemInfo->TradingSessionSubID, m_prevastsTLSFONDItemInfo->TradingSessionSubID);
 				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevastsTLSFONDItemInfo->TradingSessionSubIDLength;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX17)) {
-				if(!ReadString_Optional(gmdeItemInfo->RefOrderID, &(gmdeItemInfo->RefOrderIDLength)))
-					nmap2 |= NULL_MAP_INDEX18;
+				nmap2 |= NULL_MAP_INDEX18 & (ReadString_Optional(gmdeItemInfo->RefOrderID, &(gmdeItemInfo->RefOrderIDLength)) - 1);
 			}
 			else {
 				this->CopyString(gmdeItemInfo->RefOrderID, m_prevastsTLSFONDItemInfo->RefOrderID, m_prevastsTLSFONDItemInfo->RefOrderIDLength);
@@ -4026,20 +3868,14 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)) - 1);
 		info->RptSeq = ReadInt32_Mandatory();
-		if(!ReadUInt32_Optional(&(info->LastFragment)))
-			nmap1 |= NULL_MAP_INDEX1;
-		if(!ReadUInt32_Optional(&(info->RouteFirst)))
-			nmap1 |= NULL_MAP_INDEX2;
-		if(!ReadInt32_Optional(&(info->TradSesStatus)))
-			nmap1 |= NULL_MAP_INDEX3;
-		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
-			nmap1 |= NULL_MAP_INDEX4;
+		nmap1 |= NULL_MAP_INDEX1 & (ReadUInt32_Optional(&(info->LastFragment)) - 1);
+		nmap1 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(info->RouteFirst)) - 1);
+		nmap1 |= NULL_MAP_INDEX3 & (ReadInt32_Optional(&(info->TradSesStatus)) - 1);
+		nmap1 |= NULL_MAP_INDEX4 & (ReadString_Optional_Fixed4(info->TradingSessionID) - 1);
 		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
-		if(!ReadInt32_Optional(&(info->MDSecurityTradingStatus)))
-			nmap1 |= NULL_MAP_INDEX5;
+		nmap1 |= NULL_MAP_INDEX5 & (ReadInt32_Optional(&(info->MDSecurityTradingStatus)) - 1);
 
 		info->GroupMDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		AstsTLSCURRItemInfo* gmdeItemInfo = NULL;
@@ -4057,119 +3893,102 @@ public:
 			UINT64 nmap2 = 0;
 
 			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType);
-			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-				nmap2 |= NULL_MAP_INDEX0;
+			nmap2 |= NULL_MAP_INDEX0 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX0)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
-					nmap2 |= NULL_MAP_INDEX1;
+				nmap2 |= NULL_MAP_INDEX1 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntryDate = this->m_prevastsTLSCURRItemInfo->MDEntryDate;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX1)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
-					nmap2 |= NULL_MAP_INDEX2;
+				nmap2 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntryTime = this->m_prevastsTLSCURRItemInfo->MDEntryTime;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX2)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
-					nmap2 |= NULL_MAP_INDEX3;
+				nmap2 |= NULL_MAP_INDEX3 & (ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)) - 1);
 			}
 			else {
 				gmdeItemInfo->OrigTime = this->m_prevastsTLSCURRItemInfo->OrigTime;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX3)) {
-				if(!ReadString_Optional(gmdeItemInfo->OrderSide, &(gmdeItemInfo->OrderSideLength)))
-					nmap2 |= NULL_MAP_INDEX4;
+				nmap2 |= NULL_MAP_INDEX4 & (ReadString_Optional(gmdeItemInfo->OrderSide, &(gmdeItemInfo->OrderSideLength)) - 1);
 			}
 			else {
 				this->CopyString(gmdeItemInfo->OrderSide, m_prevastsTLSCURRItemInfo->OrderSide, m_prevastsTLSCURRItemInfo->OrderSideLength);
 				gmdeItemInfo->OrderSideLength = this->m_prevastsTLSCURRItemInfo->OrderSideLength;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX4)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
-					nmap2 |= NULL_MAP_INDEX5;
+				nmap2 |= NULL_MAP_INDEX5 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntryPx = this->m_prevastsTLSCURRItemInfo->MDEntryPx;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX5)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
-					nmap2 |= NULL_MAP_INDEX6;
+				nmap2 |= NULL_MAP_INDEX6 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)) - 1);
 			}
 			else {
 				gmdeItemInfo->MDEntrySize = this->m_prevastsTLSCURRItemInfo->MDEntrySize;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX6)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)))
-					nmap2 |= NULL_MAP_INDEX7;
+				nmap2 |= NULL_MAP_INDEX7 & (ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)) - 1);
 			}
 			else {
 				gmdeItemInfo->TradeValue = this->m_prevastsTLSCURRItemInfo->TradeValue;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX7)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
-					nmap2 |= NULL_MAP_INDEX8;
+				nmap2 |= NULL_MAP_INDEX8 & (ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)) - 1);
 			}
 			else {
 				gmdeItemInfo->SettlDate = this->m_prevastsTLSCURRItemInfo->SettlDate;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX8)) {
-				if(!ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)))
-					nmap2 |= NULL_MAP_INDEX9;
+				nmap2 |= NULL_MAP_INDEX9 & (ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)) - 1);
 			}
 			else {
 				this->CopyString(gmdeItemInfo->SettleType, m_prevastsTLSCURRItemInfo->SettleType, m_prevastsTLSCURRItemInfo->SettleTypeLength);
 				gmdeItemInfo->SettleTypeLength = this->m_prevastsTLSCURRItemInfo->SettleTypeLength;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX9)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->Price)))
-					nmap2 |= NULL_MAP_INDEX10;
+				nmap2 |= NULL_MAP_INDEX10 & (ReadDecimal_Optional(&(gmdeItemInfo->Price)) - 1);
 			}
 			else {
 				gmdeItemInfo->Price = this->m_prevastsTLSCURRItemInfo->Price;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX10)) {
-				if(!ReadInt32_Optional(&(gmdeItemInfo->PriceType)))
-					nmap2 |= NULL_MAP_INDEX11;
+				nmap2 |= NULL_MAP_INDEX11 & (ReadInt32_Optional(&(gmdeItemInfo->PriceType)) - 1);
 			}
 			else {
 				gmdeItemInfo->PriceType = this->m_prevastsTLSCURRItemInfo->PriceType;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX11)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx)))
-					nmap2 |= NULL_MAP_INDEX12;
+				nmap2 |= NULL_MAP_INDEX12 & (ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx)) - 1);
 			}
 			else {
 				gmdeItemInfo->RepoToPx = this->m_prevastsTLSCURRItemInfo->RepoToPx;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX12)) {
-				if(!ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx)))
-					nmap2 |= NULL_MAP_INDEX13;
+				nmap2 |= NULL_MAP_INDEX13 & (ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx)) - 1);
 			}
 			else {
 				gmdeItemInfo->BuyBackPx = this->m_prevastsTLSCURRItemInfo->BuyBackPx;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX13)) {
-				if(!ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)))
-					nmap2 |= NULL_MAP_INDEX14;
+				nmap2 |= NULL_MAP_INDEX14 & (ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)) - 1);
 			}
 			else {
 				gmdeItemInfo->BuyBackDate = this->m_prevastsTLSCURRItemInfo->BuyBackDate;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX14)) {
-				if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
-					nmap2 |= NULL_MAP_INDEX15;
+				nmap2 |= NULL_MAP_INDEX15 & (ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)) - 1);
 			}
 			else {
 				this->CopyString_Predict12(gmdeItemInfo->TradingSessionSubID, m_prevastsTLSCURRItemInfo->TradingSessionSubID);
 				gmdeItemInfo->TradingSessionSubIDLength = this->m_prevastsTLSCURRItemInfo->TradingSessionSubIDLength;
 			}
 			if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX15)) {
-				if(!ReadString_Optional(gmdeItemInfo->RefOrderID, &(gmdeItemInfo->RefOrderIDLength)))
-					nmap2 |= NULL_MAP_INDEX16;
+				nmap2 |= NULL_MAP_INDEX16 & (ReadString_Optional(gmdeItemInfo->RefOrderID, &(gmdeItemInfo->RefOrderIDLength)) - 1);
 			}
 			else {
 				this->CopyString(gmdeItemInfo->RefOrderID, m_prevastsTLSCURRItemInfo->RefOrderID, m_prevastsTLSCURRItemInfo->RefOrderIDLength);
@@ -4208,72 +4027,39 @@ public:
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
-			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
-				nmap2 |= NULL_MAP_INDEX0;
-			if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
-				nmap2 |= NULL_MAP_INDEX1;
-			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-				nmap2 |= NULL_MAP_INDEX2;
-			if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
-				nmap2 |= NULL_MAP_INDEX3;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
-				nmap2 |= NULL_MAP_INDEX4;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
-				nmap2 |= NULL_MAP_INDEX5;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
-				nmap2 |= NULL_MAP_INDEX6;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
-				nmap2 |= NULL_MAP_INDEX7;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
-				nmap2 |= NULL_MAP_INDEX8;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->StartTime)))
-				nmap2 |= NULL_MAP_INDEX9;
-			if(!ReadString_Optional(gmdeItemInfo->QuoteCondition, &(gmdeItemInfo->QuoteConditionLength)))
-				nmap2 |= NULL_MAP_INDEX10;
-			if(!ReadString_Optional(gmdeItemInfo->TradeCondition, &(gmdeItemInfo->TradeConditionLength)))
-				nmap2 |= NULL_MAP_INDEX11;
-			if(!ReadString_Optional(gmdeItemInfo->OpenCloseSettlFlag, &(gmdeItemInfo->OpenCloseSettlFlagLength)))
-				nmap2 |= NULL_MAP_INDEX12;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->NetChgPrevDay)))
-				nmap2 |= NULL_MAP_INDEX13;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt)))
-				nmap2 |= NULL_MAP_INDEX14;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->ChgFromWAPrice)))
-				nmap2 |= NULL_MAP_INDEX15;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->ChgOpenInterest)))
-				nmap2 |= NULL_MAP_INDEX16;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->BidMarketSize)))
-				nmap2 |= NULL_MAP_INDEX17;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize)))
-				nmap2 |= NULL_MAP_INDEX18;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->TotalNumOfTrades)))
-				nmap2 |= NULL_MAP_INDEX19;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)))
-				nmap2 |= NULL_MAP_INDEX20;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->Yield)))
-				nmap2 |= NULL_MAP_INDEX21;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->OfferNbOr)))
-				nmap2 |= NULL_MAP_INDEX22;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->BidNbOr)))
-				nmap2 |= NULL_MAP_INDEX23;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->ChgFromSettlmnt)))
-				nmap2 |= NULL_MAP_INDEX24;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->MinCurrPx)))
-				nmap2 |= NULL_MAP_INDEX25;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->MinCurrPxChgTime)))
-				nmap2 |= NULL_MAP_INDEX26;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->VolumeIndicator)))
-				nmap2 |= NULL_MAP_INDEX27;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
-				nmap2 |= NULL_MAP_INDEX28;
-			if(!ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)))
-				nmap2 |= NULL_MAP_INDEX29;
-			if(!ReadString_Optional(gmdeItemInfo->CXFlag, &(gmdeItemInfo->CXFlagLength)))
-				nmap2 |= NULL_MAP_INDEX30;
-			if(!ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID))
-				nmap2 |= NULL_MAP_INDEX31;
-			if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
-				nmap2 |= NULL_MAP_INDEX32;
+			nmap2 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)) - 1);
+			nmap2 |= NULL_MAP_INDEX1 & (ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType) - 1);
+			nmap2 |= NULL_MAP_INDEX2 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX3 & (ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX4 & (ReadInt32_Optional(&(gmdeItemInfo->RptSeq)) - 1);
+			nmap2 |= NULL_MAP_INDEX5 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX6 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)) - 1);
+			nmap2 |= NULL_MAP_INDEX7 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX8 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX9 & (ReadUInt32_Optional(&(gmdeItemInfo->StartTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX10 & (ReadString_Optional(gmdeItemInfo->QuoteCondition, &(gmdeItemInfo->QuoteConditionLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX11 & (ReadString_Optional(gmdeItemInfo->TradeCondition, &(gmdeItemInfo->TradeConditionLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX12 & (ReadString_Optional(gmdeItemInfo->OpenCloseSettlFlag, &(gmdeItemInfo->OpenCloseSettlFlagLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX13 & (ReadDecimal_Optional(&(gmdeItemInfo->NetChgPrevDay)) - 1);
+			nmap2 |= NULL_MAP_INDEX14 & (ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt)) - 1);
+			nmap2 |= NULL_MAP_INDEX15 & (ReadDecimal_Optional(&(gmdeItemInfo->ChgFromWAPrice)) - 1);
+			nmap2 |= NULL_MAP_INDEX16 & (ReadDecimal_Optional(&(gmdeItemInfo->ChgOpenInterest)) - 1);
+			nmap2 |= NULL_MAP_INDEX17 & (ReadDecimal_Optional(&(gmdeItemInfo->BidMarketSize)) - 1);
+			nmap2 |= NULL_MAP_INDEX18 & (ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize)) - 1);
+			nmap2 |= NULL_MAP_INDEX19 & (ReadInt32_Optional(&(gmdeItemInfo->TotalNumOfTrades)) - 1);
+			nmap2 |= NULL_MAP_INDEX20 & (ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)) - 1);
+			nmap2 |= NULL_MAP_INDEX21 & (ReadDecimal_Optional(&(gmdeItemInfo->Yield)) - 1);
+			nmap2 |= NULL_MAP_INDEX22 & (ReadInt32_Optional(&(gmdeItemInfo->OfferNbOr)) - 1);
+			nmap2 |= NULL_MAP_INDEX23 & (ReadInt32_Optional(&(gmdeItemInfo->BidNbOr)) - 1);
+			nmap2 |= NULL_MAP_INDEX24 & (ReadDecimal_Optional(&(gmdeItemInfo->ChgFromSettlmnt)) - 1);
+			nmap2 |= NULL_MAP_INDEX25 & (ReadDecimal_Optional(&(gmdeItemInfo->MinCurrPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX26 & (ReadUInt32_Optional(&(gmdeItemInfo->MinCurrPxChgTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX27 & (ReadUInt32_Optional(&(gmdeItemInfo->VolumeIndicator)) - 1);
+			nmap2 |= NULL_MAP_INDEX28 & (ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX29 & (ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX30 & (ReadString_Optional(gmdeItemInfo->CXFlag, &(gmdeItemInfo->CXFlagLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX31 & (ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID) - 1);
+			nmap2 |= NULL_MAP_INDEX32 & (ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)) - 1);
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
 		}
@@ -4306,62 +4092,34 @@ public:
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
-			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
-				nmap2 |= NULL_MAP_INDEX0;
-			if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
-				nmap2 |= NULL_MAP_INDEX1;
-			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-				nmap2 |= NULL_MAP_INDEX2;
-			if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
-				nmap2 |= NULL_MAP_INDEX3;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
-				nmap2 |= NULL_MAP_INDEX4;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
-				nmap2 |= NULL_MAP_INDEX5;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
-				nmap2 |= NULL_MAP_INDEX6;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
-				nmap2 |= NULL_MAP_INDEX7;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
-				nmap2 |= NULL_MAP_INDEX8;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->StartTime)))
-				nmap2 |= NULL_MAP_INDEX9;
-			if(!ReadString_Optional(gmdeItemInfo->QuoteCondition, &(gmdeItemInfo->QuoteConditionLength)))
-				nmap2 |= NULL_MAP_INDEX10;
-			if(!ReadString_Optional(gmdeItemInfo->TradeCondition, &(gmdeItemInfo->TradeConditionLength)))
-				nmap2 |= NULL_MAP_INDEX11;
-			if(!ReadString_Optional(gmdeItemInfo->OpenCloseSettlFlag, &(gmdeItemInfo->OpenCloseSettlFlagLength)))
-				nmap2 |= NULL_MAP_INDEX12;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->NetChgPrevDay)))
-				nmap2 |= NULL_MAP_INDEX13;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->ChgFromWAPrice)))
-				nmap2 |= NULL_MAP_INDEX14;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->ChgOpenInterest)))
-				nmap2 |= NULL_MAP_INDEX15;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->BidMarketSize)))
-				nmap2 |= NULL_MAP_INDEX16;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize)))
-				nmap2 |= NULL_MAP_INDEX17;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->TotalNumOfTrades)))
-				nmap2 |= NULL_MAP_INDEX18;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)))
-				nmap2 |= NULL_MAP_INDEX19;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->OfferNbOr)))
-				nmap2 |= NULL_MAP_INDEX20;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->BidNbOr)))
-				nmap2 |= NULL_MAP_INDEX21;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->ChgFromSettlmnt)))
-				nmap2 |= NULL_MAP_INDEX22;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
-				nmap2 |= NULL_MAP_INDEX23;
-			if(!ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)))
-				nmap2 |= NULL_MAP_INDEX24;
-			if(!ReadString_Optional(gmdeItemInfo->CXFlag, &(gmdeItemInfo->CXFlagLength)))
-				nmap2 |= NULL_MAP_INDEX25;
-			if(!ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID))
-				nmap2 |= NULL_MAP_INDEX26;
-			if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
-				nmap2 |= NULL_MAP_INDEX27;
+			nmap2 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)) - 1);
+			nmap2 |= NULL_MAP_INDEX1 & (ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType) - 1);
+			nmap2 |= NULL_MAP_INDEX2 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX3 & (ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX4 & (ReadInt32_Optional(&(gmdeItemInfo->RptSeq)) - 1);
+			nmap2 |= NULL_MAP_INDEX5 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX6 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)) - 1);
+			nmap2 |= NULL_MAP_INDEX7 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX8 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX9 & (ReadUInt32_Optional(&(gmdeItemInfo->StartTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX10 & (ReadString_Optional(gmdeItemInfo->QuoteCondition, &(gmdeItemInfo->QuoteConditionLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX11 & (ReadString_Optional(gmdeItemInfo->TradeCondition, &(gmdeItemInfo->TradeConditionLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX12 & (ReadString_Optional(gmdeItemInfo->OpenCloseSettlFlag, &(gmdeItemInfo->OpenCloseSettlFlagLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX13 & (ReadDecimal_Optional(&(gmdeItemInfo->NetChgPrevDay)) - 1);
+			nmap2 |= NULL_MAP_INDEX14 & (ReadDecimal_Optional(&(gmdeItemInfo->ChgFromWAPrice)) - 1);
+			nmap2 |= NULL_MAP_INDEX15 & (ReadDecimal_Optional(&(gmdeItemInfo->ChgOpenInterest)) - 1);
+			nmap2 |= NULL_MAP_INDEX16 & (ReadDecimal_Optional(&(gmdeItemInfo->BidMarketSize)) - 1);
+			nmap2 |= NULL_MAP_INDEX17 & (ReadDecimal_Optional(&(gmdeItemInfo->AskMarketSize)) - 1);
+			nmap2 |= NULL_MAP_INDEX18 & (ReadInt32_Optional(&(gmdeItemInfo->TotalNumOfTrades)) - 1);
+			nmap2 |= NULL_MAP_INDEX19 & (ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)) - 1);
+			nmap2 |= NULL_MAP_INDEX20 & (ReadInt32_Optional(&(gmdeItemInfo->OfferNbOr)) - 1);
+			nmap2 |= NULL_MAP_INDEX21 & (ReadInt32_Optional(&(gmdeItemInfo->BidNbOr)) - 1);
+			nmap2 |= NULL_MAP_INDEX22 & (ReadDecimal_Optional(&(gmdeItemInfo->ChgFromSettlmnt)) - 1);
+			nmap2 |= NULL_MAP_INDEX23 & (ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX24 & (ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX25 & (ReadString_Optional(gmdeItemInfo->CXFlag, &(gmdeItemInfo->CXFlagLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX26 & (ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID) - 1);
+			nmap2 |= NULL_MAP_INDEX27 & (ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)) - 1);
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsGenericItemInfo = gmdeItemInfo;
 		}
@@ -4393,100 +4151,84 @@ public:
 			UINT64 nmap2 = 0;
 
 			if(pmap2 != 0) {
-				if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
-					nmap2 |= NULL_MAP_INDEX0;
+				nmap2 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)) - 1);
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX0)) {
-					if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
-						nmap2 |= NULL_MAP_INDEX1;
+					nmap2 |= NULL_MAP_INDEX1 & (ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType) - 1);
 				}
 				else {
 					this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSFONDItemInfo->MDEntryType);
 				}
-				if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-					nmap2 |= NULL_MAP_INDEX2;
+				nmap2 |= NULL_MAP_INDEX2 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX1)) {
-					if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
-						nmap2 |= NULL_MAP_INDEX3;
+					nmap2 |= NULL_MAP_INDEX3 & (ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)) - 1);
 				}
 				else {
 					this->CopyString_PredictMax16(gmdeItemInfo->Symbol, m_prevastsOLSFONDItemInfo->Symbol);
 					gmdeItemInfo->SymbolLength = this->m_prevastsOLSFONDItemInfo->SymbolLength;
 				}
-				if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
-					nmap2 |= NULL_MAP_INDEX4;
+				nmap2 |= NULL_MAP_INDEX4 & (ReadInt32_Optional(&(gmdeItemInfo->RptSeq)) - 1);
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX2)) {
-					if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
-						nmap2 |= NULL_MAP_INDEX5;
+					nmap2 |= NULL_MAP_INDEX5 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)) - 1);
 				}
 				else {
 					gmdeItemInfo->MDEntryDate = this->m_prevastsOLSFONDItemInfo->MDEntryDate;
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX3)) {
-					if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
-						nmap2 |= NULL_MAP_INDEX6;
+					nmap2 |= NULL_MAP_INDEX6 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)) - 1);
 				}
 				else {
 					gmdeItemInfo->MDEntryTime = this->m_prevastsOLSFONDItemInfo->MDEntryTime;
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX4)) {
-					if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
-						nmap2 |= NULL_MAP_INDEX7;
+					nmap2 |= NULL_MAP_INDEX7 & (ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)) - 1);
 				}
 				else {
 					gmdeItemInfo->OrigTime = this->m_prevastsOLSFONDItemInfo->OrigTime;
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX5)) {
-					if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
-						nmap2 |= NULL_MAP_INDEX8;
+					nmap2 |= NULL_MAP_INDEX8 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)) - 1);
 				}
 				else {
 					gmdeItemInfo->MDEntryPx = this->m_prevastsOLSFONDItemInfo->MDEntryPx;
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX6)) {
-					if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
-						nmap2 |= NULL_MAP_INDEX9;
+					nmap2 |= NULL_MAP_INDEX9 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)) - 1);
 				}
 				else {
 					gmdeItemInfo->MDEntrySize = this->m_prevastsOLSFONDItemInfo->MDEntrySize;
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX7)) {
-					if(!ReadDecimal_Optional(&(gmdeItemInfo->Yield)))
-						nmap2 |= NULL_MAP_INDEX10;
+					nmap2 |= NULL_MAP_INDEX10 & (ReadDecimal_Optional(&(gmdeItemInfo->Yield)) - 1);
 				}
 				else {
 					gmdeItemInfo->Yield = this->m_prevastsOLSFONDItemInfo->Yield;
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX8)) {
-					if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus))
-						nmap2 |= NULL_MAP_INDEX11;
+					nmap2 |= NULL_MAP_INDEX11 & (ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus) - 1);
 				}
 				else {
 					this->CopyString_Fixed1(gmdeItemInfo->OrderStatus, m_prevastsOLSFONDItemInfo->OrderStatus);
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX9)) {
-					if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrdType))
-						nmap2 |= NULL_MAP_INDEX12;
+					nmap2 |= NULL_MAP_INDEX12 & (ReadString_Optional_Fixed1(gmdeItemInfo->OrdType) - 1);
 				}
 				else {
 					this->CopyString_Fixed1(gmdeItemInfo->OrdType, m_prevastsOLSFONDItemInfo->OrdType);
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX10)) {
-					if(!ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume)))
-						nmap2 |= NULL_MAP_INDEX13;
+					nmap2 |= NULL_MAP_INDEX13 & (ReadDecimal_Optional(&(gmdeItemInfo->TotalVolume)) - 1);
 				}
 				else {
 					gmdeItemInfo->TotalVolume = this->m_prevastsOLSFONDItemInfo->TotalVolume;
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX11)) {
-					if(!ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID))
-						nmap2 |= NULL_MAP_INDEX14;
+					nmap2 |= NULL_MAP_INDEX14 & (ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID) - 1);
 				}
 				else {
 					gmdeItemInfo->TradingSessionIDUint = this->m_prevastsOLSFONDItemInfo->TradingSessionIDUint;
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX12)) {
-					if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
-						nmap2 |= NULL_MAP_INDEX15;
+					nmap2 |= NULL_MAP_INDEX15 & (ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)) - 1);
 				}
 				else {
 					this->CopyString_Predict12(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSFONDItemInfo->TradingSessionSubID);
@@ -4497,12 +4239,9 @@ public:
 			}
 			else {
 				gmdeItemInfo->Assign(this->m_prevastsOLSFONDItemInfo);
-				if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
-					nmap2 |= NULL_MAP_INDEX0;
-				if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-					nmap2 |= NULL_MAP_INDEX2;
-				if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
-					nmap2 |= NULL_MAP_INDEX4;
+				nmap2 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)) - 1);
+				nmap2 |= NULL_MAP_INDEX2 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
+				nmap2 |= NULL_MAP_INDEX4 & (ReadInt32_Optional(&(gmdeItemInfo->RptSeq)) - 1);
 				gmdeItemInfo->PresenceMap = pmap2;
 				gmdeItemInfo->NullMap = this->m_prevastsOLSFONDItemInfo->NullMap;
 			}
@@ -4536,84 +4275,109 @@ public:
 			UINT64 nmap2 = 0;
 
 			if(pmap2 != 0) {
+				if(pmap2 == 6263) {
+					nmap2 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)) - 1);
+					nmap2 |= NULL_MAP_INDEX1 & (ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType) - 1);
+					nmap2 |= NULL_MAP_INDEX2 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
+					nmap2 |= NULL_MAP_INDEX3 & (ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)) - 1);
+					nmap2 |= NULL_MAP_INDEX4 & (ReadInt32_Optional(&(gmdeItemInfo->RptSeq)) - 1);
+					gmdeItemInfo->MDEntryDate = this->m_prevastsOLSCURRItemInfo->MDEntryDate;
+					nmap2 |= NULL_MAP_INDEX6 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)) - 1);
+					nmap2 |= NULL_MAP_INDEX7 & (ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)) - 1);
+					nmap2 |= NULL_MAP_INDEX8 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)) - 1);
+					gmdeItemInfo->MDEntrySize = this->m_prevastsOLSCURRItemInfo->MDEntrySize;
+					this->CopyString_Fixed1(gmdeItemInfo->OrderStatus, m_prevastsOLSCURRItemInfo->OrderStatus);
+					nmap2 |= NULL_MAP_INDEX11 & (ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID) - 1);
+					nmap2 |= NULL_MAP_INDEX12 & (ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)) - 1);
+					gmdeItemInfo->PresenceMap = pmap2;
+					gmdeItemInfo->NullMap = nmap2;
+					this->m_prevastsOLSCURRItemInfo = gmdeItemInfo;
+					continue;
+				}
+				if(pmap2 == 30839) {
+					nmap2 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)) - 1);
+					nmap2 |= NULL_MAP_INDEX1 & (ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType) - 1);
+					nmap2 |= NULL_MAP_INDEX2 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
+					nmap2 |= NULL_MAP_INDEX3 & (ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)) - 1);
+					nmap2 |= NULL_MAP_INDEX4 & (ReadInt32_Optional(&(gmdeItemInfo->RptSeq)) - 1);
+					gmdeItemInfo->MDEntryDate = this->m_prevastsOLSCURRItemInfo->MDEntryDate;
+					nmap2 |= NULL_MAP_INDEX6 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)) - 1);
+					nmap2 |= NULL_MAP_INDEX7 & (ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)) - 1);
+					nmap2 |= NULL_MAP_INDEX8 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)) - 1);
+					nmap2 |= NULL_MAP_INDEX9 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)) - 1);
+					nmap2 |= NULL_MAP_INDEX10 & (ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus) - 1);
+					nmap2 |= NULL_MAP_INDEX11 & (ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID) - 1);
+					nmap2 |= NULL_MAP_INDEX12 & (ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)) - 1);
+					gmdeItemInfo->PresenceMap = pmap2;
+					gmdeItemInfo->NullMap = nmap2;
+					this->m_prevastsOLSCURRItemInfo = gmdeItemInfo;
+					continue;
+				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX0)) {
-					if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
-						nmap2 |= NULL_MAP_INDEX0;
+					nmap2 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)) - 1);
 				}
 				else {
 					gmdeItemInfo->MDUpdateAction = this->m_prevastsOLSCURRItemInfo->MDUpdateAction;
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX1)) {
-					if(!ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType))
-						nmap2 |= NULL_MAP_INDEX1;
+					nmap2 |= NULL_MAP_INDEX1 & (ReadString_Optional_Fixed1(gmdeItemInfo->MDEntryType) - 1);
 				}
 				else {
 					this->CopyString_Fixed1(gmdeItemInfo->MDEntryType, m_prevastsOLSCURRItemInfo->MDEntryType);
 				}
-				if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-					nmap2 |= NULL_MAP_INDEX2;
+				nmap2 |= NULL_MAP_INDEX2 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX2)) {
-					if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
-						nmap2 |= NULL_MAP_INDEX3;
+					nmap2 |= NULL_MAP_INDEX3 & (ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)) - 1);
 				}
 				else {
 					this->CopyString_PredictMax16(gmdeItemInfo->Symbol, m_prevastsOLSCURRItemInfo->Symbol);
 					gmdeItemInfo->SymbolLength = this->m_prevastsOLSCURRItemInfo->SymbolLength;
 				}
-				if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
-					nmap2 |= NULL_MAP_INDEX4;
+				nmap2 |= NULL_MAP_INDEX4 & (ReadInt32_Optional(&(gmdeItemInfo->RptSeq)) - 1);
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX3)) {
-					if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
-						nmap2 |= NULL_MAP_INDEX5;
+					nmap2 |= NULL_MAP_INDEX5 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)) - 1);
 				}
 				else {
 					gmdeItemInfo->MDEntryDate = this->m_prevastsOLSCURRItemInfo->MDEntryDate;
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX4)) {
-					if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
-						nmap2 |= NULL_MAP_INDEX6;
+					nmap2 |= NULL_MAP_INDEX6 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)) - 1);
 				}
 				else {
 					gmdeItemInfo->MDEntryTime = this->m_prevastsOLSCURRItemInfo->MDEntryTime;
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX5)) {
-					if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
-						nmap2 |= NULL_MAP_INDEX7;
+					nmap2 |= NULL_MAP_INDEX7 & (ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)) - 1);
 				}
 				else {
 					gmdeItemInfo->OrigTime = this->m_prevastsOLSCURRItemInfo->OrigTime;
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX6)) {
-					if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
-						nmap2 |= NULL_MAP_INDEX8;
+					nmap2 |= NULL_MAP_INDEX8 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)) - 1);
 				}
 				else {
 					gmdeItemInfo->MDEntryPx = this->m_prevastsOLSCURRItemInfo->MDEntryPx;
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX7)) {
-					if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
-						nmap2 |= NULL_MAP_INDEX9;
+					nmap2 |= NULL_MAP_INDEX9 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)) - 1);
 				}
 				else {
 					gmdeItemInfo->MDEntrySize = this->m_prevastsOLSCURRItemInfo->MDEntrySize;
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX8)) {
-					if(!ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus))
-						nmap2 |= NULL_MAP_INDEX10;
+					nmap2 |= NULL_MAP_INDEX10 & (ReadString_Optional_Fixed1(gmdeItemInfo->OrderStatus) - 1);
 				}
 				else {
 					this->CopyString_Fixed1(gmdeItemInfo->OrderStatus, m_prevastsOLSCURRItemInfo->OrderStatus);
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX9)) {
-					if(!ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID))
-						nmap2 |= NULL_MAP_INDEX11;
+					nmap2 |= NULL_MAP_INDEX11 & (ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID) - 1);
 				}
 				else {
 					gmdeItemInfo->TradingSessionIDUint = this->m_prevastsOLSCURRItemInfo->TradingSessionIDUint;
 				}
 				if(CheckOptionalFieldPresence(pmap2, PRESENCE_MAP_INDEX10)) {
-					if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
-						nmap2 |= NULL_MAP_INDEX12;
+					nmap2 |= NULL_MAP_INDEX12 & (ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)) - 1);
 				}
 				else {
 					this->CopyString_Predict12(gmdeItemInfo->TradingSessionSubID, m_prevastsOLSCURRItemInfo->TradingSessionSubID);
@@ -4624,10 +4388,8 @@ public:
 			}
 			else {
 				gmdeItemInfo->Assign(this->m_prevastsOLSCURRItemInfo);
-				if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-					nmap2 |= NULL_MAP_INDEX2;
-				if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
-					nmap2 |= NULL_MAP_INDEX4;
+				nmap2 |= NULL_MAP_INDEX2 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
+				nmap2 |= NULL_MAP_INDEX4 & (ReadInt32_Optional(&(gmdeItemInfo->RptSeq)) - 1);
 				gmdeItemInfo->PresenceMap = pmap2;
 				gmdeItemInfo->NullMap = this->m_prevastsOLSCURRItemInfo->NullMap;
 			}
@@ -4658,53 +4420,30 @@ public:
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
-			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
-				nmap2 |= NULL_MAP_INDEX0;
+			nmap2 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)) - 1);
 			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType);
-			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-				nmap2 |= NULL_MAP_INDEX1;
-			if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
-				nmap2 |= NULL_MAP_INDEX2;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
-				nmap2 |= NULL_MAP_INDEX3;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
-				nmap2 |= NULL_MAP_INDEX4;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
-				nmap2 |= NULL_MAP_INDEX5;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
-				nmap2 |= NULL_MAP_INDEX6;
-			if(!ReadString_Optional(gmdeItemInfo->OrderSide, &(gmdeItemInfo->OrderSideLength)))
-				nmap2 |= NULL_MAP_INDEX7;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
-				nmap2 |= NULL_MAP_INDEX8;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
-				nmap2 |= NULL_MAP_INDEX9;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt)))
-				nmap2 |= NULL_MAP_INDEX10;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)))
-				nmap2 |= NULL_MAP_INDEX11;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->Yield)))
-				nmap2 |= NULL_MAP_INDEX12;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
-				nmap2 |= NULL_MAP_INDEX13;
-			if(!ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)))
-				nmap2 |= NULL_MAP_INDEX14;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->Price)))
-				nmap2 |= NULL_MAP_INDEX15;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->PriceType)))
-				nmap2 |= NULL_MAP_INDEX16;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx)))
-				nmap2 |= NULL_MAP_INDEX17;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx)))
-				nmap2 |= NULL_MAP_INDEX18;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)))
-				nmap2 |= NULL_MAP_INDEX19;
-			if(!ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID))
-				nmap2 |= NULL_MAP_INDEX20;
-			if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
-				nmap2 |= NULL_MAP_INDEX21;
-			if(!ReadString_Optional(gmdeItemInfo->RefOrderID, &(gmdeItemInfo->RefOrderIDLength)))
-				nmap2 |= NULL_MAP_INDEX22;
+			nmap2 |= NULL_MAP_INDEX1 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX2 & (ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX3 & (ReadInt32_Optional(&(gmdeItemInfo->RptSeq)) - 1);
+			nmap2 |= NULL_MAP_INDEX4 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX5 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX6 & (ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX7 & (ReadString_Optional(gmdeItemInfo->OrderSide, &(gmdeItemInfo->OrderSideLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX8 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX9 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)) - 1);
+			nmap2 |= NULL_MAP_INDEX10 & (ReadDecimal_Optional(&(gmdeItemInfo->AccruedInterestAmt)) - 1);
+			nmap2 |= NULL_MAP_INDEX11 & (ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)) - 1);
+			nmap2 |= NULL_MAP_INDEX12 & (ReadDecimal_Optional(&(gmdeItemInfo->Yield)) - 1);
+			nmap2 |= NULL_MAP_INDEX13 & (ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX14 & (ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX15 & (ReadDecimal_Optional(&(gmdeItemInfo->Price)) - 1);
+			nmap2 |= NULL_MAP_INDEX16 & (ReadInt32_Optional(&(gmdeItemInfo->PriceType)) - 1);
+			nmap2 |= NULL_MAP_INDEX17 & (ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX18 & (ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX19 & (ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX20 & (ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID) - 1);
+			nmap2 |= NULL_MAP_INDEX21 & (ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX22 & (ReadString_Optional(gmdeItemInfo->RefOrderID, &(gmdeItemInfo->RefOrderIDLength)) - 1);
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsTLSFONDItemInfo = gmdeItemInfo;
 		}
@@ -4733,49 +4472,28 @@ public:
 			gmdeItemInfo = info->GroupMDEntries[gmdeItemInfoIndex];
 			UINT64 nmap2 = 0;
 
-			if(!ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)))
-				nmap2 |= NULL_MAP_INDEX0;
+			nmap2 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional_Fixed1(&(gmdeItemInfo->MDUpdateAction)) - 1);
 			ReadString_Mandatory_Fixed1(gmdeItemInfo->MDEntryType);
-			if(!ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)))
-				nmap2 |= NULL_MAP_INDEX1;
-			if(!ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)))
-				nmap2 |= NULL_MAP_INDEX2;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->RptSeq)))
-				nmap2 |= NULL_MAP_INDEX3;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)))
-				nmap2 |= NULL_MAP_INDEX4;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)))
-				nmap2 |= NULL_MAP_INDEX5;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)))
-				nmap2 |= NULL_MAP_INDEX6;
-			if(!ReadString_Optional(gmdeItemInfo->OrderSide, &(gmdeItemInfo->OrderSideLength)))
-				nmap2 |= NULL_MAP_INDEX7;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)))
-				nmap2 |= NULL_MAP_INDEX8;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)))
-				nmap2 |= NULL_MAP_INDEX9;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)))
-				nmap2 |= NULL_MAP_INDEX10;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)))
-				nmap2 |= NULL_MAP_INDEX11;
-			if(!ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)))
-				nmap2 |= NULL_MAP_INDEX12;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->Price)))
-				nmap2 |= NULL_MAP_INDEX13;
-			if(!ReadInt32_Optional(&(gmdeItemInfo->PriceType)))
-				nmap2 |= NULL_MAP_INDEX14;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx)))
-				nmap2 |= NULL_MAP_INDEX15;
-			if(!ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx)))
-				nmap2 |= NULL_MAP_INDEX16;
-			if(!ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)))
-				nmap2 |= NULL_MAP_INDEX17;
-			if(!ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID))
-				nmap2 |= NULL_MAP_INDEX18;
-			if(!ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)))
-				nmap2 |= NULL_MAP_INDEX19;
-			if(!ReadString_Optional(gmdeItemInfo->RefOrderID, &(gmdeItemInfo->RefOrderIDLength)))
-				nmap2 |= NULL_MAP_INDEX20;
+			nmap2 |= NULL_MAP_INDEX1 & (ReadString_Optional_PredictMax8(gmdeItemInfo->MDEntryID, &(gmdeItemInfo->MDEntryIDLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX2 & (ReadString_Optional_PredictMax16(gmdeItemInfo->Symbol, &(gmdeItemInfo->SymbolLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX3 & (ReadInt32_Optional(&(gmdeItemInfo->RptSeq)) - 1);
+			nmap2 |= NULL_MAP_INDEX4 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX5 & (ReadUInt32_Optional(&(gmdeItemInfo->MDEntryTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX6 & (ReadUInt32_Optional(&(gmdeItemInfo->OrigTime)) - 1);
+			nmap2 |= NULL_MAP_INDEX7 & (ReadString_Optional(gmdeItemInfo->OrderSide, &(gmdeItemInfo->OrderSideLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX8 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntryPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX9 & (ReadDecimal_Optional(&(gmdeItemInfo->MDEntrySize)) - 1);
+			nmap2 |= NULL_MAP_INDEX10 & (ReadDecimal_Optional(&(gmdeItemInfo->TradeValue)) - 1);
+			nmap2 |= NULL_MAP_INDEX11 & (ReadUInt32_Optional(&(gmdeItemInfo->SettlDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX12 & (ReadString_Optional(gmdeItemInfo->SettleType, &(gmdeItemInfo->SettleTypeLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX13 & (ReadDecimal_Optional(&(gmdeItemInfo->Price)) - 1);
+			nmap2 |= NULL_MAP_INDEX14 & (ReadInt32_Optional(&(gmdeItemInfo->PriceType)) - 1);
+			nmap2 |= NULL_MAP_INDEX15 & (ReadDecimal_Optional(&(gmdeItemInfo->RepoToPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX16 & (ReadDecimal_Optional(&(gmdeItemInfo->BuyBackPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX17 & (ReadUInt32_Optional(&(gmdeItemInfo->BuyBackDate)) - 1);
+			nmap2 |= NULL_MAP_INDEX18 & (ReadString_Optional_Fixed4(gmdeItemInfo->TradingSessionID) - 1);
+			nmap2 |= NULL_MAP_INDEX19 & (ReadString_Optional_Predict12(gmdeItemInfo->TradingSessionSubID, &(gmdeItemInfo->TradingSessionSubIDLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX20 & (ReadString_Optional(gmdeItemInfo->RefOrderID, &(gmdeItemInfo->RefOrderIDLength)) - 1);
 			gmdeItemInfo->NullMap = nmap2;
 			this->m_prevastsTLSCURRItemInfo = gmdeItemInfo;
 		}
@@ -4790,10 +4508,8 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadInt32_Optional(&(info->TotNumReports)))
-			nmap1 |= NULL_MAP_INDEX0;
-		if(!ReadString_Optional_PredictMax16(info->Symbol, &(info->SymbolLength)))
-			nmap1 |= NULL_MAP_INDEX1;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadInt32_Optional(&(info->TotNumReports)) - 1);
+		nmap1 |= NULL_MAP_INDEX1 & (ReadString_Optional_PredictMax16(info->Symbol, &(info->SymbolLength)) - 1);
 		if(CheckProcessNullByteVector())
 			nmap1 |= NULL_MAP_INDEX2;
 		else
@@ -4802,8 +4518,7 @@ public:
 			nmap1 |= NULL_MAP_INDEX3;
 		else
 			ReadByteVector_Optional(info->SecurityIDSource, &(info->SecurityIDSourceLength), 128);
-		if(!ReadInt32_Optional(&(info->Product)))
-			nmap1 |= NULL_MAP_INDEX4;
+		nmap1 |= NULL_MAP_INDEX4 & (ReadInt32_Optional(&(info->Product)) - 1);
 		if(CheckProcessNullByteVector())
 			nmap1 |= NULL_MAP_INDEX5;
 		else
@@ -4812,22 +4527,14 @@ public:
 			nmap1 |= NULL_MAP_INDEX6;
 		else
 			ReadByteVector_Optional(info->SecurityType, &(info->SecurityTypeLength), 128);
-		if(!ReadUInt32_Optional(&(info->MaturityDate)))
-			nmap1 |= NULL_MAP_INDEX7;
-		if(!ReadUInt32_Optional(&(info->SettlDate)))
-			nmap1 |= NULL_MAP_INDEX8;
-		if(!ReadString_Optional(info->SettleType, &(info->SettleTypeLength)))
-			nmap1 |= NULL_MAP_INDEX9;
-		if(!ReadDecimal_Optional(&(info->OrigIssueAmt)))
-			nmap1 |= NULL_MAP_INDEX10;
-		if(!ReadUInt32_Optional(&(info->CouponPaymentDate)))
-			nmap1 |= NULL_MAP_INDEX11;
-		if(!ReadDecimal_Optional(&(info->CouponRate)))
-			nmap1 |= NULL_MAP_INDEX12;
-		if(!ReadUInt32_Optional(&(info->SettlFixingDate)))
-			nmap1 |= NULL_MAP_INDEX13;
-		if(!ReadDecimal_Optional(&(info->DividendNetPx)))
-			nmap1 |= NULL_MAP_INDEX14;
+		nmap1 |= NULL_MAP_INDEX7 & (ReadUInt32_Optional(&(info->MaturityDate)) - 1);
+		nmap1 |= NULL_MAP_INDEX8 & (ReadUInt32_Optional(&(info->SettlDate)) - 1);
+		nmap1 |= NULL_MAP_INDEX9 & (ReadString_Optional(info->SettleType, &(info->SettleTypeLength)) - 1);
+		nmap1 |= NULL_MAP_INDEX10 & (ReadDecimal_Optional(&(info->OrigIssueAmt)) - 1);
+		nmap1 |= NULL_MAP_INDEX11 & (ReadUInt32_Optional(&(info->CouponPaymentDate)) - 1);
+		nmap1 |= NULL_MAP_INDEX12 & (ReadDecimal_Optional(&(info->CouponRate)) - 1);
+		nmap1 |= NULL_MAP_INDEX13 & (ReadUInt32_Optional(&(info->SettlFixingDate)) - 1);
+		nmap1 |= NULL_MAP_INDEX14 & (ReadDecimal_Optional(&(info->DividendNetPx)) - 1);
 		if(CheckProcessNullByteVector())
 			nmap1 |= NULL_MAP_INDEX15;
 		else
@@ -4866,8 +4573,7 @@ public:
 			this->m_prevastsSecurityDefinitionGroupInstrAttribItemInfo = giaItemInfo;
 		}
 
-		if(!ReadString_Optional(info->Currency, &(info->CurrencyLength)))
-			nmap1 |= NULL_MAP_INDEX19;
+		nmap1 |= NULL_MAP_INDEX19 & (ReadString_Optional(info->Currency, &(info->CurrencyLength)) - 1);
 
 		if(!ReadUInt32_Optional_Predict12((UINT32*)&(info->MarketSegmentGrpCount))) {
 			info->MarketSegmentGrpCount = 0;
@@ -4885,8 +4591,7 @@ public:
 			msgItemInfo = info->MarketSegmentGrp[msgItemInfoIndex];
 			UINT64 nmap2 = 0;
 
-			if(!ReadDecimal_Optional(&(msgItemInfo->RoundLot)))
-				nmap2 |= NULL_MAP_INDEX0;
+			nmap2 |= NULL_MAP_INDEX0 & (ReadDecimal_Optional(&(msgItemInfo->RoundLot)) - 1);
 
 			if(!ReadUInt32_Optional_Predict12((UINT32*)&(msgItemInfo->TradingSessionRulesGrpCount))) {
 				msgItemInfo->TradingSessionRulesGrpCount = 0;
@@ -4905,12 +4610,9 @@ public:
 				UINT64 nmap3 = 0;
 
 				ReadString_Mandatory_Fixed4(tsrgItemInfo->TradingSessionID);
-				if(!ReadString_Optional_Predict12(tsrgItemInfo->TradingSessionSubID, &(tsrgItemInfo->TradingSessionSubIDLength)))
-					nmap3 |= NULL_MAP_INDEX0;
-				if(!ReadInt32_Optional(&(tsrgItemInfo->SecurityTradingStatus)))
-					nmap3 |= NULL_MAP_INDEX1;
-				if(!ReadInt32_Optional(&(tsrgItemInfo->OrderNote)))
-					nmap3 |= NULL_MAP_INDEX2;
+				nmap3 |= NULL_MAP_INDEX0 & (ReadString_Optional_Predict12(tsrgItemInfo->TradingSessionSubID, &(tsrgItemInfo->TradingSessionSubIDLength)) - 1);
+				nmap3 |= NULL_MAP_INDEX1 & (ReadInt32_Optional(&(tsrgItemInfo->SecurityTradingStatus)) - 1);
+				nmap3 |= NULL_MAP_INDEX2 & (ReadInt32_Optional(&(tsrgItemInfo->OrderNote)) - 1);
 				tsrgItemInfo->NullMap = nmap3;
 				this->m_prevastsSecurityDefinitionMarketSegmentGrpTradingSessionRulesGrpItemInfo = tsrgItemInfo;
 			}
@@ -4919,12 +4621,9 @@ public:
 			this->m_prevastsSecurityDefinitionMarketSegmentGrpItemInfo = msgItemInfo;
 		}
 
-		if(!ReadString_Optional(info->SettlCurrency, &(info->SettlCurrencyLength)))
-			nmap1 |= NULL_MAP_INDEX21;
-		if(!ReadInt32_Optional(&(info->PriceType)))
-			nmap1 |= NULL_MAP_INDEX22;
-		if(!ReadString_Optional(info->StateSecurityID, &(info->StateSecurityIDLength)))
-			nmap1 |= NULL_MAP_INDEX23;
+		nmap1 |= NULL_MAP_INDEX21 & (ReadString_Optional(info->SettlCurrency, &(info->SettlCurrencyLength)) - 1);
+		nmap1 |= NULL_MAP_INDEX22 & (ReadInt32_Optional(&(info->PriceType)) - 1);
+		nmap1 |= NULL_MAP_INDEX23 & (ReadString_Optional(info->StateSecurityID, &(info->StateSecurityIDLength)) - 1);
 		if(CheckProcessNullByteVector())
 			nmap1 |= NULL_MAP_INDEX24;
 		else
@@ -4933,34 +4632,20 @@ public:
 			nmap1 |= NULL_MAP_INDEX25;
 		else
 			ReadByteVector_Optional(info->MarketCode, &(info->MarketCodeLength), 128);
-		if(!ReadDecimal_Optional(&(info->MinPriceIncrement)))
-			nmap1 |= NULL_MAP_INDEX26;
-		if(!ReadDecimal_Optional(&(info->MktShareLimit)))
-			nmap1 |= NULL_MAP_INDEX27;
-		if(!ReadDecimal_Optional(&(info->MktShareThreshold)))
-			nmap1 |= NULL_MAP_INDEX28;
-		if(!ReadDecimal_Optional(&(info->MaxOrdersVolume)))
-			nmap1 |= NULL_MAP_INDEX29;
-		if(!ReadDecimal_Optional(&(info->PriceMvmLimit)))
-			nmap1 |= NULL_MAP_INDEX30;
-		if(!ReadDecimal_Optional(&(info->FaceValue)))
-			nmap1 |= NULL_MAP_INDEX31;
-		if(!ReadDecimal_Optional(&(info->BaseSwapPx)))
-			nmap1 |= NULL_MAP_INDEX32;
-		if(!ReadDecimal_Optional(&(info->RepoToPx)))
-			nmap1 |= NULL_MAP_INDEX33;
-		if(!ReadDecimal_Optional(&(info->BuyBackPx)))
-			nmap1 |= NULL_MAP_INDEX34;
-		if(!ReadUInt32_Optional(&(info->BuyBackDate)))
-			nmap1 |= NULL_MAP_INDEX35;
-		if(!ReadDecimal_Optional(&(info->NoSharesIssued)))
-			nmap1 |= NULL_MAP_INDEX36;
-		if(!ReadDecimal_Optional(&(info->HighLimit)))
-			nmap1 |= NULL_MAP_INDEX37;
-		if(!ReadDecimal_Optional(&(info->LowLimit)))
-			nmap1 |= NULL_MAP_INDEX38;
-		if(!ReadInt32_Optional(&(info->NumOfDaysToMaturity)))
-			nmap1 |= NULL_MAP_INDEX39;
+		nmap1 |= NULL_MAP_INDEX26 & (ReadDecimal_Optional(&(info->MinPriceIncrement)) - 1);
+		nmap1 |= NULL_MAP_INDEX27 & (ReadDecimal_Optional(&(info->MktShareLimit)) - 1);
+		nmap1 |= NULL_MAP_INDEX28 & (ReadDecimal_Optional(&(info->MktShareThreshold)) - 1);
+		nmap1 |= NULL_MAP_INDEX29 & (ReadDecimal_Optional(&(info->MaxOrdersVolume)) - 1);
+		nmap1 |= NULL_MAP_INDEX30 & (ReadDecimal_Optional(&(info->PriceMvmLimit)) - 1);
+		nmap1 |= NULL_MAP_INDEX31 & (ReadDecimal_Optional(&(info->FaceValue)) - 1);
+		nmap1 |= NULL_MAP_INDEX32 & (ReadDecimal_Optional(&(info->BaseSwapPx)) - 1);
+		nmap1 |= NULL_MAP_INDEX33 & (ReadDecimal_Optional(&(info->RepoToPx)) - 1);
+		nmap1 |= NULL_MAP_INDEX34 & (ReadDecimal_Optional(&(info->BuyBackPx)) - 1);
+		nmap1 |= NULL_MAP_INDEX35 & (ReadUInt32_Optional(&(info->BuyBackDate)) - 1);
+		nmap1 |= NULL_MAP_INDEX36 & (ReadDecimal_Optional(&(info->NoSharesIssued)) - 1);
+		nmap1 |= NULL_MAP_INDEX37 & (ReadDecimal_Optional(&(info->HighLimit)) - 1);
+		nmap1 |= NULL_MAP_INDEX38 & (ReadDecimal_Optional(&(info->LowLimit)) - 1);
+		nmap1 |= NULL_MAP_INDEX39 & (ReadInt32_Optional(&(info->NumOfDaysToMaturity)) - 1);
 		info->NullMap = nmap1;
 		this->m_prevastsSecurityDefinitionInfo = info;
 		return info;
@@ -4972,14 +4657,10 @@ public:
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
-		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
-			nmap1 |= NULL_MAP_INDEX0;
-		if(!ReadString_Optional_Predict12(info->TradingSessionSubID, &(info->TradingSessionSubIDLength)))
-			nmap1 |= NULL_MAP_INDEX1;
-		if(!ReadInt32_Optional(&(info->SecurityTradingStatus)))
-			nmap1 |= NULL_MAP_INDEX2;
-		if(!ReadUInt32_Optional(&(info->AuctionIndicator)))
-			nmap1 |= NULL_MAP_INDEX3;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadString_Optional_Fixed4(info->TradingSessionID) - 1);
+		nmap1 |= NULL_MAP_INDEX1 & (ReadString_Optional_Predict12(info->TradingSessionSubID, &(info->TradingSessionSubIDLength)) - 1);
+		nmap1 |= NULL_MAP_INDEX2 & (ReadInt32_Optional(&(info->SecurityTradingStatus)) - 1);
+		nmap1 |= NULL_MAP_INDEX3 & (ReadUInt32_Optional(&(info->AuctionIndicator)) - 1);
 		info->NullMap = nmap1;
 		this->m_prevastsSecurityStatusInfo = info;
 		return info;
@@ -4991,8 +4672,7 @@ public:
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 		info->TradSesStatus = ReadInt32_Mandatory();
-		if(!ReadString_Optional(info->Text, &(info->TextLength)))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadString_Optional(info->Text, &(info->TextLength)) - 1);
 		ReadString_Mandatory_Fixed4(info->TradingSessionID);
 		info->NullMap = nmap1;
 		this->m_prevastsTradingSessionStatusInfo = info;
@@ -5016,16 +4696,12 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadString_Optional_Fixed4(info->TradingSessionID) - 1);
 		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
-		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
-			nmap1 |= NULL_MAP_INDEX1;
+		nmap1 |= NULL_MAP_INDEX1 & (ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)) - 1);
 		info->RptSeq = ReadInt32_Mandatory();
-		if(!ReadUInt32_Optional(&(info->LastFragment)))
-			nmap1 |= NULL_MAP_INDEX2;
-		if(!ReadUInt32_Optional(&(info->RouteFirst)))
-			nmap1 |= NULL_MAP_INDEX3;
+		nmap1 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(info->LastFragment)) - 1);
+		nmap1 |= NULL_MAP_INDEX3 & (ReadUInt32_Optional(&(info->RouteFirst)) - 1);
 		info->NullMap = nmap1;
 		return info;
 	}
@@ -5037,16 +4713,12 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)) - 1);
 		info->RptSeq = ReadInt32_Mandatory();
-		if(!ReadUInt32_Optional(&(info->LastFragment)))
-			nmap1 |= NULL_MAP_INDEX1;
-		if(!ReadUInt32_Optional(&(info->RouteFirst)))
-			nmap1 |= NULL_MAP_INDEX2;
+		nmap1 |= NULL_MAP_INDEX1 & (ReadUInt32_Optional(&(info->LastFragment)) - 1);
+		nmap1 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(info->RouteFirst)) - 1);
 		SkipToNextField(); // TradSesStatus
-		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
-			nmap1 |= NULL_MAP_INDEX4;
+		nmap1 |= NULL_MAP_INDEX4 & (ReadString_Optional_Fixed4(info->TradingSessionID) - 1);
 		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
 		info->NullMap = nmap1;
 		return info;
@@ -5059,16 +4731,12 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)) - 1);
 		info->RptSeq = ReadInt32_Mandatory();
-		if(!ReadUInt32_Optional(&(info->LastFragment)))
-			nmap1 |= NULL_MAP_INDEX1;
-		if(!ReadUInt32_Optional(&(info->RouteFirst)))
-			nmap1 |= NULL_MAP_INDEX2;
+		nmap1 |= NULL_MAP_INDEX1 & (ReadUInt32_Optional(&(info->LastFragment)) - 1);
+		nmap1 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(info->RouteFirst)) - 1);
 		SkipToNextField(); // TradSesStatus
-		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
-			nmap1 |= NULL_MAP_INDEX4;
+		nmap1 |= NULL_MAP_INDEX4 & (ReadString_Optional_Fixed4(info->TradingSessionID) - 1);
 		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
 		info->NullMap = nmap1;
 		return info;
@@ -5081,16 +4749,12 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)) - 1);
 		info->RptSeq = ReadInt32_Mandatory();
-		if(!ReadUInt32_Optional(&(info->LastFragment)))
-			nmap1 |= NULL_MAP_INDEX1;
-		if(!ReadUInt32_Optional(&(info->RouteFirst)))
-			nmap1 |= NULL_MAP_INDEX2;
+		nmap1 |= NULL_MAP_INDEX1 & (ReadUInt32_Optional(&(info->LastFragment)) - 1);
+		nmap1 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(info->RouteFirst)) - 1);
 		SkipToNextField(); // TradSesStatus
-		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
-			nmap1 |= NULL_MAP_INDEX4;
+		nmap1 |= NULL_MAP_INDEX4 & (ReadString_Optional_Fixed4(info->TradingSessionID) - 1);
 		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
 		info->NullMap = nmap1;
 		return info;
@@ -5103,16 +4767,12 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(info->LastMsgSeqNumProcessed)) - 1);
 		info->RptSeq = ReadInt32_Mandatory();
-		if(!ReadUInt32_Optional(&(info->LastFragment)))
-			nmap1 |= NULL_MAP_INDEX1;
-		if(!ReadUInt32_Optional(&(info->RouteFirst)))
-			nmap1 |= NULL_MAP_INDEX2;
+		nmap1 |= NULL_MAP_INDEX1 & (ReadUInt32_Optional(&(info->LastFragment)) - 1);
+		nmap1 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(info->RouteFirst)) - 1);
 		SkipToNextField(); // TradSesStatus
-		if(!ReadString_Optional_Fixed4(info->TradingSessionID))
-			nmap1 |= NULL_MAP_INDEX4;
+		nmap1 |= NULL_MAP_INDEX4 & (ReadString_Optional_Fixed4(info->TradingSessionID) - 1);
 		ReadString_Mandatory_PredictMax16(info->Symbol, &(info->SymbolLength));
 		info->NullMap = nmap1;
 		return info;
@@ -5501,8 +5161,7 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadUInt32_Optional(&(info->LastFragment)))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(info->LastFragment)) - 1);
 
 		info->MDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		FortsDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
@@ -5523,48 +5182,34 @@ public:
 				nmap2 |= NULL_MAP_INDEX0;
 			else
 				mdeItemInfo->SecurityID = ReadUInt64_Optional();
-			if(!ReadString_Optional(mdeItemInfo->Symbol, &(mdeItemInfo->SymbolLength)))
-				nmap2 |= NULL_MAP_INDEX1;
-			if(!ReadString_Optional(mdeItemInfo->SecurityGroup, &(mdeItemInfo->SecurityGroupLength)))
-				nmap2 |= NULL_MAP_INDEX2;
-			if(!ReadUInt32_Optional(&(mdeItemInfo->ExchangeTradingSessionID)))
-				nmap2 |= NULL_MAP_INDEX3;
+			nmap2 |= NULL_MAP_INDEX1 & (ReadString_Optional(mdeItemInfo->Symbol, &(mdeItemInfo->SymbolLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX2 & (ReadString_Optional(mdeItemInfo->SecurityGroup, &(mdeItemInfo->SecurityGroupLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX3 & (ReadUInt32_Optional(&(mdeItemInfo->ExchangeTradingSessionID)) - 1);
 			mdeItemInfo->RptSeq = ReadUInt32_Mandatory();
-			if(!ReadUInt32_Optional(&(mdeItemInfo->MarketDepth)))
-				nmap2 |= NULL_MAP_INDEX4;
-			if(!ReadUInt32_Optional(&(mdeItemInfo->MDPriceLevel)))
-				nmap2 |= NULL_MAP_INDEX5;
+			nmap2 |= NULL_MAP_INDEX4 & (ReadUInt32_Optional(&(mdeItemInfo->MarketDepth)) - 1);
+			nmap2 |= NULL_MAP_INDEX5 & (ReadUInt32_Optional(&(mdeItemInfo->MDPriceLevel)) - 1);
 			if(CheckProcessNullInt64())
 				nmap2 |= NULL_MAP_INDEX6;
 			else
 				mdeItemInfo->MDEntryID = ReadInt64_Optional();
-			if(!ReadDecimal_Optional(&(mdeItemInfo->MDEntryPx)))
-				nmap2 |= NULL_MAP_INDEX7;
+			nmap2 |= NULL_MAP_INDEX7 & (ReadDecimal_Optional(&(mdeItemInfo->MDEntryPx)) - 1);
 			if(CheckProcessNullInt64())
 				nmap2 |= NULL_MAP_INDEX8;
 			else
 				mdeItemInfo->MDEntrySize = ReadInt64_Optional();
-			if(!ReadUInt32_Optional(&(mdeItemInfo->MDEntryDate)))
-				nmap2 |= NULL_MAP_INDEX9;
+			nmap2 |= NULL_MAP_INDEX9 & (ReadUInt32_Optional(&(mdeItemInfo->MDEntryDate)) - 1);
 			mdeItemInfo->MDEntryTime = ReadUInt64_Mandatory();
-			if(!ReadInt32_Optional(&(mdeItemInfo->NumberOfOrders)))
-				nmap2 |= NULL_MAP_INDEX10;
-			if(!ReadString_Optional(mdeItemInfo->MDEntryTradeType, &(mdeItemInfo->MDEntryTradeTypeLength)))
-				nmap2 |= NULL_MAP_INDEX11;
-			if(!ReadInt32_Optional(&(mdeItemInfo->TrdType)))
-				nmap2 |= NULL_MAP_INDEX12;
-			if(!ReadDecimal_Optional(&(mdeItemInfo->LastPx)))
-				nmap2 |= NULL_MAP_INDEX13;
-			if(!ReadInt32_Optional(&(mdeItemInfo->MDFlags)))
-				nmap2 |= NULL_MAP_INDEX14;
-			if(!ReadString_Optional(mdeItemInfo->Currency, &(mdeItemInfo->CurrencyLength)))
-				nmap2 |= NULL_MAP_INDEX15;
+			nmap2 |= NULL_MAP_INDEX10 & (ReadInt32_Optional(&(mdeItemInfo->NumberOfOrders)) - 1);
+			nmap2 |= NULL_MAP_INDEX11 & (ReadString_Optional(mdeItemInfo->MDEntryTradeType, &(mdeItemInfo->MDEntryTradeTypeLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX12 & (ReadInt32_Optional(&(mdeItemInfo->TrdType)) - 1);
+			nmap2 |= NULL_MAP_INDEX13 & (ReadDecimal_Optional(&(mdeItemInfo->LastPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX14 & (ReadInt32_Optional(&(mdeItemInfo->MDFlags)) - 1);
+			nmap2 |= NULL_MAP_INDEX15 & (ReadString_Optional(mdeItemInfo->Currency, &(mdeItemInfo->CurrencyLength)) - 1);
 			if(CheckProcessNullUInt64())
 				nmap2 |= NULL_MAP_INDEX16;
 			else
 				mdeItemInfo->Revision = ReadUInt64_Optional();
-			if(!ReadString_Optional(mdeItemInfo->OrderSide, &(mdeItemInfo->OrderSideLength)))
-				nmap2 |= NULL_MAP_INDEX17;
+			nmap2 |= NULL_MAP_INDEX17 & (ReadString_Optional(mdeItemInfo->OrderSide, &(mdeItemInfo->OrderSideLength)) - 1);
 			mdeItemInfo->NullMap = nmap2;
 			this->m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo = mdeItemInfo;
 		}
@@ -5579,8 +5224,7 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadUInt32_Optional(&(info->LastFragment)))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(info->LastFragment)) - 1);
 		info->RptSeq = ReadUInt32_Mandatory();
 		info->TotNumReports = ReadUInt32_Mandatory();
 		info->LastMsgSeqNumProcessed = ReadUInt32_Mandatory();
@@ -5588,10 +5232,8 @@ public:
 			nmap1 |= NULL_MAP_INDEX1;
 		else
 			info->SecurityID = ReadUInt64_Optional();
-		if(!ReadString_Optional(info->Symbol, &(info->SymbolLength)))
-			nmap1 |= NULL_MAP_INDEX2;
-		if(!ReadString_Optional(info->SecurityGroup, &(info->SecurityGroupLength)))
-			nmap1 |= NULL_MAP_INDEX3;
+		nmap1 |= NULL_MAP_INDEX2 & (ReadString_Optional(info->Symbol, &(info->SymbolLength)) - 1);
+		nmap1 |= NULL_MAP_INDEX3 & (ReadString_Optional(info->SecurityGroup, &(info->SecurityGroupLength)) - 1);
 
 		info->MDEntriesCount = ReadUInt32_Mandatory_Predict12();
 		FortsDefaultSnapshotMessageMDEntriesItemInfo* mdeItemInfo = NULL;
@@ -5607,37 +5249,26 @@ public:
 			UINT64 nmap2 = 0;
 
 			ReadString_Mandatory(mdeItemInfo->MDEntryType, &(mdeItemInfo->MDEntryTypeLength));
-			if(!ReadUInt32_Optional(&(mdeItemInfo->ExchangeTradingSessionID)))
-				nmap2 |= NULL_MAP_INDEX0;
+			nmap2 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(mdeItemInfo->ExchangeTradingSessionID)) - 1);
 			if(CheckProcessNullInt64())
 				nmap2 |= NULL_MAP_INDEX1;
 			else
 				mdeItemInfo->MDEntryID = ReadInt64_Optional();
-			if(!ReadUInt32_Optional(&(mdeItemInfo->MarketDepth)))
-				nmap2 |= NULL_MAP_INDEX2;
-			if(!ReadDecimal_Optional(&(mdeItemInfo->MDEntryPx)))
-				nmap2 |= NULL_MAP_INDEX3;
-			if(!ReadUInt32_Optional(&(mdeItemInfo->MDEntryDate)))
-				nmap2 |= NULL_MAP_INDEX4;
+			nmap2 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(mdeItemInfo->MarketDepth)) - 1);
+			nmap2 |= NULL_MAP_INDEX3 & (ReadDecimal_Optional(&(mdeItemInfo->MDEntryPx)) - 1);
+			nmap2 |= NULL_MAP_INDEX4 & (ReadUInt32_Optional(&(mdeItemInfo->MDEntryDate)) - 1);
 			mdeItemInfo->MDEntryTime = ReadUInt64_Mandatory();
 			if(CheckProcessNullInt64())
 				nmap2 |= NULL_MAP_INDEX5;
 			else
 				mdeItemInfo->MDEntrySize = ReadInt64_Optional();
-			if(!ReadUInt32_Optional(&(mdeItemInfo->MDPriceLevel)))
-				nmap2 |= NULL_MAP_INDEX6;
-			if(!ReadInt32_Optional(&(mdeItemInfo->NumberOfOrders)))
-				nmap2 |= NULL_MAP_INDEX7;
-			if(!ReadString_Optional(mdeItemInfo->MDEntryTradeType, &(mdeItemInfo->MDEntryTradeTypeLength)))
-				nmap2 |= NULL_MAP_INDEX8;
-			if(!ReadInt32_Optional(&(mdeItemInfo->TrdType)))
-				nmap2 |= NULL_MAP_INDEX9;
-			if(!ReadInt32_Optional(&(mdeItemInfo->MDFlags)))
-				nmap2 |= NULL_MAP_INDEX10;
-			if(!ReadString_Optional(mdeItemInfo->Currency, &(mdeItemInfo->CurrencyLength)))
-				nmap2 |= NULL_MAP_INDEX11;
-			if(!ReadString_Optional(mdeItemInfo->OrderSide, &(mdeItemInfo->OrderSideLength)))
-				nmap2 |= NULL_MAP_INDEX12;
+			nmap2 |= NULL_MAP_INDEX6 & (ReadUInt32_Optional(&(mdeItemInfo->MDPriceLevel)) - 1);
+			nmap2 |= NULL_MAP_INDEX7 & (ReadInt32_Optional(&(mdeItemInfo->NumberOfOrders)) - 1);
+			nmap2 |= NULL_MAP_INDEX8 & (ReadString_Optional(mdeItemInfo->MDEntryTradeType, &(mdeItemInfo->MDEntryTradeTypeLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX9 & (ReadInt32_Optional(&(mdeItemInfo->TrdType)) - 1);
+			nmap2 |= NULL_MAP_INDEX10 & (ReadInt32_Optional(&(mdeItemInfo->MDFlags)) - 1);
+			nmap2 |= NULL_MAP_INDEX11 & (ReadString_Optional(mdeItemInfo->Currency, &(mdeItemInfo->CurrencyLength)) - 1);
+			nmap2 |= NULL_MAP_INDEX12 & (ReadString_Optional(mdeItemInfo->OrderSide, &(mdeItemInfo->OrderSideLength)) - 1);
 			mdeItemInfo->NullMap = nmap2;
 			this->m_prevfortsDefaultSnapshotMessageMDEntriesItemInfo = mdeItemInfo;
 		}
@@ -5659,29 +5290,18 @@ public:
 		else
 			ReadByteVector_Optional(info->SecurityDesc, &(info->SecurityDescLength), 128);
 		info->SecurityID = ReadUInt64_Mandatory();
-		if(!ReadString_Optional(info->SecurityAltID, &(info->SecurityAltIDLength)))
-			nmap1 |= NULL_MAP_INDEX1;
-		if(!ReadString_Optional(info->SecurityAltIDSource, &(info->SecurityAltIDSourceLength)))
-			nmap1 |= NULL_MAP_INDEX2;
-		if(!ReadString_Optional(info->SecurityType, &(info->SecurityTypeLength)))
-			nmap1 |= NULL_MAP_INDEX3;
-		if(!ReadString_Optional(info->CFICode, &(info->CFICodeLength)))
-			nmap1 |= NULL_MAP_INDEX4;
-		if(!ReadDecimal_Optional(&(info->StrikePrice)))
-			nmap1 |= NULL_MAP_INDEX5;
-		if(!ReadDecimal_Optional(&(info->ContractMultiplier)))
-			nmap1 |= NULL_MAP_INDEX6;
-		if(!ReadUInt32_Optional(&(info->SecurityTradingStatus)))
-			nmap1 |= NULL_MAP_INDEX7;
-		if(!ReadString_Optional(info->Currency, &(info->CurrencyLength)))
-			nmap1 |= NULL_MAP_INDEX8;
+		nmap1 |= NULL_MAP_INDEX1 & (ReadString_Optional(info->SecurityAltID, &(info->SecurityAltIDLength)) - 1);
+		nmap1 |= NULL_MAP_INDEX2 & (ReadString_Optional(info->SecurityAltIDSource, &(info->SecurityAltIDSourceLength)) - 1);
+		nmap1 |= NULL_MAP_INDEX3 & (ReadString_Optional(info->SecurityType, &(info->SecurityTypeLength)) - 1);
+		nmap1 |= NULL_MAP_INDEX4 & (ReadString_Optional(info->CFICode, &(info->CFICodeLength)) - 1);
+		nmap1 |= NULL_MAP_INDEX5 & (ReadDecimal_Optional(&(info->StrikePrice)) - 1);
+		nmap1 |= NULL_MAP_INDEX6 & (ReadDecimal_Optional(&(info->ContractMultiplier)) - 1);
+		nmap1 |= NULL_MAP_INDEX7 & (ReadUInt32_Optional(&(info->SecurityTradingStatus)) - 1);
+		nmap1 |= NULL_MAP_INDEX8 & (ReadString_Optional(info->Currency, &(info->CurrencyLength)) - 1);
 		ReadString_Mandatory(info->MarketSegmentID, &(info->MarketSegmentIDLength));
-		if(!ReadUInt32_Optional(&(info->TradingSessionID)))
-			nmap1 |= NULL_MAP_INDEX9;
-		if(!ReadUInt32_Optional(&(info->ExchangeTradingSessionID)))
-			nmap1 |= NULL_MAP_INDEX10;
-		if(!ReadDecimal_Optional(&(info->Volatility)))
-			nmap1 |= NULL_MAP_INDEX11;
+		nmap1 |= NULL_MAP_INDEX9 & (ReadUInt32_Optional(&(info->TradingSessionID)) - 1);
+		nmap1 |= NULL_MAP_INDEX10 & (ReadUInt32_Optional(&(info->ExchangeTradingSessionID)) - 1);
+		nmap1 |= NULL_MAP_INDEX11 & (ReadDecimal_Optional(&(info->Volatility)) - 1);
 
 		info->MDFeedTypesCount = ReadUInt32_Mandatory_Predict12();
 		FortsSecurityDefinitionMDFeedTypesItemInfo* mdftItemInfo = NULL;
@@ -5697,10 +5317,8 @@ public:
 			UINT64 nmap2 = 0;
 
 			ReadString_Mandatory(mdftItemInfo->MDFeedType, &(mdftItemInfo->MDFeedTypeLength));
-			if(!ReadUInt32_Optional(&(mdftItemInfo->MarketDepth)))
-				nmap2 |= NULL_MAP_INDEX0;
-			if(!ReadUInt32_Optional(&(mdftItemInfo->MDBookType)))
-				nmap2 |= NULL_MAP_INDEX1;
+			nmap2 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(mdftItemInfo->MarketDepth)) - 1);
+			nmap2 |= NULL_MAP_INDEX1 & (ReadUInt32_Optional(&(mdftItemInfo->MDBookType)) - 1);
 			mdftItemInfo->NullMap = nmap2;
 			this->m_prevfortsSecurityDefinitionMDFeedTypesItemInfo = mdftItemInfo;
 		}
@@ -5731,26 +5349,16 @@ public:
 			this->m_prevfortsSecurityDefinitionUnderlyingsItemInfo = uItemInfo;
 		}
 
-		if(!ReadDecimal_Optional(&(info->HighLimitPx)))
-			nmap1 |= NULL_MAP_INDEX13;
-		if(!ReadDecimal_Optional(&(info->LowLimitPx)))
-			nmap1 |= NULL_MAP_INDEX14;
-		if(!ReadDecimal_Optional(&(info->MinPriceIncrement)))
-			nmap1 |= NULL_MAP_INDEX15;
-		if(!ReadDecimal_Optional(&(info->MinPriceIncrementAmount)))
-			nmap1 |= NULL_MAP_INDEX16;
-		if(!ReadDecimal_Optional(&(info->InitialMarginOnBuy)))
-			nmap1 |= NULL_MAP_INDEX17;
-		if(!ReadDecimal_Optional(&(info->InitialMarginOnSell)))
-			nmap1 |= NULL_MAP_INDEX18;
-		if(!ReadDecimal_Optional(&(info->InitialMarginSyntetic)))
-			nmap1 |= NULL_MAP_INDEX19;
-		if(!ReadString_Optional(info->QuotationList, &(info->QuotationListLength)))
-			nmap1 |= NULL_MAP_INDEX20;
-		if(!ReadDecimal_Optional(&(info->TheorPrice)))
-			nmap1 |= NULL_MAP_INDEX21;
-		if(!ReadDecimal_Optional(&(info->TheorPriceLimit)))
-			nmap1 |= NULL_MAP_INDEX22;
+		nmap1 |= NULL_MAP_INDEX13 & (ReadDecimal_Optional(&(info->HighLimitPx)) - 1);
+		nmap1 |= NULL_MAP_INDEX14 & (ReadDecimal_Optional(&(info->LowLimitPx)) - 1);
+		nmap1 |= NULL_MAP_INDEX15 & (ReadDecimal_Optional(&(info->MinPriceIncrement)) - 1);
+		nmap1 |= NULL_MAP_INDEX16 & (ReadDecimal_Optional(&(info->MinPriceIncrementAmount)) - 1);
+		nmap1 |= NULL_MAP_INDEX17 & (ReadDecimal_Optional(&(info->InitialMarginOnBuy)) - 1);
+		nmap1 |= NULL_MAP_INDEX18 & (ReadDecimal_Optional(&(info->InitialMarginOnSell)) - 1);
+		nmap1 |= NULL_MAP_INDEX19 & (ReadDecimal_Optional(&(info->InitialMarginSyntetic)) - 1);
+		nmap1 |= NULL_MAP_INDEX20 & (ReadString_Optional(info->QuotationList, &(info->QuotationListLength)) - 1);
+		nmap1 |= NULL_MAP_INDEX21 & (ReadDecimal_Optional(&(info->TheorPrice)) - 1);
+		nmap1 |= NULL_MAP_INDEX22 & (ReadDecimal_Optional(&(info->TheorPriceLimit)) - 1);
 
 		if(!ReadUInt32_Optional_Predict12((UINT32*)&(info->InstrumentLegsCount))) {
 			info->InstrumentLegsCount = 0;
@@ -5798,10 +5406,8 @@ public:
 			this->m_prevfortsSecurityDefinitionInstrumentAttributesItemInfo = iaItemInfo;
 		}
 
-		if(!ReadDecimal_Optional(&(info->UnderlyingQty)))
-			nmap1 |= NULL_MAP_INDEX25;
-		if(!ReadString_Optional(info->UnderlyingCurrency, &(info->UnderlyingCurrencyLength)))
-			nmap1 |= NULL_MAP_INDEX26;
+		nmap1 |= NULL_MAP_INDEX25 & (ReadDecimal_Optional(&(info->UnderlyingQty)) - 1);
+		nmap1 |= NULL_MAP_INDEX26 & (ReadString_Optional(info->UnderlyingCurrency, &(info->UnderlyingCurrencyLength)) - 1);
 
 		if(!ReadUInt32_Optional_Predict12((UINT32*)&(info->EvntGrpCount))) {
 			info->EvntGrpCount = 0;
@@ -5826,10 +5432,8 @@ public:
 			this->m_prevfortsSecurityDefinitionEvntGrpItemInfo = egItemInfo;
 		}
 
-		if(!ReadUInt32_Optional(&(info->MaturityDate)))
-			nmap1 |= NULL_MAP_INDEX28;
-		if(!ReadUInt32_Optional(&(info->MaturityTime)))
-			nmap1 |= NULL_MAP_INDEX29;
+		nmap1 |= NULL_MAP_INDEX28 & (ReadUInt32_Optional(&(info->MaturityDate)) - 1);
+		nmap1 |= NULL_MAP_INDEX29 & (ReadUInt32_Optional(&(info->MaturityTime)) - 1);
 		info->NullMap = nmap1;
 		this->m_prevfortsSecurityDefinitionInfo = info;
 		return info;
@@ -5841,12 +5445,9 @@ public:
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 		info->SecurityID = ReadUInt64_Mandatory();
-		if(!ReadDecimal_Optional(&(info->Volatility)))
-			nmap1 |= NULL_MAP_INDEX0;
-		if(!ReadDecimal_Optional(&(info->TheorPrice)))
-			nmap1 |= NULL_MAP_INDEX1;
-		if(!ReadDecimal_Optional(&(info->TheorPriceLimit)))
-			nmap1 |= NULL_MAP_INDEX2;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadDecimal_Optional(&(info->Volatility)) - 1);
+		nmap1 |= NULL_MAP_INDEX1 & (ReadDecimal_Optional(&(info->TheorPrice)) - 1);
+		nmap1 |= NULL_MAP_INDEX2 & (ReadDecimal_Optional(&(info->TheorPriceLimit)) - 1);
 		info->NullMap = nmap1;
 		this->m_prevfortsSecurityDefinitionUpdateReportInfo = info;
 		return info;
@@ -5859,18 +5460,12 @@ public:
 		SkipToNextField(); // SendingTime
 		info->SecurityID = ReadUInt64_Mandatory();
 		ReadString_Mandatory(info->Symbol, &(info->SymbolLength));
-		if(!ReadUInt32_Optional(&(info->SecurityTradingStatus)))
-			nmap1 |= NULL_MAP_INDEX0;
-		if(!ReadDecimal_Optional(&(info->HighLimitPx)))
-			nmap1 |= NULL_MAP_INDEX1;
-		if(!ReadDecimal_Optional(&(info->LowLimitPx)))
-			nmap1 |= NULL_MAP_INDEX2;
-		if(!ReadDecimal_Optional(&(info->InitialMarginOnBuy)))
-			nmap1 |= NULL_MAP_INDEX3;
-		if(!ReadDecimal_Optional(&(info->InitialMarginOnSell)))
-			nmap1 |= NULL_MAP_INDEX4;
-		if(!ReadDecimal_Optional(&(info->InitialMarginSyntetic)))
-			nmap1 |= NULL_MAP_INDEX5;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(info->SecurityTradingStatus)) - 1);
+		nmap1 |= NULL_MAP_INDEX1 & (ReadDecimal_Optional(&(info->HighLimitPx)) - 1);
+		nmap1 |= NULL_MAP_INDEX2 & (ReadDecimal_Optional(&(info->LowLimitPx)) - 1);
+		nmap1 |= NULL_MAP_INDEX3 & (ReadDecimal_Optional(&(info->InitialMarginOnBuy)) - 1);
+		nmap1 |= NULL_MAP_INDEX4 & (ReadDecimal_Optional(&(info->InitialMarginOnSell)) - 1);
+		nmap1 |= NULL_MAP_INDEX5 & (ReadDecimal_Optional(&(info->InitialMarginSyntetic)) - 1);
 		info->NullMap = nmap1;
 		this->m_prevfortsSecurityStatusInfo = info;
 		return info;
@@ -5913,12 +5508,10 @@ public:
 		else
 			info->TradSesIntermClearingEndTime = ReadUInt64_Optional();
 		info->TradingSessionID = ReadUInt32_Mandatory();
-		if(!ReadUInt32_Optional(&(info->ExchangeTradingSessionID)))
-			nmap1 |= NULL_MAP_INDEX2;
+		nmap1 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(info->ExchangeTradingSessionID)) - 1);
 		info->TradSesStatus = ReadUInt32_Mandatory();
 		ReadString_Mandatory(info->MarketSegmentID, &(info->MarketSegmentIDLength));
-		if(!ReadInt32_Optional(&(info->TradSesEvent)))
-			nmap1 |= NULL_MAP_INDEX3;
+		nmap1 |= NULL_MAP_INDEX3 & (ReadInt32_Optional(&(info->TradSesEvent)) - 1);
 		info->NullMap = nmap1;
 		this->m_prevfortsTradingSessionStatusInfo = info;
 		return info;
@@ -5929,21 +5522,16 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadUInt32_Optional(&(info->LastFragment)))
-			nmap1 |= NULL_MAP_INDEX0;
-		if(!ReadString_Optional(info->NewsId, &(info->NewsIdLength)))
-			nmap1 |= NULL_MAP_INDEX1;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(info->LastFragment)) - 1);
+		nmap1 |= NULL_MAP_INDEX1 & (ReadString_Optional(info->NewsId, &(info->NewsIdLength)) - 1);
 		if(CheckProcessNullUInt64())
 			nmap1 |= NULL_MAP_INDEX2;
 		else
 			info->OrigTime = ReadUInt64_Optional();
-		if(!ReadString_Optional(info->LanguageCode, &(info->LanguageCodeLength)))
-			nmap1 |= NULL_MAP_INDEX3;
-		if(!ReadUInt32_Optional(&(info->Urgency)))
-			nmap1 |= NULL_MAP_INDEX4;
+		nmap1 |= NULL_MAP_INDEX3 & (ReadString_Optional(info->LanguageCode, &(info->LanguageCodeLength)) - 1);
+		nmap1 |= NULL_MAP_INDEX4 & (ReadUInt32_Optional(&(info->Urgency)) - 1);
 		ReadByteVector_Mandatory(info->Headline, &(info->HeadlineLength), 128);
-		if(!ReadString_Optional(info->MarketSegmentID, &(info->MarketSegmentIDLength)))
-			nmap1 |= NULL_MAP_INDEX5;
+		nmap1 |= NULL_MAP_INDEX5 & (ReadString_Optional(info->MarketSegmentID, &(info->MarketSegmentIDLength)) - 1);
 
 		info->NewsTextCount = ReadUInt32_Mandatory_Predict12();
 		FortsNewsNewsTextItemInfo* ntItemInfo = NULL;
@@ -5998,19 +5586,15 @@ public:
 				nmap2 |= NULL_MAP_INDEX1;
 			else
 				mdeItemInfo->SecurityID = ReadUInt64_Optional();
-			if(!ReadUInt32_Optional(&(mdeItemInfo->RptSeq)))
-				nmap2 |= NULL_MAP_INDEX2;
-			if(!ReadUInt32_Optional(&(mdeItemInfo->MDEntryDate)))
-				nmap2 |= NULL_MAP_INDEX3;
+			nmap2 |= NULL_MAP_INDEX2 & (ReadUInt32_Optional(&(mdeItemInfo->RptSeq)) - 1);
+			nmap2 |= NULL_MAP_INDEX3 & (ReadUInt32_Optional(&(mdeItemInfo->MDEntryDate)) - 1);
 			mdeItemInfo->MDEntryTime = ReadUInt64_Mandatory();
-			if(!ReadDecimal_Optional(&(mdeItemInfo->MDEntryPx)))
-				nmap2 |= NULL_MAP_INDEX4;
+			nmap2 |= NULL_MAP_INDEX4 & (ReadDecimal_Optional(&(mdeItemInfo->MDEntryPx)) - 1);
 			if(CheckProcessNullInt64())
 				nmap2 |= NULL_MAP_INDEX5;
 			else
 				mdeItemInfo->MDEntrySize = ReadInt64_Optional();
-			if(!ReadDecimal_Optional(&(mdeItemInfo->LastPx)))
-				nmap2 |= NULL_MAP_INDEX6;
+			nmap2 |= NULL_MAP_INDEX6 & (ReadDecimal_Optional(&(mdeItemInfo->LastPx)) - 1);
 			if(CheckProcessNullInt64())
 				nmap2 |= NULL_MAP_INDEX7;
 			else
@@ -6019,8 +5603,7 @@ public:
 				nmap2 |= NULL_MAP_INDEX8;
 			else
 				mdeItemInfo->TradeID = ReadInt64_Optional();
-			if(!ReadUInt32_Optional(&(mdeItemInfo->ExchangeTradingSessionID)))
-				nmap2 |= NULL_MAP_INDEX9;
+			nmap2 |= NULL_MAP_INDEX9 & (ReadUInt32_Optional(&(mdeItemInfo->ExchangeTradingSessionID)) - 1);
 			if(CheckProcessNullInt64())
 				nmap2 |= NULL_MAP_INDEX10;
 			else
@@ -6044,8 +5627,7 @@ public:
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
 		info->LastMsgSeqNumProcessed = ReadUInt32_Mandatory();
-		if(!ReadUInt32_Optional(&(info->RptSeq)))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(info->RptSeq)) - 1);
 		info->LastFragment = ReadUInt32_Mandatory();
 		info->RouteFirst = ReadUInt32_Mandatory();
 		info->ExchangeTradingSessionID = ReadUInt32_Mandatory();
@@ -6072,11 +5654,9 @@ public:
 				nmap2 |= NULL_MAP_INDEX0;
 			else
 				mdeItemInfo->MDEntryID = ReadInt64_Optional();
-			if(!ReadUInt32_Optional(&(mdeItemInfo->MDEntryDate)))
-				nmap2 |= NULL_MAP_INDEX1;
+			nmap2 |= NULL_MAP_INDEX1 & (ReadUInt32_Optional(&(mdeItemInfo->MDEntryDate)) - 1);
 			mdeItemInfo->MDEntryTime = ReadUInt64_Mandatory();
-			if(!ReadDecimal_Optional(&(mdeItemInfo->MDEntryPx)))
-				nmap2 |= NULL_MAP_INDEX2;
+			nmap2 |= NULL_MAP_INDEX2 & (ReadDecimal_Optional(&(mdeItemInfo->MDEntryPx)) - 1);
 			if(CheckProcessNullInt64())
 				nmap2 |= NULL_MAP_INDEX3;
 			else
@@ -6113,8 +5693,7 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadString_Optional(info->Text, &(info->TextLength)))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadString_Optional(info->Text, &(info->TextLength)) - 1);
 		info->NullMap = nmap1;
 		this->m_prevfortsLogoutInfo = info;
 		return info;
@@ -6127,8 +5706,7 @@ public:
 
 		SkipToNextField(); // MsgSeqNum
 		SkipToNextField(); // SendingTime
-		if(!ReadUInt32_Optional(&(info->LastFragment)))
-			nmap1 |= NULL_MAP_INDEX0;
+		nmap1 |= NULL_MAP_INDEX0 & (ReadUInt32_Optional(&(info->LastFragment)) - 1);
 		info->RptSeq = ReadUInt32_Mandatory();
 		SkipToNextField(); // TotNumReports
 		info->LastMsgSeqNumProcessed = ReadUInt32_Mandatory();

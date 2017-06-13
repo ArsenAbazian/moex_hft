@@ -423,7 +423,7 @@
 		<string name="SenderCompID" id="49" remove="true"><constant value="MOEX"/></string>
 		<uInt32 name="MsgSeqNum" id="34" skip="true"></uInt32>
 		<uInt64 name="SendingTime" id="52" predict="9" skip="true"></uInt64>
-		<sequence name="GroupMDEntries" process_empty_pmap="true">
+		<sequence name="GroupMDEntries" process_empty_pmap="true" pmap1="6263" pmap2="30839">
 			<length name="NoMDEntries" id="268"/>
 			<uInt32 name="MDUpdateAction" id="279" presence="optional" fixed_size="1"><copy/></uInt32>
 			<string name="MDEntryType" id="269" presence="optional" fixed_size="1"><copy/></string>

@@ -26,31 +26,8 @@ public:
     }
     inline static unsigned int GetHash2(const char *str, int length) {
         unsigned int hash = 2166136261;
-
-        if(length >= 10) {
-            hash = (hash * 16777619) ^ str[0];
-            hash = (hash * 16777619) ^ str[1];
-            hash = (hash * 16777619) ^ str[2];
-            hash = (hash * 16777619) ^ str[3];
-            hash = (hash * 16777619) ^ str[4];
-            hash = (hash * 16777619) ^ str[5];
-            hash = (hash * 16777619) ^ str[6];
-            hash = (hash * 16777619) ^ str[7];
-            hash = (hash * 16777619) ^ str[8];
-            hash = (hash * 16777619) ^ str[9];
-            if(length == 12) {
-                hash = (hash * 16777619) ^ str[10];
-                hash = (hash * 16777619) ^ str[11];
-            }
-            if(length == 11) {
-                hash = (hash * 16777619) ^ str[10];
-            }
-        }
-        else {
-            for(int i = 0; i < length; i++) {
-                hash = (hash * 16777619) ^ str[i];
-            }
-        }
+        for(int i = 0; i < length; i++)
+            hash = (hash * 16777619) ^ str[i];
         hash &= 0x0003ffff;
         return hash;
 
