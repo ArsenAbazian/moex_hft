@@ -62,34 +62,6 @@ public:
     inline UINT64 SecurityID() { return this->m_securityId; }
     inline int MaxSessionCount() { return this->m_maxCount; }
     inline T* Session(int index) { return this->m_items[index]; }
-    /*
-    __attribute_noinline__
-    T* GetNewSession(const char *session, int sessionLength) {
-        T* res = this->m_items[this->m_count];
-        this->m_sessionId[this->m_count] = *((UINT32*)session);
-        res->TradingSession()->Set(session, sessionLength);
-        res->TradingSessionInt(*((UINT32*)session));
-        this->m_count++;
-        return res;
-    }
-    inline T* GetSession(const char *session, int sessionLength) {
-#ifdef TEST
-        T **pitem = this->m_items;
-        for(int i = 0; i < this->m_count; i++, pitem++) {
-            T *item = *pitem;
-            if(item->TradingSession()->Equal(session, sessionLength))
-                return item;
-        }
-#else
-        UINT32  sid = *((UINT32*)session);
-        UINT32 *sptr = this->m_sessionId;
-        for(int i = 0; i < this->m_count; i++, sptr++) {
-            if((*sptr) == sid)
-                return this->m_items[i];
-        }
-#endif
-        return this->GetNewSession(session, sessionLength);
-    }*/
     inline T* GetSession(UINT32 session) {
         T **item = this->m_items;
         for(int i = 0; i < this->m_count; i++, item++) {
@@ -101,12 +73,24 @@ public:
         this->m_count++;
         return res;
     }
+    inline void UpdateMinPriceIncrement() {
+        T **item = this->m_items;
+        for(int i = 0; i < this->m_maxCount; i++, item++)
+            (*item)->MinPriceIncrement(&(this->m_securityDefinitionPtr->Data()->MinPriceIncrement));
+    }
+    inline void UpdateMinPriceIncrementForts() {
+        T **item = this->m_items;
+        for(int i = 0; i < this->m_maxCount; i++, item++)
+            (*item)->MinPriceIncrement(&(this->m_securityDefinitionFortsPtr->Data()->MinPriceIncrement));
+    }
     inline void SecurityDefinitionPtr(LinkedPointer<AstsSecurityDefinitionInfo> *ptr) {
         this->m_securityDefinitionPtr = ptr;
+        this->UpdateMinPriceIncrement();
     }
     inline void SecurityDefinitionPtr(LinkedPointer<FortsSecurityDefinitionInfo> *ptr) {
         this->m_securityDefinitionFortsPtr = ptr;
         this->m_securityId = SecurityDefinitionForts()->SecurityID;
+        this->UpdateMinPriceIncrementForts();
     }
     inline AstsSecurityDefinitionInfo* SecurityDefinitionAsts() { return this->m_securityDefinitionPtr->Data(); }
     inline FortsSecurityDefinitionInfo* SecurityDefinitionForts() { return this->m_securityDefinitionFortsPtr->Data(); }

@@ -129,7 +129,7 @@ public:
         node->Next(this->m_poolHead);
         this->m_poolHead = node;
         this->m_count--;
-#ifdef TEST_LIST
+#ifdef TEST_CHECK_LIST
         if(this->m_count < 0)
             throw;
 #endif
@@ -139,7 +139,7 @@ public:
         node->Next(this->m_poolHead);
         this->m_poolHead = node;
         this->m_count--;
-#ifdef TEST_LIST
+#ifdef TEST_CHECK_LIST
         if(this->m_count < 0)
             throw;
 #endif
@@ -326,7 +326,7 @@ public:
         this->m_poolTail->Next(start);
         this->m_poolTail = node;
         this->m_poolTail->Next(0);
-#ifdef  TEST_LIST
+#ifdef  TEST_CHECK_LIST
         if(this->m_autoAllocate) {
             LinkedPointer<T> *ptr = this->m_poolHead;
             while (ptr != 0) {
@@ -496,7 +496,7 @@ public:
         }
         this->m_count--;
         this->m_pool->Push(node);
-#ifdef TEST_LIST
+#ifdef TEST_CHECK_LIST
         if(this->m_count < 0)
             throw;
 #endif

@@ -116,6 +116,8 @@ public:
     inline void Clear() {
         Clear(this->m_sellQuoteList);
         Clear(this->m_buyQuoteList);
+        this->m_buyQuoteManager->ClearPointers();
+        this->m_sellQuoteManager->ClearPointers();
         this->ClearEntries();
         this->m_rptSeq = 0;
         this->m_savedRptSeq = 0;
@@ -123,23 +125,19 @@ public:
         this->m_snapshotProcessedCount = 0;
     }
 
+    inline void MinPriceIncrement(Decimal *price) {
+        this->m_buyQuoteManager->MinPriceIncrement(price->Mantissa);
+        this->m_buyQuoteManager->Precision(- price->Exponent);
+
+        this->m_sellQuoteManager->MinPriceIncrement(price->Mantissa);
+        this->m_sellQuoteManager->Precision(- price->Exponent);
+    }
+
     inline HrLinkedPointer<T>* InsertBuyQuote(Decimal *price) {
-#ifdef TEST
-        if(this->m_listMode == ListType::ltSimple)
-            return this->m_buyQuoteManager->SimpleInsertBeforeDescending(price);
         return this->m_buyQuoteManager->HrInsertBeforeDescending(price);
-#else
-        return this->m_buyQuoteManager->HrInsertBeforeDescending(price);
-#endif
     }
     inline HrLinkedPointer<T>* InsertSellQuote(Decimal *price) {
-#ifdef TEST
-        if(this->m_listMode == ListType::ltSimple)
-            return this->m_sellQuoteManager->SimpleInsertBeforeAscending(price);
         return this->m_sellQuoteManager->HrInsertBeforeAscending(price);
-#else
-        return this->m_sellQuoteManager->HrInsertBeforeAscending(price);
-#endif
     }
     inline HrLinkedPointer<T>* GetPointer(T *info, HrPointerListLite<T> *list) {
         return OrderBookInfo<T>::m_hashTable->GetPointer(list, info->MDEntryID);
@@ -186,26 +184,25 @@ public:
         return;
     }
 
-    inline void RemoveQuote(HrPointerListLite<T> *list, T *info) {
-        HrLinkedPointer<T> *ptr = this->GetPointer(info, list);
+    inline void RemoveQuote(OrderedListManager<HrPointerListLite, HrLinkedPointer, T> *manager, T *info) {
+        HrLinkedPointer<T> *ptr = this->GetPointer(info, manager->m_list);
         if(ptr == 0) {
             this->OnQuoteNotFound(info);
             return;
         }
         ptr->Data()->Clear();
-        list->Remove(ptr);
+        manager->m_list->RemoveShifting(ptr);
         this->FreePointer(ptr);
+        manager->OnPointerRemove(ptr);
         info->Clear();
     }
 
     inline void RemoveBuyQuote(T *info) {
-        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove BuyQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
-        RemoveQuote(this->m_buyQuoteList, info);
+        RemoveQuote(this->m_buyQuoteManager, info);
     }
 
     inline void RemoveSellQuote(T *info) {
-        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_sessionInt, "Remove SellQuote", info->MDEntryID, &(info->MDEntryPx), info->MDEntrySize);
-        RemoveQuote(this->m_sellQuoteList, info);
+        RemoveQuote(this->m_sellQuoteManager, info);
     }
 
     inline void ChangeQuote(HrPointerListLite<T> *list, T *info) {
@@ -233,12 +230,12 @@ public:
         ProgramStatistics::Total->Inc(Counters::cRemoveObr);
 #endif
         UINT64 buy = info->MDEntryType[0] == mdetBuyQuote;
-        HrPointerListLite<T> *list =
-                (HrPointerListLite<T>*)(
-                        ((0 - buy) & (UINT64)this->m_buyQuoteList) +
-                        ((buy - 1) & (UINT64)this->m_sellQuoteList)
+        OrderedListManager<HrPointerListLite, HrLinkedPointer, T> *manager =
+                (OrderedListManager<HrPointerListLite, HrLinkedPointer, T>*)(
+                        ((0 - buy) & (UINT64)this->m_buyQuoteManager) +
+                        ((buy - 1) & (UINT64)this->m_sellQuoteManager)
                 );
-        this->RemoveQuote(list, info);
+        this->RemoveQuote(manager, info);
     }
 
     inline void Change(T *info) {
@@ -322,11 +319,15 @@ public:
         this->m_savedRptSeq = this->m_rptSeq;
         this->Clear(this->BuyQuotes());
         this->Clear(this->SellQuotes());
+        this->m_buyQuoteManager->ClearPointers();
+        this->m_sellQuoteManager->ClearPointers();
     }
 
     inline void ProcessNullSnapshot() {
         this->Clear(this->BuyQuotes());
         this->Clear(this->SellQuotes());
+        this->m_buyQuoteManager->ClearPointers();
+        this->m_sellQuoteManager->ClearPointers();
     }
 
     inline void ProcessSnapshotMessage(T *info) {

@@ -982,7 +982,22 @@ public:
         for(int i = 1275; i < messages->Count(); i++) {
             printf("%d elapsed = %" PRIu64 "\n", i, elapsed[i-1275]);
         }
-
+        for(int i = 0; i < olrCurr->OrderCurr()->SymbolsCount(); i++) {
+            MarketSymbolInfo<OrderInfo<AstsOLSCURRItemInfo>> *s = olrCurr->OrderCurr()->Symbol(i);
+            for(int j = 0; j < s->Count(); j++) {
+                OrderInfo<AstsOLSCURRItemInfo> *q = s->Session(j);
+                if(q->BuyQuotes()->Count() != 0) {
+                    printf("%s - %d Buy Quotes\n", s->Symbol()->m_text, q->TradingSessionInt());
+                    DebugInfoManager::Default->PrintHrPointerList(q->BuyQuotes());
+                    printf("\n");
+                }
+                if(q->SellQuotes()->Count() != 0) {
+                    printf("%s - %d Sell Quotes\n", s->Symbol()->m_text, q->TradingSessionInt());
+                    DebugInfoManager::Default->PrintHrPointerList(q->SellQuotes());
+                    printf("\n");
+                }
+            }
+        }
         RobotSettings::Default->MarketDataMaxSymbolsCount = 10;
     }
 
@@ -992,8 +1007,14 @@ public:
         RobotSettings::Default->MarketDataMaxEntriesCount = 32 * 10;
         RobotSettings::Default->MDEntryQueueItemsCount = 100;
 
-        //TestStopwatchPerformance();
         TestOlrPerformance();
+        return;
+        /*
+        OrderBookTesterForts *fob = new OrderBookTesterForts();
+        fob->Test();
+        delete fob;
+
+        //TestStopwatchPerformance();
         PointerListTester *pt = new PointerListTester();
         pt->Test();
         delete pt;
@@ -1009,10 +1030,6 @@ public:
         HistoricalReplayTester *hrt = new HistoricalReplayTester();
         hrt->Test();
         delete hrt;
-
-        OrderBookTesterForts *fob = new OrderBookTesterForts();
-        fob->Test();
-        delete fob;
 
         OrderTesterCurr *otCurr = new OrderTesterCurr();
         otCurr->Test();
@@ -1042,7 +1059,7 @@ public:
 
         StatisticsTesterFond *stFond = new StatisticsTesterFond();
         stFond->Test();
-        delete stFond;
+        delete stFond;*/
     }
 };
 

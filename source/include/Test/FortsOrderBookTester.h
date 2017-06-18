@@ -3890,6 +3890,30 @@ template <typename T>
             throw;
     }
 
+    void TestHrAddBuyQuote31() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+        if(item->BuyQuotes()->Start() != 0)
+            throw;
+        item->Add(CreateHrItem(100));
+        item->Add(CreateHrItem(100));
+        if(item->BuyQuotes()->Count() != 2)
+            throw;
+        if(item->BuyQuotes()->Start()->Data()->MDEntryPx.Mantissa != 100)
+            throw;
+        if(item->BuyQuotes()->End()->Data()->MDEntryPx.Mantissa != 100)
+            throw;
+        if(item->BuyQuotes()->Start()->Next() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Start()->Next2() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Start()->Next3() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Start()->Next4() != item->BuyQuotes()->End())
+            throw;
+        if(item->BuyQuotes()->Start()->Next5() != item->BuyQuotes()->End())
+            throw;
+    }
+
     void TestHrAddBuyQuote4() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
         if(item->BuyQuotes()->Start() != 0)
@@ -3909,38 +3933,12 @@ template <typename T>
         if(item->BuyQuotes()->Item(2)->MDEntryPx.Mantissa != 100)
             throw;
 
-        if(item->BuyQuotes()->Start()->Next() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Start()->Next2() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Start()->Next3() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Start()->Next4() != item->BuyQuotes()->End())
-            throw;
-        if(item->BuyQuotes()->Start()->Next5() != item->BuyQuotes()->End())
-            throw;
-
-        if(item->BuyQuotes()->Node(1)->Next() != item->BuyQuotes()->End())
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next2() != item->BuyQuotes()->End())
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next3() != item->BuyQuotes()->End())
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next5() != 0)
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next4() != 0)
-            throw;
-
-        if(item->BuyQuotes()->End()->Prev() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->End()->Prev2() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->End()->Prev3() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->End()->Prev4() != item->BuyQuotes()->Start())
-            throw;
-        if(item->BuyQuotes()->End()->Prev5() != item->BuyQuotes()->Start())
-            throw;
+        this->AssertPrices(item->BuyQuotes(), 120, 110, 100);
+        this->AssertSequence(item->BuyQuotes(), 5, "* *");
+        this->AssertSequence(item->BuyQuotes(), 4, "* *");
+        this->AssertSequence(item->BuyQuotes(), 3, "***");
+        this->AssertSequence(item->BuyQuotes(), 2, "***");
+        this->AssertSequence(item->BuyQuotes(), 1, "***");
     }
 
     void TestHrAddBuyQuote5() {
@@ -3953,371 +3951,13 @@ template <typename T>
         item->SetDebugLevel(3);
 
         item->Add(CreateHrItem(90));
-        if(item->BuyQuotes()->Count() != 3)
-            throw;
-        if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 110)
-            throw;
-        if(item->BuyQuotes()->Item(1)->MDEntryPx.Mantissa != 100)
-            throw;
-        if(item->BuyQuotes()->Item(2)->MDEntryPx.Mantissa != 90)
-            throw;
 
-        if(item->BuyQuotes()->Start()->Next() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Start()->Next2() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Start()->Next3() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Start()->Next4() != item->BuyQuotes()->End())
-            throw;
-        if(item->BuyQuotes()->Start()->Next5() != item->BuyQuotes()->End())
-            throw;
-
-        if(item->BuyQuotes()->Node(1)->Next() != item->BuyQuotes()->End())
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next2() != item->BuyQuotes()->End())
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next3() != item->BuyQuotes()->End())
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next5() != 0)
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next4() != 0)
-            throw;
-
-        if(item->BuyQuotes()->End()->Prev() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->End()->Prev2() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->End()->Prev3() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->End()->Prev4() != item->BuyQuotes()->Start())
-            throw;
-        if(item->BuyQuotes()->End()->Prev5() != item->BuyQuotes()->Start())
-            throw;
-    }
-
-    void TestHrInsertByLevel0() {
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
-
-        start->AllConnect(end);
-        item->BuyQuotes()->InsertByLevel(0, start, node, end);
-
-        if(start->Next() != node)
-            throw;
-        if(start->Next2() != end)
-            throw;
-        if(start->Next3() != end)
-            throw;
-        if(start->Next4() != end)
-            throw;
-        if(start->Next5() != end)
-            throw;
-
-        if(end->Prev() != node)
-            throw;
-        if(end->Prev2() != start)
-            throw;
-        if(end->Prev3() != start)
-            throw;
-        if(end->Prev4() != start)
-            throw;
-        if(end->Prev5() != start)
-            throw;
-
-        if(node->Prev() != start)
-            throw;
-        if(node->Prev2() != 0)
-            throw;
-        if(node->Prev3() != 0)
-            throw;
-        if(node->Prev4() != 0)
-            throw;
-        if(node->Prev5() != 0)
-            throw;
-
-        if(node->Next() != end)
-            throw;
-        if(node->Next2() != 0)
-            throw;
-        if(node->Next3() != 0)
-            throw;
-        if(node->Next4() != 0)
-            throw;
-        if(node->Next5() != 0)
-            throw;
-    }
-
-    void TestHrInsertByLevel1() {
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
-
-        start->AllConnect(end);
-        item->BuyQuotes()->InsertByLevel(1, start, node, end);
-
-        if(start->Next() != node)
-            throw;
-        if(start->Next2() != end)
-            throw;
-        if(start->Next3() != end)
-            throw;
-        if(start->Next4() != end)
-            throw;
-        if(start->Next5() != end)
-            throw;
-
-        if(end->Prev() != node)
-            throw;
-        if(end->Prev2() != start)
-            throw;
-        if(end->Prev3() != start)
-            throw;
-        if(end->Prev4() != start)
-            throw;
-        if(end->Prev5() != start)
-            throw;
-
-        if(node->Prev() != start)
-            throw;
-        if(node->Prev2() != 0)
-            throw;
-        if(node->Prev3() != 0)
-            throw;
-        if(node->Prev4() != 0)
-            throw;
-        if(node->Prev5() != 0)
-            throw;
-
-        if(node->Next() != end)
-            throw;
-        if(node->Next2() != 0)
-            throw;
-        if(node->Next3() != 0)
-            throw;
-        if(node->Next4() != 0)
-            throw;
-        if(node->Next5() != 0)
-            throw;
-    }
-
-    void TestHrInsertByLevel2() {
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
-
-        start->AllConnect(end);
-        item->BuyQuotes()->InsertByLevel(2, start, node, end);
-
-        if(start->Next() != node)
-            throw;
-        if(start->Next2() != node)
-            throw;
-        if(start->Next3() != end)
-            throw;
-        if(start->Next4() != end)
-            throw;
-        if(start->Next5() != end)
-            throw;
-
-        if(end->Prev() != node)
-            throw;
-        if(end->Prev2() != node)
-            throw;
-        if(end->Prev3() != start)
-            throw;
-        if(end->Prev4() != start)
-            throw;
-        if(end->Prev5() != start)
-            throw;
-
-        if(node->Prev() != start)
-            throw;
-        if(node->Prev2() != start)
-            throw;
-        if(node->Prev3() != 0)
-            throw;
-        if(node->Prev4() != 0)
-            throw;
-        if(node->Prev5() != 0)
-            throw;
-
-        if(node->Next() != end)
-            throw;
-        if(node->Next2() != end)
-            throw;
-        if(node->Next3() != 0)
-            throw;
-        if(node->Next4() != 0)
-            throw;
-        if(node->Next5() != 0)
-            throw;
-    }
-
-    void TestHrInsertByLevel3() {
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
-
-        start->AllConnect(end);
-        item->BuyQuotes()->InsertByLevel(3, start, node, end);
-
-        if(start->Next() != node)
-            throw;
-        if(start->Next2() != node)
-            throw;
-        if(start->Next3() != node)
-            throw;
-        if(start->Next4() != end)
-            throw;
-        if(start->Next5() != end)
-            throw;
-
-        if(end->Prev() != node)
-            throw;
-        if(end->Prev2() != node)
-            throw;
-        if(end->Prev3() != node)
-            throw;
-        if(end->Prev4() != start)
-            throw;
-        if(end->Prev5() != start)
-            throw;
-
-        if(node->Prev() != start)
-            throw;
-        if(node->Prev2() != start)
-            throw;
-        if(node->Prev3() != start)
-            throw;
-        if(node->Prev4() != 0)
-            throw;
-        if(node->Prev5() != 0)
-            throw;
-
-        if(node->Next() != end)
-            throw;
-        if(node->Next2() != end)
-            throw;
-        if(node->Next3() != end)
-            throw;
-        if(node->Next4() != 0)
-            throw;
-        if(node->Next5() != 0)
-            throw;
-    }
-
-    void TestHrInsertByLevel4() {
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
-
-        start->AllConnect(end);
-        item->BuyQuotes()->InsertByLevel(4, start, node, end);
-
-        if(start->Next() != node)
-            throw;
-        if(start->Next2() != node)
-            throw;
-        if(start->Next3() != node)
-            throw;
-        if(start->Next4() != node)
-            throw;
-        if(start->Next5() != end)
-            throw;
-
-        if(end->Prev() != node)
-            throw;
-        if(end->Prev2() != node)
-            throw;
-        if(end->Prev3() != node)
-            throw;
-        if(end->Prev4() != node)
-            throw;
-        if(end->Prev5() != start)
-            throw;
-
-        if(node->Prev() != start)
-            throw;
-        if(node->Prev2() != start)
-            throw;
-        if(node->Prev3() != start)
-            throw;
-        if(node->Prev4() != start)
-            throw;
-        if(node->Prev5() != 0)
-            throw;
-
-        if(node->Next() != end)
-            throw;
-        if(node->Next2() != end)
-            throw;
-        if(node->Next3() != end)
-            throw;
-        if(node->Next4() != end)
-            throw;
-        if(node->Next5() != 0)
-            throw;
-    }
-
-    void TestHrInsertByLevel5() {
-        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node = item->BuyQuotes()->Add();
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->Add();
-
-        start->AllConnect(end);
-        item->BuyQuotes()->InsertByLevel(5, start, node, end);
-
-        if(start->Next() != node)
-            throw;
-        if(start->Next2() != node)
-            throw;
-        if(start->Next3() != node)
-            throw;
-        if(start->Next4() != node)
-            throw;
-        if(start->Next5() != node)
-            throw;
-
-        if(end->Prev() != node)
-            throw;
-        if(end->Prev2() != node)
-            throw;
-        if(end->Prev3() != node)
-            throw;
-        if(end->Prev4() != node)
-            throw;
-        if(end->Prev5() != node)
-            throw;
-
-        if(node->Prev() != start)
-            throw;
-        if(node->Prev2() != start)
-            throw;
-        if(node->Prev3() != start)
-            throw;
-        if(node->Prev4() != start)
-            throw;
-        if(node->Prev5() != start)
-            throw;
-
-        if(node->Next() != end)
-            throw;
-        if(node->Next2() != end)
-            throw;
-        if(node->Next3() != end)
-            throw;
-        if(node->Next4() != end)
-            throw;
-        if(node->Next5() != end)
-            throw;
+        this->AssertPrices(item->BuyQuotes(), 110, 100, 90);
+        this->AssertSequence(item->BuyQuotes(), 5, "* *");
+        this->AssertSequence(item->BuyQuotes(), 4, "* *");
+        this->AssertSequence(item->BuyQuotes(), 3, "***");
+        this->AssertSequence(item->BuyQuotes(), 2, "***");
+        this->AssertSequence(item->BuyQuotes(), 1, "***");
     }
 
     void TestHrInsertBuyQuote1() {
@@ -4325,60 +3965,25 @@ template <typename T>
         if(item->BuyQuotes()->Start() != 0)
             throw;
         item->Add(CreateHrItem(100));
-        item->Add(CreateHrItem(120));
+        item->Add(CreateHrItem(100));
 
+        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end = item->BuyQuotes()->End();
         item->SetDebugLevel(1);
-        item->Add(CreateHrItem(110));
+        item->Add(CreateHrItem(100));
 
-        if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
+        this->AssertPrices(item->BuyQuotes(), 100, 100, 100);
+        this->AssertSequence(item->BuyQuotes(), 5, "* *");
+        this->AssertSequence(item->BuyQuotes(), 4, "* *");
+        this->AssertSequence(item->BuyQuotes(), 3, "* *");
+        this->AssertSequence(item->BuyQuotes(), 2, "* *");
+        this->AssertSequence(item->BuyQuotes(), 1, "***");
+        if(item->BuyQuotes()->Start()->Next() != end)
             throw;
-        if(item->BuyQuotes()->Item(1)->MDEntryPx.Mantissa != 110)
+        if(end->Next() != item->BuyQuotes()->End())
             throw;
-        if(item->BuyQuotes()->Item(2)->MDEntryPx.Mantissa != 100)
+        if(end->Prev() != item->BuyQuotes()->Start())
             throw;
-
-        if(item->BuyQuotes()->Node(0)->Next() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next2() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next3() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next4() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next5() != item->BuyQuotes()->Node(2))
-            throw;
-
-        if(item->BuyQuotes()->Node(1)->Next() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next2() != 0)
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next3() != 0)
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next4() != 0)
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next5() != 0)
-            throw;
-
-        if(item->BuyQuotes()->Node(1)->Prev() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev2() != 0)
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev3() != 0)
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev4() != 0)
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev5() != 0)
-            throw;
-
-        if(item->BuyQuotes()->Node(2)->Prev() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev2() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev3() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev4() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev5() != item->BuyQuotes()->Node(0))
+        if(item->BuyQuotes()->End()->Prev() != end)
             throw;
     }
 
@@ -4391,57 +3996,12 @@ template <typename T>
 
         item->SetDebugLevel(2);
         item->Add(CreateHrItem(110));
-
-        if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
-            throw;
-        if(item->BuyQuotes()->Item(1)->MDEntryPx.Mantissa != 110)
-            throw;
-        if(item->BuyQuotes()->Item(2)->MDEntryPx.Mantissa != 100)
-            throw;
-
-        if(item->BuyQuotes()->Node(0)->Next() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next2() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next3() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next4() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next5() != item->BuyQuotes()->Node(2))
-            throw;
-
-        if(item->BuyQuotes()->Node(1)->Next() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next2() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next3() != 0)
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next4() != 0)
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next5() != 0)
-            throw;
-
-        if(item->BuyQuotes()->Node(1)->Prev() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev2() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev3() != 0)
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev4() != 0)
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev5() != 0)
-            throw;
-
-        if(item->BuyQuotes()->Node(2)->Prev() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev2() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev3() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev4() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev5() != item->BuyQuotes()->Node(0))
-            throw;
+        this->AssertPrices(item->BuyQuotes(), 120, 110, 100);
+        this->AssertSequence(item->BuyQuotes(), 5, "* *");
+        this->AssertSequence(item->BuyQuotes(), 4, "* *");
+        this->AssertSequence(item->BuyQuotes(), 3, "* *");
+        this->AssertSequence(item->BuyQuotes(), 2, "***");
+        this->AssertSequence(item->BuyQuotes(), 1, "***");
     }
 
     void TestHrInsertBuyQuote3() {
@@ -4454,56 +4014,12 @@ template <typename T>
         item->SetDebugLevel(3);
         item->Add(CreateHrItem(110));
 
-        if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
-            throw;
-        if(item->BuyQuotes()->Item(1)->MDEntryPx.Mantissa != 110)
-            throw;
-        if(item->BuyQuotes()->Item(2)->MDEntryPx.Mantissa != 100)
-            throw;
-
-        if(item->BuyQuotes()->Node(0)->Next() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next2() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next3() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next4() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next5() != item->BuyQuotes()->Node(2))
-            throw;
-
-        if(item->BuyQuotes()->Node(1)->Next() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next2() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next3() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next4() != 0)
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next5() != 0)
-            throw;
-
-        if(item->BuyQuotes()->Node(1)->Prev() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev2() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev3() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev4() != 0)
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev5() != 0)
-            throw;
-
-        if(item->BuyQuotes()->Node(2)->Prev() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev2() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev3() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev4() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev5() != item->BuyQuotes()->Node(0))
-            throw;
+        this->AssertPrices(item->BuyQuotes(), 120, 110, 100);
+        this->AssertSequence(item->BuyQuotes(), 5, "* *");
+        this->AssertSequence(item->BuyQuotes(), 4, "* *");
+        this->AssertSequence(item->BuyQuotes(), 3, "***");
+        this->AssertSequence(item->BuyQuotes(), 2, "***");
+        this->AssertSequence(item->BuyQuotes(), 1, "***");
     }
 
     void TestHrInsertBuyQuote4() {
@@ -4516,56 +4032,12 @@ template <typename T>
         item->SetDebugLevel(4);
         item->Add(CreateHrItem(110));
 
-        if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
-            throw;
-        if(item->BuyQuotes()->Item(1)->MDEntryPx.Mantissa != 110)
-            throw;
-        if(item->BuyQuotes()->Item(2)->MDEntryPx.Mantissa != 100)
-            throw;
-
-        if(item->BuyQuotes()->Node(0)->Next() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next2() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next3() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next4() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next5() != item->BuyQuotes()->Node(2))
-            throw;
-
-        if(item->BuyQuotes()->Node(1)->Next() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next2() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next3() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next4() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next5() != 0)
-            throw;
-
-        if(item->BuyQuotes()->Node(1)->Prev() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev2() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev3() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev4() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev5() != 0)
-            throw;
-
-        if(item->BuyQuotes()->Node(2)->Prev() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev2() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev3() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev4() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev5() != item->BuyQuotes()->Node(0))
-            throw;
+        this->AssertPrices(item->BuyQuotes(), 120, 110, 100);
+        this->AssertSequence(item->BuyQuotes(), 5, "* *");
+        this->AssertSequence(item->BuyQuotes(), 4, "***");
+        this->AssertSequence(item->BuyQuotes(), 3, "***");
+        this->AssertSequence(item->BuyQuotes(), 2, "***");
+        this->AssertSequence(item->BuyQuotes(), 1, "***");
     }
 
     void TestHrInsertBuyQuote5() {
@@ -4578,56 +4050,12 @@ template <typename T>
         item->SetDebugLevel(5);
         item->Add(CreateHrItem(110));
 
-        if(item->BuyQuotes()->Item(0)->MDEntryPx.Mantissa != 120)
-            throw;
-        if(item->BuyQuotes()->Item(1)->MDEntryPx.Mantissa != 110)
-            throw;
-        if(item->BuyQuotes()->Item(2)->MDEntryPx.Mantissa != 100)
-            throw;
-
-        if(item->BuyQuotes()->Node(0)->Next() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next2() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next3() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next4() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(0)->Next5() != item->BuyQuotes()->Node(1))
-            throw;
-
-        if(item->BuyQuotes()->Node(1)->Next() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next2() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next3() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next4() != item->BuyQuotes()->Node(2))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Next5() != item->BuyQuotes()->Node(2))
-            throw;
-
-        if(item->BuyQuotes()->Node(1)->Prev() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev2() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev3() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev4() != item->BuyQuotes()->Node(0))
-            throw;
-        if(item->BuyQuotes()->Node(1)->Prev5() != item->BuyQuotes()->Node(0))
-            throw;
-
-        if(item->BuyQuotes()->Node(2)->Prev() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev2() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev3() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev4() != item->BuyQuotes()->Node(1))
-            throw;
-        if(item->BuyQuotes()->Node(2)->Prev5() != item->BuyQuotes()->Node(1))
-            throw;
+        this->AssertPrices(item->BuyQuotes(), 120, 110, 100);
+        this->AssertSequence(item->BuyQuotes(), 5, "***");
+        this->AssertSequence(item->BuyQuotes(), 4, "***");
+        this->AssertSequence(item->BuyQuotes(), 3, "***");
+        this->AssertSequence(item->BuyQuotes(), 2, "***");
+        this->AssertSequence(item->BuyQuotes(), 1, "***");
     }
 
     void TestRemoveBuyQuote1() {
@@ -4713,11 +4141,10 @@ template <typename T>
 
         item->Add(CreateHrItem(100));
         item->Add(CreateHrItem(120));
-        item->SetDebugLevel(1);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->Add(CreateHrItem(110));
+        item->SetDebugLevel(2);
+        item->Add(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
-
         HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *start =  item->BuyQuotes()->Node(0);
         HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *end =  item->BuyQuotes()->Node(1);
 
@@ -4731,7 +4158,7 @@ template <typename T>
         item->Add(CreateHrItem(100));
         item->Add(CreateHrItem(120));
         item->SetDebugLevel(2);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->Add(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
@@ -4748,7 +4175,7 @@ template <typename T>
         item->Add(CreateHrItem(100));
         item->Add(CreateHrItem(120));
         item->SetDebugLevel(3);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->Add(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
@@ -4765,7 +4192,7 @@ template <typename T>
         item->Add(CreateHrItem(100));
         item->Add(CreateHrItem(120));
         item->SetDebugLevel(4);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->Add(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
@@ -4782,7 +4209,7 @@ template <typename T>
         item->Add(CreateHrItem(100));
         item->Add(CreateHrItem(120));
         item->SetDebugLevel(5);
-        HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *node =  item->Add(CreateHrItem(110));
+        item->Add(CreateHrItem(110));
 
         item->RemoveBuyQuote(CreateHrItem(110));
 
@@ -4798,9 +4225,9 @@ template <typename T>
 
         item->Add(CreateHrItem(130));
         item->Add(CreateHrItem(100));
-        item->SetDebugLevel(1);
+        item->SetDebugLevel(2);
         item->Add(CreateHrItem(110));
-        item->SetDebugLevel(1);
+        item->SetDebugLevel(2);
         item->Add(CreateHrItem(120));
 
         item->RemoveBuyQuote(CreateHrItem(110));
@@ -4809,8 +4236,8 @@ template <typename T>
         HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i1 =  item->BuyQuotes()->Node(1);
         HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i2 =  item->BuyQuotes()->Node(2);
 
-        this->AssertNextEqual(i0, i2, i2, i2, i2);
-        this->AssertPrevEqual(i2, i0, i0, i0, i0);
+        this->AssertNextEqual(i0, i1, i2, i2, i2);
+        this->AssertPrevEqual(i2, i1, i0, i0, i0);
     }
 
     void TestRemoveBuyQuote412() {
@@ -4818,9 +4245,9 @@ template <typename T>
 
         item->Add(CreateHrItem(130));
         item->Add(CreateHrItem(100));
-        item->SetDebugLevel(1);
+        item->SetDebugLevel(2);
         item->Add(CreateHrItem(110));
-        item->SetDebugLevel(1);
+        item->SetDebugLevel(2);
         item->Add(CreateHrItem(120));
 
         item->RemoveBuyQuote(CreateHrItem(120));
@@ -4829,8 +4256,8 @@ template <typename T>
         HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i1 =  item->BuyQuotes()->Node(1);
         HrLinkedPointer<FortsDefaultSnapshotMessageMDEntriesItemInfo> *i2 =  item->BuyQuotes()->Node(2);
 
-        this->AssertNextEqual(i0, i2, i2, i2, i2);
-        this->AssertPrevEqual(i2, i0, i0, i0, i0);
+        this->AssertNextEqual(i0, i1, i2, i2, i2);
+        this->AssertPrevEqual(i2, i1, i0, i0, i0);
     }
 
     template <typename T>
@@ -5166,6 +4593,11 @@ template <typename T>
         item->Add(CreateHrItem(price));
     }
 
+    void AddBuyQuote(OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item, int price, UINT64 entryId, int level) {
+        item->SetDebugLevel(level);
+        item->Add(CreateHrItem(price, entryId));
+    }
+
     void TestRemoveBuyQuote511() {
         OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
 
@@ -5401,17 +4833,17 @@ template <typename T>
         this->AssertPrices(item->BuyQuotes(), 160, 150, 130, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*****");
 
-        this->AddBuyQuote(item, 140, 1);
+        this->AddBuyQuote(item, 140, 2);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "** ***");
 
-        this->AddBuyQuote(item, 120, 1);
+        this->AddBuyQuote(item, 120, 2);
 
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "** * **");
         this->AssertSequence(item->BuyQuotes(), 4, "** * **");
         this->AssertSequence(item->BuyQuotes(), 3, "** * **");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5420,7 +4852,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "**  **");
         this->AssertSequence(item->BuyQuotes(), 4, "**  **");
         this->AssertSequence(item->BuyQuotes(), 3, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
         this->AddBuyQuote(item, 130, 4);
@@ -5428,7 +4860,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "**   **");
         this->AssertSequence(item->BuyQuotes(), 4, "** * **");
         this->AssertSequence(item->BuyQuotes(), 3, "** * **");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5437,7 +4869,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "**  **");
         this->AssertSequence(item->BuyQuotes(), 4, "**  **");
         this->AssertSequence(item->BuyQuotes(), 3, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
         this->AddBuyQuote(item, 130, 3);
@@ -5445,7 +4877,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "**   **");
         this->AssertSequence(item->BuyQuotes(), 4, "**   **");
         this->AssertSequence(item->BuyQuotes(), 3, "** * **");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5454,7 +4886,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "**  **");
         this->AssertSequence(item->BuyQuotes(), 4, "**  **");
         this->AssertSequence(item->BuyQuotes(), 3, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
         this->AddBuyQuote(item, 130, 2);
@@ -5462,7 +4894,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "**   **");
         this->AssertSequence(item->BuyQuotes(), 4, "**   **");
         this->AssertSequence(item->BuyQuotes(), 3, "**   **");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5471,24 +4903,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "**  **");
         this->AssertSequence(item->BuyQuotes(), 4, "**  **");
         this->AssertSequence(item->BuyQuotes(), 3, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 1, "******");
-
-        this->AddBuyQuote(item, 130, 1);
-        this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
-        this->AssertSequence(item->BuyQuotes(), 5, "**   **");
-        this->AssertSequence(item->BuyQuotes(), 4, "**   **");
-        this->AssertSequence(item->BuyQuotes(), 3, "**   **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**   **");
-        this->AssertSequence(item->BuyQuotes(), 1, "*******");
-
-        item->RemoveBuyQuote(CreateHrItem(130));
-
-        this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 120, 110, 100);
-        this->AssertSequence(item->BuyQuotes(), 5, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 4, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 3, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
     }
 
@@ -5514,17 +4929,17 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "* * *");
         this->AssertSequence(item->BuyQuotes(), 4, "*****");
 
-        this->AddBuyQuote(item, 140, 1);
+        this->AddBuyQuote(item, 140, 2);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 4, "** ***");
 
-        this->AddBuyQuote(item, 120, 1);
+        this->AddBuyQuote(item, 120, 2);
 
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *  *");
         this->AssertSequence(item->BuyQuotes(), 4, "** * **");
         this->AssertSequence(item->BuyQuotes(), 3, "** * **");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5533,7 +4948,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "**  **");
         this->AssertSequence(item->BuyQuotes(), 3, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
         this->AddBuyQuote(item, 130, 4);
@@ -5541,7 +4956,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "** * **");
         this->AssertSequence(item->BuyQuotes(), 3, "** * **");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5550,7 +4965,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "**  **");
         this->AssertSequence(item->BuyQuotes(), 3, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
         this->AddBuyQuote(item, 130, 3);
@@ -5558,7 +4973,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "**   **");
         this->AssertSequence(item->BuyQuotes(), 3, "** * **");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5567,7 +4982,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "**  **");
         this->AssertSequence(item->BuyQuotes(), 3, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
         this->AddBuyQuote(item, 130, 2);
@@ -5575,7 +4990,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "**   **");
         this->AssertSequence(item->BuyQuotes(), 3, "**   **");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5584,24 +4999,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "**  **");
         this->AssertSequence(item->BuyQuotes(), 3, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 1, "******");
-
-        this->AddBuyQuote(item, 130, 1);
-        this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
-        this->AssertSequence(item->BuyQuotes(), 5, "*     *");
-        this->AssertSequence(item->BuyQuotes(), 4, "**   **");
-        this->AssertSequence(item->BuyQuotes(), 3, "**   **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**   **");
-        this->AssertSequence(item->BuyQuotes(), 1, "*******");
-
-        item->RemoveBuyQuote(CreateHrItem(130));
-
-        this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 120, 110, 100);
-        this->AssertSequence(item->BuyQuotes(), 5, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 4, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 3, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
     }
 
@@ -5627,17 +5025,17 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "* * *");
         this->AssertSequence(item->BuyQuotes(), 3, "*****");
 
-        this->AddBuyQuote(item, 140, 1);
+        this->AddBuyQuote(item, 140, 2);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 3, "** ***");
 
-        this->AddBuyQuote(item, 120, 1);
+        this->AddBuyQuote(item, 120, 2);
 
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *  *");
         this->AssertSequence(item->BuyQuotes(), 4, "*  *  *");
         this->AssertSequence(item->BuyQuotes(), 3, "** * **");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5646,7 +5044,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "*    *");
         this->AssertSequence(item->BuyQuotes(), 3, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
         this->AddBuyQuote(item, 130, 4);
@@ -5654,7 +5052,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*  *  *");
         this->AssertSequence(item->BuyQuotes(), 3, "** * **");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5663,7 +5061,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "*    *");
         this->AssertSequence(item->BuyQuotes(), 3, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
         this->AddBuyQuote(item, 130, 3);
@@ -5671,7 +5069,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*     *");
         this->AssertSequence(item->BuyQuotes(), 3, "** * **");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5680,7 +5078,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "*    *");
         this->AssertSequence(item->BuyQuotes(), 3, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
         this->AddBuyQuote(item, 130, 2);
@@ -5688,7 +5086,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*     *");
         this->AssertSequence(item->BuyQuotes(), 3, "**   **");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5697,24 +5095,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "*    *");
         this->AssertSequence(item->BuyQuotes(), 3, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 1, "******");
-
-        this->AddBuyQuote(item, 130, 1);
-        this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
-        this->AssertSequence(item->BuyQuotes(), 5, "*     *");
-        this->AssertSequence(item->BuyQuotes(), 4, "*     *");
-        this->AssertSequence(item->BuyQuotes(), 3, "**   **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**   **");
-        this->AssertSequence(item->BuyQuotes(), 1, "*******");
-
-        item->RemoveBuyQuote(CreateHrItem(130));
-
-        this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 120, 110, 100);
-        this->AssertSequence(item->BuyQuotes(), 5, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 4, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 3, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
     }
 
@@ -5740,17 +5121,17 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "* * *");
         this->AssertSequence(item->BuyQuotes(), 2, "*****");
 
-        this->AddBuyQuote(item, 140, 1);
+        this->AddBuyQuote(item, 140, 2);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 110, 100);
-        this->AssertSequence(item->BuyQuotes(), 2, "** ***");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
 
-        this->AddBuyQuote(item, 120, 1);
+        this->AddBuyQuote(item, 120, 2);
 
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *  *");
         this->AssertSequence(item->BuyQuotes(), 4, "*  *  *");
         this->AssertSequence(item->BuyQuotes(), 3, "*  *  *");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5759,7 +5140,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "*    *");
         this->AssertSequence(item->BuyQuotes(), 3, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
         this->AddBuyQuote(item, 130, 4);
@@ -5767,7 +5148,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*  *  *");
         this->AssertSequence(item->BuyQuotes(), 3, "*  *  *");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5776,7 +5157,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "*    *");
         this->AssertSequence(item->BuyQuotes(), 3, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
         this->AddBuyQuote(item, 130, 3);
@@ -5784,7 +5165,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*     *");
         this->AssertSequence(item->BuyQuotes(), 3, "*  *  *");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5793,7 +5174,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "*    *");
         this->AssertSequence(item->BuyQuotes(), 3, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
         this->AddBuyQuote(item, 130, 2);
@@ -5801,7 +5182,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*     *");
         this->AssertSequence(item->BuyQuotes(), 3, "*     *");
-        this->AssertSequence(item->BuyQuotes(), 2, "** * **");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5810,24 +5191,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "*    *");
         this->AssertSequence(item->BuyQuotes(), 3, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
-        this->AssertSequence(item->BuyQuotes(), 1, "******");
-
-        this->AddBuyQuote(item, 130, 1);
-        this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
-        this->AssertSequence(item->BuyQuotes(), 5, "*     *");
-        this->AssertSequence(item->BuyQuotes(), 4, "*     *");
-        this->AssertSequence(item->BuyQuotes(), 3, "*     *");
-        this->AssertSequence(item->BuyQuotes(), 2, "**   **");
-        this->AssertSequence(item->BuyQuotes(), 1, "*******");
-
-        item->RemoveBuyQuote(CreateHrItem(130));
-
-        this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 120, 110, 100);
-        this->AssertSequence(item->BuyQuotes(), 5, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 4, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 3, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 2, "**  **");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
     }
 
@@ -5840,11 +5204,11 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "**");
 
 
-        this->AddBuyQuote(item, 150, 1);
+        this->AddBuyQuote(item, 150, 2);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 100);
         this->AssertSequence(item->BuyQuotes(), 1, "***");
 
-        this->AddBuyQuote(item, 110, 1);
+        this->AddBuyQuote(item, 110, 2);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 1, "****");
 
@@ -5853,17 +5217,17 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "* * *");
         this->AssertSequence(item->BuyQuotes(), 1, "*****");
 
-        this->AddBuyQuote(item, 140, 1);
+        this->AddBuyQuote(item, 140, 2);
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuote(item, 120, 1);
+        this->AddBuyQuote(item, 120, 2);
 
         this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
         this->AssertSequence(item->BuyQuotes(), 5, "*  *  *");
         this->AssertSequence(item->BuyQuotes(), 4, "*  *  *");
         this->AssertSequence(item->BuyQuotes(), 3, "*  *  *");
-        this->AssertSequence(item->BuyQuotes(), 2, "*  *  *");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5872,7 +5236,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "*    *");
         this->AssertSequence(item->BuyQuotes(), 3, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 2, "*    *");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
         this->AddBuyQuote(item, 130, 4);
@@ -5880,7 +5244,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*  *  *");
         this->AssertSequence(item->BuyQuotes(), 3, "*  *  *");
-        this->AssertSequence(item->BuyQuotes(), 2, "*  *  *");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5889,7 +5253,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "*    *");
         this->AssertSequence(item->BuyQuotes(), 3, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 2, "*    *");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
         this->AddBuyQuote(item, 130, 3);
@@ -5897,7 +5261,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*     *");
         this->AssertSequence(item->BuyQuotes(), 3, "*  *  *");
-        this->AssertSequence(item->BuyQuotes(), 2, "*  *  *");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5906,7 +5270,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "*    *");
         this->AssertSequence(item->BuyQuotes(), 3, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 2, "*    *");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
         this->AddBuyQuote(item, 130, 2);
@@ -5914,7 +5278,7 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*     *");
         this->AssertSequence(item->BuyQuotes(), 4, "*     *");
         this->AssertSequence(item->BuyQuotes(), 3, "*     *");
-        this->AssertSequence(item->BuyQuotes(), 2, "*  *  *");
+        this->AssertSequence(item->BuyQuotes(), 2, "*******");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
         item->RemoveBuyQuote(CreateHrItem(130));
@@ -5923,25 +5287,149 @@ template <typename T>
         this->AssertSequence(item->BuyQuotes(), 5, "*    *");
         this->AssertSequence(item->BuyQuotes(), 4, "*    *");
         this->AssertSequence(item->BuyQuotes(), 3, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 2, "*    *");
+        this->AssertSequence(item->BuyQuotes(), 2, "******");
+        this->AssertSequence(item->BuyQuotes(), 1, "******");
+    }
+
+    void TestAddBuyQuote1001() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+
+        this->AddBuyQuote(item, 160, 5);
+        this->AddBuyQuote(item, 100, 5);
+        this->AddBuyQuote(item, 100, 5);
+
+        this->AssertPrices(item->BuyQuotes(), 160, 100, 100);
+        this->AssertSequence(item->BuyQuotes(), 5, "***");
+        this->AssertSequence(item->BuyQuotes(), 4, "***");
+        this->AssertSequence(item->BuyQuotes(), 3, "***");
+        this->AssertSequence(item->BuyQuotes(), 2, "***");
+        this->AssertSequence(item->BuyQuotes(), 1, "***");
+
+        this->AddBuyQuote(item, 100, 5);
+
+        this->AssertPrices(item->BuyQuotes(), 160, 100, 100, 100);
+        this->AssertSequence(item->BuyQuotes(), 5, "** *");
+        this->AssertSequence(item->BuyQuotes(), 4, "** *");
+        this->AssertSequence(item->BuyQuotes(), 3, "** *");
+        this->AssertSequence(item->BuyQuotes(), 2, "** *");
+        this->AssertSequence(item->BuyQuotes(), 1, "****");
+
+        this->AddBuyQuote(item, 110, 2);
+
+        this->AssertPrices(item->BuyQuotes(), 160, 110, 100, 100, 100);
+        this->AssertSequence(item->BuyQuotes(), 5, "* * *");
+        this->AssertSequence(item->BuyQuotes(), 4, "* * *");
+        this->AssertSequence(item->BuyQuotes(), 3, "* * *");
+        this->AssertSequence(item->BuyQuotes(), 2, "*** *");
+        this->AssertSequence(item->BuyQuotes(), 1, "*****");
+
+        this->AddBuyQuote(item, 110, 2);
+
+        this->AssertPrices(item->BuyQuotes(), 160, 110, 110, 100, 100, 100);
+        this->AssertSequence(item->BuyQuotes(), 5, "*  * *");
+        this->AssertSequence(item->BuyQuotes(), 4, "*  * *");
+        this->AssertSequence(item->BuyQuotes(), 3, "*  * *");
+        this->AssertSequence(item->BuyQuotes(), 2, "** * *");
         this->AssertSequence(item->BuyQuotes(), 1, "******");
 
-        this->AddBuyQuote(item, 130, 1);
-        this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 130, 120, 110, 100);
-        this->AssertSequence(item->BuyQuotes(), 5, "*     *");
-        this->AssertSequence(item->BuyQuotes(), 4, "*     *");
-        this->AssertSequence(item->BuyQuotes(), 3, "*     *");
-        this->AssertSequence(item->BuyQuotes(), 2, "*     *");
+        this->AddBuyQuote(item, 160, 2);
+
+        this->AssertPrices(item->BuyQuotes(), 160, 160, 110, 110, 100, 100, 100);
+        this->AssertSequence(item->BuyQuotes(), 5, "*   * *");
+        this->AssertSequence(item->BuyQuotes(), 4, "*   * *");
+        this->AssertSequence(item->BuyQuotes(), 3, "*   * *");
+        this->AssertSequence(item->BuyQuotes(), 2, "* * * *");
         this->AssertSequence(item->BuyQuotes(), 1, "*******");
 
-        item->RemoveBuyQuote(CreateHrItem(130));
+        this->AddBuyQuote(item, 170, 2);
 
-        this->AssertPrices(item->BuyQuotes(), 160, 150, 140, 120, 110, 100);
-        this->AssertSequence(item->BuyQuotes(), 5, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 4, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 3, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 2, "*    *");
-        this->AssertSequence(item->BuyQuotes(), 1, "******");
+        this->AssertPrices(item->BuyQuotes(), 170, 160, 160, 110, 110, 100, 100, 100);
+        this->AssertSequence(item->BuyQuotes(), 5, "*    * *");
+        this->AssertSequence(item->BuyQuotes(), 4, "*    * *");
+        this->AssertSequence(item->BuyQuotes(), 3, "*    * *");
+        this->AssertSequence(item->BuyQuotes(), 2, "** * * *");
+        this->AssertSequence(item->BuyQuotes(), 1, "********");
+    }
+    void TestRemoveBuyQuote1001() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+
+        this->AddBuyQuote(item, 160, 111, 5);
+        this->AddBuyQuote(item, 100, 222, 5);
+        this->AddBuyQuote(item, 100, 333, 5);
+        this->AddBuyQuote(item, 100, 444, 5);
+        this->AddBuyQuote(item, 100, 555, 5);
+
+        this->AssertSequence(item->BuyQuotes(), 5, "**  *");
+        this->AssertSequence(item->BuyQuotes(), 4, "**  *");
+        this->AssertSequence(item->BuyQuotes(), 3, "**  *");
+        this->AssertSequence(item->BuyQuotes(), 2, "**  *");
+        this->AssertSequence(item->BuyQuotes(), 1, "*****");
+
+        item->RemoveBuyQuote(this->CreateHrItem(100, 333));
+
+        this->AssertSequence(item->BuyQuotes(), 5, "** *");
+        this->AssertSequence(item->BuyQuotes(), 4, "** *");
+        this->AssertSequence(item->BuyQuotes(), 3, "** *");
+        this->AssertSequence(item->BuyQuotes(), 2, "** *");
+        this->AssertSequence(item->BuyQuotes(), 1, "****");
+
+        item->RemoveBuyQuote(this->CreateHrItem(100, 444));
+
+        this->AssertSequence(item->BuyQuotes(), 5, "***");
+        this->AssertSequence(item->BuyQuotes(), 4, "***");
+        this->AssertSequence(item->BuyQuotes(), 3, "***");
+        this->AssertSequence(item->BuyQuotes(), 2, "***");
+        this->AssertSequence(item->BuyQuotes(), 1, "***");
+
+        item->RemoveBuyQuote(this->CreateHrItem(100, 222));
+
+        this->AssertSequence(item->BuyQuotes(), 5, "**");
+        this->AssertSequence(item->BuyQuotes(), 4, "**");
+        this->AssertSequence(item->BuyQuotes(), 3, "**");
+        this->AssertSequence(item->BuyQuotes(), 2, "**");
+        this->AssertSequence(item->BuyQuotes(), 1, "**");
+    }
+
+    void TestRemoveBuyQuote1002() {
+        OrderBookInfo<FortsDefaultSnapshotMessageMDEntriesItemInfo> *item = CreateOrderBook();
+
+        this->AddBuyQuote(item, 160, 111, 5);
+        this->AddBuyQuote(item, 100, 222, 5);
+        this->AddBuyQuote(item, 100, 333, 5);
+        this->AddBuyQuote(item, 100, 444, 5);
+        this->AddBuyQuote(item, 100, 555, 5);
+
+        this->AssertSequence(item->BuyQuotes(), 5, "**  *");
+        this->AssertSequence(item->BuyQuotes(), 4, "**  *");
+        this->AssertSequence(item->BuyQuotes(), 3, "**  *");
+        this->AssertSequence(item->BuyQuotes(), 2, "**  *");
+        this->AssertSequence(item->BuyQuotes(), 1, "*****");
+
+        item->SetDebugLevel(3);
+        item->RemoveBuyQuote(this->CreateHrItem(100, 222));
+
+        this->AssertSequence(item->BuyQuotes(), 5, "** *");
+        this->AssertSequence(item->BuyQuotes(), 4, "** *");
+        this->AssertSequence(item->BuyQuotes(), 3, "** *");
+        this->AssertSequence(item->BuyQuotes(), 2, "** *");
+        this->AssertSequence(item->BuyQuotes(), 1, "****");
+
+        item->SetDebugLevel(4);
+        item->RemoveBuyQuote(this->CreateHrItem(100, 333));
+
+        this->AssertSequence(item->BuyQuotes(), 5, "***");
+        this->AssertSequence(item->BuyQuotes(), 4, "***");
+        this->AssertSequence(item->BuyQuotes(), 3, "***");
+        this->AssertSequence(item->BuyQuotes(), 2, "***");
+        this->AssertSequence(item->BuyQuotes(), 1, "***");
+
+        item->RemoveBuyQuote(this->CreateHrItem(100, 444));
+
+        this->AssertSequence(item->BuyQuotes(), 5, "**");
+        this->AssertSequence(item->BuyQuotes(), 4, "**");
+        this->AssertSequence(item->BuyQuotes(), 3, "**");
+        this->AssertSequence(item->BuyQuotes(), 2, "**");
+        this->AssertSequence(item->BuyQuotes(), 1, "**");
     }
 
     void TestAddBuyQuote4TimesAscending() {
@@ -5997,13 +5485,6 @@ template <typename T>
         TestHrAddBuyQuote4();
         TestHrAddBuyQuote5();
 
-        TestHrInsertByLevel0();
-        TestHrInsertByLevel1();
-        TestHrInsertByLevel2();
-        TestHrInsertByLevel3();
-        TestHrInsertByLevel4();
-        TestHrInsertByLevel5();
-
         TestHrInsertBuyQuote1();
         TestHrInsertBuyQuote2();
         TestHrInsertBuyQuote3();
@@ -6044,6 +5525,10 @@ template <typename T>
 
         TestAddBuyQuote4TimesAscending();
         TestAddBuyQuote4TimesDescending();
+
+        TestAddBuyQuote1001();
+        TestRemoveBuyQuote1001();
+        TestRemoveBuyQuote1002();
     }
 
     void TestRandomGenerator() {
@@ -6065,11 +5550,12 @@ template <typename T>
     void Test() {
         TestDefaults();
         TestStringIdComparer();
-        Test_OBR_FORTS();
 #ifdef USE_SKIP_LIST
         TestHr();
         //TestPerformance();
 #endif
+        Test_OBR_FORTS();
+
         TestOrderTableItem();
         TestConnection();
         TestInfoAndItemInfoUsageAndAllocationCurr();

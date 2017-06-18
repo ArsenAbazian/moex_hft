@@ -6,6 +6,7 @@
 #define TEST
 #ifdef TEST
 //#define TEST_LIST
+//#define TEST_CHECK_LIST
 #endif
 
 #define null 0

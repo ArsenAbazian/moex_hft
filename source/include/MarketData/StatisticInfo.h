@@ -1589,6 +1589,8 @@ public:
         this->m_shouldProcessSnapshot = false;
         SymbolInfo()->DecSessionsToRecvSnapshotCount();
     }
+
+    inline void MinPriceIncrement(Decimal *price) { }
 };
 
 #endif //HFT_ROBOT_STATISTICINFO_H

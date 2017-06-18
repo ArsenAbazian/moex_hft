@@ -408,7 +408,7 @@ typedef struct _FixMarketDataRequestInfo {
 #pragma clang diagnostic pop
 
 class Decimal {
-    static INT64 PowOf10[10];
+    static INT64 PowOf10[19];
     static float MulOf10[19];
     static float DivOf10[10];
 
@@ -431,6 +431,19 @@ public:
             Exponent(exponent),
             Value(0) {
     }
+    inline INT64 CalcExponent() {
+        return PowOf10[this->Exponent + 9];
+    }
+    inline int CalcDigitsCount(UINT64 value) {
+        for(int val = 1, count = 1; val < 100000000; val = (val << 3) + (val << 1), count++) {
+            if(val > value)
+                return count - 1;
+        }
+        return 9;
+    }
+    inline UINT64 CalcPowOf10(int powOf10) {
+        return PowOf10[powOf10 + 9];
+    }
     inline void Set(INT64 mantissa, INT32 exponent) {
         this->Mantissa = mantissa;
         this->Exponent = exponent;
@@ -439,126 +452,8 @@ public:
         this->Mantissa = value->Mantissa;
         this->Exponent = value->Exponent;
     }
-    inline float DivOf10Func(int value) {
-        if(value > 4) {
-            if(value > 7) {
-                if(value > 8)
-                    return 0.000000001;  // 9
-                else
-                    return 0.00000001;   // 8
-            }
-            else {
-                if(value > 5) {
-                    if(value > 6)
-                        return 0.0000001;  // 7
-                    else
-                        return 0.000001;   // 6
-                }
-                else
-                    return 0.00001;  // 5
-            }
-        }
-        else {
-            if(value > 2) {
-                if(value > 3)
-                    return 0.0001;  // 4
-                else
-                    return 0.001;   // 3
-            }
-            else {
-                if(value > 1)
-                    return 0.01;  // 2
-                else {
-                    if(value == 1)
-                        return 0.1;  // 1
-                    return 1.0;  // 0
-                }
-            }
-        }
-    }
-    inline INT64 PowOf10Func(int value) {
-        if(value > 4) {
-            if(value > 7) {
-                if(value > 8)
-                    return 1000000000;  // 9
-                else
-                    return 100000000;   // 8
-            }
-            else {
-                if(value > 5) {
-                    if(value > 6)
-                        return 10000000;  // 7
-                    else
-                        return 1000000;   // 6
-                }
-                else
-                    return 100000;  // 5
-            }
-        }
-        else {
-            if(value > 2) {
-                if(value > 3)
-                    return 10000;  // 4
-                else
-                    return 1000;   // 3
-            }
-            else {
-                if(value > 1)
-                    return 100;  // 2
-                else {
-                    if(value == 1)
-                        return 10;  // 1
-                    return 1;  // 0
-                }
-            }
-        }
-    }
-    inline float MulOf10Func(int value) {
-        if(value > 4) {
-            if(value > 7) {
-                if(value > 8)
-                    return 1000000000.0;  // 9
-                else
-                    return 100000000.0;   // 8
-            }
-            else {
-                if(value > 5) {
-                    if(value > 6)
-                        return 10000000.0;  // 7
-                    else
-                        return 1000000.0;   // 6
-                }
-                else
-                    return 100000.0;  // 5
-            }
-        }
-        else {
-            if(value > 2) {
-                if(value > 3)
-                    return 10000.0;  // 4
-                else
-                    return 1000.0;   // 3
-            }
-            else {
-                if(value > 1)
-                    return 100.0;  // 2
-                else {
-                    if(value == 1)
-                        return 10.0;  // 1
-                    return 1.0;  // 0
-                }
-            }
-        }
-    }
     inline float Calculate() {
         Value = ((float)Mantissa) * MulOf10[9 + Exponent];
-        return Value;
-    }
-    inline float CalculateFunc() {
-        if(Exponent < 0)
-            Value = ((float)Mantissa) * DivOf10Func(-Exponent);
-        else
-            Value = ((float)Mantissa) * MulOf10Func(Exponent);
         return Value;
     }
     inline float Calculate(INT64 mantissa, INT32 exponent) {

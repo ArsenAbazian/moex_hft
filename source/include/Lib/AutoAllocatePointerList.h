@@ -123,7 +123,7 @@ public:
     }
 
     inline void FreeItemUnsafe(LinkedPointer<T> *node) {
-#ifdef  TEST_LIST
+#ifdef  TEST_CHECK_LIST
         if(this->Contains(node))
             throw;
 #endif
@@ -135,13 +135,13 @@ public:
         node->Next(this->m_head);
         this->m_head = node;
         node->Prev(0);
-#ifdef TEST_LIST
+#ifdef TEST_CHECK_LIST
         if(this->m_count < 0)
             throw;
 #endif
     }
     inline void FreeItem(LinkedPointer<T> *node) {
-#ifdef  TEST_LIST
+#ifdef  TEST_CHECK_LIST
         if(this->Contains(node))
             throw;
 #endif
@@ -152,7 +152,7 @@ public:
         node->Next(this->m_head);
         this->m_head = node;
         node->Prev(0);
-#ifdef TEST_LIST
+#ifdef TEST_CHECK_LIST
         if(this->m_count < 0)
             throw;
 #endif

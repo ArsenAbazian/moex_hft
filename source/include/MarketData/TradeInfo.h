@@ -234,6 +234,8 @@ public:
         this->m_shouldProcessSnapshot = false;
         SymbolInfo()->DecSessionsToRecvSnapshotCount();
     }
+
+    inline void MinPriceIncrement(Decimal *price) { }
 };
 
 template <typename T> PointerList<T>* TradeInfo<T>::m_itemsPool = 0;

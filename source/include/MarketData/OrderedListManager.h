@@ -8,6 +8,7 @@
 #include "../Lib/HrPointerList.h"
 #include "../Fast/FastTypes.h"
 #include "../Stopwatch.h"
+#include <string.h>
 
 typedef enum _ListType {
     ltSimple,
@@ -22,35 +23,24 @@ class OrderedListManager {
 public:
     inline void OnPointerRemove(POINTER<DATA> *ptr) {
         Decimal *price = &(ptr->Data()->MDEntryPx);
-        UINT64 cacheIndex = this->CalcCacheIndex(price);
+        INT64 cacheIndex = this->CalcCacheIndex(price);
         if(!this->IsItemCached(cacheIndex))
             return;
-        POINTER<DATA> *prev = this->m_cache[cacheIndex]->Prev();
-        this->m_cache[cacheIndex] = (POINTER<DATA> *)((0 - (prev->Prev2() == 0)) & (UINT64)prev);
-
-        this->m_lastPtr2 = (POINTER<DATA>*)((0 - (ptr != this->m_lastPtr2)) & ((UINT64)this->m_lastPtr2));
-        this->m_lastPtr3 = (POINTER<DATA>*)((0 - (ptr != this->m_lastPtr3)) & ((UINT64)this->m_lastPtr3));
-        this->m_lastPtr4 = (POINTER<DATA>*)((0 - (ptr != this->m_lastPtr4)) & ((UINT64)this->m_lastPtr4));
-        this->m_lastPtr5 = (POINTER<DATA>*)((0 - (ptr != this->m_lastPtr5)) & ((UINT64)this->m_lastPtr5));
+        POINTER<DATA> *node = this->m_cache[cacheIndex];
+        POINTER<DATA> *prev = node->Prev();
+        this->m_cache[cacheIndex] = (POINTER<DATA> *)((0 - (node->Prev2() == 0)) & (UINT64)prev);
     }
     inline void ClearPointers() {
-        this->m_lastPtr2 = 0;
-        this->m_lastPtr3 = 0;
-        this->m_lastPtr4 = 0;
-        this->m_lastPtr5 = 0;
+        memset(this->m_cache, 0, sizeof(POINTER<DATA>*) * this->m_cacheSize);
     }
 private:
 #pragma region InsertBeforeDescendingCore
-    inline POINTER<DATA>* InsertBeforeDescending2(double value, POINTER<DATA> *node) {
-        if(this->m_lastPtr2 != 0 && this->m_lastPtr2->Value() < value && this->m_lastPtr2->Prev2()->Value() >= value)
-            node = this->m_lastPtr2;
-        else {
-            while(node->Value() >= value) {
-                node = node->Next2();
-                this->m_seekCount++;
-            }
-            this->m_lastPtr2 = node;
+    inline POINTER<DATA>* InsertBeforeDescending2(INT64 value, POINTER<DATA> *node) {
+        while(node->Value() >= value) {
+            node = node->Next2();
+            this->m_seekCount++;
         }
+
         bool isBeginOfNewValue = node->Prev()->Value() != value;
         POINTER<DATA> *newNode = this->m_list->Insert(node);
         if(!isBeginOfNewValue) {
@@ -58,37 +48,23 @@ private:
             return newNode;
         }
         this->m_LevelIndex = this->CalcLevel();
-        if(node->Prev3() != 0 || node->Next3() != 0)
-            this->m_LevelIndex = 2;
         this->m_list->Insert2(node->Prev2(), newNode, node);
         return newNode;
     }
-    inline POINTER<DATA>* InsertBeforeDescending3(double value, POINTER<DATA> *node) {
-        if(this->m_lastPtr3 != 0 && this->m_lastPtr3->Value() < value && this->m_lastPtr3->Prev3()->Value() >= value) {
-            node = this->m_lastPtr3;
-        }
-        else {
-            while(node->Value() >= value) {
-                node = node->Next3();
-                this->m_seekCount++;
-            }
-            this->m_lastPtr3 = node;
+    inline POINTER<DATA>* InsertBeforeDescending3(INT64 value, POINTER<DATA> *node) {
+        while(node->Value() >= value) {
+            node = node->Next3();
+            this->m_seekCount++;
         }
         POINTER<DATA> *newNode = InsertBeforeDescending2(value, node->Prev3());
         if(this->m_LevelIndex >= 3)
             this->m_list->Insert3(node->Prev3(), newNode, node);
         return newNode;
     }
-    inline POINTER<DATA>* InsertBeforeDescending4(double value, POINTER<DATA> *node) {
-        if(this->m_lastPtr4 != 0 && this->m_lastPtr4->Value() < value && this->m_lastPtr4->Prev4()->Value() >= value) {
-            node = this->m_lastPtr4;
-        }
-        else {
-            while(node->Value() >= value) {
-                node = node->Next4();
-                this->m_seekCount++;
-            }
-            this->m_lastPtr4 = node;
+    inline POINTER<DATA>* InsertBeforeDescending4(INT64 value, POINTER<DATA> *node) {
+        while(node->Value() >= value) {
+            node = node->Next4();
+            this->m_seekCount++;
         }
         POINTER<DATA> *newNode = InsertBeforeDescending3(value, node->Prev4());
         if(this->m_LevelIndex >= 4)
@@ -96,7 +72,7 @@ private:
         return newNode;
     }
     __attribute_noinline__
-    POINTER<DATA>* OnInsertFirstSecondItemDescending(double value, POINTER<DATA> *start) {
+    POINTER<DATA>* OnInsertFirstSecondItemDescending(INT64 value, POINTER<DATA> *start) {
         if(this->m_list->Count() == 0)
             return this->m_list->Add();
         if(start->Value() < value) { // insert before
@@ -111,7 +87,7 @@ private:
             return newNode;
         }
     }
-    inline POINTER<DATA>* InsertBeforeDescending5(double value, POINTER<DATA> *start, POINTER<DATA> *end) {
+    inline POINTER<DATA>* InsertBeforeDescending5(INT64 value, POINTER<DATA> *start, POINTER<DATA> *end) {
         // no items
         if (this->m_list->Count() < 2)
             return this->OnInsertFirstSecondItemDescending(value, start);
@@ -127,7 +103,6 @@ private:
             newNode->Connect3(start->Next3());
             newNode->Connect2(start->Next2());
             start->AllZero();
-            this->OnPointerRemove(start);
             this->m_list->InsertAfterByLevel(this->CalcLevel(), newNode, start);
             return newNode;
         }
@@ -138,22 +113,16 @@ private:
             end->Prev3()->Connect3(newNode);
             end->Prev2()->Connect2(newNode);
             end->AllZero();
-            this->OnPointerRemove(end);
             if(end->Value() != end->Prev()->Value())
                 this->m_list->InsertBeforeByLevel(this->CalcLevel(), end, newNode);
             return newNode;
         }
-        if(this->m_lastPtr5 != 0 && this->m_lastPtr5->Value() < value && this->m_lastPtr5->Prev5()->Value() >= value) {
-            node = this->m_lastPtr5;
-        }
-        else {
+        node = node->Next5();
+        while(node->Value() >= value) {
             node = node->Next5();
-            while(node->Value() >= value) {
-                node = node->Next5();
-                this->m_seekCount++;
-            }
-            this->m_lastPtr5 = node;
+            this->m_seekCount++;
         }
+
         newNode = InsertBeforeDescending4(value, node->Prev5());
         if(this->m_LevelIndex == 5)
             this->m_list->Insert5(node->Prev5(), newNode, node);
@@ -161,16 +130,10 @@ private:
     }
 #pragma endregion InsertBeforeDescendingCore
 #pragma region InsertBeforeAscendingCore
-    inline POINTER<DATA>* InsertBeforeAscending2(double value, POINTER<DATA> *node) {
-        if(this->m_lastPtr2 != 0 && this->m_lastPtr2->Value() > value && this->m_lastPtr2->Prev2()->Value() <= value) {
-            node = this->m_lastPtr2;
-        }
-        else {
-            while(node->Value() <= value) {
-                node = node->Next2();
-                this->m_seekCount++;
-            }
-            this->m_lastPtr2 = node;
+    inline POINTER<DATA>* InsertBeforeAscending2(INT64 value, POINTER<DATA> *node) {
+        while(node->Value() <= value) {
+            node = node->Next2();
+            this->m_seekCount++;
         }
         bool isBeginOfNewValue = node->Prev()->Value() != value;
         POINTER<DATA> *newNode = this->m_list->Insert(node);
@@ -179,45 +142,31 @@ private:
             return newNode;
         }
         this->m_LevelIndex = this->CalcLevel();
-        if(node->Prev3() != 0 || node->Next3() != 0)
-            this->m_LevelIndex = 2;
         this->m_list->Insert2(node->Prev2(), newNode, node);
         return newNode;
     }
-    inline POINTER<DATA>* InsertBeforeAscending3(double value, POINTER<DATA> *node) {
-        if(this->m_lastPtr3 != 0 && this->m_lastPtr3->Value() > value && this->m_lastPtr3->Prev3()->Value() <= value) {
-            node = this->m_lastPtr3;
+    inline POINTER<DATA>* InsertBeforeAscending3(INT64 value, POINTER<DATA> *node) {
+        while(node->Value() <= value) {
+            node = node->Next3();
+            this->m_seekCount++;
         }
-        else {
-            while(node->Value() <= value) {
-                node = node->Next3();
-                this->m_seekCount++;
-            }
-            this->m_lastPtr3 = node;
-        }
-        POINTER<DATA>* newNode = InsertBeforeAscending2(value, node->Prev3());
+        POINTER<DATA> *newNode = InsertBeforeAscending2(value, node->Prev3());
         if(this->m_LevelIndex >= 3)
             this->m_list->Insert3(node->Prev3(), newNode, node);
         return newNode;
     }
-    inline POINTER<DATA>* InsertBeforeAscending4(double value, POINTER<DATA> *node) {
-        if(this->m_lastPtr4 != 0 && this->m_lastPtr4->Value() > value && this->m_lastPtr4->Prev4()->Value() <= value) {
-            node = this->m_lastPtr4;
+    inline POINTER<DATA>* InsertBeforeAscending4(INT64 value, POINTER<DATA> *node) {
+        while(node->Value() <= value) {
+            node = node->Next4();
+            this->m_seekCount++;
         }
-        else {
-            while(node->Value() <= value) {
-                node = node->Next4();
-                this->m_seekCount++;
-            }
-            this->m_lastPtr4 = node;
-        }
-        POINTER<DATA>* newNode = InsertBeforeAscending3(value, node->Prev4());
+        POINTER<DATA> *newNode = InsertBeforeAscending3(value, node->Prev4());
         if(this->m_LevelIndex >= 4)
             this->m_list->Insert4(node->Prev4(), newNode, node);
         return newNode;
     }
     __attribute_noinline__
-    POINTER<DATA>* OnInsertFirstSecondItemAscending(double value, POINTER<DATA> *start) {
+    POINTER<DATA>* OnInsertFirstSecondItemAscending(INT64 value, POINTER<DATA> *start) {
         if(this->m_list->Count() == 0)
             return this->m_list->Add();
         if(start->Value() > value) { // insert before
@@ -232,7 +181,7 @@ private:
             return newNode;
         }
     }
-    inline POINTER<DATA>* InsertBeforeAscending5(double value, POINTER<DATA> *start, POINTER<DATA> *end) {
+    inline POINTER<DATA>* InsertBeforeAscending5(INT64 value, POINTER<DATA> *start, POINTER<DATA> *end) {
         POINTER<DATA> *node = start;
         POINTER<DATA> *newNode;
 
@@ -246,7 +195,6 @@ private:
             newNode->Connect3(start->Next3());
             newNode->Connect2(start->Next2());
             start->AllZero();
-            this->OnPointerRemove(start);
             this->m_list->InsertAfterByLevel(CalcLevel(), newNode, start);
             return newNode;
         }
@@ -258,22 +206,15 @@ private:
             end->Prev3()->Connect3(newNode);
             end->Prev2()->Connect2(newNode);
             end->AllZero();
-            this->OnPointerRemove(end);
             if(end->Value() != end->Prev()->Value())
                 this->m_list->InsertBeforeByLevel(this->CalcLevel(), end, newNode);
             return newNode;
         }
-        if(this->m_lastPtr5 != 0 && this->m_lastPtr5->Value() > value && this->m_lastPtr5->Prev5()->Value() <= value) {
-            node = this->m_lastPtr5;
-        }
-        else {
+        node = node->Next5();
+        while(node->Value() <= value) {
             node = node->Next5();
-            while(node->Value() <= value) {
-                node = node->Next5();
-                this->m_seekCount++;
+            this->m_seekCount++;
 
-            }
-            this->m_lastPtr5 = node;
         }
         newNode = InsertBeforeAscending4(value, node->Prev5());
         if(this->m_LevelIndex == 5)
@@ -285,15 +226,14 @@ private:
 public:
     LIST<DATA>           *m_list;
     POINTER<DATA>        **m_cache;
-    UINT64               m_cacheStart;
-    POINTER<DATA>        *m_lastPtr2;
-    POINTER<DATA>        *m_lastPtr3;
-    POINTER<DATA>        *m_lastPtr4;
-    POINTER<DATA>        *m_lastPtr5;
+    INT64               m_cacheStart;
+    INT64               m_minPriceIncrement;
+    int                  m_precision;
     unsigned int         g_seed;
     int                  m_LevelIndex = 0;
     int                  m_debugLevel;
     int                  m_seekCount;
+    int                  m_paddingBytes;
 
     // Compute a pseudorandom integer.
     // Output value in range [0, 32767]
@@ -315,69 +255,88 @@ public:
             m_LevelIndex(0),
             m_list(0),
             m_seekCount(0),
-            m_lastPtr2(0),
-            m_lastPtr3(0),
-            m_lastPtr4(0),
-            m_lastPtr5(0),
             m_cache(0),
-            m_cacheStart(0)
+            m_cacheStart(0),
+            m_precision(0),
+            m_minPriceIncrement(0),
+            m_paddingBytes(0)
     {
         this->m_list = list;
         this->init_fast_srand();
         this->m_cache = new POINTER<DATA>*[this->m_cacheSize];
-        memset(this->m_cacheSize, 0, sizeof(POINTER<DATA>*) * this->m_cacheSize);
+        memset(this->m_cache, 0, sizeof(POINTER<DATA>*) * this->m_cacheSize);
     }
 
-    inline UINT64 CalcCacheIndex(Decimal *price) {
-        UINT64 value = price->Mantissa;
+    inline void MinPriceIncrement(INT64 value) { this->m_minPriceIncrement = value; }
+    inline void Precision(int value) { this->m_precision = value; }
 
-        if(price->Exponent > 0)
-            value *= 100; // add cents 0 - 99
-        else
-            value *= price->CalcPowOf10(-price->Exponent); // correct cents
-
+    __attribute_noinline__
+    INT64 CalcCacheStartValue(INT64 value) {
+        INT64 percent25 = this->m_cacheSize / 4;
+        INT64 delta = this->m_minPriceIncrement * percent25;
+        return value > delta ? value - delta: 0;
+    }
+    inline INT64 CalcValue(Decimal *price) {
+        return price->Mantissa * price->CalcPowOf10(this->m_precision + price->Exponent);
+    }
+    inline INT64 CalcCacheIndex(Decimal *price) {
+        INT64 value = price->Mantissa * price->CalcPowOf10(this->m_precision + price->Exponent); // correct cents
         if(this->m_cacheStart == 0)
-            this->m_cacheStart = value - this->m_cacheSize / 4;
-        return value - this->m_cacheStart;
+            this->m_cacheStart = this->CalcCacheStartValue(value);
+        return (value - this->m_cacheStart) / this->m_minPriceIncrement;
     }
 
     inline POINTER<DATA>* GetLastCachedItem(Decimal *price) {
-        UINT64 cacheIndex = CalcCacheIndex(price);
-        if(cacheIndex >= this->m_cacheSize)
+        INT64 cacheIndex = CalcCacheIndex(price);
+        if(cacheIndex >= this->m_cacheSize || cacheIndex < 0)
             return 0;
         return this->m_cache[cacheIndex];
     }
 
-    inline bool IsItemCached(UINT64 cacheIndex) {
-        return cacheIndex < this->m_cacheSize && this->m_cache[cacheIndex] == 0;
+    inline bool IsItemCached(INT64 cacheIndex) {
+        return cacheIndex >= 0 && cacheIndex < this->m_cacheSize && this->m_cache[cacheIndex] != 0;
     }
 
     inline POINTER<DATA>* HrInsertBeforeDescending(Decimal *price) {
-        UINT64 cacheIndex = this->CalcCacheIndex(price);
+        INT64 cacheIndex = this->CalcCacheIndex(price);
+        INT64 val = this->CalcValue(price);
         if(this->IsItemCached(cacheIndex)) {
-            POINTER<DATA> *newNode = this->m_list->Insert(this->m_cache[cacheIndex]->Next());
-            this->m_cache[cacheIndex] = newNode;
+            POINTER<DATA> *node = this->m_cache[cacheIndex];
+            if(node != this->m_list->Start() && node != this->m_list->End()) {
+                POINTER<DATA> *newNode = this->m_list->InsertAfter(node);
+                this->m_cache[cacheIndex] = newNode;
+                newNode->Value(val);
+                return newNode;
+            }
         }
-
         this->m_LevelIndex = 0;
         this->m_seekCount = 0;
-        POINTER<DATA> *ptr = this->InsertBeforeDescending5(price->Calculate(), this->m_list->Start(), this->m_list->End());
-        ptr->Value(price->Value);
+        POINTER<DATA> *ptr = this->InsertBeforeDescending5(val, this->m_list->Start(), this->m_list->End());
+        ptr->Value(val);
+        if(cacheIndex >= 0 && cacheIndex < this->m_cacheSize)
+            this->m_cache[cacheIndex] = ptr;
         return ptr;
     }
 
     inline POINTER<DATA>* HrInsertBeforeAscending(Decimal *price) {
-        UINT64 cacheIndex = this->CalcCacheIndex(price);
+        INT64 cacheIndex = this->CalcCacheIndex(price);
+        INT64 val = this->CalcValue(price);
         if(this->IsItemCached(cacheIndex)) {
-            POINTER<DATA> *newNode = this->m_list->Insert(this->m_cache[cacheIndex]->Next());
-            this->m_cache[cacheIndex] = newNode;
-            return newNode;
+            POINTER<DATA> *node = this->m_cache[cacheIndex];
+            if(node != this->m_list->Start() && node != this->m_list->End()) {
+                POINTER<DATA> *newNode = this->m_list->InsertAfter(node);
+                this->m_cache[cacheIndex] = newNode;
+                newNode->Value(val);
+                return newNode;
+            }
         }
 
         this->m_LevelIndex = 0;
         this->m_seekCount = 0;
-        POINTER<DATA> *ptr = this->InsertBeforeAscending5(price->Calculate(), this->m_list->Start(), this->m_list->End());
-        ptr->Value(price->Value);
+        POINTER<DATA> *ptr = this->InsertBeforeAscending5(val, this->m_list->Start(), this->m_list->End());
+        ptr->Value(val);
+        if(cacheIndex >= 0 && cacheIndex < this->m_cacheSize)
+            this->m_cache[cacheIndex] = ptr;
         return ptr;
     }
 

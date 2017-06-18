@@ -2804,22 +2804,6 @@ protected:
         ProgramStatistics::Total->Inc(Counters::cCurrOlr);
 #endif
         OrderInfo<AstsOLSCURRItemInfo> *oitem;
-        /*
-        if(info->GroupMDEntriesCount > 3) {
-            for(int i = 0; i < info->GroupMDEntriesCount; i++) {
-                AstsOLSCURRItemInfo *item = info->GroupMDEntries[i];
-                if(item->PresenceMap > 1) {
-                    int index = this->m_symbolManager->GetSymbol(item->Symbol, item->SymbolLength)->m_index;
-                    oitem = this->m_orderTableCurr->GetItem(index, item->TradingSessionIDUint);
-                }
-                if(item->MDUpdateAction != MDUpdateAction::mduaAdd) {
-                    UINT64 hash = HashTable::Default->CalcHash(item->MDEntryID, item->MDEntryIDLength);
-                    LinkedPointer<HashTableItemInfo> *ptr = HashTable::Default->Bucket()[hash];
-                    if(ptr != 0)
-                        __builtin_prefetch(ptr->Data()->m_object, 0, _MM_HINT_T0);
-                }
-            }
-        }*/
         for(int i = 0; i < info->GroupMDEntriesCount; i++) {
             AstsOLSCURRItemInfo *item = info->GroupMDEntries[i];
             //if(item->PresenceMap > 1) {
@@ -2827,6 +2811,7 @@ protected:
                 oitem = this->m_orderTableCurr->GetItem(index, item->TradingSessionIDUint);
             //}
             this->m_orderTableCurr->ProcessIncremental(item, oitem);
+            //printf("MDEntryPx = m = %" PRIi64 " e = %d\n", item->MDEntryPx.Mantissa, item->MDEntryPx.Exponent);
         }
     }
 
@@ -3229,6 +3214,7 @@ public:
                     info->Symbol, info->SymbolLength, index);
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(1);
+            symbol->UpdateMinPriceIncrement();
             symbol->AddSession(info->TradingSessionID);
         }
         else if(this->m_fortsTradeBookTable != 0) {
@@ -3236,6 +3222,7 @@ public:
                     info->Symbol, info->SymbolLength, index);
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(1);
+            symbol->UpdateMinPriceIncrement();
             symbol->AddSession(info->TradingSessionID);
         }
     }
@@ -3248,6 +3235,7 @@ public:
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
+            symbol->UpdateMinPriceIncrement();
 
             AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
             for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
@@ -3264,6 +3252,7 @@ public:
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
+            symbol->UpdateMinPriceIncrement();
 
             AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
             for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
@@ -3280,6 +3269,7 @@ public:
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
+            symbol->UpdateMinPriceIncrement();
 
             AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
             for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
@@ -3296,6 +3286,7 @@ public:
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
+            symbol->UpdateMinPriceIncrement();
 
             AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
             for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
@@ -3312,6 +3303,7 @@ public:
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
+            symbol->UpdateMinPriceIncrement();
 
             AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
             for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {
@@ -3328,6 +3320,7 @@ public:
 
             symbol->SecurityDefinitionPtr(ptr);
             symbol->InitSessions(CalcSessionsCount(info));
+            symbol->UpdateMinPriceIncrement();
 
             AstsSecurityDefinitionMarketSegmentGrpItemInfo **market = info->MarketSegmentGrp;
             for(int i = 0; i < info->MarketSegmentGrpCount; i++, market++) {

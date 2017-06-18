@@ -164,25 +164,24 @@ public:
         return;
     }
 
-    inline void RemoveQuote(HrPointerListLite<T> *list, T *info) {
-        HrLinkedPointer<T> *node = this->RemovePointer(info, list);
+    inline void RemoveQuote(OrderedListManager<HrPointerListLite, HrLinkedPointer, T> *manager, T *info) {
+        HrLinkedPointer<T> *node = this->RemovePointer(info, manager->m_list);
         if(node == 0) {
             this->OnQuoteNotFound(info);
             return;
         }
         node->Data()->Clear();
-        list->Remove(node);
+        manager->m_list->RemoveShifting(node);
+        manager->OnPointerRemove(node);
         info->Clear();
     }
 
     inline void RemoveBuyQuote(T *info) {
-        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Remove BuyQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
-        RemoveQuote(this->m_buyQuoteList, info);
+        RemoveQuote(this->m_buyQuoteManager, info);
     }
 
     inline void RemoveSellQuote(T *info) {
-        //DebugInfoManager::Default->Log(this->m_symbolInfo->Symbol(), this->m_tradingSession, "Remove SellQuote", info->MDEntryID, info->MDEntryIDLength, &(info->MDEntryPx), &(info->MDEntrySize));
-        RemoveQuote(this->m_sellQuoteList, info);
+        RemoveQuote(this->m_sellQuoteManager, info);
     }
 
     inline void ChangeQuote(HrPointerListLite<T> *list, T *info) {
@@ -204,23 +203,19 @@ public:
         this->ChangeQuote(this->m_sellQuoteList, info);
     }
 
+    inline void MinPriceIncrement(Decimal *price) {
+        this->m_buyQuoteManager->MinPriceIncrement(price->Mantissa);
+        this->m_buyQuoteManager->Precision(- price->Exponent);
+
+        this->m_sellQuoteManager->MinPriceIncrement(price->Mantissa);
+        this->m_sellQuoteManager->Precision(- price->Exponent);
+    }
+
     inline HrLinkedPointer<T>* InsertBuyQuote(Decimal *price) {
-#ifdef TEST
-        if(this->m_listMode == ListType::ltSimple)
-            return this->m_buyQuoteManager->SimpleInsertBeforeDescending(price);
         return this->m_buyQuoteManager->HrInsertBeforeDescending(price);
-#else
-        return this->m_buyQuoteManager->HrInsertBeforeDescending(price);
-#endif
     }
     inline HrLinkedPointer<T>* InsertSellQuote(Decimal *price) {
-#ifdef TEST
-        if(this->m_listMode == ListType::ltSimple)
-            return this->m_sellQuoteManager->SimpleInsertBeforeAscending(price);
         return this->m_sellQuoteManager->HrInsertBeforeAscending(price);
-#else
-        return this->m_sellQuoteManager->HrInsertBeforeAscending(price);
-#endif
     }
     inline void Remove(T *info) {
         /*
@@ -229,12 +224,12 @@ public:
         ProgramStatistics::Total->Inc(Counters::cRemoveOlr);
 #endif*/
         UINT64 buy = info->MDEntryType[0] == mdetBuyQuote;
-        HrPointerListLite<T> *list =
-                (HrPointerListLite<T>*)(
-                        ((0 - buy) & (UINT64)this->m_buyQuoteList) +
-                        ((buy - 1) & (UINT64)this->m_sellQuoteList)
+        OrderedListManager<HrPointerListLite, HrLinkedPointer, T> *manager =
+                (OrderedListManager<HrPointerListLite, HrLinkedPointer, T>*)(
+                        ((0 - buy) & (UINT64)this->m_buyQuoteManager) +
+                        ((buy - 1) & (UINT64)this->m_sellQuoteManager)
                 );
-        this->RemoveQuote(list, info);
+        this->RemoveQuote(manager, info);
     }
 
     inline void Change(T *info) {
@@ -249,6 +244,24 @@ public:
                         ((buy - 1) & (UINT64)this->m_sellQuoteList)
                 );
         this->ChangeQuote(list, info);
+    }
+
+    void DebugCheckActualityBuyQuote() {
+        HrLinkedPointer<T> *node = this->m_buyQuoteList->Start();
+        while(node != this->m_buyQuoteList->End()) {
+            if(node->Value() < node->Next()->Value())
+                throw;
+            node = node->Next();
+        }
+    }
+
+    void DebugCheckActualitySellQuote() {
+        HrLinkedPointer<T> *node = this->m_sellQuoteList->Start();
+        while(node != this->m_sellQuoteList->End()) {
+            if(node->Value() > node->Next()->Value())
+                throw;
+            node = node->Next();
+        }
     }
 
     inline HrLinkedPointer<T>* Add(T *info) {
@@ -328,11 +341,15 @@ public:
         this->m_savedRptSeq = this->m_rptSeq;
         this->Clear(this->BuyQuotes());
         this->Clear(this->SellQuotes());
+        this->m_buyQuoteManager->ClearPointers();
+        this->m_sellQuoteManager->ClearPointers();
     }
 
     inline void ProcessNullSnapshot() {
         this->Clear(this->BuyQuotes());
         this->Clear(this->SellQuotes());
+        this->m_buyQuoteManager->ClearPointers();
+        this->m_sellQuoteManager->ClearPointers();
     }
 
     inline void ProcessSnapshotMessage(T *info) {
