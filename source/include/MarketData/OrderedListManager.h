@@ -21,7 +21,13 @@ class OrderedListManager {
         g_seed = (Stopwatch::Default->ElapsedNanosecondsSlow() & 0xffffffff);
     }
 public:
+    inline bool IsLastGroupItem(POINTER<DATA> *ptr) {
+        return ptr->Next() != 0 && ptr->Next()->Value() != ptr->Value();
+    }
     inline void OnPointerRemove(POINTER<DATA> *ptr) {
+        __builtin_prefetch(((char*)ptr->Next()), 0, _MM_HINT_T0);
+        if(!this->IsLastGroupItem(ptr))
+            return;
         Decimal *price = &(ptr->Data()->MDEntryPx);
         INT64 cacheIndex = this->CalcCacheIndex(price);
         if(!this->IsItemCached(cacheIndex))
@@ -41,9 +47,8 @@ private:
             this->m_seekCount++;
         }
 
-        bool isBeginOfNewValue = node->Prev()->Value() != value;
         POINTER<DATA> *newNode = this->m_list->Insert(node);
-        if(!isBeginOfNewValue) {
+        if(node->Prev2()->Value() == value) {
             this->m_LevelIndex = 1;
             return newNode;
         }
@@ -135,9 +140,8 @@ private:
             node = node->Next2();
             this->m_seekCount++;
         }
-        bool isBeginOfNewValue = node->Prev()->Value() != value;
         POINTER<DATA> *newNode = this->m_list->Insert(node);
-        if(!isBeginOfNewValue) {
+        if(node->Prev2()->Value() == value) {
             this->m_LevelIndex = 1;
             return newNode;
         }

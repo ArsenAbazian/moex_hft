@@ -17,6 +17,8 @@ template <typename T> class HrLinkedPointer {
     HrLinkedPointer     *m_prev2;
     HrLinkedPointer     *m_next3;
     HrLinkedPointer     *m_prev3;
+    //bool                m_lastGroupItem;
+    //char                m_paddingBytes[7];
     HrLinkedPointer     *m_next5;
     HrLinkedPointer     *m_prev5;
     HrLinkedPointer     *m_next4;
@@ -36,8 +38,12 @@ public:
             m_next5(0), m_prev5(0),
             m_data(0),
             m_owner(0),
-            m_intId(0) {
+            m_intId(0)/*,
+            m_lastGroupItem(false)*/ {
     }
+
+    //inline bool IsLastGroupItem() const { return this->m_lastGroupItem; }
+    //inline void IsLastGroupItem(bool value) { this->m_lastGroupItem = value; }
 
     inline void* Owner() const { return this->m_owner; }
     inline void Owner(void *owner) { this->m_owner = owner; }
