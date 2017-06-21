@@ -35,12 +35,9 @@ private:
     int                                 m_snapshotProcessedCount;
     MarketSymbolInfo<OrderBookInfo<T>>  *m_symbolInfo;
     SizedArray                          *m_tradingSession;
-#ifdef TEST
-    ListType                            m_listMode;
-#endif
     bool                                m_shouldProcessSnapshot;
 #ifdef TEST
-    char                                m_paddingBytes[3];
+    char                                m_paddingBytes[7];
 #else
     char                                m_paddingBytes[7];
 #endif
@@ -54,15 +51,6 @@ public:
         delete this->m_sellQuoteList;
         delete this->m_buyQuoteList;
     }
-
-#ifdef  TEST
-    inline ListType ListMode() const { return this->m_listMode; }
-    inline void ListMode(ListType listType) { this->m_listMode = listType; }
-    inline void SetDebugLevel(int level) {
-        this->m_buyQuoteManager->SetDebugLevel(level);
-        this->m_sellQuoteManager->SetDebugLevel(level);
-    }
-#endif
 
     inline void ReleaseEntryQue() {
         if(this->m_entryInfo != 0) {
@@ -134,10 +122,10 @@ public:
     }
 
     inline HrLinkedPointer<T>* InsertBuyQuote(Decimal *price) {
-        return this->m_buyQuoteManager->HrInsertBeforeDescending(price);
+        return this->m_buyQuoteManager->InsertDescending(price);
     }
     inline HrLinkedPointer<T>* InsertSellQuote(Decimal *price) {
-        return this->m_sellQuoteManager->HrInsertBeforeAscending(price);
+        return this->m_sellQuoteManager->InsertAscending(price);
     }
     inline HrLinkedPointer<T>* GetPointer(T *info, HrPointerListLite<T> *list) {
         return OrderBookInfo<T>::m_hashTable->GetPointer(list, info->MDEntryID);
@@ -191,7 +179,7 @@ public:
             return;
         }
         ptr->Data()->Clear();
-        manager->m_list->RemoveShifting(ptr);
+        manager->m_list->Remove(ptr);
         this->FreePointer(ptr);
         manager->OnPointerRemove(ptr);
         info->Clear();
@@ -426,9 +414,6 @@ template <typename T> OrderBookInfo<T>::OrderBookInfo() :
         m_tradingSession(0),
         m_sessionInt(0),
         m_snapshotProcessedCount(0)
-#ifdef TEST
-        , m_listMode(ListType::ltSkipList)
-#endif
     {
     if(OrderBookInfo::m_itemsPool == 0)
         OrderBookInfo::m_itemsPool = new HrPointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);

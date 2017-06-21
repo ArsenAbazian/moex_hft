@@ -518,40 +518,6 @@ public:
     int CalcMDEntryQueCount(AstsFeedChannel *channel, MDEntryQueue *que);
 
     template <typename T>
-    const char* GetLevelMap(HrPointerListLite<T> *list, int level) {
-        if(list->Count() == 0)
-            return "";
-        char *buf = new char[list->Count() + 1];
-        memset(buf, ' ', list->Count());
-        buf[list->Count()] = '\0';
-
-        HrLinkedPointer<T> *node = list->Start();
-        while(true) {
-            int index = list->IndexOf(node);
-            buf[index] = '*';
-            if(node == list->End())
-                break;
-            HrLinkedPointer<T> *next = node->NextByLevel(level);
-            if(next == 0)
-                throw;
-            node = next;
-        }
-        return buf;
-    }
-
-    template <typename T>
-    void PrintLevelItems(HrPointerListLite<T> *list, int level) {
-        HrLinkedPointer<T> *node = list->Start();
-        while(true) {
-            printf("%" PRIi64 " ", node->Data()->MDEntryPx.Mantissa);
-            if(node == list->End())
-                break;
-            node = node->NextByLevel(level);
-        }
-        printf("\n");
-    }
-
-    template <typename T>
     void PrintItems(HrPointerListLite<T> *list) {
         HrLinkedPointer<T> *node = list->Start();
         while(true) {
@@ -568,11 +534,6 @@ public:
         printf("items count = %d\n", list->Count());
 
         this->PrintItems(list);
-        printf("%s\n", this->GetLevelMap(list, 5));
-        printf("%s\n", this->GetLevelMap(list, 4));
-        printf("%s\n", this->GetLevelMap(list, 3));
-        printf("%s\n", this->GetLevelMap(list, 2));
-        printf("%s\n", this->GetLevelMap(list, 1));
     }
 };
 

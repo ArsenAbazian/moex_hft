@@ -36,12 +36,9 @@ template <typename T> class OrderInfo {
     int                                 m_savedRptSeq;
     int                                 m_snapshotProcessedCount;
 
-#ifdef TEST
-    ListType                            m_listMode;
-#endif
     bool                                m_shouldProcessSnapshot;
 #ifdef TEST
-    char                                m_paddingBytes[3];
+    char                                m_paddingBytes[7];
 #else
     char                                m_paddingBytes[7];
 #endif
@@ -171,7 +168,7 @@ public:
             return;
         }
         node->Data()->Clear();
-        manager->m_list->RemoveShifting(node);
+        manager->m_list->Remove(node);
         manager->OnPointerRemove(node);
         info->Clear();
     }
@@ -212,10 +209,10 @@ public:
     }
 
     inline HrLinkedPointer<T>* InsertBuyQuote(Decimal *price) {
-        return this->m_buyQuoteManager->HrInsertBeforeDescending(price);
+        return this->m_buyQuoteManager->InsertDescending(price);
     }
     inline HrLinkedPointer<T>* InsertSellQuote(Decimal *price) {
-        return this->m_sellQuoteManager->HrInsertBeforeAscending(price);
+        return this->m_sellQuoteManager->InsertAscending(price);
     }
     inline void Remove(T *info) {
         /*
@@ -444,9 +441,6 @@ template <typename T> OrderInfo<T>::OrderInfo() :
         m_symbolInfo(0),
         m_sessionInt(0),
         m_snapshotProcessedCount(0)
-#ifdef TEST
-        , m_listMode(ListType::ltSkipList)
-#endif
     {
     if(OrderInfo::m_itemsPool == 0)
         OrderInfo::m_itemsPool = new HrPointerList<T>(RobotSettings::Default->MarketDataMaxEntriesCount, false);
