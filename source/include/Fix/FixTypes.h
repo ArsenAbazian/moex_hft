@@ -441,7 +441,7 @@ public:
         }
         return 9;
     }
-    inline UINT64 CalcPowOf10(int powOf10) {
+    inline UINT64 CalcPowOf10(int powOf10) const {
         return PowOf10[powOf10 + 9];
     }
     inline void Set(INT64 mantissa, INT32 exponent) {
