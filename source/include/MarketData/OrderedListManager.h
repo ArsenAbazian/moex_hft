@@ -63,8 +63,8 @@ public:
 
     __attribute_noinline__
     INT64 CalcCacheStartValue(INT64 value) {
-        INT64 percent25 = this->m_cacheSize / 4;
-        INT64 delta = this->m_minPriceIncrement * percent25;
+        INT64 percent = (INT64)(0.40 * this->m_cacheSize);
+        INT64 delta = this->m_minPriceIncrement * percent;
         return value - delta;
     }
     inline INT64 CalcValue(Decimal *price) {
