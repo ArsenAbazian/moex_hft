@@ -26,8 +26,7 @@ public:
             m_nextHash(0), m_prevHash(0),
             m_data(0),
             m_owner(0),
-            m_intId(0)/*,
-            m_lastGroupItem(false)*/ {
+            m_intId(0) {
     }
 
     inline void* Owner() const { return this->m_owner; }

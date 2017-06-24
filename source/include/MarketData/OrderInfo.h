@@ -84,6 +84,8 @@ public:
 
     inline HrPointerListLite<T>* SellQuotes() { return this->m_sellQuoteList; }
     inline HrPointerListLite<T>* BuyQuotes() { return this->m_buyQuoteList; }
+    inline OrderedListManager<HrPointerListLite, HrLinkedPointer, T>* BuyQuoteManager() const { return this->m_buyQuoteManager; }
+    inline OrderedListManager<HrPointerListLite, HrLinkedPointer, T>* SellQuoteManager() const { return this->m_sellQuoteManager; }
 
     inline void DebugCheckHashTable(HrPointerListLite<T> *list) {
         if(list->Count() == 0)

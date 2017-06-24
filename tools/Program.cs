@@ -384,12 +384,22 @@ namespace prebuild {
 
 			GenerateDefinesCode();
 
+			UseBmi = GetUseBmi();
+			Console.WriteLine ("Using BMI = " + UseBmi);
+			if (!UseBmi)
+				Console.WriteLine ("WARNING!!!!!! BMI DISABLED!");
+
 			Generate_ASTS();
 			Generate_Forts();
 
 			CheckSaveGeneratedFiles();
 
 			return true;
+		}
+
+		bool GetUseBmi() {
+			ManagerHFile.Line = 0;
+			return ManagerHFile.FindString ("#define USE_BMI") != -1;
 		}
 
 		void GenerateDefinesCode() {
@@ -1267,7 +1277,10 @@ namespace prebuild {
 			WriteLine("\tinline void Decode" + Prefix + "Header() {"); 
 			WriteLine("");
 			WriteLine("\t\tthis->m_presenceMap = this->ParsePresenceMap();");
-			WriteLine("\t\tthis->m_templateId = ReadUInt32_Mandatory();");
+			if(UseBmi)
+				WriteLine("\t\tthis->m_templateId = ReadUInt32_Mandatory_BMI();");
+			else 
+				WriteLine("\t\tthis->m_templateId = ReadUInt32_Mandatory_Simple();");
 			WriteLine("\t}");
 			WriteLine("");
 		}
@@ -2493,10 +2506,17 @@ namespace prebuild {
 					WriteSkipCode("\t\t", name);
 					continue;
 				}
-				if(HasOptionalPresence(value))
-						WriteLine("\t\treturn ReadInt32_Optional();");
+				if (UseBmi) {
+					if (HasOptionalPresence (value))
+						WriteLine ("\t\treturn ReadInt32_Optional_BMI();");
 					else
-						WriteLine("\t\treturn ReadInt32_Mandatory();");
+						WriteLine ("\t\treturn ReadInt32_Mandatory_BMI();");
+				} else {
+					if (HasOptionalPresence (value))
+						WriteLine ("\t\treturn ReadInt32_Optional_Simple();");
+					else
+						WriteLine ("\t\treturn ReadInt32_Mandatory_Simple();");
+				}
 				break;
 			}
 			WriteLine("\t}");
@@ -2827,6 +2847,10 @@ namespace prebuild {
 			string itemInfo = GetIemInfoPrefix(value) + "ItemInfo";
 			WriteLine("");
 			string methodName = HasOptionalPresence(value)? "ReadUInt32_Optional_Predict12": "ReadUInt32_Mandatory_Predict12";
+			if(UseBmi)
+				methodName += "_BMI";
+			else 
+				methodName += "_Simple";
 			string count = objectValueName + "->" + Name (value) + "Count";
 			if (ShouldWriteNullCheckCode (value)) {
 				WriteLine (tabString + "if(!" + methodName + "((UINT32*)&(" + objectValueName + "->" + Name (value) + "Count))) {");
@@ -2922,12 +2946,21 @@ namespace prebuild {
 			return false;
 		}
 
+		public bool UseBmi { get; set; }
 		private string GetMethodName(XmlNode field, string method) {
+			string finalName = string.Empty;
 			if(HasAttribute(field, "fixed_size"))
-				return method + "_Fixed" + field.Attributes ["fixed_size"].Value.ToString();
-			if(HasAttribute(field, "predict"))
-				return method + "_Predict" + field.Attributes ["predict"].Value.ToString();
-			return method;
+				finalName = method + "_Fixed" + field.Attributes ["fixed_size"].Value.ToString();
+			else if(HasAttribute(field, "predict"))
+				finalName = method + "_Predict" + field.Attributes ["predict"].Value.ToString();
+			else 
+				finalName = method;
+			
+			if (!UseBmi)
+				return finalName;
+			if (field.Name == "int32" || field.Name == "uInt32" || field.Name == "int64" || field.Name == "uInt64" || field.Name == "decimal")
+				finalName += "_BMI";
+			return finalName;
 		}
 
 		private  void ParseByteVectorValue (StructureInfo str, XmlNode value, string info, string tabString) {
@@ -2963,6 +2996,7 @@ namespace prebuild {
 
 		private  void ParseDecimalValue (StructureInfo str, XmlNode value, string info, string tabString) {
 			string methodName = HasOptionalPresence(value)? "ReadDecimal_Optional" : "ReadDecimal_Mandatory";
+			methodName = GetMethodName (value, methodName);
 			if(ShouldWriteNullCheckCode(value)) {
 				string fullMethodName = methodName +"(&(" + info + "->" + Name(value) + "))";
 				int ni = CalcNullIndex (value);

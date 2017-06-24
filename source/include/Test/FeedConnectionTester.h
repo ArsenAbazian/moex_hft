@@ -987,13 +987,13 @@ public:
             for(int j = 0; j < s->Count(); j++) {
                 OrderInfo<AstsOLSCURRItemInfo> *q = s->Session(j);
                 if(q->BuyQuotes()->Count() != 0) {
-                    printf("%s - %d Buy Quotes\n", s->Symbol()->m_text, q->TradingSessionInt());
+                    printf("%s - %d Buy Quotes  min = %" PRIi64 " max = %" PRIi64 " \n", s->Symbol()->m_text, q->TradingSessionInt(), q->BuyQuoteManager()->MinPrice(), q->BuyQuoteManager()->MaxPrice());
                     printf("MinPriceInc = %d, Precision = %d\n", (int)s->SecurityDefinitionAsts()->MinPriceIncrement.Mantissa, -s->SecurityDefinitionAsts()->MinPriceIncrement.Exponent);
                     DebugInfoManager::Default->PrintHrPointerList(q->BuyQuotes());
                     printf("\n");
                 }
                 if(q->SellQuotes()->Count() != 0) {
-                    printf("%s - %d Sell Quotes\n", s->Symbol()->m_text, q->TradingSessionInt());
+                    printf("%s - %d Sell Quotes  min = %" PRIi64 " max = %" PRIi64 " \n", s->Symbol()->m_text, q->TradingSessionInt(), q->SellQuoteManager()->MinPrice(), q->SellQuoteManager()->MaxPrice());
                     printf("MinPriceInc = %d, Precision = %d\n", (int)s->SecurityDefinitionAsts()->MinPriceIncrement.Mantissa, -s->SecurityDefinitionAsts()->MinPriceIncrement.Exponent);
                     DebugInfoManager::Default->PrintHrPointerList(q->SellQuotes());
                     printf("\n");

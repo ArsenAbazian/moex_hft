@@ -903,7 +903,7 @@ void FastProtocolTester::TestMessageSequenceNumber() {
     }
 }
 
-void FastProtocolTester::TestReadInt32_Mandatory() {
+void FastProtocolTester::TestReadInt32_Mandatory(bool use_bmi) {
     printf("Test FastProtocolTester::TestReadInt32_Mandatory\n");
     manager->SetNewBuffer(new unsigned char[128], 128);
 
@@ -919,7 +919,7 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        INT32 value = manager->ReadInt32_Mandatory();
+        INT32 value = use_bmi? manager->ReadInt32_Mandatory_BMI(): manager->ReadInt32_Mandatory_Simple();
         if(manager->MessageLength() != i + 1)
             throw;
         manager->ResetBuffer();
@@ -931,7 +931,7 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
             throw;
 
         manager->ResetBuffer();
-        INT32 value2 = manager->ReadInt32_Mandatory();
+        INT32 value2 = use_bmi? manager->ReadInt32_Mandatory_BMI(): manager->ReadInt32_Mandatory_Simple();
         if (value2 != value)
             throw;
     }
@@ -946,7 +946,7 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        INT32 value = manager->ReadInt32_Mandatory();
+        INT32 value = use_bmi? manager->ReadInt32_Mandatory_BMI(): manager->ReadInt32_Mandatory_Simple();
         if(manager->MessageLength() != i + 1)
             throw;
         manager->ResetBuffer();
@@ -958,7 +958,7 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
             throw;
 
         manager->ResetBuffer();
-        INT32 value2 = manager->ReadInt32_Mandatory();
+        INT32 value2 = use_bmi? manager->ReadInt32_Mandatory_BMI(): manager->ReadInt32_Mandatory_Simple();
         if (value2 != value)
             throw;
     }
@@ -974,7 +974,9 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        INT32 value = manager->ReadInt32_Mandatory();
+        INT32 value_normal = manager->ReadInt32_Mandatory_Simple();
+        manager->ResetBuffer();
+        INT32 value = use_bmi? manager->ReadInt32_Mandatory_BMI(): manager->ReadInt32_Mandatory_Simple();
         if(manager->MessageLength() != i + 1)
             throw;
         manager->ResetBuffer();
@@ -986,7 +988,7 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
             throw;
 
         manager->ResetBuffer();
-        INT32 value2 = manager->ReadInt32_Mandatory();
+        INT32 value2 = use_bmi? manager->ReadInt32_Mandatory_BMI(): manager->ReadInt32_Mandatory_Simple();
         if (value2 != value)
             throw;
     }
@@ -1001,7 +1003,7 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        INT32 value = manager->ReadInt32_Mandatory();
+        INT32 value = use_bmi? manager->ReadInt32_Mandatory_BMI(): manager->ReadInt32_Mandatory_Simple();
         if(manager->MessageLength() != i + 1)
             throw;
         manager->ResetBuffer();
@@ -1013,7 +1015,7 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
             throw;
 
         manager->ResetBuffer();
-        INT32 value2 = manager->ReadInt32_Mandatory();
+        INT32 value2 = use_bmi? manager->ReadInt32_Mandatory_BMI(): manager->ReadInt32_Mandatory_Simple();
         if (value2 != value)
             throw;
     }
@@ -1022,12 +1024,12 @@ void FastProtocolTester::TestReadInt32_Mandatory() {
     manager->ResetBuffer();
     manager->WriteInt32_Mandatory(value);
     manager->ResetBuffer();
-    INT32 value2 = manager->ReadInt32_Mandatory();
+    INT32 value2 = use_bmi? manager->ReadInt32_Mandatory_BMI(): manager->ReadInt32_Mandatory_Simple();
     if (value != value2)
         throw;
 }
 
-void FastProtocolTester::TestReadInt32_Optional() {
+void FastProtocolTester::TestReadInt32_Optional(bool use_bmi) {
     printf("Test FastProtocolTester::TestReadInt32_Optional\n");
     manager->SetNewBuffer(new unsigned char[100], 100);
 
@@ -1036,7 +1038,7 @@ void FastProtocolTester::TestReadInt32_Optional() {
         manager->ResetBuffer();
         manager->WriteInt32_Optional(i);
         manager->ResetBuffer();
-        value = manager->ReadInt32_Optional();
+        value = use_bmi? manager->ReadInt32_Optional_BMI(): manager->ReadInt32_Optional_Simple();
         if (value != i)
             throw;
     }
@@ -1045,45 +1047,43 @@ void FastProtocolTester::TestReadInt32_Optional() {
         manager->ResetBuffer();
         manager->WriteInt32_Optional(i);
         manager->ResetBuffer();
-        value = manager->ReadInt32_Optional();
+        value = use_bmi? manager->ReadInt32_Optional_BMI(): manager->ReadInt32_Optional_Simple();
         if (value != i)
             throw;
     }
 }
 
-void FastProtocolTester::TestReadInt32_Optional2() {
+void FastProtocolTester::TestReadInt32_Optional2(bool use_bmi) {
     printf("Test FastProtocolTester::TestReadInt32_Optional2\n");
     manager->SetNewBuffer(new unsigned char[100], 100);
 
     INT32 value;
     manager->Buffer()[0] = 0x80;
     manager->ResetBuffer();
-    if(manager->ReadInt32_Optional(&value))
+    bool res = use_bmi? manager->ReadInt32_Optional_BMI(&value): manager->ReadInt32_Optional_Simple(&value);
+    if(res)
         throw;
 
     for (int i = -1; i > INT32_MIN + 60; i -= 50) {
         manager->ResetBuffer();
         manager->WriteInt32_Optional(i);
         manager->ResetBuffer();
-        bool res = manager->ReadInt32_Optional(&value);
-        if (value != i || !res) {
-            manager->ResetBuffer();
-            res = manager->ReadInt32_Optional(&value);
+        res = use_bmi? manager->ReadInt32_Optional_BMI(&value): manager->ReadInt32_Optional_Simple(&value);
+        if (value != i || !res)
             throw;
-        }
     }
 
     for (int i = 0; i < INT32_MAX - 60; i += 50) {
         manager->ResetBuffer();
         manager->WriteInt32_Optional(i);
         manager->ResetBuffer();
-        bool res = manager->ReadInt32_Optional(&value);
+        res = use_bmi? manager->ReadInt32_Optional_BMI(&value): manager->ReadInt32_Optional_Simple(&value);
         if (value != i || !res)
             throw;
     }
 }
 
-void FastProtocolTester::TestReadUInt32_Optional_Fixed1() {
+void FastProtocolTester::TestReadUInt32_Optional_Fixed1(bool use_bmi) {
     printf("Test FastProtocolTester::TestReadUInt32_Optional_Fixed1\n");
     UINT32 value;
 
@@ -1091,37 +1091,54 @@ void FastProtocolTester::TestReadUInt32_Optional_Fixed1() {
         manager->ResetBuffer();
         manager->WriteUInt32_Optional(i);
         manager->ResetBuffer();
-        bool res = manager->ReadUInt32_Optional_Fixed1(&value);
+        bool res = false;
+        if(use_bmi)
+            res = manager->ReadUInt32_Optional_Fixed1_BMI(&value);
+        else
+            res = manager->ReadUInt32_Optional_Fixed1_BMI(&value);
         if (value != i || !res)
             throw;
     }
 }
 
-void FastProtocolTester::TestReadUInt32_Optional2() {
+void FastProtocolTester::TestReadUInt32_Optional2(bool use_bmi) {
     printf("Test FastProtocolTester::TestReadUInt32_Optional2\n");
     UINT32 value;
 
     manager->SetNewBuffer(new unsigned char[100], 100);
     manager->ResetBuffer();
     manager->Buffer()[0] = 0x80;
-    if(manager->ReadUInt32_Optional(&value))
-        throw;
+    if(use_bmi) {
+        if(manager->ReadUInt32_Optional_BMI(&value))
+            throw;
+    }
+    else {
+        if(manager->ReadUInt32_Optional_Simple(&value))
+            throw;
+    }
 
     for (UINT32 i = 0; i < UINT32_MAX - 60; i += 50) {
         manager->ResetBuffer();
         manager->WriteUInt32_Optional(i);
         manager->ResetBuffer();
-        bool res = manager->ReadUInt32_Optional(&value);
+        bool res;
+        if(use_bmi)
+            res = manager->ReadUInt32_Optional_BMI(&value);
+        else
+            res = manager->ReadUInt32_Optional_Simple(&value);
         if (value != i || !res)
             throw;
         manager->ResetBuffer();
-        res = manager->ReadUInt32_Optional_Predict1(&value);
+        if(use_bmi)
+            res = manager->ReadUInt32_Optional_Predict1_BMI(&value);
+        else
+            res = manager->ReadUInt32_Optional_Predict1_Simple(&value);
         if (value != i || !res)
             throw;
     }
 }
 
-void FastProtocolTester::TestReadUInt32_Mandatory() {
+void FastProtocolTester::TestReadUInt32_Mandatory(bool use_bmi) {
     printf("Test FastProtocolTester::TestReadUInt32_Mandatory\n");
 
     unsigned char buffer[8];
@@ -1139,9 +1156,9 @@ void FastProtocolTester::TestReadUInt32_Mandatory() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        UINT64 value = manager->ReadUInt32_Mandatory();
+        UINT64 value = use_bmi? manager->ReadUInt32_Mandatory_BMI(): manager->ReadUInt32_Mandatory_Simple();
         manager->ResetBuffer();
-        UINT64 value3 = manager->ReadUInt32_Mandatory_Predict1();
+        UINT64 value3 = use_bmi? manager->ReadUInt32_Mandatory_Predict1_BMI(): manager->ReadUInt32_Mandatory_Predict1_Simple();
         manager->ResetBuffer();
 
         manager->ClearBuffer();
@@ -1151,9 +1168,9 @@ void FastProtocolTester::TestReadUInt32_Mandatory() {
             throw;
 
         manager->ResetBuffer();
-        UINT64 value2 = manager->ReadUInt32_Mandatory();
+        UINT64 value2 = use_bmi? manager->ReadUInt32_Mandatory_BMI(): manager->ReadUInt32_Mandatory_Simple();
         manager->ResetBuffer();
-        UINT64 value4 = manager->ReadUInt32_Mandatory();
+        UINT64 value4 = use_bmi? manager->ReadUInt32_Mandatory_Predict1_BMI(): manager->ReadUInt32_Mandatory_Predict1_Simple();
         manager->ResetBuffer();
         if (value2 != value || value3 != value4)
             throw;
@@ -1172,7 +1189,7 @@ void FastProtocolTester::TestReadUInt32_Mandatory() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        UINT64 value = manager->ReadUInt32_Mandatory_Predict12();
+        UINT64 value = use_bmi? manager->ReadUInt32_Mandatory_Predict12_BMI(): manager->ReadUInt32_Mandatory_Predict12_Simple();
         manager->ResetBuffer();
 
         manager->ClearBuffer();
@@ -1182,7 +1199,7 @@ void FastProtocolTester::TestReadUInt32_Mandatory() {
             throw;
 
         manager->ResetBuffer();
-        UINT64 value2 = manager->ReadUInt32_Mandatory_Predict12();
+        UINT64 value2 = use_bmi? manager->ReadUInt32_Mandatory_Predict12_BMI(): manager->ReadUInt32_Mandatory_Predict12_Simple();
         manager->ResetBuffer();
 
         if (value2 != value)
@@ -1193,16 +1210,16 @@ void FastProtocolTester::TestReadUInt32_Mandatory() {
     manager->ResetBuffer();
     manager->WriteUInt32_Mandatory(value);
     manager->ResetBuffer();
-    UINT64 value2 = manager->ReadUInt32_Mandatory();
+    UINT64 value2 = use_bmi? manager->ReadUInt32_Mandatory_BMI(): manager->ReadUInt32_Mandatory_Simple();
     if (value != value2)
         throw;
     manager->ResetBuffer();
-    UINT64 value3 = manager->ReadUInt32_Mandatory_Predict1();
+    UINT64 value3 = use_bmi? manager->ReadUInt32_Mandatory_Predict1_BMI(): manager->ReadUInt32_Mandatory_Predict1_Simple();
     if (value != value3)
         throw;
 }
 
-void FastProtocolTester::TestReadUInt32_Optional() {
+void FastProtocolTester::TestReadUInt32_Optional(bool use_bmi) {
     printf("Test FastProtocolTester::TestReadUInt32_Optional\n");
 
     unsigned char buffer[8];
@@ -1220,15 +1237,21 @@ void FastProtocolTester::TestReadUInt32_Optional() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        UINT32 value = manager->ReadUInt32_Optional();
+        UINT32 value = use_bmi? manager->ReadUInt32_Optional_BMI() : manager->ReadUInt32_Optional_Simple();
         manager->ResetBuffer();
         UINT32 value3 = 0;
-        manager->ReadUInt32_Optional(&value3);
+        if(use_bmi)
+            manager->ReadUInt32_Optional_BMI(&value3);
+        else
+            manager->ReadUInt32_Optional_Simple(&value3);
         manager->ResetBuffer();
-        UINT32 value5 = manager->ReadUInt32_Optional_Predict1();
+        UINT32 value5 = use_bmi? manager->ReadUInt32_Optional_Predict1_BMI() : manager->ReadUInt32_Optional_Predict1_Simple();
         manager->ResetBuffer();
         UINT32 value6 = 0;
-        manager->ReadUInt32_Optional_Predict1(&value6);
+        if(use_bmi)
+            manager->ReadUInt32_Optional_Predict1_BMI(&value6);
+        else
+            manager->ReadUInt32_Optional_Predict1_Simple(&value6);
         manager->ResetBuffer();
 
         manager->ClearBuffer();
@@ -1238,10 +1261,13 @@ void FastProtocolTester::TestReadUInt32_Optional() {
             throw;
 
         manager->ResetBuffer();
-        UINT32 value2 = manager->ReadUInt32_Optional();
+        UINT32 value2 = use_bmi? manager->ReadUInt32_Optional_BMI() : manager->ReadUInt32_Optional_Simple();
         manager->ResetBuffer();
         UINT32 value4 = 0;
-        manager->ReadUInt32_Optional(&value4);
+        if(use_bmi)
+            manager->ReadUInt32_Optional_BMI(&value4);
+        else
+            manager->ReadUInt32_Optional_Simple(&value4);
         manager->ResetBuffer();
         if (value2 != value || value3 != value4 || value5 != value || value6 != value)
             throw;
@@ -1249,17 +1275,23 @@ void FastProtocolTester::TestReadUInt32_Optional() {
 
     manager->Buffer()[0] = 0x82;
     manager->ResetBuffer();
-    UINT32 value5 = manager->ReadUInt32_Optional_Fixed1();
+    UINT32 value5 = use_bmi? manager->ReadUInt32_Optional_Fixed1_BMI() : manager->ReadUInt32_Optional_Fixed1_Simple();
     if(value5 != 0x01)
         throw;
     manager->ResetBuffer();
     UINT32 value6 = 0;
-    manager->ReadUInt32_Optional_Fixed1(&value6);
+    if(use_bmi)
+        manager->ReadUInt32_Optional_Fixed1_BMI(&value6);
+    else
+        manager->ReadUInt32_Optional_Fixed1_Simple(&value6);
     if(value6 != 0x01)
         throw;
     manager->ResetBuffer();
     UINT32 value7 = 0;
-    manager->ReadUInt32_Optional_Predict12(&value7);
+    if(use_bmi)
+        manager->ReadUInt32_Optional_Predict12_BMI(&value7);
+    else
+        manager->ReadUInt32_Optional_Predict12_Simple(&value7);
     if(value7 != 0x01)
         throw;
 
@@ -1267,41 +1299,30 @@ void FastProtocolTester::TestReadUInt32_Optional() {
     manager->ResetBuffer();
     manager->WriteUInt32_Mandatory(value);
     manager->ResetBuffer();
-    UINT32 value2 = manager->ReadUInt32_Optional();
+    UINT32 value2 = use_bmi? manager->ReadUInt32_Optional_BMI() : manager->ReadUInt32_Optional_Simple();
     if ((value - 1) != value2)
         throw;
     manager->ResetBuffer();
     UINT32 value3 = 0;
-    manager->ReadUInt32_Optional(&value3);
+    if(use_bmi)
+        manager->ReadUInt32_Optional_BMI(&value3);
+    else
+        manager->ReadUInt32_Optional_Simple(&value3);
     if ((value - 1) != value3)
         throw;
 
     manager->ResetBuffer();
     manager->Buffer()[0] = 0x22;
     manager->Buffer()[1] = 0x81;
-    value3 = manager->ReadUInt32_Optional();
+    value3 = use_bmi? manager->ReadUInt32_Optional_BMI() : manager->ReadUInt32_Optional_Simple();
     manager->ResetBuffer();
     value6 = 0;
-    manager->ReadUInt32_Optional_Predict12(&value6);
+    if(use_bmi)
+        manager->ReadUInt32_Optional_Predict12_BMI(&value6);
+    else
+        manager->ReadUInt32_Optional_Predict12_Simple(&value6);
     if(value3 != value6)
         throw;
-}
-
-void FastProtocolTester::TestReadUInt32_Mandatory_Predict1() {
-    printf("Test FastProtocolTester::TestReadUInt32_Mandatory_Predict1\n");
-    manager->SetNewBuffer(new unsigned char[100], 100);
-
-    for (UINT32 i = 0; i < UINT32_MAX - 60; i += 50) {
-        manager->ResetBuffer();
-        manager->WriteUInt32_Mandatory(i);
-        manager->ResetBuffer();
-        UINT32 value = manager->ReadUInt32_Mandatory();
-        if (value != i) {
-            manager->ResetBuffer();
-            value = manager->ReadUInt32_Mandatory_Predict1();
-            throw;
-        }
-    }
 }
 
 void FastProtocolTester::TestStringCopy() {
@@ -1528,7 +1549,7 @@ void FastProtocolTester::TestReadDecimal_Mandatory() {
         throw;
 }
 
-void FastProtocolTester::TestReadInt64_Optional() {
+void FastProtocolTester::TestReadInt64_Optional(bool use_bmi) {
     printf("Test FastProtocolTester::TestReadInt64_Optional\n");
 
     BYTE buffer[12];
@@ -1542,7 +1563,7 @@ void FastProtocolTester::TestReadInt64_Optional() {
         manager->CopyToBuffer(buffer, i + 1);
         
         manager->ResetBuffer();
-        INT64 value = manager->ReadInt64_Optional();
+        INT64 value = use_bmi? manager->ReadInt64_Optional_BMI() : manager->ReadInt64_Optional_Simple();
         manager->ResetBuffer();
 
         manager->ClearBuffer();
@@ -1552,7 +1573,7 @@ void FastProtocolTester::TestReadInt64_Optional() {
             throw;
 
         manager->ResetBuffer();
-        INT64 value2 = manager->ReadInt64_Optional();
+        INT64 value2 = use_bmi? manager->ReadInt64_Optional_BMI() : manager->ReadInt64_Optional_Simple();
         if (value2 != value)
             throw;
     }
@@ -1567,7 +1588,7 @@ void FastProtocolTester::TestReadInt64_Optional() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        INT64 value = manager->ReadInt64_Optional();
+        INT64 value = use_bmi? manager->ReadInt64_Optional_BMI() : manager->ReadInt64_Optional_Simple();
         manager->ResetBuffer();
 
         manager->ClearBuffer();
@@ -1577,7 +1598,7 @@ void FastProtocolTester::TestReadInt64_Optional() {
             throw;
 
         manager->ResetBuffer();
-        INT64 value2 = manager->ReadInt64_Optional();
+        INT64 value2 = use_bmi? manager->ReadInt64_Optional_BMI() : manager->ReadInt64_Optional_Simple();
         if (value2 != value)
             throw;
     }
@@ -1593,7 +1614,7 @@ void FastProtocolTester::TestReadInt64_Optional() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        INT64 value = manager->ReadInt64_Optional();
+        INT64 value = use_bmi? manager->ReadInt64_Optional_BMI() : manager->ReadInt64_Optional_Simple();
         manager->ResetBuffer();
 
         manager->ClearBuffer();
@@ -1603,7 +1624,7 @@ void FastProtocolTester::TestReadInt64_Optional() {
             throw;
 
         manager->ResetBuffer();
-        INT64 value2 = manager->ReadInt64_Optional();
+        INT64 value2 = use_bmi? manager->ReadInt64_Optional_BMI() : manager->ReadInt64_Optional_Simple();
         if (value2 != value)
             throw;
     }
@@ -1619,7 +1640,7 @@ void FastProtocolTester::TestReadInt64_Optional() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        INT64 value = manager->ReadInt64_Optional();
+        INT64 value = use_bmi? manager->ReadInt64_Optional_BMI() : manager->ReadInt64_Optional_Simple();
         manager->ResetBuffer();
 
         manager->ClearBuffer();
@@ -1629,13 +1650,13 @@ void FastProtocolTester::TestReadInt64_Optional() {
             throw;
 
         manager->ResetBuffer();
-        INT64 value2 = manager->ReadInt64_Optional();
+        INT64 value2 = use_bmi? manager->ReadInt64_Optional_BMI() : manager->ReadInt64_Optional_Simple();
         if (value2 != value)
             throw;
     }
 }
 
-void FastProtocolTester::TestReadInt64_Mandatory() {
+void FastProtocolTester::TestReadInt64_Mandatory(bool use_bmi) {
     printf("Test FastProtocolTester::TestReadInt64_Mandatory\n");
     manager->SetNewBuffer(new unsigned char[128], 128);
 
@@ -1650,7 +1671,7 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        INT64 value = manager->ReadInt64_Mandatory();
+        INT64 value = use_bmi? manager->ReadInt64_Mandatory_BMI() : manager->ReadInt64_Mandatory_Simple();
         if(manager->MessageLength() != i + 1)
             throw;
         manager->ResetBuffer();
@@ -1662,7 +1683,7 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
             throw;
 
         manager->ResetBuffer();
-        INT64 value2 = manager->ReadInt64_Mandatory();
+        INT64 value2 = use_bmi? manager->ReadInt64_Mandatory_BMI() : manager->ReadInt64_Mandatory_Simple();
         if (value2 != value)
             throw;
     }
@@ -1677,7 +1698,7 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        INT64 value = manager->ReadInt64_Mandatory();
+        INT64 value = use_bmi? manager->ReadInt64_Mandatory_BMI() : manager->ReadInt64_Mandatory_Simple();
         if(manager->MessageLength() != i + 1)
             throw;
         manager->ResetBuffer();
@@ -1689,7 +1710,7 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
             throw;
 
         manager->ResetBuffer();
-        INT64 value2 = manager->ReadInt64_Mandatory();
+        INT64 value2 = use_bmi? manager->ReadInt64_Mandatory_BMI() : manager->ReadInt64_Mandatory_Simple();
         if (value2 != value)
             throw;
     }
@@ -1705,7 +1726,7 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        INT64 value = manager->ReadInt64_Mandatory();
+        INT64 value = use_bmi? manager->ReadInt64_Mandatory_BMI() : manager->ReadInt64_Mandatory_Simple();
         if(manager->MessageLength() != i + 1)
             throw;
         manager->ResetBuffer();
@@ -1717,7 +1738,7 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
             throw;
 
         manager->ResetBuffer();
-        INT64 value2 = manager->ReadInt64_Mandatory();
+        INT64 value2 = use_bmi? manager->ReadInt64_Mandatory_BMI() : manager->ReadInt64_Mandatory_Simple();
         if (value2 != value)
             throw;
     }
@@ -1732,7 +1753,7 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        INT64 value = manager->ReadInt64_Mandatory();
+        INT64 value = use_bmi? manager->ReadInt64_Mandatory_BMI() : manager->ReadInt64_Mandatory_Simple();
         if(manager->MessageLength() != i + 1)
             throw;
         manager->ResetBuffer();
@@ -1744,7 +1765,7 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
             throw;
 
         manager->ResetBuffer();
-        INT64 value2 = manager->ReadInt64_Mandatory();
+        INT64 value2 = use_bmi? manager->ReadInt64_Mandatory_BMI() : manager->ReadInt64_Mandatory_Simple();
         if (value2 != value)
             throw;
     }
@@ -1753,13 +1774,14 @@ void FastProtocolTester::TestReadInt64_Mandatory() {
     manager->ResetBuffer();
     manager->WriteInt64_Mandatory(value);
     manager->ResetBuffer();
-    INT64 value2 = manager->ReadInt64_Mandatory();
+    INT64 value2 = use_bmi? manager->ReadInt64_Mandatory_BMI() : manager->ReadInt64_Mandatory_Simple();
     if (value != value2)
         throw;
 }
 
-void FastProtocolTester::TestReadUInt64_Mandatory() {
+void FastProtocolTester::TestReadUInt64_Mandatory(bool use_bmi) {
     printf("Test FastProtocolTester::TestReadUInt64_Mandatory\n");
+    manager->SetNewBuffer(new unsigned char[128], 128);
 
     BYTE buffer[12];
 
@@ -1775,20 +1797,20 @@ void FastProtocolTester::TestReadUInt64_Mandatory() {
 
     manager->ResetBuffer();
     manager->CopyToBuffer(buffer, 8);
-    UINT64 v = manager->ReadUInt64_Mandatory();
+    UINT64 v = use_bmi? manager->ReadUInt64_Mandatory_BMI() : manager->ReadUInt64_Mandatory_Simple();
     manager->ResetBuffer();
     manager->WriteUInt64_Mandatory(v);
     if (!manager->CheckBuffer(buffer, 8))
         throw;
     manager->ResetBuffer();
-    UINT64 v2 = manager->ReadUInt64_Mandatory();
+    UINT64 v2 = use_bmi? manager->ReadUInt64_Mandatory_BMI() : manager->ReadUInt64_Mandatory_Simple();
     if (v2 != v)
         throw;
 
-    for (int i = 0; i < 9; i++) { // positive
+    for (int i = 1; i < 9; i++) { // positive
         memset(buffer, 0, 12);
         for (int j = 0; j <= i; j++) {
-            buffer[j] = (rand() % 0xff) & 0x7f;
+            buffer[j] = (unsigned char)((rand() % 0xff) & 0x7f);
             if (j == 0) {
                 buffer[j] &= 0xbf;
                 buffer[j] |= 0x01;
@@ -1798,7 +1820,7 @@ void FastProtocolTester::TestReadUInt64_Mandatory() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        UINT64 value = manager->ReadUInt64_Mandatory();
+        UINT64 value = use_bmi? manager->ReadUInt64_Mandatory_BMI() : manager->ReadUInt64_Mandatory_Simple();
         manager->ResetBuffer();
 
         manager->ClearBuffer();
@@ -1808,7 +1830,7 @@ void FastProtocolTester::TestReadUInt64_Mandatory() {
             throw;
 
         manager->ResetBuffer();
-        UINT64 value2 = manager->ReadUInt64_Mandatory();
+        UINT64 value2 = use_bmi? manager->ReadUInt64_Mandatory_BMI() : manager->ReadUInt64_Mandatory_Simple();
         if (value2 != value)
             throw;
     }
@@ -1817,21 +1839,29 @@ void FastProtocolTester::TestReadUInt64_Mandatory() {
     manager->ResetBuffer();
     manager->WriteUInt64_Mandatory(value);
     manager->ResetBuffer();
-    UINT64 value2 = manager->ReadUInt64_Mandatory();
+    UINT64 value2 = use_bmi? manager->ReadUInt64_Mandatory_BMI() : manager->ReadUInt64_Mandatory_Simple();
+    if (value != value2)
+        throw;
+
+    value = 0x01234567890abcde;
+    manager->ResetBuffer();
+    manager->WriteUInt64_Mandatory(value);
+    manager->ResetBuffer();
+    value2 = use_bmi? manager->ReadUInt64_Mandatory_BMI() : manager->ReadUInt64_Mandatory_Simple();
     if (value != value2)
         throw;
 }
 
-void FastProtocolTester::TestReadUInt64_Optional() {
+void FastProtocolTester::TestReadUInt64_Optional(bool use_bmi) {
     printf("Test FastProtocolTester::TestReadUInt64_Optional\n");
     manager->SetNewBuffer(new unsigned char[12], 12);
 
     BYTE buffer[12];
 
-    for (int i = 0; i < 9; i++) { // positive
+    for (int i = 1; i < 9; i++) { // positive
         memset(buffer, 0, 12);
         for (int j = 0; j <= i; j++) {
-            buffer[j] = (rand() % 0xff) & 0x7f;
+            buffer[j] = (unsigned char)((rand() % 0xff) & 0x7f);
             if (j == 0) {
                 buffer[j] &= 0xbf;
                 buffer[j] |= 0x01;
@@ -1841,7 +1871,7 @@ void FastProtocolTester::TestReadUInt64_Optional() {
         manager->CopyToBuffer(buffer, i + 1);
 
         manager->ResetBuffer();
-        UINT64 value = manager->ReadUInt64_Optional();
+        UINT64 value = use_bmi? manager->ReadUInt64_Optional_BMI(): manager->ReadUInt64_Optional_Simple();
         manager->ResetBuffer();
 
         manager->ClearBuffer();
@@ -1851,7 +1881,7 @@ void FastProtocolTester::TestReadUInt64_Optional() {
             throw;
 
         manager->ResetBuffer();
-        UINT64 value2 = manager->ReadUInt64_Optional();
+        UINT64 value2 = use_bmi? manager->ReadUInt64_Optional_BMI(): manager->ReadUInt64_Optional_Simple();
         if (value2 != value)
             throw;
     }
@@ -1860,7 +1890,15 @@ void FastProtocolTester::TestReadUInt64_Optional() {
     manager->ResetBuffer();
     manager->WriteUInt64_Optional(value);
     manager->ResetBuffer();
-    UINT64 value2 = manager->ReadUInt64_Optional();
+    UINT64 value2 = use_bmi? manager->ReadUInt64_Optional_BMI(): manager->ReadUInt64_Optional_Simple();
+    if (value != value2)
+        throw;
+
+    value = 0x0123456789abcde;
+    manager->ResetBuffer();
+    manager->WriteUInt64_Optional(value);
+    manager->ResetBuffer();
+    value2 = use_bmi? manager->ReadUInt64_Optional_BMI(): manager->ReadUInt64_Optional_Simple();
     if (value != value2)
         throw;
 }
@@ -1904,6 +1942,55 @@ void FastProtocolTester::TestParsePresenceMap() {
     }
     
     delete manager;*/
+}
+
+void FastProtocolTester::Test() {
+    TestReadInt64_Mandatory(false);
+    TestReadInt64_Mandatory(true);
+
+    TestReadInt64_Optional(false);
+    TestReadInt64_Optional(true);
+
+    TestReadUInt64_Mandatory(false);
+    TestReadUInt64_Mandatory(true);
+
+    TestReadUInt64_Optional(false);
+    TestReadUInt64_Optional(true);
+
+    TestReadUInt32_Optional(false);
+    TestReadUInt32_Optional(true);
+
+    TestReadUInt32_Optional_Fixed1(false);
+    TestReadUInt32_Optional_Fixed1(true);
+
+    TestReadUInt32_Optional2(false);
+    TestReadUInt32_Optional2(true);
+
+    TestReadUInt32_Mandatory(false);
+    TestReadUInt32_Mandatory(true);
+
+    TestReadInt32_Mandatory(false);
+    TestReadInt32_Mandatory(true);
+
+    TestReadInt32_Optional(false);
+    TestReadInt32_Optional(true);
+
+    TestReadInt32_Optional2(false);
+    TestReadInt32_Optional2(true);
+
+
+    TestStringCopy();
+    TestReadString_Mandatory();
+    TestReadString_Optional();
+    TestSkipToNextField();
+
+    TestMessages();
+    TestReadByteVector_Optional();
+    TestReadByteVector_Mandatory();
+    TestReadDecimal_Optional();
+    TestReadDecimal_Mandatory();
+    TestMessageSequenceNumber();
+    TestParsePresenceMap();
 }
 
 #endif //TEST

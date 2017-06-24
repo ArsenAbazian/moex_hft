@@ -14,23 +14,23 @@ public:
 
     void TestStringCopy();
 
-    void TestReadUInt64_Optional();
-    void TestReadUInt64_Mandatory();
-    void TestReadInt64_Optional();
-    void TestReadInt64_Mandatory();
+    void TestReadUInt64_Optional(bool use_bmi);
+    void TestReadUInt64_Mandatory(bool use_bmi);
+    void TestReadInt64_Optional(bool use_bmi);
+    void TestReadInt64_Mandatory(bool use_bmi);
 
     void TestReadDecimal_Optional();
     void TestReadDecimal_Mandatory();
-    void TestReadInt32_Optional();
-    void TestReadInt32_Optional_Predict1();
-    void TestReadInt32_Optional2();
-    void TestReadInt32_Mandatory();
-    void TestReadInt32_Mandatory_Predict1();
-    void TestReadUInt32_Optional();
-    void TestReadUInt32_Optional2();
-    void TestReadUInt32_Optional_Fixed1();
-    void TestReadUInt32_Mandatory();
-    void TestReadUInt32_Mandatory_Predict1();
+    void TestReadInt32_Optional(bool use_bmi);
+    void TestReadInt32_Optional_Predict1(bool use_bmi);
+    void TestReadInt32_Optional2(bool use_bmi);
+    void TestReadInt32_Mandatory(bool use_bmi);
+    void TestReadInt32_Mandatory_Predict1(bool use_bmi);
+    void TestReadUInt32_Optional(bool use_bmi);
+    void TestReadUInt32_Optional2(bool use_bmi);
+    void TestReadUInt32_Optional_Fixed1(bool use_bmi);
+    void TestReadUInt32_Mandatory(bool use_bmi);
+    void TestReadUInt32_Mandatory_Predict1(bool use_bmi);
     void TestReadString_Optional();
     void TestReadString_Mandatory();
 
@@ -44,33 +44,6 @@ public:
     void TestPerformance();
     void TestSkipToNextField();
 
-    void Test() {
-        TestReadInt64_Mandatory();
-        TestReadInt64_Optional();
-
-        TestReadInt32_Mandatory();
-        TestReadInt32_Optional();
-
-        //TestPerformance();
-
-        TestReadUInt32_Mandatory();
-        TestReadUInt32_Optional();
-
-        TestReadUInt64_Mandatory();
-        TestReadUInt64_Optional();
-
-        TestStringCopy();
-        TestReadString_Mandatory();
-        TestReadString_Optional();
-        TestSkipToNextField();
-
-        TestMessages();
-        TestReadByteVector_Optional();
-        TestReadByteVector_Mandatory();
-        TestReadDecimal_Optional();
-        TestReadDecimal_Mandatory();
-        TestMessageSequenceNumber();
-        TestParsePresenceMap();
-    }
+    void Test();
 };
 #endif

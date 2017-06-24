@@ -67,6 +67,8 @@ public:
         INT64 delta = this->m_minPriceIncrement * percent;
         return value - delta;
     }
+    inline INT64 MinPrice() const { return this->m_cacheStart; }
+    inline INT64 MaxPrice() const { return this->m_cacheStart + this->m_minPriceIncrement * this->m_cacheSize; }
     inline INT64 CalcValue(Decimal *price) {
         return price->Mantissa * price->CalcPowOf10(this->m_precision + price->Exponent);
     }
