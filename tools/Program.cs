@@ -2956,10 +2956,9 @@ namespace prebuild {
 			else 
 				finalName = method;
 			
-			if (!UseBmi)
-				return finalName;
-			if (field.Name == "int32" || field.Name == "uInt32" || field.Name == "int64" || field.Name == "uInt64" || field.Name == "decimal")
-				finalName += "_BMI";
+			if (field.Name == "int32" || field.Name == "uInt32" || field.Name == "int64" || field.Name == "uInt64" || field.Name == "decimal") {
+				finalName += UseBmi? "_BMI": "_Simple";
+			}
 			return finalName;
 		}
 
