@@ -7,8 +7,8 @@
 #include <math.h>
 #include <inttypes.h>
 #include "../ProgramStatistics.h"
-#include <immintrin.h>
 #include <x86intrin.h>
+#include <avx2intrin.h>
 
 #ifdef TEST
 
@@ -2513,7 +2513,19 @@ public:
         return true;
     }
     inline bool ReadInt32_Optional_Predict1_BMI(INT32 *value) {
-        return ReadInt32_Optional_BMI(value);
+		UINT64 memory = *((UINT64*)(this->currentPos));
+		if((memory & 0xff) == 0x80) {
+			this->currentPos++;
+			return false;
+		}
+		unsigned char valueMasked = memory & 0xff;
+		int addLength = (valueMasked == 0x00) || (valueMasked == 0x7f);
+		memory >>= addLength << 3;
+		UINT32 mask = 0 - ((valueMasked == 0x7f) || ((valueMasked & 0x40) != 0));
+		UINT32 result = (mask << 7) | (memory & 0x7f);
+		*value = result + ((result >> 31) - 1);
+		this->currentPos += addLength + 1;
+		return true;
     }
     inline UINT32 ReadUInt32_Mandatory_Fixed1_BMI() {
         UINT32 memory = *((UINT32*)(this->currentPos));

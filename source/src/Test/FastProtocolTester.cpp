@@ -1083,6 +1083,36 @@ void FastProtocolTester::TestReadInt32_Optional2(bool use_bmi) {
     }
 }
 
+void FastProtocolTester::TestReadInt32_Optional_Predict1(bool use_bmi) {
+    printf("Test FastProtocolTester::TestReadInt32_Optional_Predict1\n");
+    manager->SetNewBuffer(new unsigned char[100], 100);
+
+    INT32 value;
+    manager->Buffer()[0] = 0x80;
+    manager->ResetBuffer();
+    bool res = res = use_bmi? manager->ReadInt32_Optional_Predict1_BMI(&value): manager->ReadInt32_Optional_Predict1_Simple(&value);
+    if(res)
+        throw;
+
+    for (int i = -1; i > -120; i --) {
+        manager->ResetBuffer();
+        manager->WriteInt32_Optional(i);
+        manager->ResetBuffer();
+        res = use_bmi? manager->ReadInt32_Optional_Predict1_BMI(&value): manager->ReadInt32_Optional_Predict1_Simple(&value);
+        if (value != i || !res)
+            throw;
+    }
+
+    for (int i = 0; i < 120; i ++) {
+        manager->ResetBuffer();
+        manager->WriteInt32_Optional(i);
+        manager->ResetBuffer();
+        res = use_bmi? manager->ReadInt32_Optional_Predict1_BMI(&value): manager->ReadInt32_Optional_Predict1_Simple(&value);
+        if (value != i || !res)
+            throw;
+    }
+}
+
 void FastProtocolTester::TestReadUInt32_Optional_Fixed1(bool use_bmi) {
     printf("Test FastProtocolTester::TestReadUInt32_Optional_Fixed1\n");
     UINT32 value;
@@ -1945,6 +1975,9 @@ void FastProtocolTester::TestParsePresenceMap() {
 }
 
 void FastProtocolTester::Test() {
+    TestReadInt32_Optional_Predict1(false);
+    TestReadInt32_Optional_Predict1(true);
+
     TestReadInt64_Mandatory(false);
     TestReadInt64_Mandatory(true);
 
@@ -1977,7 +2010,6 @@ void FastProtocolTester::Test() {
 
     TestReadInt32_Optional2(false);
     TestReadInt32_Optional2(true);
-
 
     TestStringCopy();
     TestReadString_Mandatory();
