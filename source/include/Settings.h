@@ -3,7 +3,7 @@
 #include <cstdint>
 
 #define ROBOT_WORK_ANYWAY
-//#define TEST
+#define TEST
 #ifdef TEST
 //#define TEST_LIST
 //#define TEST_CHECK_LIST

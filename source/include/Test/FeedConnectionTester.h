@@ -897,7 +897,7 @@ public:
         PointerList<TestFeedMessage> *messages = new PointerList<TestFeedMessage>(2000);
         FILE *fp = fopen(name, "r");
         char feedIdBuffer[3];
-        char buffer[5000];
+        char buffer[10000];
         if(fp == 0)
             throw;
         while(!feof(fp)) {
@@ -958,10 +958,9 @@ public:
         olrCurr->Start();
 
         LinkedPointer<TestFeedMessage> *msg = messages->Start();
+        //const int start_olr_msg = 0;
         const int start_olr_msg = 1275;
-        const int problem_msg = 1721;
-        const int problem_msg2 = 1797;
-        time_t*  elapsed = new time_t[1000];
+        time_t*  elapsed = new time_t[3000];
         Stopwatch *w = new Stopwatch();
         for(int i = 0; i < messages->Count(); i++, msg = msg->Next()) {
             if(msg->Data()->m_feedId == FeedConnectionId::fcidOlrCurr)
@@ -973,14 +972,14 @@ public:
             }
             olrCurr->ListenIncremental();
             if(i >= start_olr_msg) {
-                elapsed[i - 1275] = w->ElapsedNanosecondsSlowPrecise(0);
+                elapsed[i - start_olr_msg] = w->ElapsedNanosecondsSlowPrecise(0);
             }
 
             if(olsCurr->State() != FeedConnectionState::fcsSuspend)
                 olsCurr->ListenSnapshot();
         }
         for(int i = 1275; i < messages->Count(); i++) {
-            printf("%d elapsed = %" PRIu64 "\n", i, elapsed[i-1275]);
+            printf("%d elapsed = %" PRIu64 "\n", i, elapsed[i-start_olr_msg]);
         }
         for(int i = 0; i < olrCurr->OrderCurr()->SymbolsCount(); i++) {
             MarketSymbolInfo<OrderInfo<AstsOLSCURRItemInfo>> *s = olrCurr->OrderCurr()->Symbol(i);
