@@ -2604,7 +2604,7 @@ public:
     inline bool ReadUInt32_Optional_Predict12_BMI(UINT32 *value) {
         return ReadUInt32_Optional_BMI(value);
     }
-    __attribute__((target ("bmi2")))
+    __attribute__((__always_inline__, __nodebug__, __target__("bmi2")))
     inline UINT64 ReadUInt64_Mandatory_BMI() {
         UINT64 result = 0;
         UINT64 memory = *((UINT64 *) (this->currentPos));
@@ -2625,11 +2625,11 @@ public:
         this->currentPos += addLength + (count >> 3);
         return result;
     }
-    __attribute__((target ("bmi2")))
+    __attribute__((__always_inline__, __nodebug__, __target__("bmi2")))
     inline UINT64 ReadUInt64_Optional_BMI() {
         return ReadUInt64_Mandatory_BMI() - 1;
     }
-    __attribute__((target ("bmi2")))
+    __attribute__((__always_inline__, __nodebug__, __target__("bmi2")))
     inline INT64 ReadInt64_Mandatory_BMI() {
         UINT64 memory = *((UINT64*) (this->currentPos));
 
