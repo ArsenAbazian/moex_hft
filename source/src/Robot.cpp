@@ -660,11 +660,13 @@ bool Robot::MainLoop_CurrOnly() {
     Stopwatch::Default->GetElapsedMicrosecondsGlobal();
     w->StartFast();
 
-    //this->m_currMarket->FeedChannel()->Olr()->EnableHistoricalReplay(false); // TODO remove!!!!!
-
     AstsFeedChannel *channel = this->m_currMarket->FeedChannel();
 
     time_t max = 0;
+    time_t maxNoEmpty = 0;
+    time_t packets[200];
+    int count = 0;
+    int prevMsg = 0;
     while(true) {
         Stopwatch::Default->GetElapsedMicrosecondsGlobal();
         if(!WinSockManager::UpdateManagersPollStatus())
@@ -679,7 +681,15 @@ bool Robot::MainLoop_CurrOnly() {
             res &= channel->Idf()->DoWorkAtomSecurityDefinition();
         res &= channel->Hr()->DoWorkAtomHistoricalReplay();
         time_t elapsed = w->ElapsedNanosecondsSlowPrecise(1);
-        if(max < elapsed) max = elapsed;
+        if(prevMsg < channel->Olr()->MsgSeqNo()) {
+            if(maxNoEmpty < elapsed) maxNoEmpty = elapsed;
+            packets[count] = elapsed;
+            prevMsg = channel->Olr()->MsgSeqNo();
+            count++;
+        }
+        else {
+            if (max < elapsed) max = elapsed;
+        }
 
         if(!res) {
             delete w;
@@ -693,19 +703,22 @@ bool Robot::MainLoop_CurrOnly() {
         if(!this->Working())
             break;
 
-        if(w->ElapsedMicrosecondsFast() > 5000000) { // 5 sec
-            //double nanosecPerCycle = w->ElapsedMicrosecondsFast() * 1000.0/ cycleCount;
-            printf("--------------------------\n");
-            //printf("cycle count for 1 sec = %d. %g nanosec per cycle\n", cycleCount, nanosecPerCycle);
-            printf("elapsed per cycle = %" PRIu64 " ns\n", max);
+        if(w->ElapsedMicrosecondsFast() > 1000000) { // 5 sec
+            //printf("--------------------------\n");
+            printf("elapsed no empty per cycle = %" PRIu64 " ns\n", maxNoEmpty);
             max = 0;
-            this->PrintStatistics();
-            printf("-------- current ---------\n");
-            ProgramStatistics::Current->Print();
-            printf("-------- total -----------\n");
-            ProgramStatistics::Total->Print();
-            ProgramStatistics::Current->Clear();
+            maxNoEmpty = 0;
+            //this->PrintStatistics();
+            //printf("-------- current ---------\n");
+            //ProgramStatistics::Current->Print();
+            //printf("-------- total -----------\n");
+            //ProgramStatistics::Total->Print();
+            //ProgramStatistics::Current->Clear();
 
+            //for(int i = 0; i < count; i++) {
+            //    printf("elapsed for packet %d = %" PRIu64 "\n", i, packets[i]);
+            //}
+            count = 0;
             w->ResetFast();
             cycleCount = 0;
         }

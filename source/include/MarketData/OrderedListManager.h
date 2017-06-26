@@ -10,15 +10,36 @@
 #include "../Stopwatch.h"
 #include <string.h>
 
+typedef enum _SortType {
+    stAscending,
+    stDescending
+} SortType;
+
 template <template<typename DATA> class LIST, template<typename DATA> class POINTER, typename DATA>
 class OrderedListManager {
 public:
+    __attribute_noinline__
+    void DebugCheckCache() {
+        if(this->m_list->Count() < 2)
+            return;
+        if(this->m_list->Start()->Value() == this->m_list->End()->Value())
+            return;
+        bool mirrored = this->m_list->Start()->Value() < this->m_list->End()->Value();
+        POINTER<DATA> *node = this->m_list->Start();
+        while(true) {
+            if(this->m_cache[this->CalcCacheIndex(node->Value(), this->m_sortType == SortType::stAscending)] == 0)
+                throw;
+            if(node == this->m_list->End())
+                break;
+            node = node->Next();
+        }
+    }
     inline void OnPointerRemove(POINTER<DATA> *ptr) {
         Decimal *price = &(ptr->Data()->MDEntryPx);
-        INT64 cacheIndex = this->CalcCacheIndex(price);
+        INT64 cacheIndex = this->CalcCacheIndex(price, this->m_sortType == SortType::stAscending);
         POINTER<DATA> *prev = ptr->Prev();
         POINTER<DATA> *last = this->m_cache[cacheIndex];
-        if(last == 0)
+        if(last != ptr)
             return;
         bool updateCacheByPrev = ptr->Value() == prev->Value();
         this->m_cache[cacheIndex] = (POINTER<DATA> *) ((0 - (UINT64)updateCacheByPrev) & (UINT64)prev);
@@ -27,7 +48,7 @@ public:
         memset(this->m_cache, 0, sizeof(POINTER<DATA>*) * this->m_cacheSize);
     }
 private:
-    static const int      m_cacheSize = 100000;
+    static const int      m_cacheSize = 200000;
 public:
     LIST<DATA>           *m_list;
     POINTER<DATA>        **m_cache;
@@ -38,9 +59,10 @@ public:
     int                  m_LevelIndex = 0;
     int                  m_debugLevel;
     int                  m_seekCount;
-    int                  m_paddingBytes;
+    SortType             m_sortType;
 
-    OrderedListManager(LIST<DATA> *list) :
+
+    OrderedListManager(LIST<DATA> *list, SortType type) :
             m_debugLevel(0),
             g_seed(0),
             m_LevelIndex(0),
@@ -50,7 +72,7 @@ public:
             m_cacheStart(0),
             m_precision(0),
             m_minPriceIncrement(0),
-            m_paddingBytes(0)
+            m_sortType(type)
     {
         this->m_list = list;
         int additionalItems = 17;
@@ -77,6 +99,15 @@ public:
         if(this->m_cacheStart == 0)
             this->m_cacheStart = this->CalcCacheStartValue(value);
         return (value - this->m_cacheStart) / this->m_minPriceIncrement;
+    }
+    inline INT64 CalcCacheIndex(Decimal *price, bool ascending) {
+        INT64 value = price->Mantissa * price->CalcPowOf10(this->m_precision + price->Exponent); // correct cents
+        return this->CalcCacheIndex(value, ascending);
+    }
+    inline INT64 CalcCacheIndex(INT64 value, bool ascending) {
+        INT64 res = CalcCacheIndex(value);
+        INT64 res2 = this->m_cacheSize - res - 1;
+        return ((((UINT64)0) - ascending) & res2) | ((((UINT64)ascending) - 1) & res);
     }
     inline INT64 CalcCacheIndex(INT64 value) {
         if(this->m_cacheStart == 0)
@@ -129,6 +160,7 @@ public:
         }
         newNode->Value(value);
         this->m_cache[cacheIndex] = newNode;
+        //this->DebugCheckCache();
         return newNode;
     }
     inline POINTER<DATA>* InsertAscending(Decimal *price) {
@@ -148,6 +180,7 @@ public:
         }
         newNode->Value(value);
         this->m_cache[cacheIndex] = newNode;
+        //this->DebugCheckCache();
         return newNode;
     }
 };

@@ -349,6 +349,7 @@ protected:
         if(this->m_idfMaxMsgSeqNo == 0)
             this->m_idfMaxMsgSeqNo = TryGetSecurityDefinitionTotNumReports(this->m_recvBufferCurrentPos);
 
+        //printf("%s \"%s\"\n", this->m_idName, DebugInfoManager::Default->BinaryToString(this->m_recvBufferCurrentPos, size));
         info->m_address = this->m_recvBufferCurrentPos + 4;
         info->m_size = size - 4;
         this->NextRecv(size);
@@ -460,6 +461,7 @@ protected:
             return true;
 
         this->m_endMsgSeqNum = max_fast(this->m_endMsgSeqNum, msgSeqNum);
+        //printf("%s \"%s\"\n", this->m_idName, DebugInfoManager::Default->BinaryToString(this->m_recvBufferCurrentPos, size));
         //if(this->m_startMsgSeqNum == -1) // should we do this? well security status starts immediately after security definition so...
         //    this->m_startMsgSeqNum = msgSeqNum;
 
@@ -471,6 +473,7 @@ protected:
     inline bool ProcessServerCoreSecurityStatusAsts(int size, UINT64 data) {
         int msgSeqNum = ((int)data);
         if(this->m_windowMsgSeqNum == msgSeqNum && msgSeqNum == this->m_endMsgSeqNum + 1) { // next item
+            //printf("%s \"%s\"\n", this->m_idName, DebugInfoManager::Default->BinaryToString(this->m_recvBufferCurrentPos, size));
             this->m_endMsgSeqNum = msgSeqNum;
             if(ShouldSkipMessageAsts(data)) {
                 msgSeqNum++;

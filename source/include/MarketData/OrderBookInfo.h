@@ -179,9 +179,9 @@ public:
             return;
         }
         ptr->Data()->Clear();
+        manager->OnPointerRemove(ptr);
         manager->m_list->Remove(ptr);
         this->FreePointer(ptr);
-        manager->OnPointerRemove(ptr);
         info->Clear();
     }
 
@@ -422,8 +422,8 @@ template <typename T> OrderBookInfo<T>::OrderBookInfo() :
 
     this->m_sellQuoteList = new HrPointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
     this->m_buyQuoteList = new HrPointerListLite<T>(OrderBookInfo<T>::m_itemsPool);
-    this->m_sellQuoteManager = new OrderedListManager<HrPointerListLite, HrLinkedPointer, T>(this->m_sellQuoteList);
-    this->m_buyQuoteManager = new OrderedListManager<HrPointerListLite, HrLinkedPointer, T>(this->m_buyQuoteList);
+    this->m_sellQuoteManager = new OrderedListManager<HrPointerListLite, HrLinkedPointer, T>(this->m_sellQuoteList, SortType::stAscending);
+    this->m_buyQuoteManager = new OrderedListManager<HrPointerListLite, HrLinkedPointer, T>(this->m_buyQuoteList, SortType::stDescending);
 }
 
 #endif //HFT_ROBOT_ORDERINFO_H

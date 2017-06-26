@@ -170,8 +170,8 @@ public:
             return;
         }
         node->Data()->Clear();
-        manager->m_list->Remove(node);
         manager->OnPointerRemove(node);
+        manager->m_list->Remove(node);
         info->Clear();
     }
 
@@ -229,6 +229,7 @@ public:
                         ((buy - 1) & (UINT64)this->m_sellQuoteManager)
                 );
         this->RemoveQuote(manager, info);
+        //manager->DebugCheckCache();
     }
 
     inline void Change(T *info) {
@@ -452,8 +453,8 @@ template <typename T> OrderInfo<T>::OrderInfo() :
     this->m_sellQuoteList = new HrPointerListLite<T>(OrderInfo<T>::m_itemsPool);
     this->m_buyQuoteList = new HrPointerListLite<T>(OrderInfo<T>::m_itemsPool);
 
-    this->m_sellQuoteManager = new OrderedListManager<HrPointerListLite, HrLinkedPointer, T>(this->m_sellQuoteList);
-    this->m_buyQuoteManager = new OrderedListManager<HrPointerListLite, HrLinkedPointer, T>(this->m_buyQuoteList);
+    this->m_sellQuoteManager = new OrderedListManager<HrPointerListLite, HrLinkedPointer, T>(this->m_sellQuoteList, SortType::stAscending);
+    this->m_buyQuoteManager = new OrderedListManager<HrPointerListLite, HrLinkedPointer, T>(this->m_buyQuoteList, SortType::stDescending);
 
     this->m_tradingSession = new SizedArray();
 }

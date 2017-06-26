@@ -61,12 +61,12 @@ public:
     }
     inline void Start(int index) {
         clock_gettime(CLOCK_REALTIME_COARSE, this->m_specStart[index]);
-        UpdateElapsedMicrosecondsGlobal(this->m_specStart[index]);
+        //UpdateElapsedMicrosecondsGlobal(this->m_specStart[index]);
         this->m_enabled[index] = true;
     }
     inline void StartPrecise(int index) {
         clock_gettime(CLOCK_REALTIME, this->m_specStart[index]);
-        UpdateElapsedMicrosecondsGlobal(this->m_specStart[index]);
+        //UpdateElapsedMicrosecondsGlobal(this->m_specStart[index]);
         this->m_enabled[index] = true;
     }
     inline void StartFast(__syscall_slong_t startMicroseconds) {
@@ -75,7 +75,7 @@ public:
     }
     inline void Start() {
         clock_gettime(CLOCK_REALTIME_COARSE, this->m_specStart[0]);
-        UpdateElapsedMicrosecondsGlobal(this->m_specStart[0]);
+        //UpdateElapsedMicrosecondsGlobal(this->m_specStart[0]);
         this->m_enabled[0] = true;
     }
     inline void StartFast(int index) {
